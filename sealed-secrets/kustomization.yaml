@@ -2,3 +2,4 @@ resources:
   - root-ca-keypair-sealed.yaml
   - renovate-ssh-key-sealed.yaml
   - renovate-license-sealed.yaml
+  - renovate-gitlab-sealed.yaml

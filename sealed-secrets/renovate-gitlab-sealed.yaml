@@ -1,0 +1,16 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: renovate-gitlab-token
+  namespace: renovate
+spec:
+  encryptedData:
+    RENOVATE_TOKEN: AgBoCBhOZtL+KOT7uR37iXJe1m56dYNiL7eEFfKudcecmRncYwbKgN9lJXUCaGSIhBraTvCslh++4qH4LQhdIbKrXr2RDXLA9xUbHiBMx8FcqQHRYu0qlRWdwM0jsmsY10HrU5oqKDYAoun+pHrgShxemBuTy/xVMO4Y0dadGLgNrkR7wfyf0s2t+g53G70vJfR1PRlilW1QPeaRqgqMjKVZIhrGieB0GCQBX1c6EKzqOxJUn9zZ0k8vmqWEG5zUvzY1vM6+tsvbgFXRFl5Zpl0kp9LDhmwvH2keJL4ZGUUHgl8ikP92Tlr5MkfJaKJ3ZGipVloeyIBYyra4e+7ff5yWrrOqXinFeYIVQXjlnUrnlSD99B2zp6/UungHgRwCbwaM7IT2EqCgNRH9aKB5IcrdqW3+YGzMapqWH0ggOLQILbKH82tvLHLis/KlB2tpye4qwfFY8yNVQ3zo6xdWwR5CzoYECiJFPEaRoePvHBDGMfKgBBl3uYDvIgZq6TA0y9chSSrFkqiQN66KKhN0niRzm4zegODfW1hVuVcRyjIWx4VKdb59XtQBrnbmLKYvexVPa4Y90dBPZxRuR5KcavcSXA9mG2dK+wbqCJNtuvkNxRi6dg6y2NljxG/kpjYIMaxtREr0tkwsqgtudgIOTpZEgc3EflEb1E6xu/4OmU9AZGwIAF9d4QvWn8Ti4GunPOO/XxgRmqto6HXBnXBXbrDgkn0uT4exZ0GIMQ==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: renovate-gitlab-token
+      namespace: renovate
+    type: Opaque

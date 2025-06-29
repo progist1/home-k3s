@@ -19,6 +19,8 @@ spec:
     envFrom:
       - secretRef:
           name: renovate-license
+      - secretRef:
+          name: renovate-gitlab-token
     controller:
       livenessProbe:
         enabled: false
