@@ -4,8 +4,8 @@ metadata:
   name: metabase
   namespace: apps
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
     cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   ingressClassName: traefik
   tls:
