@@ -27,7 +27,7 @@ spec:
       mendRnvPlatform: "gitlab"
       mendRnvEndpoint: "https://gitlab.home/"
       existingSecret: "renovate-secrets"
-      logLevel: "info"
+      logLevel: "debug"
     extraVolumes:
       - name: root-ca
         configMap:
