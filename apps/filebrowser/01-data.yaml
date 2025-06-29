@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: filebrowser-data-pv
 spec:
+  storageClassName: ""
   capacity:
     storage: 500Gi
   accessModes:
@@ -18,6 +19,7 @@ metadata:
   name: filebrowser-data-pvc
   namespace: apps
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
