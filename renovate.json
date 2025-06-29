@@ -9,6 +9,6 @@
   "assignees": ["progist"],
   "reviewers": ["progist"],
   "kubernetes": {
-    "fileMatch": ["**/*.yaml"]
+    "managerFilePatterns": ["apps/**/deployment.yaml"]
   }
 }
