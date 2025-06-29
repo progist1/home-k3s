@@ -14,9 +14,10 @@
   "flux": {
     "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml"]
   },
-  "hostRules": [
+  "packageRules": [
     {
-      "hostType": "helm",
+      "managers": ["helm"],
+      "matchPackageNames": ["metabase"],
       "registryUrls": ["https://pmint93.github.io/helm-charts"]
     }
   ]
