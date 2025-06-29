@@ -16,11 +16,9 @@
   },
   "hostRules": [
     {
-      "matchHost": "pmint93.github.io",
+      "matchPackageNames": ["metabase"],
       "hostType": "helm",
-      "registryUrls": [
-        "https://pmint93.github.io/helm-charts"
-      ]
+      "registryUrls": ["https://pmint93.github.io/helm-charts"]
     }
   ]
 }
