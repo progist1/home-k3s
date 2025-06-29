@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Fast/k3s-data/filebrowser/config
+    path: /mnt/Fast/k3s-data/filebrowser/database
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
 ---
