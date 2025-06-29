@@ -26,6 +26,7 @@ spec:
       mendRnvAcceptTos: "true"
       mendRnvPlatform: "gitlab"
       mendRnvEndpoint: "https://gitlab.home/"
+      mendRnvAutoDiscoverFilter: "/local/gitops"
       existingSecret: "renovate-secrets"
       logLevel: "debug"
     extraVolumes:
