@@ -16,7 +16,7 @@
   },
   "packageRules": [
     {
-      "managers": ["flux"],
+      "matchManagers": ["flux"],
       "matchPackageNames": ["metabase"],
       "registryUrls": ["https://pmint93.github.io/helm-charts"]
     }
