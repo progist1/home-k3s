@@ -7,8 +7,8 @@ spec:
   interval: 1h
   chart:
     spec:
-      chart: renovate
-      version: "37.14.2"
+      chart: mend-renovate-ce
+      version: "10.1.0"
       sourceRef:
         kind: HelmRepository
         name: renovate
