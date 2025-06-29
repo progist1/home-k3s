@@ -1,0 +1,5 @@
+resources:
+  - namespace.yaml
+  - helm-repository.yaml
+  - helm-release.yaml
+  - issuer.yaml
