@@ -23,10 +23,12 @@ spec:
       extraEnvVars:
         - name: NODE_EXTRA_CA_CERTS
           value: /etc/ssl/certs/root-ca.crt
+        - name: RENOVATE_AUTODISCOVER
+          value: "true"
       mendRnvAcceptTos: "true"
       mendRnvPlatform: "gitlab"
       mendRnvEndpoint: "https://gitlab.home/"
-      mendRnvAutoDiscoverFilter: "/local/gitops"
+      # mendRnvAutoDiscoverFilter: "/local/gitops"
       existingSecret: "renovate-secrets"
       logLevel: "trace"
     extraVolumes:
