@@ -15,14 +15,12 @@ spec:
     spec:
       containers:
         - name: renovate
-          image: renovate/renovate:latest
+          image: renovate/renovate:41.16.2
           env:
             - name: LOG_LEVEL
               value: debug
-
             - name: NODE_EXTRA_CA_CERTS
               value: "/etc/ssl/certs/root-ca.crt"
-
             - name: RENOVATE_PLATFORM
               value: gitlab
             - name: RENOVATE_ENDPOINT
