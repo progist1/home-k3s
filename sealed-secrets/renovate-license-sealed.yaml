@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: renovate-license
+  namespace: renovate
+spec:
+  encryptedData:
+    MEND_RNV_LICENSE_KEY: AgA1uRKLvYbGVITV4acaCtPJqJgt5ynzTxjU5haSlAk7cQtHdZ7OXSHIQwCP0IK1gGMWvT9FdMWwZjjM0VQBOrZk651v7q/b6dWYcL7crt+vsH8QbnGx5ZB4QMPbnXtL4LTcfZzN32KhEzgo/o13Vd9EvFiadHBh36SL7bYqmZ9xjBHxenMFA6dyrNrIqYBBhoiuCkv7Gu6YX8iqH2Xl6+Uh8IbAgZwV87GrI7/G9SMEyj5uzwbq9MKxcSBtVRLJDV+Muo5HXgMm2+QqQW5lXnZ55DP9o9akNr1Ex64zRXeQyzcoN8T9tuS/bo8fucNO6/rN+sdoZmh5wVxiQi+Ft87Dif5KFlbiLhhif0/3tI/zXDjBWfR6Qrb9aa7jWHI0b4xyp97KTYBixGaAJJO1wABsQ230bKOn8bE/s0rYEizcdyMPt51D/xyWGJ2uYzjfRIihkLeSnD1wK4jknzw1rpUXJGShiBe/tTh5P0i9OjCM9UCEsN+GRUyumzCqQ0uh540vYefY0lLBK0M8FSl7oZ1VN78bDePzSl+E46E/NeJyfiW+Fy1kutmD8+elq4LdtUGmJKatc9q06P1GknYlgDwmlkHMAB0ONBFUsj1W56qVC+hUfrz5+KGhuY0+e9yee3CH8Jjusv1qc0Z2l6OW+nSjRCfoc7IatYjgW5AI+jQyaRalcv99lG1/IbCGypNr64cbIH0sI2Oq4XDc1Ucdod5QFSIs6tNDBPNymETbb7RTZcTnsiPBaC1nU2Slss2Ov0e7Xd8mUVIjuFDL+sviMgZBshDOjQhUmuObDz9dtZSGUueujBx6hkSfD9rvMck/SJByJJKT58A55OfazGK8FiPqiZWHUwAhcWd9bgecjAdJEIZI035Hm2GRoAMHK6nWe91Q+hYUzUA2SkSMOu26DbyLIRPsuq8bVN819ZLryBzUksBWO2F8cohcQXz/ADvjZVo5akE8k0W6PiN2Sh5G8KpJg8G7WQaBfw0lCy56/0ccE8U=
+  template:
+    metadata:
+      creationTimestamp: null
+      name: renovate-license
+      namespace: renovate
