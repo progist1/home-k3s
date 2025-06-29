@@ -34,6 +34,12 @@ spec:
                 secretKeyRef:
                   name: renovate-token
                   key: RENOVATE_TOKEN
+            - name: RENOVATE_GITHUB_COM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: renovate-github-token
+                  key: RENOVATE_GITHUB_COM_TOKEN
+
           volumeMounts:
             - name: root-ca
               mountPath: /usr/local/share/ca-certificates/root-ca.crt
