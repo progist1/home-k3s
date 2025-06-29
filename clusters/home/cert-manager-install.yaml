@@ -12,6 +12,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  spec:
-    dependsOn:
-      - name: namespaces
+  dependsOn:
+    - name: namespaces
