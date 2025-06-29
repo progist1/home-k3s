@@ -33,13 +33,11 @@ spec:
       readinessProbe:
         enabled: false
     renovate:
-      platform: "gitlab"
-      endpoint: "ssh://git@gitlab.home:22"
-      gitAuthor: "Renovate Bot <renovate@gitlab.home>"
-      gitPrivateKeyPath: "/config/ssh-privatekey"
+      mendRnvAcceptTos: "true"
+      mendRnvPlatform: "gitlab"
+      mendRnvEndpoint: "https://gitlab.home/"
+      existingSecret: "renovate-secrets"
       logLevel: "info"
-      onboarding: "false"
-      autodiscover: "true"
 
     extraVolumes:
       - name: ssh-key
