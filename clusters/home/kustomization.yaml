@@ -1,6 +1,6 @@
 resources:
   - flux-system
-  - ../../namespaces
+  - namespaces.yaml
   - ../../helm-repositories
   - cert-manager-install.yaml
   - cert-manager-issuer.yaml
