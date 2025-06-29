@@ -24,10 +24,8 @@
       "registryUrls": ["https://pmint93.github.io/helm-charts"]
     }
   ],
-  "helm": {
-    "registryAliases": {
-      "pmint93": "https://pmint93.github.io/helm-charts"
-    }
+  "registryAliases": {
+    "pmint93": "https://pmint93.github.io/helm-charts"
   },
   "packageRules": [
     {
