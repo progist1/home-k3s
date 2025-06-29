@@ -1,0 +1,16 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: renovate-token
+  namespace: renovate
+spec:
+  encryptedData:
+    RENOVATE_TOKEN: AgBf+YRjZRNMb5SlqXSrQmVInoBaKJqhsIcHb8y2WbNx/kRgpP1pdbRQIMXP5F3gTj1NW7oAqP9zzRnzTrAwDRNw4Mk3LA1lSEORCIUCZG/mYFbLuGkudFnW1Eiy9yaXkbEh8wa68uJTa8rykTZEaa1/320ji6XjREZwAyeGkYc7ZbpdqPdDVRRZKrnYFJ6Sm3lo14LTBaK2qEvgnyh8Xq/NLHN042u2I8Pbk8toB89O6MpHB5ezKrk8XlGYJhh1PFhcufLpdsIZnZj/UKlQBbpTMTaAXiTFxd4J09g2koQBx3qYmlQt/1/hHgJD/jxwyEmu8plXmvG2u64SSa6bFHbiMX7XpByMPbegS5MIM7tbVc9aA1eLXhhHay2yNEfH8E8l6AMcVPhFAgPxrLMvPnCxl90bRoN+b1reum9GKjkrf+AczNTC0Jc1h+qscI7UOCGcin+k34ATS3Rrg8v7scT1OenlAUCFAnHtHhJEat69hBG4auUW7jcbupfTGdOqgykcG4Z7mPmzib2bJk/A+m1rv0dmUOWAUVVR/5ZiWR8BwckIsIvPs7Y+GWo/RCJa/9DZdtzRQf0QNX+e3Y+IDxGAN0xub2HGp5aaRZRLw5dJhbzKWfes1TwbW8rlSvl42M5qNZQEv/hYrqZ0S6njn9stEmafKOpalJC0Vgq6ca1m9zp5Ov/zypOBh1FS6PxTRp09SHgXFvPpmwIEmDyR0M0hkBuIOXK8hVu0Xg==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: renovate-token
+      namespace: renovate
+    type: Opaque

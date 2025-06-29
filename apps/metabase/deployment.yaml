@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: renovate
+  namespace: renovate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: renovate
+  template:
+    metadata:
+      labels:
+        app: renovate
+    spec:
+      containers:
+        - name: renovate
+          image: renovate/renovate:latest
+          env:
+            - name: RENOVATE_PLATFORM
+              value: gitlab
+            - name: RENOVATE_ENDPOINT
+              value: https://gitlab.home/
+            - name: RENOVATE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: renovate-token
+                  key: RENOVATE_TOKEN
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
