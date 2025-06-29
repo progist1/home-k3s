@@ -1,4 +1,5 @@
 resources:
+  - ../../namespaces
   - flux-system
   - ../../helm-repositories
   - cert-manager-install.yaml

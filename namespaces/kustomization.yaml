@@ -1,0 +1,4 @@
+resources:
+  - apps.yaml
+  - cert-manager.yaml
+  - renovate.yaml
