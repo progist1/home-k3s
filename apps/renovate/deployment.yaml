@@ -29,10 +29,6 @@ spec:
                 secretKeyRef:
                   name: renovate-token
                   key: RENOVATE_TOKEN
-          volumes:
-            - name: root-ca
-              configMap:
-                name: renovate-root-ca
           volumeMounts:
             - name: root-ca
               mountPath: /etc/ssl/certs
@@ -44,3 +40,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+      volumes:
+        - name: root-ca
+          configMap:
+            name: renovate-root-ca
