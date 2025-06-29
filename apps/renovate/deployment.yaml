@@ -30,9 +30,9 @@ spec:
                   name: renovate-token
                   key: RENOVATE_TOKEN
           volumes:
-          - name: root-ca
-            configMap:
-              name: renovate-root-ca
+            - name: root-ca
+              configMap:
+                name: renovate-root-ca
           volumeMounts:
             - name: root-ca
               mountPath: /etc/ssl/certs
