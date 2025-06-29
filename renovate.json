@@ -4,8 +4,7 @@
     "kubernetes",
     "helm-values",
     "flux",
-    "kustomize",
-    "helmv3"
+    "kustomize"
   ],
   "assignees": ["progist"],
   "reviewers": ["progist"],
@@ -17,7 +16,7 @@
   },
   "packageRules": [
     {
-      "managers": ["helmv3"],
+      "managers": ["flux"],
       "matchPackageNames": ["metabase"],
       "registryUrls": ["https://pmint93.github.io/helm-charts"]
     }
