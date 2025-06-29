@@ -8,5 +8,5 @@
   ],
   "assignees": ["progist"],
   "reviewers": ["progist"],
-  "managerFilePatterns": ["**/deployment.yaml"]
+  "managerFilePatterns": ["**/**.yaml"]
 }
