@@ -1,4 +1,4 @@
 resources:
   - flux-system
-  - apps.yaml
   - cert-manager.yaml
+  - apps.yaml
