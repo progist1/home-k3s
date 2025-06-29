@@ -26,7 +26,7 @@ spec:
             - name: RENOVATE_PLATFORM
               value: gitlab
             - name: RENOVATE_ENDPOINT
-              value: https://gitlab.home/
+              value: https://gitlab.home/api/v4
             - name: RENOVATE_AUTODISCOVER
               value: "true"
             - name: RENOVATE_TOKEN
