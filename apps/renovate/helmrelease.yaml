@@ -5,10 +5,6 @@ metadata:
   namespace: renovate
 spec:
   interval: 1h
-  dependsOn:
-    - name: sealed-secrets
-      namespace: flux-system
-
   chart:
     spec:
       chart: mend-renovate-ce
