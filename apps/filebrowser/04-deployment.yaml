@@ -32,3 +32,7 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: filebrowser-config-pvc
+        - name: database
+          persistentVolumeClaim:
+            claimName: filebrowser-database-pvc
+            
