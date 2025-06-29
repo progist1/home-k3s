@@ -16,19 +16,16 @@ spec:
   values:
     image:
       repository: metabase/metabase
-      tag: "v0.49.3"
+      tag: v0.49.3
     service:
       type: ClusterIP
     ingress:
       enabled: true
-      hosts:
-        - host: metabase.home
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
       annotations:
         cert-manager.io/cluster-issuer: root-ca-issuer
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      hosts:
+        - metabase.home
       tls:
         - hosts:
             - metabase.home
