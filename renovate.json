@@ -10,5 +10,11 @@
   "reviewers": ["progist"],
   "kubernetes": {
     "managerFilePatterns": ["apps/**/deployment.yaml"]
+  },
+  "flux": {
+    "managerFilePatterns": [
+      "**/gotk-components.yaml",
+      "**/helmrelease.yaml"
+    ]
   }
 }
