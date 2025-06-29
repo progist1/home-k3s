@@ -1,6 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "enabledManagers": ["kubernetes", "helm-requirements", "helm-values", "helmfile", "flux", "kustomize"],
+  "enabledManagers": [
+    "kubernetes",
+    "helm-values",
+    "flux",
+    "kustomize"
+  ],
   "assignees": ["progist"],
-  "reviewers": ["progist"]
+  "reviewers": ["progist"],
+  "managerFilePatterns": [
+    {
+      "manager": "kubernetes",
+      "patterns": ["apps/**/*.yaml"]
+    }
+  ]
 }
