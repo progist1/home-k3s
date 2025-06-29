@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: renovate
+  namespace: renovate
+spec:
+  schedule: "0 */3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: renovate
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: renovate
+              image: renovate/renovate:41.17.1
+              env:
+                - name: LOG_LEVEL
+                  value: debug
+                - name: NODE_EXTRA_CA_CERTS
+                  value: "/usr/local/share/ca-certificates/root-ca.crt"
+                - name: GIT_SSL_CAINFO
+                  value: "/usr/local/share/ca-certificates/root-ca.crt"
+                - name: RENOVATE_PLATFORM
+                  value: gitlab
+                - name: RENOVATE_ENDPOINT
+                  value: https://gitlab.home/api/v4
+                - name: RENOVATE_AUTODISCOVER
+                  value: "true"
+                - name: RENOVATE_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-token
+                      key: RENOVATE_TOKEN
+                - name: RENOVATE_GITHUB_COM_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-github-token
+                      key: RENOVATE_GITHUB_COM_TOKEN
+
+              volumeMounts:
+                - name: root-ca
+                  mountPath: /usr/local/share/ca-certificates/root-ca.crt
+                  subPath: root-ca.crt
+
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "128Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "512Mi"
+          volumes:
+            - name: root-ca
+              configMap:
+                name: renovate-root-ca
