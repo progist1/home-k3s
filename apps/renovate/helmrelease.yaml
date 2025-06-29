@@ -19,6 +19,11 @@ spec:
     envFrom:
       - secretRef:
           name: renovate-license
+    controller:
+      livenessProbe:
+        enabled: false
+      readinessProbe:
+        enabled: false
     renovate:
       platform: "gitlab"
       endpoint: "ssh://git@gitlab.home:22"
