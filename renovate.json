@@ -4,8 +4,7 @@
     "kubernetes",
     "helm-values",
     "flux",
-    "kustomize",
-    "helm"
+    "kustomize"
   ],
   "assignees": ["progist"],
   "reviewers": ["progist"],
@@ -13,9 +12,6 @@
     "managerFilePatterns": ["apps/**/deployment.yaml"]
   },
   "flux": {
-    "managerFilePatterns": [
-      "**/gotk-components.yaml",
-      "**/helmrelease.yaml"
-    ]
+    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml"]
   }
 }
