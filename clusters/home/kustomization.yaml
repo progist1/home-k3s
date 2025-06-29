@@ -1,6 +1,6 @@
 resources:
   - flux-system
-  - ../../sealed-secrets
+  - sealed-secrets.yaml
   - namespaces.yaml
   - ../../helm-repositories
   - cert-manager-install.yaml
