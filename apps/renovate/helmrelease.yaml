@@ -28,7 +28,7 @@ spec:
       mendRnvEndpoint: "https://gitlab.home/"
       mendRnvAutoDiscoverFilter: "/local/gitops"
       existingSecret: "renovate-secrets"
-      logLevel: "debug"
+      logLevel: "trace"
     extraVolumes:
       - name: root-ca
         configMap:
