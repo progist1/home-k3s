@@ -5,8 +5,8 @@ metadata:
   namespace: apps
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: default-redirect@kubernetescrd
 spec:
+  ingressClassName: traefik
   rules:
     - host: metabase.home
       http:
