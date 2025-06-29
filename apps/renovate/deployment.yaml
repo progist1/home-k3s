@@ -17,6 +17,9 @@ spec:
         - name: renovate
           image: renovate/renovate:latest
           env:
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/etc/ssl/certs/root-ca.crt"
+
             - name: RENOVATE_PLATFORM
               value: gitlab
             - name: RENOVATE_ENDPOINT
@@ -26,6 +29,14 @@ spec:
                 secretKeyRef:
                   name: renovate-token
                   key: RENOVATE_TOKEN
+          volumes:
+          - name: root-ca
+            configMap:
+              name: renovate-root-ca
+          volumeMounts:
+            - name: root-ca
+              mountPath: /etc/ssl/certs
+
           resources:
             requests:
               cpu: "100m"
