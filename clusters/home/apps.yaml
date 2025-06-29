@@ -13,3 +13,4 @@ spec:
   dependsOn:
     - name: cert-manager-issuer
     - name: namespaces
+    - name: sealed-secrets
