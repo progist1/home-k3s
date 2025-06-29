@@ -1,2 +1,2 @@
 resources:
-  - helmrelease.yaml
+  - deployment.yaml
