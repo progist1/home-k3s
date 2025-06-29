@@ -1,6 +1,7 @@
 resources:
   - 01-data.yaml
   - 02-config.yaml
-  - 03-deployment.yaml
-  - 04-service.yaml
-  - 05-ingress.yaml
+  - 03-database.yaml
+  - 04-deployment.yaml
+  - 05-service.yaml
+  - 06-ingress.yaml

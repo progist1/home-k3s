@@ -23,6 +23,8 @@ spec:
               mountPath: /srv
             - name: config
               mountPath: /config
+            - name: database
+              mountPath: /database
       volumes:
         - name: data
           persistentVolumeClaim:
