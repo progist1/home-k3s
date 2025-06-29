@@ -14,19 +14,6 @@ spec:
         name: renovate
         namespace: flux-system
   values:
-    env:
-      - name: MEND_RNV_ACCEPT_TOS
-        value: "true"
-      - name: RENOVATE_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: renovate-gitlab-token
-            key: RENOVATE_TOKEN
-      - name: MEND_RNV_LICENSE_KEY
-        valueFrom:
-          secretKeyRef:
-            name: renovate-license
-            key: MEND_RNV_LICENSE_KEY
     controller:
       livenessProbe:
         enabled: false
@@ -38,12 +25,3 @@ spec:
       mendRnvEndpoint: "https://gitlab.home/"
       existingSecret: "renovate-secrets"
       logLevel: "info"
-
-    extraVolumes:
-      - name: ssh-key
-        secret:
-          secretName: renovate-ssh-key
-
-    extraVolumeMounts:
-      - name: ssh-key
-        mountPath: /config
