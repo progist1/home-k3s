@@ -25,3 +25,17 @@ spec:
       mendRnvEndpoint: "https://gitlab.home/"
       existingSecret: "renovate-secrets"
       logLevel: "info"
+  extraVolumes:
+    - name: root-ca
+      configMap:
+        name: renovate-root-ca
+
+  extraVolumeMounts:
+    - name: root-ca
+      mountPath: /etc/ssl/certs/root-ca.crt
+      subPath: root-ca.crt
+      readOnly: true
+
+  env:
+    - name: NODE_EXTRA_CA_CERTS
+      value: /etc/ssl/certs/root-ca.crt
