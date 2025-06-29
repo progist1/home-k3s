@@ -14,15 +14,15 @@ spec:
         name: renovate
         namespace: flux-system
   values:
-    env:
-    - name: NODE_EXTRA_CA_CERTS
-      value: /etc/ssl/certs/root-ca.crt
     controller:
       livenessProbe:
         enabled: false
       readinessProbe:
         enabled: false
     renovate:
+      extraEnvVars:
+        - name: NODE_EXTRA_CA_CERTS
+          value: /etc/ssl/certs/root-ca.crt
       mendRnvAcceptTos: "true"
       mendRnvPlatform: "gitlab"
       mendRnvEndpoint: "https://gitlab.home/"
