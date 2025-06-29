@@ -5,6 +5,9 @@ metadata:
   namespace: renovate
 spec:
   interval: 1h
+  dependsOn:
+    - name: sealed-secrets
+
   chart:
     spec:
       chart: mend-renovate-ce
