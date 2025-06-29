@@ -8,10 +8,5 @@
   ],
   "assignees": ["progist"],
   "reviewers": ["progist"],
-  "managerFilePatterns": [
-    {
-      "manager": "kubernetes",
-      "patterns": ["apps/**/*.yaml"]
-    }
-  ]
+  "managerFilePatterns": ["**/deployment.yaml"]
 }
