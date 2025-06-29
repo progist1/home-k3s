@@ -24,6 +24,8 @@ spec:
               value: gitlab
             - name: RENOVATE_ENDPOINT
               value: https://gitlab.home/
+            - name: RENOVATE_AUTODISCOVER
+              value: "true"
             - name: RENOVATE_TOKEN
               valueFrom:
                 secretKeyRef:
