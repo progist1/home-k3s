@@ -9,9 +9,18 @@
   "assignees": ["progist"],
   "reviewers": ["progist"],
   "kubernetes": {
-    "managerFilePatterns": ["apps/**/deployment.yaml"]
+    "managerFilePatterns": ["apps/**/*.yaml"]
   },
   "flux": {
     "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml"]
-  }
+  },
+  "hostRules": [
+    {
+      "matchHost": "pmint93.github.io",
+      "hostType": "helm",
+      "registryUrls": [
+        "https://pmint93.github.io/helm-charts"
+      ]
+    }
+  ]
 }
