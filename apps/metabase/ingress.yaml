@@ -5,8 +5,13 @@ metadata:
   namespace: apps
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
+    cert-manager.io/cluster-issuer: root-ca-issuer
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - metabase.home
+      secretName: metabase-tls
   rules:
     - host: metabase.home
       http:
