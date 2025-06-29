@@ -4,7 +4,8 @@
     "kubernetes",
     "helm-values",
     "flux",
-    "kustomize"
+    "kustomize",
+    "helm"
   ],
   "assignees": ["progist"],
   "reviewers": ["progist"],
