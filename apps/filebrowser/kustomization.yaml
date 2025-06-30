@@ -5,3 +5,4 @@ resources:
   - 04-deployment.yaml
   - 05-service.yaml
   - 06-ingress.yaml
+  - 07-ingress-public.yaml
