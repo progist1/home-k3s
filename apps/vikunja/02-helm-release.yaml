@@ -36,7 +36,9 @@ spec:
       VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: Progist Auth
       VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: https://auth.progist.ru/application/o/vikunja/
 
-    envFromSecret: vikunja-secrets
+    envFrom:
+      - secretRef:
+          name: vikunja-secrets
 
     ingress:
       enabled: true
