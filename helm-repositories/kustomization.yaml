@@ -1,3 +1,4 @@
 resources:
   - pmint93.yaml
   - renovate.yaml
+  - vikunja.yaml

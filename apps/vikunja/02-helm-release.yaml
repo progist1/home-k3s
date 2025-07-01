@@ -1,0 +1,60 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vikunja
+  namespace: apps
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: vikunja
+      version: 0.23.0
+      sourceRef:
+        kind: HelmRepository
+        name: vikunja
+        namespace: flux-system
+
+  values:
+    # ✅ Все публичные переменные
+    env:
+      VIKUNJA_SERVICE_PUBLICURL: "https://v.progist.ru"
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+      VIKUNJA_SERVICE_TIMEZONE: "Europe/Moscow"
+      VIKUNJA_CORS_ENABLE: "true"
+      VIKUNJA_CORS_ORIGINS: "https://v.progist.ru"
+      VIKUNJA_MAILER_ENABLED: "true"
+      VIKUNJA_MAILER_HOST: "mail.progist.ru"
+      VIKUNJA_MAILER_PORT: "587"
+      VIKUNJA_MAILER_AUTHTYPE: "plain"
+      VIKUNJA_MAILER_SKIPTLSVERIFY: "false"
+      VIKUNJA_MAILER_FROMEMAIL: "vikunja@progist.ru"
+      VIKUNJA_AUTH_LOCAL_ENABLED: "false"
+      VIKUNJA_AUTH_OPENID_ENABLED: "true"
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_DATABASE_HOST: 10.0.0.10
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: Progist Auth
+      VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: https://auth.progist.ru/application/o/vikunja/
+
+    envFromSecret: vikunja-secrets
+
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.middlewares: apps-redirect-to-https@kubernetescrd
+      hosts:
+        - v.progist.ru
+      tls:
+        - hosts:
+            - v.progist.ru
+          secretName: v-progist-tls
+
+    persistence:
+      enabled: true
+      existingClaim: vikunja-files-pvc
+
+    mariadb:
+      enabled: false

@@ -2,3 +2,4 @@ resources:
   - root-ca-keypair-sealed.yaml
   - renovate-token.yaml
   - renovate-github-token-sealed.yaml
+  - vikunja-secrets.yaml
