@@ -15,7 +15,6 @@ spec:
         namespace: flux-system
 
   values:
-    # ✅ Все публичные переменные
     env:
       VIKUNJA_SERVICE_PUBLICURL: "https://v.progist.ru"
       VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
