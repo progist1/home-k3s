@@ -15,10 +15,9 @@ spec:
         namespace: flux-system
 
   values:
-    values:
-      image:
-        repository: vikunja/vikunja
-        tag: "0.24.4"
+    image:
+      repository: vikunja/vikunja
+      tag: "0.24.4"
 
     env:
       VIKUNJA_SERVICE_PUBLICURL: "https://v.progist.ru"
