@@ -44,8 +44,6 @@ spec:
       - secretRef:
           name: vikunja-secrets
 
-    typesense:
-      enabled: false
 
     ingress:
       main:
@@ -71,4 +69,9 @@ spec:
         existingClaim: vikunja-files-pvc
 
     mariadb:
+      enabled: false
+    postgresql:
+      enabled: false
+
+    typesense:
       enabled: false
