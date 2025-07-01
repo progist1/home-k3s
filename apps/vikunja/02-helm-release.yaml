@@ -35,7 +35,7 @@ spec:
       VIKUNJA_AUTH_OPENID_ENABLED: "true"
       VIKUNJA_DATABASE_TYPE: mysql
       VIKUNJA_DATABASE_USER: vikunja
-      VIKUNJA_DATABASE_HOST: 10.0.0.10
+      VIKUNJA_DATABASE_HOST: 10.0.0.10:3306
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME: Progist Auth
       VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL: https://auth.progist.ru/application/o/vikunja/
@@ -43,6 +43,9 @@ spec:
     envFrom:
       - secretRef:
           name: vikunja-secrets
+
+    typesense:
+      enabled: false
 
     ingress:
       main:
