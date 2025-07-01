@@ -47,12 +47,16 @@ spec:
 
     ingress:
       enabled: true
+      primary: true
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         traefik.ingress.kubernetes.io/router.middlewares: apps-redirect-to-https@kubernetescrd
       hosts:
-        - v.progist.ru
+        - host: v.progist.ru
+          paths:
+            - path: /
+              pathType: Prefix
       tls:
         - hosts:
             - v.progist.ru
