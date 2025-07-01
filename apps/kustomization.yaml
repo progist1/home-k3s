@@ -3,3 +3,4 @@ resources:
   - renovate
   - filebrowser
   - traefik-middleware
+  - vikunja
