@@ -8,13 +8,18 @@ spec:
   chart:
     spec:
       chart: vikunja
-      version: 0.23.0
+      version: 1.0.0
       sourceRef:
         kind: HelmRepository
         name: vikunja
         namespace: flux-system
 
   values:
+    values:
+      image:
+        repository: vikunja/vikunja
+        tag: "0.24.4"
+
     env:
       VIKUNJA_SERVICE_PUBLICURL: "https://v.progist.ru"
       VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
