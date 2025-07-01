@@ -72,6 +72,10 @@ spec:
       enabled: false
     postgresql:
       enabled: false
+      auth:
+        username: dummy
+        database: dummy
+        password: dummy
 
     typesense:
       enabled: false
