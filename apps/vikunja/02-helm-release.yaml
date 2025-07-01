@@ -59,8 +59,9 @@ spec:
           secretName: v-progist-tls
 
     persistence:
-      enabled: true
-      existingClaim: vikunja-files-pvc
+      files:
+        enabled: true
+        existingClaim: vikunja-files-pvc
 
     mariadb:
       enabled: false
