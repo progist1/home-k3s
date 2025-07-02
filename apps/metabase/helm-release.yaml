@@ -24,7 +24,7 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: root-ca-issuer
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
-        traefik.ingress.kubernetes.io/router.middlewares: apps-redirect-to-https@kubernetescrd
+        traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
       hosts:
         - metabase.home
       tls:
