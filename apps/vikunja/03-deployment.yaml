@@ -43,14 +43,6 @@ spec:
               value: "vikunja@progist.ru"
             - name: VIKUNJA_AUTH_LOCAL_ENABLED
               value: "false"
-            - name: VIKUNJA_AUTH_OPENID_ENABLED
-              value: "true"
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME
-              value: "Progist Auth"
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS
-              value: "0"
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL
-              value: "https://auth.progist.ru/application/o/vikunja/"
             - name: VIKUNJA_DATABASE_TYPE
               value: "mysql"
             - name: VIKUNJA_DATABASE_USER
@@ -66,9 +58,6 @@ spec:
             - name: config
               mountPath: /app/vikunja/config.yml
               subPath: config.yml
-            - name: secrets
-              mountPath: /secrets
-              readOnly: true
             - name: files
               mountPath: /app/vikunja/files
           resources:
@@ -80,8 +69,8 @@ spec:
               memory: "512Mi"
       volumes:
         - name: config
-          configMap:
-            name: vikunja-config
+          secret:
+            secretName: vikunja-auth-secrets
         - name: secrets
           secret:
             secretName: vikunja-secrets
