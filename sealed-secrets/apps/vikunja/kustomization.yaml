@@ -1,0 +1,3 @@
+resources:
+  - vikunja-secrets.yaml
+  - vikunja-auth-secrets.yaml
