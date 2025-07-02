@@ -3,3 +3,4 @@ resources:
   - renovate-token.yaml
   - renovate-github-token-sealed.yaml
   - vikunja-secrets.yaml
+  - vikunja-auth-secrets.yaml
