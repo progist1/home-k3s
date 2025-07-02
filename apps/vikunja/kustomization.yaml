@@ -3,4 +3,4 @@ resources:
   - configmap.yaml
   - deployment.yaml
   - service.yaml
-  - ingress-public.yaml
+  - ingress-external.yaml
