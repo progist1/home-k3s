@@ -1,3 +1,3 @@
 resources:
-  - renovate-token.yaml
+  - renovate-token-sealed.yaml
   - renovate-github-token-sealed.yaml

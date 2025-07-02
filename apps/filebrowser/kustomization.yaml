@@ -4,5 +4,5 @@ resources:
   - database.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
-  - ingress-public.yaml
+  - ingress-external.yaml
+  - ingress-internal.yaml
