@@ -56,8 +56,7 @@ spec:
                 name: vikunja-secrets        
           volumeMounts:
             - name: config
-              mountPath: /etc/vikunja/config.yml
-              subPath: config.yml
+              mountPath: /etc/vikunja
             - name: files
               mountPath: /app/vikunja/files
           resources:
