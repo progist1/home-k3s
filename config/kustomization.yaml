@@ -1,2 +1,3 @@
 resources:
   - renovate-root-ca.yaml
+  - traefik-middleware
