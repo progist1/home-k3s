@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  path: ./apps/cert-manager/step1-install
+  path: ./cluster-config/cert-manager/step1-install
   prune: true
   wait: true
   timeout: 5m

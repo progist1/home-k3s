@@ -1,8 +1,8 @@
 resources:
-  - 01-data.yaml
-  - 02-config.yaml
-  - 03-database.yaml
-  - 04-deployment.yaml
-  - 05-service.yaml
-  - 06-ingress.yaml
-  - 07-ingress-public.yaml
+  - data.yaml
+  - config.yaml
+  - database.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - ingress-public.yaml
