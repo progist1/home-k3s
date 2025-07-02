@@ -1,6 +1,6 @@
 resources:
   - 01-files.yaml
   - 02-deployment.yaml
-  - 03-service.yamls
+  - 03-service.yaml
   - 04-ingress.yaml
   - 05-ingress-public.yaml
