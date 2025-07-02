@@ -47,6 +47,8 @@ spec:
               value: "true"
             - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_NAME
               value: "Progist Auth"
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS
+              value: "0"
             - name: VIKUNJA_AUTH_OPENID_PROVIDERS_0_AUTHURL
               value: "https://auth.progist.ru/application/o/vikunja/"
             - name: VIKUNJA_DATABASE_TYPE
