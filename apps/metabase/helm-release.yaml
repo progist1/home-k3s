@@ -30,4 +30,4 @@ spec:
       tls:
         - hosts:
             - metabase.home
-          secretName: metabase-tls
+          secretName: metabase-internal-tls

@@ -23,4 +23,4 @@ spec:
   tls:
     - hosts:
         - share2.progist.ru
-      secretName: share2-external-tls
+      secretName: filebrowser-external-tls
