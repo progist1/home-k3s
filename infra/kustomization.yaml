@@ -1,3 +1,4 @@
 resources:
+  - storageclasses
   - renovate-root-ca.yaml
   - traefik-middleware
