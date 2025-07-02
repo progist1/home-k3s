@@ -1,5 +1,6 @@
 resources:
   - 01-files.yaml
-  - 02-deployment.yaml
-  - 03-service.yaml
-  - 04-ingress-public.yaml
+  - 02-configmap.yaml
+  - 03-deployment.yaml
+  - 04-service.yaml
+  - 05-ingress-public.yaml

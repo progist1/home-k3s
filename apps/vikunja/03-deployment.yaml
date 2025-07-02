@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikunja
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vikunja
+  template:
+    metadata:
+      labels:
+        app: vikunja
+    spec:
+      containers:
+        - name: vikunja
+          image: vikunja/vikunja:0.24.6
+          ports:
+            - containerPort: 3456
+          volumeMounts:
+            - name: config
+              mountPath: /app/vikunja/config.yml
+              subPath: config.yml
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+            - name: files
+              mountPath: /app/vikunja/files
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: vikunja-config
+        - name: secrets
+          secret:
+            secretName: vikunja-secrets
+        - name: files
+          persistentVolumeClaim:
+            claimName: vikunja-files-pvc
