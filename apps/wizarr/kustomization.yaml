@@ -1,0 +1,6 @@
+resources:
+  - database.yaml
+  - wizard.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress-external.yaml

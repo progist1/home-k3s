@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wizarr
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wizarr
+  template:
+    metadata:
+      labels:
+        app: wizarr
+    spec:
+      containers:
+        - name: wizarr
+          image: ghcr.io/wizarrrr/wizarr:2025.6.4
+          ports:
+            - containerPort: 5690
+          env:
+            - name: TZ
+              value: "Europe/Moscow"
+          volumeMounts:
+            - name: database
+              mountPath: /data/database
+            - name: wizard
+              mountPath: /data/wizard_steps
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: wizarr-database-pvc
+        - name: wizard
+          persistentVolumeClaim:
+            claimName: wizarr-wizard-pvc
+            
