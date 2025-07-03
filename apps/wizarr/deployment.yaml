@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: wizarr
-          image: ghcr.io/wizarrrr/wizarr:2025.6.4
+          image: ghcr.io/wizarrrr/wizarr:2025.6.5
           ports:
             - containerPort: 5690
           env:
