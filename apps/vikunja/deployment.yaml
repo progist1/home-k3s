@@ -53,7 +53,7 @@ spec:
               value: "vikunja"
           envFrom:
             - secretRef:
-                name: vikunja-secrets        
+                name: vikunja-secrets
           volumeMounts:
             - name: config
               mountPath: /etc/vikunja

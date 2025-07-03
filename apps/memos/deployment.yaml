@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memos
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memos
+  template:
+    metadata:
+      labels:
+        app: memos
+    spec:
+      containers:
+        - name: memos
+          image: neosmemo/memos:0.24.3
+          ports:
+            - containerPort: 5230
+          env:
+            - name: MEMOS_MODE
+              value: prod
+            - name: MEMOS_ADDR
+              value: "0.0.0.0"
+            - name: MEMOS_PORT
+              value: "5230"
+            - name: MEMOS_DATA
+              value: "/var/opt/memos"
+            - name: MEMOS_DRIVER
+              value: "mysql"
+          envFrom:
+            - secretRef:
+                name: memos-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /var/opt/memos
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: memos-config-pvc
+            
