@@ -17,7 +17,7 @@ spec:
         - name: sonarr
           image: linuxserver/sonarr:4.0.14
           ports:
-            - containerPort: 8989
+            - containerPort: 30001
           env:
             - name: PUID
               value: "568"
