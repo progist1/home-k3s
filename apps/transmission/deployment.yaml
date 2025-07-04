@@ -22,7 +22,13 @@ spec:
           env:
             - name: PUID
               value: "568"
+            - name: UID
+              value: "568"
             - name: PGID
+              value: "568"
+            - name: GID
+              value: "568"
+            - name: GROUP_ID
               value: "568"
             - name: TZ
               value: "Europe/Moscow"
