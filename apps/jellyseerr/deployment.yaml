@@ -27,7 +27,7 @@ spec:
               value: "5055"
           volumeMounts:
             - name: config
-              mountPath: /var/opt/jellyseerr
+              mountPath: /app/config
             - name: config
               mountPath: /app/config/cache
           resources:
