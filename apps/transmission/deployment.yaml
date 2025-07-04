@@ -21,15 +21,9 @@ spec:
             - containerPort: 51413 # TCP/UDP peer
           env:
             - name: PUID
-              value: "568"
-            - name: UID
-              value: "568"
+              value: "1000"
             - name: PGID
-              value: "568"
-            - name: GID
-              value: "568"
-            - name: GROUP_ID
-              value: "568"
+              value: "1000"
             - name: TZ
               value: "Europe/Moscow"
             - name: TRANSMISSION_WEB_HOME
