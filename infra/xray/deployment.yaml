@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xray
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xray
+  template:
+    metadata:
+      labels:
+        app: xray
+    spec:
+      containers:
+        - name: xray
+          image: teddysun/xray:latest
+          volumeMounts:
+            - name: config
+              mountPath: /etc/xray
+              readOnly: true
+          ports:
+            - containerPort: 10808
+            - containerPort: 10809
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+      volumes:
+        - name: config
+          secret:
+            secretName: xray-config
