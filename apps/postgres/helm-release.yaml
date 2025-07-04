@@ -11,7 +11,7 @@ spec:
       version: 16.7.14
       sourceRef:
         kind: HelmRepository
-        name: bitnami
+        name: nfs-subdir-external-provisioner
         namespace: flux-system
   values:
     global:
