@@ -7,10 +7,10 @@ spec:
   selector:
     app: xray
   ports:
-    - name: http
+    - name: socks
       port: 10808
       targetPort: 10808
-    - name: socks
+    - name: http
       port: 10809
       targetPort: 10809
   type: ClusterIP
