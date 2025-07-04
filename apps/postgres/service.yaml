@@ -9,6 +9,6 @@ spec:
     - name: postgres
       port: 5432
       targetPort: 5432
-      nodePort: 5432
+      nodePort: 30032
   selector:
     app.kubernetes.io/instance: postgres
