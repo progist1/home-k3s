@@ -1,2 +1,3 @@
 resources:
-  - helm-release.yaml
+  - nvme-helm-release.yaml
+  - hdd-helm-release.yaml

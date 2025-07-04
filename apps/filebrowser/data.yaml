@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: filebrowser-data-pv
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   capacity:
     storage: 500Gi
   accessModes:
@@ -19,7 +19,7 @@ metadata:
   name: filebrowser-data-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   accessModes:
     - ReadWriteMany
   resources:
