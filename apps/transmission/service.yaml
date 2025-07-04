@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+  namespace: apps
+spec:
+  selector:
+    app: transmission
+  ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 9091
+    - name: peer-tcp
+      protocol: TCP
+      port: 51413
+      targetPort: 51413
+    - name: peer-udp
+      protocol: UDP
+      port: 51413
+      targetPort: 51413
+  type: ClusterIP

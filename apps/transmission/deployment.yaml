@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      containers:
+        - name: transmission
+          image: linuxserver/transmission:4.0.6
+          ports:
+            - containerPort: 9091 # Web UI
+            - containerPort: 51413 # TCP/UDP peer
+          env:
+            - name: PUID
+              value: "568"
+            - name: PGID
+              value: "568"
+            - name: TZ
+              value: "Europe/Moscow"
+            - name: TRANSMISSION_WEB_HOME
+              value: "/mnt/Download/flood-for-transmission"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: download
+              mountPath: /mnt/Download
+            - name: media
+              mountPath: /mnt/Media
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: transmission-config-pvc
+        - name: download
+          persistentVolumeClaim:
+            claimName: transmission-download-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: transmission-media-pvc

@@ -4,3 +4,10 @@ metadata:
   name: nfs-hdd-manual
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4
+  - rsize=65536
+  - wsize=65536
+  - hard
+  - timeo=600
+  - retrans=2
