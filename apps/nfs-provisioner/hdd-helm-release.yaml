@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: nfs-nvme-provisioner
+  name: nfs-hdd-provisioner
   namespace: infra
 spec:
   interval: 1h
