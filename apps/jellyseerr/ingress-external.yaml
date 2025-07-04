@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-    - host: m.progist.ru
+    - host: requests.progist.ru
       http:
         paths:
           - path: /
