@@ -1,3 +1,4 @@
 resources:
+  - data.yaml
   - helm-release.yaml
   - service.yaml
