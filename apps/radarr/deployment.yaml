@@ -25,12 +25,12 @@ spec:
               value: "568"
             - name: TZ
               value: "Europe/Moscow"
-            - name: http_proxy
-              value: "http://xray.infra.svc.cluster.local:10808"
-            - name: https_proxy
-              value: "http://xray.infra.svc.cluster.local:10808"
-            - name: ALL_PROXY
-              value: "socks5://xray.infra.svc.cluster.local:10809"
+            # - name: http_proxy
+            #   value: "http://xray.infra.svc.cluster.local:10808"
+            # - name: https_proxy
+            #   value: "http://xray.infra.svc.cluster.local:10808"
+            # - name: ALL_PROXY
+            #   value: "socks5://xray.infra.svc.cluster.local:10809"
           volumeMounts:
             - name: config
               mountPath: /config
