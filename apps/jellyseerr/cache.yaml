@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyseerr-cache-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-hdd-dynamic
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
