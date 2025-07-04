@@ -10,3 +10,4 @@ resources:
   - homer
   - jackett
   - radarr
+  - sonarr
