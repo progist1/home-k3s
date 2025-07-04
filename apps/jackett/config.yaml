@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jackett-config-pv
+spec:
+  storageClassName: nfs-manual
+  capacity:
+    storage: 512Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.4
+    path: /mnt/Fast/k3s-data/jackett/config
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jackett-config-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 512Mi
+  volumeName: jackett-config-pv
