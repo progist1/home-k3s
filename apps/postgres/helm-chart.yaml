@@ -8,5 +8,5 @@ spec:
   chart: postgresql
   version: 16.7.14
   sourceRef:
-    kind: HelmOCIRepository
+    kind: OCIRepository
     name: bitnami-postgres
