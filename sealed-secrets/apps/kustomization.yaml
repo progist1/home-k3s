@@ -2,3 +2,4 @@ resources:
   - renovate
   - vikunja
   - memos
+  - postgres
