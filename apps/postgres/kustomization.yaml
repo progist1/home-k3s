@@ -1,4 +1,4 @@
 resources:
   - data.yaml
-  - helm-release.yaml
+  - deployment.yaml
   - service.yaml
