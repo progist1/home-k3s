@@ -9,6 +9,10 @@ spec:
     spec:
       chart: oci://registry-1.docker.io/bitnamicharts/postgresql
       version: 16.7.14
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
   values:
     global:
       postgresql:
