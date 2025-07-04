@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: wizarr-wizard-pv
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   capacity:
     storage: 64Mi
   accessModes:
@@ -19,7 +19,7 @@ metadata:
   name: wizarr-wizard-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   accessModes:
     - ReadWriteMany
   resources:
