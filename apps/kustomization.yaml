@@ -11,3 +11,4 @@ resources:
   - jackett
   - radarr
   - sonarr
+  - transmission
