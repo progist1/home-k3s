@@ -44,8 +44,7 @@
     },
     {
       "matchUpdateTypes": ["minor"],
-      "automerge": true,
-      "matchPackagePatterns": ["cert-manager", "traefik", "nfs-subdir-external-provisioner"]
+      "automerge": true
     }
   ]
 }
