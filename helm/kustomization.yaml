@@ -1,4 +1,3 @@
 resources:
   - pmint93.yaml
   - nfs-subdir-external-provisioner.yaml
-  - bitnami.yaml
