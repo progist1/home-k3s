@@ -28,7 +28,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /app/config
-            - name: config
+            - name: cache
               mountPath: /app/config/cache
           resources:
             requests:
