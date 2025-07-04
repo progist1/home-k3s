@@ -1,4 +1,5 @@
 resources:
+  - cache.yaml
   - config.yaml
   - deployment.yaml
   - service.yaml
