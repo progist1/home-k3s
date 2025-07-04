@@ -6,8 +6,6 @@
     "flux",
     "kustomize"
   ],
-  "assignees": ["progist"],
-  "reviewers": ["progist"],
   "kubernetes": {
     "managerFilePatterns": [
       "apps/**/*.yaml",
@@ -45,6 +43,10 @@
     {
       "matchUpdateTypes": ["minor"],
       "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
     }
   ]
 }

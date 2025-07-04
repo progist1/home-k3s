@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: homer
-          image: b4bz/homer:v25.05.2
+          image: b4bz/homer:v25.05.0
           ports:
             - containerPort: 8080
           volumeMounts:
