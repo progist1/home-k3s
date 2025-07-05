@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+      containers:
+        - name: paperless
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          env:
+            - name: PAPERLESS_OCR_LANGUAGES
+              value: "rus eng"
+            - name: PAPERLESS_OCR_LANGUAGE
+              value: "rus+eng"
+            - name: PAPERLESS_TIME_ZONE
+              value: "Europe/Moscow"
+            - name: PAPERLESS_REDIS
+              value: "redis://redis.apps.svc.cluster.local:6379"
+            - name: PAPERLESS_DBHOST
+              value: "postgres.apps.svc.cluster.local"
+            - name: PAPERLESS_DBUSER
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: db-user
+            - name: PAPERLESS_DBPASS
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: db-password
+            - name: PAPERLESS_DBNAME
+              value: "paperless"
+            - name: PAPERLESS_TIKA_ENABLED
+              value: "1"
+            - name: PAPERLESS_TIKA_GOTENBERG_ENDPOINT
+              value: "http://gotenberg.apps.svc.cluster.local:3000"
+            - name: PAPERLESS_TIKA_ENDPOINT
+              value: "http://tika.apps.svc.cluster.local:9998"
+            - name: PAPERLESS_TRASH_DIR
+              value: "/usr/src/paperless/media/trash"
+            - name: PAPERLESS_ALLOWED_HOSTS
+              value: "docs.home,docs.progist.ru"
+            - name: PAPERLESS_CORS_ALLOWED_HOSTS
+              value: "https://docs.home,https://docs.progist.ru"
+            - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
+              value: "https://docs.home,https://docs.progist.ru"
+            - name: PAPERLESS_DISABLE_REGULAR_LOGIN
+              value: "true"
+            - name: PAPERLESS_EMAIL_HOST
+              value: "mail.progist.ru"
+            - name: PAPERLESS_EMAIL_PORT
+              value: "587"
+            - name: PAPERLESS_EMAIL_HOST_USER
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: email-user
+            - name: PAPERLESS_EMAIL_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: email-password
+            - name: PAPERLESS_EMAIL_USE_TLS
+              value: "true"
+            - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: social-account-providers
+            - name: PAPERLESS_APPS
+              value: "allauth.socialaccount.providers.openid_connect"
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: export
+              mountPath: /usr/src/paperless/export
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-data-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: paperless-media-pvc
+        - name: export
+          persistentVolumeClaim:
+            claimName: paperless-export-pvc
+        - name: consume
+          persistentVolumeClaim:
+            claimName: paperless-consume-pvc
