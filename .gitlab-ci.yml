@@ -1,0 +1,5 @@
+skip_job:
+  script:
+    - echo "skipped"
+  rules:
+    - when: never
