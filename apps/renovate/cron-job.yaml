@@ -19,6 +19,8 @@ spec:
               env:
                 - name: LOG_LEVEL
                   value: debug
+                - name: DEBUG
+                  value: renovate:* renovate
                 - name: NODE_EXTRA_CA_CERTS
                   value: "/usr/local/share/ca-certificates/root-ca.crt"
                 - name: GIT_SSL_CAINFO
