@@ -9,17 +9,23 @@
   "kubernetes": {
     "managerFilePatterns": [
       "apps/**/*.yaml",
-      "helm-repositories/**/*.yaml"
+      "helm-repositories/**/*.yaml",
+      "helm/*.yaml"
     ]
   },
   "flux": {
-    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml"]
+    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml"]
   },
   "hostRules": [
     {
       "hostType": "helm",
       "matchHost": "pmint93.github.io",
       "registryUrls": ["https://pmint93.github.io/helm-charts"]
+    },
+    {
+      "hostType": "helm",
+      "matchHost": "charts.goauthentik.io",
+      "registryUrls": ["https://charts.goauthentik.io"]
     }
   ],
   "registryAliases": {
