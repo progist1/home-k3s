@@ -1,8 +1,9 @@
-stages:
-  - validate
+image: busybox
 
-noop:
-  stage: validate
+stages:
+  - dummy
+
+dummy:
+  stage: dummy
   script:
-    - echo "noop"
-  when: manual
+    - echo "dummy"
