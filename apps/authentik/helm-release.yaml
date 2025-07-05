@@ -1,0 +1,65 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: apps
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: authentik
+      version: 2024.12.2
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: flux-system
+  values:
+    ingress:
+      enabled: false
+
+    authentik:
+      secret_key: file:///secrets/authentik-secret
+
+      email:
+        host: mail.progist.ru
+        port: 587
+        username: file:///secrets/email-user
+        password: file:///secrets/email-password
+        use_tls: true
+        use_ssl: false
+        from: authentik@progist.ru
+
+      postgresql:
+        host: postgres.apps.svc.cluster.local
+        user: file:///secrets/db-user
+        password: file:///secrets/db-password
+        name: authentik
+
+      redis:
+        host: redis.apps.svc.cluster.local
+
+    server:
+      replicas: 1
+      volumes:
+        - name: secrets
+          secret:
+            secretName: authentik-secrets
+      volumeMounts:
+        - name: secrets
+          mountPath: /secrets
+          readOnly: true
+      media:
+        existingClaim: authentik-media-pvc
+
+    worker:
+      replicas: 1
+      volumes:
+        - name: secrets
+          secret:
+            secretName: authentik-secrets
+      volumeMounts:
+        - name: secrets
+          mountPath: /secrets
+          readOnly: true
+      media:
+        existingClaim: authentik-media-pvc
