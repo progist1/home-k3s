@@ -50,15 +50,14 @@ spec:
         - name: secrets
           secret:
             secretName: authentik-secrets
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media-pvc
+
       volumeMounts:
         - name: secrets
           mountPath: /secrets
           readOnly: true
-      extraVolumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: authentik-media-pvc
-      extraVolumeMounts:
         - name: media
           mountPath: /media
 
@@ -68,14 +67,13 @@ spec:
         - name: secrets
           secret:
             secretName: authentik-secrets
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media-pvc
+
       volumeMounts:
         - name: secrets
           mountPath: /secrets
           readOnly: true
-      extraVolumes:
-        - name: media
-          persistentVolumeClaim:
-            claimName: authentik-media-pvc
-      extraVolumeMounts:
         - name: media
           mountPath: /media
