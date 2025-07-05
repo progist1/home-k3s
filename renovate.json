@@ -9,11 +9,12 @@
   "kubernetes": {
     "managerFilePatterns": [
       "apps/**/*.yaml",
-      "helm-repositories/**/*.yaml"
+      "helm-repositories/**/*.yaml",
+      "helm/*.yaml"
     ]
   },
   "flux": {
-    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml"]
+    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml"]
   },
   "hostRules": [
     {
