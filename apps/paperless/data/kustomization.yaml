@@ -1,0 +1,5 @@
+resources:
+  - data.yaml
+  - media.yaml
+  - export.yaml
+  - consume.yaml

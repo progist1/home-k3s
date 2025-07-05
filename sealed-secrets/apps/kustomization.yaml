@@ -3,3 +3,4 @@ resources:
   - vikunja
   - memos
   - postgres
+  - paperless
