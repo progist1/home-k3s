@@ -27,6 +27,10 @@ spec:
               value: "redis://redis.apps.svc.cluster.local:6379"
             - name: PAPERLESS_DBHOST
               value: "postgres.apps.svc.cluster.local"
+            - name: PAPERLESS_DBENGINE
+              value: "postgresql"
+            - name: PAPERLESS_DBPORT
+              value: "5432"
             - name: PAPERLESS_DBUSER
               valueFrom:
                 secretKeyRef:
