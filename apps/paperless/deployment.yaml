@@ -17,6 +17,8 @@ spec:
         - name: paperless
           image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
           env:
+            - name: PAPERLESS_PORT
+              value: "8000"
             - name: PAPERLESS_OCR_LANGUAGES
               value: "rus eng"
             - name: PAPERLESS_OCR_LANGUAGE
