@@ -1,0 +1,9 @@
+image: busybox
+
+stages:
+  - dummy
+
+dummy:
+  stage: dummy
+  script:
+    - echo "dummy"
