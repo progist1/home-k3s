@@ -5,3 +5,4 @@ resources:
   - postgres
   - paperless
   - authentik
+  - vaultwarden
