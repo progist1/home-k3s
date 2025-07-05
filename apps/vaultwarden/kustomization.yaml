@@ -1,0 +1,5 @@
+resources:
+  - data.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress-external.yaml
