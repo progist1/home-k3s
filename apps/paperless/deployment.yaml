@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: paperless
-          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
           env:
             - name: PAPERLESS_OCR_LANGUAGES
               value: "rus eng"
