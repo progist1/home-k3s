@@ -1,2 +1,2 @@
 resources:
-  - paperless-secrets.yaml
+  - paperless-secrets-sealed.yaml
