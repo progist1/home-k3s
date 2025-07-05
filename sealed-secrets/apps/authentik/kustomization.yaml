@@ -1,0 +1,2 @@
+resources:
+  - authentik-secrets-sealed.yaml

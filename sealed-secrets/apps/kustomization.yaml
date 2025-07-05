@@ -4,3 +4,4 @@ resources:
   - memos
   - postgres
   - paperless
+  - authentik
