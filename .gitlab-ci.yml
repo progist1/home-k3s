@@ -1,5 +1,8 @@
-skip_job:
+stages:
+  - validate
+
+noop:
+  stage: validate
   script:
-    - echo "skipped"
-  rules:
-    - when: never
+    - echo "noop"
+  when: manual
