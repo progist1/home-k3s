@@ -1,5 +1,4 @@
 resources:
   - media.yaml
-  - hdd-helm-release.yaml
+  - helm-release.yaml
   - ingress-external.yaml
-  - ingress-internal.yaml
