@@ -54,8 +54,13 @@ spec:
         - name: secrets
           mountPath: /secrets
           readOnly: true
-      media:
-        existingClaim: authentik-media-pvc
+      extraVolumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media-pvc
+      extraVolumeMounts:
+        - name: media
+          mountPath: /media
 
     worker:
       replicas: 1
@@ -67,5 +72,10 @@ spec:
         - name: secrets
           mountPath: /secrets
           readOnly: true
-      media:
-        existingClaim: authentik-media-pvc
+      extraVolumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: authentik-media-pvc
+      extraVolumeMounts:
+        - name: media
+          mountPath: /media
