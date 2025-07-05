@@ -13,7 +13,6 @@
       "helm/*.yaml"
     ]
   },
-  "automergeStrategy": "merge-commit",
   "flux": {
     "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml"]
   },
