@@ -8,6 +8,6 @@ spec:
     app: vaultwarden
   ports:
     - protocol: TCP
-      port: 6379
-      targetPort: 6379
+      port: 80
+      targetPort: 80
   type: ClusterIP
