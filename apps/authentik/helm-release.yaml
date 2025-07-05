@@ -15,10 +15,6 @@ spec:
         namespace: flux-system
   values:
     authentik:
-      env:
-        - name: AUTHENTIK_CELERY__SERIALIZER
-          value: json
-
       secret_key: file:///secrets/authentik-secret
 
       email:
@@ -38,6 +34,7 @@ spec:
 
       redis:
         host: redis.apps.svc.cluster.local
+        db: 1
 
     postgres:
       enabled: false
