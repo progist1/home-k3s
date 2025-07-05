@@ -14,9 +14,6 @@ spec:
         name: authentik
         namespace: flux-system
   values:
-    ingress:
-      enabled: false
-
     authentik:
       secret_key: file:///secrets/authentik-secret
 
@@ -38,8 +35,17 @@ spec:
       redis:
         host: redis.apps.svc.cluster.local
 
+    postgres:
+      enabled: false
+
+    redis:
+      enabled: false
+
     server:
       replicas: 1
+      ingress:
+        enabled: false
+
       volumes:
         - name: secrets
           secret:
