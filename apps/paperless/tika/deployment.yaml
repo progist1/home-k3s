@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
         - name: tika
-          image: ghcr.io/paperless-ngx/tika:2.9.0
+          image: ghcr.io/paperless-ngx/tika:2.9.0-full
           ports:
             - containerPort: 9998
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: "50m"
+              memory: "128Mi"
             limits:
               cpu: "500m"
               memory: "1Gi"
