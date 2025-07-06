@@ -1,5 +1,5 @@
 resources:
   - cert-manager.yaml
-  - apps.yaml
   - renovate.yaml
+  - apps.yaml
   - infra.yaml
