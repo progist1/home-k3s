@@ -6,5 +6,5 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 8123
   clusterIP: None
