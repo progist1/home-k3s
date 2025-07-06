@@ -35,8 +35,6 @@ spec:
               value: "1.1.1.1"
             - name: WG_MTU
               value: "1279"
-            - name: WG_DEVICE
-              value: "eth0"
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
