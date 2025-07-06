@@ -1,3 +1,4 @@
 resources:
   - ingress-internal.yaml
   - service.yaml
+  - endpoints.yaml
