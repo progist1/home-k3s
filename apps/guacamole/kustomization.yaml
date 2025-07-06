@@ -1,6 +1,4 @@
 resources:
-  - data-guacamole.yaml
-  - data-guacd.yaml
   - deployment-guacd.yaml
   - deployment-guacamole.yaml
   - service-guacd.yaml
