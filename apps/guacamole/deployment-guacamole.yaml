@@ -57,7 +57,7 @@ spec:
                 secretKeyRef:
                   name: guacamole-secrets
                   key: openid-issuer
-            - name: OPENID-JWKS-ENDPOINT
+            - name: OPENID_JWKS_ENDPOINT
               valueFrom:
                 secretKeyRef:
                   name: guacamole-secrets
