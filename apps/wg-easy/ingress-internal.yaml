@@ -17,9 +17,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: wg-easy-proxy
+            name: wg-easy-http
             port:
-              number: 80
+              number: 51821
   tls:
   - hosts:
     - vpn.home
