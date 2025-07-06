@@ -23,4 +23,4 @@ spec:
   tls:
   - hosts:
     - kitchen.wled.home
-    secretName: kitchen.wled.home-external-tls
+    secretName: kitchen.wled.home-internal-tls
