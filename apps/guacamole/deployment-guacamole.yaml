@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guacamole
+  template:
+    metadata:
+      labels:
+        app: guacamole
+    spec:
+      containers:
+        - name: guacamole
+          image: guacamole/guacamole:1.5.5
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GUACD_HOSTNAME
+              value: guacd.apps.svc.cluster.local
+            - name: GUACD_PORT
+              value: "4822"
+            - name: GUACAMOLE_HOME
+              value: /etc/guacamole
+            - name: MYSQL_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: mysql-hostname
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_DATABASE
+              value: guacamole
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: mysql-password
+            - name: OPENID_AUTHORIZATION_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: openid-authorization-endpoint
+            - name: OPENID_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: openid-client-id
+            - name: OPENID_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: openid-issuer
+            - name: OPENID-JWKS-ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: openid-jwks-endpoint
+            - name: OPENID_REDIRECT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: openid-redirect-uri
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: guacamole-home
+              mountPath: /etc/guacamole
+      volumes:
+        - name: guacamole-guacamole
+          persistentVolumeClaim:
+            claimName: guacamole-guacamole-pvc

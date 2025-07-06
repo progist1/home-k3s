@@ -1,4 +1,8 @@
 resources:
-  - service.yaml
-  - endpoints.yaml
+  - data-guacamole.yaml
+  - data-guacd.yaml
+  - deployment-guacd.yaml
+  - deployment-guacamole.yaml
+  - service-guacd.yaml
+  - service-guacamole.yaml
   - ingress-external.yaml

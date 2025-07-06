@@ -19,7 +19,7 @@ spec:
           service:
             name: guacamole-proxy
             port:
-              number: 80
+              number: 8080
   tls:
   - hosts:
     - gua.progist.ru

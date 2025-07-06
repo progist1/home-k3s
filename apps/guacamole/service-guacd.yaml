@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: guacd
+  namespace: apps
+spec:
+  ports:
+    - name: guacd
+      port: 4822
+      targetPort: 4822
+  selector:
+    app: guacd
+  type: ClusterIP
