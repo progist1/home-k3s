@@ -20,26 +20,6 @@ spec:
         - name: wg-easy
           image: ghcr.io/wg-easy/wg-easy:15.0.0
           imagePullPolicy: IfNotPresent
-          env:
-            - name: TZ
-              value: "Europe/Moscow"
-            - name: WG_HOST
-              value: "vpn.progist.ru"
-            - name: WG_PORT
-              value: "30000"
-            - name: WG_DEVICE
-              value: "eth0"
-            - name: WG_DEFAULT_ADDRESS
-              value: "10.8.0.x"
-            - name: WG_DEFAULT_DNS
-              value: "1.1.1.1"
-            - name: WG_MTU
-              value: "1279"
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: wg-easy-secrets
-                  key: admin-password
           ports:
             - containerPort: 51820
               name: wg
