@@ -6,4 +6,3 @@ resources:
   - paperless
   - authentik
   - vaultwarden
-  - wg-easy
