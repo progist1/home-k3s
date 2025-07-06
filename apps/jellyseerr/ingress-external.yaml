@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-    - host: requests.progist.ru
+    - host: r.films.progist.ru
       http:
         paths:
           - path: /
@@ -22,5 +22,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - requests.progist.ru
+        - r.films.progist.ru
       secretName: jellyseerr-external-tls
