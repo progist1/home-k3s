@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: wg-easy
-          image: weejewel/wg-easy:v15.0.0
+          image: ghcr.io/wg-easy/wg-easy:v15.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
