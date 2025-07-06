@@ -6,7 +6,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8123
+      port: 80
       targetPort: 8123
   selector:
     app: home-assistant
