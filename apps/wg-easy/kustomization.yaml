@@ -1,4 +1,6 @@
 resources:
-  - service.yaml
-  - endpoints.yaml
+  - config.yaml
+  - deployment.yaml
+  - service-wg.yaml
+  - service-ui.yaml
   - ingress-internal.yaml
