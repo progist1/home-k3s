@@ -23,4 +23,4 @@ spec:
   tls:
   - hosts:
     - films.progist.ru
-    secretName: jellyfin-internal-tls
+    secretName: jellyfin-external-tls

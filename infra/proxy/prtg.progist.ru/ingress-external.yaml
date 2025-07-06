@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: prtg-progist-ru-internal
+  name: prtg-progist-ru-external
   namespace: infra
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -23,4 +23,4 @@ spec:
   tls:
   - hosts:
     - prtg.progist.ru
-    secretName: prtg-progist-ru-internal-tls
+    secretName: prtg-progist-ru-external-tls
