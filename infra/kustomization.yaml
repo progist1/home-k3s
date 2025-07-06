@@ -1,5 +1,5 @@
 resources:
   - storageclasses
-  - renovate-root-ca.yaml
+  - renovate
   - traefik-middleware
   - xray
