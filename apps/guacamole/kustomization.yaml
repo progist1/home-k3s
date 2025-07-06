@@ -3,4 +3,5 @@ resources:
   - deployment-guacamole.yaml
   - service-guacd.yaml
   - service-guacamole.yaml
+  - middleware.yaml
   - ingress-external.yaml

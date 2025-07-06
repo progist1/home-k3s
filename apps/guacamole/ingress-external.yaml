@@ -7,13 +7,13 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd,infra-guacamole-rewrite@kubernetescrd
 spec:
   rules:
   - host: gua.progist.ru
     http:
       paths:
-      - path: /guacamole/
+      - path: /
         pathType: Prefix
         backend:
           service:
