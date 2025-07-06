@@ -2,8 +2,8 @@ resources:
   - namespaces.yaml
   - flux-system
   - sealed-secrets.yaml
+  - ../../helm
+  - ../../infra
   - cert-manager-install.yaml
   - cert-manager-issuer.yaml
-  - ../../infra
-  - ../../helm
   - apps.yaml
