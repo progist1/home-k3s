@@ -17,3 +17,16 @@ resources:
   - paperless
   - authentik
   - vaultwarden
+  - jellyfin
+  - immich
+  - portainer
+  - guacamole
+  - photoprism
+  - mailcow
+  - home-assistant
+  - plex
+  - tautulli
+  - webdav
+  - tdarr
+  - wg-easy
+  - pihole

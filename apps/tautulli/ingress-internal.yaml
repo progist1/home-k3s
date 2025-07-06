@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kitchen-wled-home-internal
-  namespace: infra
+  name: tautulli-internal
+  namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: root-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
@@ -10,17 +10,17 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-  - host: kitchen.wled.home
+  - host: tautulli.home
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: kitchen-wled-home-proxy
+            name: tautulli-proxy
             port:
               number: 80
   tls:
   - hosts:
-    - kitchen.wled.home
-    secretName: kitchen-wled-home-internal-tls
+    - tautulli.home
+    secretName: tautulli-internal-tls

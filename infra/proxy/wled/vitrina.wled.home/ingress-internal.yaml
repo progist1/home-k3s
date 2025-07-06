@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kitchen-wled-home-internal
+  name: vitrina-wled-home-internal
   namespace: infra
   annotations:
     cert-manager.io/cluster-issuer: root-ca-issuer
@@ -10,17 +10,17 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-  - host: kitchen.wled.home
+  - host: vitrina.wled.home
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: kitchen-wled-home-proxy
+            name: vitrina-wled-home-proxy
             port:
               number: 80
   tls:
   - hosts:
-    - kitchen.wled.home
-    secretName: kitchen-wled-home-internal-tls
+    - vitrina.wled.home
+    secretName: vitrina-wled-home-internal-tls

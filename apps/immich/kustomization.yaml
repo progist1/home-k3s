@@ -1,0 +1,5 @@
+resources:
+  - service.yaml
+  - endpoints.yaml
+  - ingress-external.yaml
+  - ingress-external.yaml
