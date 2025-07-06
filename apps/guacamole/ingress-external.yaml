@@ -13,7 +13,7 @@ spec:
   - host: gua.progist.ru
     http:
       paths:
-      - path: /
+      - path: /guacamole/
         pathType: Prefix
         backend:
           service:
