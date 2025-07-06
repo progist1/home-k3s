@@ -1,2 +1,7 @@
 resources:
   - wled
+  - router.home
+  - printer.home
+  - prtg.progist.ru
+  - prtg.home
+  - proxy.home

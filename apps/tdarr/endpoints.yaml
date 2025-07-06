@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: tdarr-proxy
+  namespace: apps
+subsets:
+  - addresses:
+      - ip: 10.0.0.35
+    ports:
+      - port: 8265
