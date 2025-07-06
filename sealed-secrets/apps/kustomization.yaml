@@ -6,3 +6,4 @@ resources:
   - paperless
   - authentik
   - vaultwarden
+  - guacamole
