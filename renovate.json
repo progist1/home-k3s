@@ -52,7 +52,8 @@
     },
     {
       "matchUpdateTypes": ["major"],
-      "automerge": false
+      "automerge": false,
+      "assignees": ["progist"]
     }
   ]
 }
