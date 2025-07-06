@@ -1,5 +1,6 @@
 resources:
   - service.yaml
   - endpoints.yaml
-  - ingress-external.yaml
+  - ingress-external-immich.yaml
+  - ingress-external-photos.yaml
   - ingress-internal.yaml
