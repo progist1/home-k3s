@@ -23,8 +23,6 @@ spec:
               value: guacd.apps.svc.cluster.local
             - name: GUACD_PORT
               value: "4822"
-            - name: GUACAMOLE_HOME
-              value: /etc/guacamole
             - name: MYSQL_HOSTNAME
               valueFrom:
                 secretKeyRef:
