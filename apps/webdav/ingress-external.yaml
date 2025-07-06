@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: webdav-internal
+  name: webdav-external
   namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -23,4 +23,4 @@ spec:
   tls:
   - hosts:
     - webdav.progist.ru
-    secretName: webdav-internal-tls
+    secretName: webdav-external-tls
