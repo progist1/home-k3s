@@ -16,11 +16,11 @@ spec:
       labels:
         app.kubernetes.io/name: wg-easy
     spec:
+      hostNetwork: true
       containers:
         - name: wg-easy
           image: ghcr.io/wg-easy/wg-easy:15.1.0
           imagePullPolicy: IfNotPresent
-          hostNetwork: true
           ports:
             - containerPort: 51820
               name: wg
