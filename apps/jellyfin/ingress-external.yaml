@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jellyfin-internal
+  name: jellyfin-external
   namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
