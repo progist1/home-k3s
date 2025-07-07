@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: adguard-home
-          image: adguard/adguardhome:v0.107.62
+          image: adguard/adguardhome:v0.107.63
           ports:
             - containerPort: 3000
             - containerPort: 53
