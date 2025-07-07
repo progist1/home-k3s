@@ -30,3 +30,4 @@ resources:
   - tdarr
   - wg-easy
   - pihole
+  - adguard

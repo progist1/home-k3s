@@ -1,0 +1,4 @@
+resources:
+  - address-pool.yaml
+  - l2advertisement.yaml
+  - helm-release.yaml
