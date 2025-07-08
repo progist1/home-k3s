@@ -9,16 +9,13 @@ metadata:
   annotations:
     metallb.universe.tf/address-pool: traefik-pool
 spec:
-  type: LoadBalancer
-  externalTrafficPolicy: Cluster
+  type: NodePort
   ports:
     - name: web
       port: 80
-      protocol: TCP
       targetPort: web
     - name: websecure
       port: 443
-      protocol: TCP
       targetPort: websecure
   selector:
     app.kubernetes.io/name: traefik
