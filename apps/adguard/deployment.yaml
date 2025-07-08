@@ -10,10 +10,9 @@ spec:
   selector:
     matchLabels:
       app: adguard-home
+  dependsOn:
+    - name: metallb-config
   template:
-    dependsOn:
-      - name: metallb-config
-
     metadata:
       labels:
         app: adguard-home
