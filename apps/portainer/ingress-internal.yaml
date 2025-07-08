@@ -17,7 +17,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: portainer-proxy
+            name: portainer
             port:
               number: 80
   tls:
