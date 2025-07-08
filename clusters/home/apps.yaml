@@ -14,3 +14,4 @@ spec:
     - name: cert-manager-issuer
     - name: namespaces
     - name: sealed-secrets
+    - name: metallb-config
