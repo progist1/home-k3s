@@ -1,6 +1,5 @@
 resources:
   - config.yaml
-  - configmap.yaml
   - deployment.yaml
   - service.yaml
   - ingress-internal.yaml
