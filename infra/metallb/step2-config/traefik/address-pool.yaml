@@ -1,9 +1,8 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: local-pool
+  name: traefik-pool
   namespace: metallb
 spec:
   addresses:
-    - 10.0.0.2-10.0.0.3
-    - 10.99.0.0/24
+    - 10.99.0.1/32

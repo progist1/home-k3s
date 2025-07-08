@@ -1,8 +1,8 @@
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: advert
+  name: adguard-adv
   namespace: metallb
 spec:
   ipAddressPools:
-    - local-pool
+    - adguard-pool
