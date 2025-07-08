@@ -21,10 +21,13 @@ spec:
           image: adguard/adguardhome:v0.107.63
           ports:
             - containerPort: 53
+              name: dns-udp
               protocol: UDP
             - containerPort: 53
+              name: dns-tcp
               protocol: TCP
             - containerPort: 3000
+              name: http-initial
               protocol: TCP
           volumeMounts:
             - name: config

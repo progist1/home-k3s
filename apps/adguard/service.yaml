@@ -4,10 +4,24 @@ metadata:
   name: adguard-home
   namespace: apps
 spec:
-  type: ClusterIP
-  ports:
-  - name: http
-    port: 3000
-    targetPort: 3000
   selector:
     app: adguard-home
+  ports:
+  - name: web-admin
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+  - name: web-interface
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: dns-udp
+    protocol: UDP
+    port: 53
+    targetPort: 53
+  - name: dns-tcp
+    protocol: TCP
+    port: 53
+    targetPort: 53
+  type: LoadBalancer
+  externalTrafficPolicy: Local
