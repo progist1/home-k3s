@@ -1,5 +1,7 @@
 resources:
   - config.yaml
+  - clusterrolebinding.yaml
+  - serviceaccount.yaml
   - deployment.yaml
   - service.yaml
   - ingress-internal.yaml
