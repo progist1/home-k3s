@@ -13,6 +13,7 @@ spec:
       labels:
         app: portainer
     spec:
+      serviceAccountName: portainer
       containers:
       - name: portainer
         image: portainer/portainer-ce:2.31.3
