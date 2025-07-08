@@ -8,5 +8,5 @@ subjects:
     namespace: apps
 roleRef:
   kind: ClusterRole
-  name: view
+  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
