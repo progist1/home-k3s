@@ -9,7 +9,7 @@ metadata:
   annotations:
     metallb.universe.tf/address-pool: traefik-pool
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: web
       port: 80
