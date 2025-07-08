@@ -10,8 +10,6 @@ spec:
   selector:
     matchLabels:
       app: adguard-home
-  dependsOn:
-    - name: metallb-config
   template:
     metadata:
       labels:
@@ -20,9 +18,18 @@ spec:
       containers:
         - name: adguard-home
           image: adguard/adguardhome:v0.107.63
+          env:
+          - name: AGH_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: adguard-config
+                key: AdGuardHome.yaml
           ports:
-            - containerPort: 3000
-            - containerPort: 53
+          - containerPort: 5353
+            name: dns-udp
+            protocol: UDP
+          - containerPort: 3000
+            name: http
           volumeMounts:
             - name: config
               mountPath: /opt/adguardhome/conf
