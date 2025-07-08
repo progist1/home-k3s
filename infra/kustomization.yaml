@@ -4,4 +4,4 @@ resources:
   - traefik-middleware
   - xray
   - proxy
-  # - metallb
+  - metallb
