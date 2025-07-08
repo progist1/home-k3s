@@ -20,3 +20,4 @@ spec:
       targetPort: 53
   selector:
     app: adguard-home
+  internalTrafficPolicy: Local

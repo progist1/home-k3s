@@ -11,6 +11,9 @@ spec:
     matchLabels:
       app: adguard-home
   template:
+    dependsOn:
+      - name: metallb-config
+
     metadata:
       labels:
         app: adguard-home
