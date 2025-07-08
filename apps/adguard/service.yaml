@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: adguard-home-ui
+  name: adguard-home
   namespace: apps
 spec:
-  type: LoadBalancer
-  loadBalancerIP: 10.0.0.2
+  type: ClusterIP
   ports:
   - name: http
     port: 3000
