@@ -7,6 +7,7 @@ metadata:
     app: adguard-home
 spec:
   replicas: 1
+  hostNetwork: true
   selector:
     matchLabels:
       app: adguard-home
@@ -18,18 +19,13 @@ spec:
       containers:
         - name: adguard-home
           image: adguard/adguardhome:v0.107.63
-          env:
-          - name: AGH_CONFIG
-            valueFrom:
-              configMapKeyRef:
-                name: adguard-config
-                key: AdGuardHome.yaml
           ports:
-          - containerPort: 5353
-            name: dns-udp
-            protocol: UDP
-          - containerPort: 3000
-            name: http
+            - containerPort: 53
+              protocol: UDP
+            - containerPort: 53
+              protocol: TCP
+            - containerPort: 3000
+              protocol: TCP
           volumeMounts:
             - name: config
               mountPath: /opt/adguardhome/conf
