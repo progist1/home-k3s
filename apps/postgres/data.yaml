@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: postgres-data-pv
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   capacity:
     storage: 10Gi
   accessModes:
@@ -19,7 +19,7 @@ metadata:
   name: postgres-data-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
   accessModes:
     - ReadWriteMany
   resources:

@@ -11,7 +11,7 @@ spec:
     path: /mnt/Fast/k3s-data/adguard/work
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,4 +24,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: nfs-manual
+  storageClassName: nfs-nvme-manual
