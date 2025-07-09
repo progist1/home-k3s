@@ -7,7 +7,6 @@ metadata:
     app: adguard-home
 spec:
   replicas: 1
-  hostNetwork: true
   selector:
     matchLabels:
       app: adguard-home
