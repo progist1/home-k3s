@@ -6,7 +6,6 @@ metadata:
   labels:
     app: adguard-home
 spec:
-  hostNetwork: true
   replicas: 1
   selector:
     matchLabels:
@@ -16,6 +15,7 @@ spec:
       labels:
         app: adguard-home
     spec:
+      hostNetwork: true
       containers:
         - name: adguard-home
           image: adguard/adguardhome:v0.107.63
