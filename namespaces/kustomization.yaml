@@ -3,4 +3,4 @@ resources:
   - renovate.yaml
   - apps.yaml
   - infra.yaml
-  - metallb.yaml
+  # - metallb.yaml до лучших времён, когда потребуется 2+ нод
