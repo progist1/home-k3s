@@ -19,6 +19,5 @@ spec:
     protocol: TCP
     port: 53
     targetPort: 53
-  type: LoadBalancer
-  loadBalancerIP: 10.0.0.2
+  type: NodePort
   externalTrafficPolicy: Local
