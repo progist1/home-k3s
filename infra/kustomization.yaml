@@ -4,5 +4,5 @@ resources:
   - traefik-middleware
   - xray
   - proxy
-  - traefik
-  - metallb
+  # - traefik до лучших времён, когда потребуется 2+ нод
+  # - metallb до лучших времён, когда потребуется 2+ нод
