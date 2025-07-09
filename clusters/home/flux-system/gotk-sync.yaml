@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@gitlab.home:22/local/gitops.git
+  url: ssh://git@10.0.0.34:22/local/gitops.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
