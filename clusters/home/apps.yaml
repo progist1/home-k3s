@@ -14,13 +14,13 @@ spec:
     - name: cert-manager-issuer
     - name: namespaces
     - name: sealed-secrets
-    - name: metallb-config
-  healthChecks:
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: metallb-controller
-      namespace: metallb
-    - apiVersion: apps/v1
-      kind: DaemonSet
-      name: metallb-speaker
-      namespace: metallb
+  #   - name: metallb-config
+  # healthChecks:
+  #   - apiVersion: apps/v1
+  #     kind: Deployment
+  #     name: metallb-controller
+  #     namespace: metallb
+  #   - apiVersion: apps/v1
+  #     kind: DaemonSet
+  #     name: metallb-speaker
+  #     namespace: metallb
