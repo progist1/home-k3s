@@ -31,6 +31,8 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /opt/adguardhome/conf
+            - name: work
+              mountPath: /opt/adguardhome/work
           resources:
             requests:
               cpu: 100m
@@ -42,3 +44,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: adguard-config-pvc
+        - name: work
+          persistentVolumeClaim:
+            claimName: adguard-work-pvc
