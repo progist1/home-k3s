@@ -23,4 +23,4 @@ spec:
   tls:
   - hosts:
     - watch.home
-    secretName: jellyfin-external-tls
+    secretName: jellyfin-internal-tls
