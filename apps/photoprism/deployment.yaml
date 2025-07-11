@@ -33,6 +33,9 @@ spec:
             - name: PHOTOPRISM_IMPORT_PATH
               value: "/photoprism/import"
 
+            - name: PHOTOPRISM_DISABLE_CHOWN
+              value: "true"
+
             - name: PHOTOPRISM_AUTO_IMPORT
               value: "15"
             - name: PHOTOPRISM_AUTO_INDEX

@@ -1,4 +1,5 @@
 resources:
+  - storage.yaml
   - helm-release.yaml
   - ingress-internal.yaml
   - ingress-external.yaml
