@@ -504,7 +504,7 @@ persistence:
   accessModes: [ReadWriteOnce]
   annotations: {}
   hostPath: "10.0.0.4/mnt/Fast/k3s-data/mailu"
-  existingClaim: ""
+  existingClaim: "mailu-pvc"
   storageClass: "nfs-mailu"
   claimNameOverride: ""
 
