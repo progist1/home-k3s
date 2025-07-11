@@ -7,5 +7,5 @@ resources:
   - authentik
   - vaultwarden
   - guacamole
-  # - photoprism
+  - photoprism
   - mailu
