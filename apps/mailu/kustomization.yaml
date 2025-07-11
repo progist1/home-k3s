@@ -10,3 +10,5 @@ configMapGenerator:
   - name: mailu-values
     files:
       - values.yaml
+    options:
+      disableNameSuffixHash: true
