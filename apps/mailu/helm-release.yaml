@@ -13,5 +13,6 @@ spec:
         kind: HelmRepository
         name: mailu
         namespace: flux-system
-      valuesFiles:
-        - ./values.yaml
+  valuesFrom:
+    - kind: ConfigMap
+      name: mailu-values
