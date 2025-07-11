@@ -3,3 +3,8 @@ resources:
   - helm-release.yaml
   - ingress-internal.yaml
   - ingress-external.yaml
+
+configMapGenerator:
+  - name: mailu-values
+    files:
+      - values.yaml
