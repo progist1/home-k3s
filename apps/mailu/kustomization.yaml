@@ -1,3 +1,5 @@
+namespace: apps
+
 resources:
   - storage.yaml
   - helm-release.yaml
