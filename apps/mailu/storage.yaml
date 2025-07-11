@@ -7,8 +7,22 @@ spec:
   capacity:
     storage: 20Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /mnt/Fast/k3s-data/mailu
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mailu-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-mailu
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: mailu-pv
