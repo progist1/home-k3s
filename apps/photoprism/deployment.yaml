@@ -38,6 +38,11 @@ spec:
             - name: PHOTOPRISM_AUTO_INDEX
               value: "300"
 
+            - name: PHOTOPRISM_UID
+              value: "568"
+            - name: PHOTOPRISM_GID
+              value: "568"
+
             - name: PHOTOPRISM_DATABASE_DRIVER
               value: "mysql"
             - name: PHOTOPRISM_DATABASE_SERVER
