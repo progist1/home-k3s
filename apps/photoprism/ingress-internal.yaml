@@ -10,17 +10,17 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-  - host: photos.home
+  - host: old.photos.home
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: photoprism-proxy
+            name: photoprism
             port:
               number: 80
   tls:
   - hosts:
-    - photos.home
+    - old.photos.home
     secretName: photoprism-internal-tls

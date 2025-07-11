@@ -1,5 +1,4 @@
 resources:
-  - service.yaml
-  - endpoints.yaml
+  - helm-release.yaml
   - ingress-internal.yaml
   - ingress-external.yaml

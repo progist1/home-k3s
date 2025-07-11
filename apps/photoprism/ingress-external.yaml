@@ -17,7 +17,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: photoprism-proxy
+            name: photoprism
             port:
               number: 80
   tls:
