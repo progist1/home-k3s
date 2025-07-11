@@ -500,13 +500,13 @@ postgresql:
 ## @param persistence.claimNameOverride Override the name of the PVC (for single PVC)
 persistence:
   single_pvc: true
-  size: 20Gi
-  accessModes: [ReadWriteOnce]
-  annotations: {}
-  hostPath: "10.0.0.4/mnt/Fast/k3s-data/mailu"
+  # size: ""
+  # accessModes: [ReadWriteOnce]
+  # annotations: {}
+  # hostPath: ""
   existingClaim: "mailu-pvc"
-  storageClass: "nfs-mailu"
-  claimNameOverride: ""
+  # storageClass: ""
+  # claimNameOverride: ""
 
 ## @section Ingress settings
 
