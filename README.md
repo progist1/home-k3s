@@ -80,7 +80,7 @@ Ingress ресурсы строго делятся на:
 
 Описание всех StorageClass в папке `infra/storageclasses/`.
 
-- `nfs-manual` → для statically bound PVC.
+- `nfs-nvme-manual` → для statically bound PVC.
 - `nfs-fast-manual` → быстрый NFS (NVMe).
 - `nfs-hdd-manual` → дешёвый, объёмный NFS.
 - `nfs-nvme-manual` → high-performance NFS.

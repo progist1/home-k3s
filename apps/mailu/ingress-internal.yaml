@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mailcow-internal
+  name: mailu-internal
   namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: root-ca-issuer
@@ -17,10 +17,10 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: mailcow-proxy
+            name: mailu
             port:
               number: 80
   tls:
   - hosts:
     - mail.home
-    secretName: mailcow-internal-tls
+    secretName: mailu-internal-tls
