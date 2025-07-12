@@ -1825,7 +1825,7 @@ clamav:
   ## Pod persistence (if not using single_pvc)
   persistence:
     ## @param clamav.persistence.enabled Enable persistence using PVC
-    enabled: true
+    # enabled: true
 
     ## @param clamav.persistence.size Pod pvc size
     size: 2Gi
