@@ -21,8 +21,8 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       securityContext:
-        runAsUser: 100
-        fsGroup: 100
+        fsGroup: 1000
+        runAsUser: 0
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/admin:2024.06.37
