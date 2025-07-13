@@ -22,7 +22,7 @@ spec:
       restartPolicy: Always
       securityContext:
         fsGroup: 100
-        runAsUser: 0
+        runAsUser: 100
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/webmail:2024.06.36
