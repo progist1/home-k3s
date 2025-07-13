@@ -7,7 +7,9 @@ metadata:
   name: mailu-admin
   namespace: apps
 spec:
-  # replicas: 1
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mailu-admin
