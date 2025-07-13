@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: jackett
-          image: linuxserver/jackett:0.22.2151
+          image: linuxserver/jackett:0.22.2153
           ports:
             - containerPort: 9117
           env:
