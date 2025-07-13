@@ -832,8 +832,8 @@ front:
   ## @param front.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param front.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param front.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -1041,8 +1041,8 @@ admin:
   ## @param admin.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param admin.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param admin.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -1286,8 +1286,8 @@ postfix:
   ## @param postfix.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param postfix.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param postfix.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -1498,8 +1498,8 @@ dovecot:
   ## @param dovecot.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param dovecot.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param dovecot.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -1733,8 +1733,8 @@ rspamd:
   ## @param rspamd.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param rspamd.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param rspamd.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -1953,8 +1953,8 @@ clamav:
   ## @param clamav.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param clamav.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param clamav.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -2181,8 +2181,8 @@ webmail:
   ## @param webmail.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param webmail.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param webmail.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -2381,8 +2381,8 @@ webdav:
   ## @param webdav.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param webdav.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param webdav.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -2584,8 +2584,8 @@ fetchmail:
   ## @param fetchmail.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param fetchmail.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param fetchmail.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -2775,8 +2775,8 @@ oletools:
   ## @param oletools.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param oletools.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param oletools.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
@@ -2969,8 +2969,8 @@ tika:
   ## @param tika.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: true
-    fsGroup: 1000
+    enabled: false
+    fsGroup: 1001
 
   ## @param tika.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param tika.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
