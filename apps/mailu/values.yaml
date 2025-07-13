@@ -1041,16 +1041,16 @@ admin:
   ## @param admin.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: false
-    fsGroup: 1001
+    enabled: true
+    fsGroup: 1000
 
   ## @param admin.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param admin.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
   ## @param admin.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: true
-    runAsUser: 1000
+    enabled: false
+    runAsUser: 1001
     runAsNonRoot: false
 
   ## @param admin.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
