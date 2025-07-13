@@ -11,6 +11,11 @@ spec:
   nfs:
     path: /mnt/Fast/k3s-data/mailu
     server: 10.0.0.4
+  mountOptions:
+    - nfsvers=4
+    - hard
+    - rw
+    - intr
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
