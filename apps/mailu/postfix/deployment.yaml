@@ -21,7 +21,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       securityContext:
-        fsGroup: 0
+        fsGroup: 1000
         runAsUser: 0
         runAsNonRoot: false
       terminationGracePeriodSeconds: 2
