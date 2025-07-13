@@ -1286,15 +1286,15 @@ postfix:
   ## @param postfix.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: false
-    fsGroup: 1001
+    enabled: true
+    fsGroup: 1000
 
   ## @param postfix.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param postfix.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
   ## @param postfix.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: true
+    enabled: false
     runAsUser: 1000
     runAsNonRoot: false
 
@@ -1498,16 +1498,16 @@ dovecot:
   ## @param dovecot.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: false
-    fsGroup: 1001
+    enabled: true
+    fsGroup: 1000
 
   ## @param dovecot.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param dovecot.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
   ## @param dovecot.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: true
-    runAsUser: 1000
+    enabled: false
+    runAsUser: 1001
     runAsNonRoot: false
 
   ## @param dovecot.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2181,16 +2181,16 @@ webmail:
   ## @param webmail.podSecurityContext.fsGroup Set pods' Security Context fsGroup
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   podSecurityContext:
-    enabled: false
-    fsGroup: 1001
+    enabled: true
+    fsGroup: 1000
 
   ## @param webmail.containerSecurityContext.enabled Enabled containers' Security Context
   ## @param webmail.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
   ## @param webmail.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: true
-    runAsUser: 1000
+    enabled: false
+    runAsUser: 1001
     runAsNonRoot: false
 
   ## @param webmail.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
