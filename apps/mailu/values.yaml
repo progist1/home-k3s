@@ -698,13 +698,13 @@ front:
   ## @param front.externalService.nodePorts.submission NodePort to use for Submission (defaults to 587/tcp)
   ## @param front.externalService.nodePorts.manageSieve NodePort to use for ManageSieve (defaults to 4190/tcp)
   externalService:
-    enabled: false
+    enabled: true
     type: ClusterIP
     ## Example for LoadBalancer:
     ## type: LoadBalancer
-    loadBalancerIP: ""
+    # loadBalancerIP: ""
     externalTrafficPolicy: Local
-    annotations: {}
+    # annotations: {}
     ports:
       pop3: true
       pop3s: true
