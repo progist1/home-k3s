@@ -672,8 +672,8 @@ front:
   #   kind: Deployment
 
   ## @param front.hostPort.enabled Expose front mail ports via hostPort
-  hostPort:
-    enabled: true
+  # hostPort:
+  #   enabled: true
 
   ## Expose front mail ports via external service (ClusterIP or LoadBalancer)
   ## @param front.externalService.enabled Expose front mail ports via external service (ClusterIP or LoadBalancer)
@@ -698,7 +698,7 @@ front:
   ## @param front.externalService.nodePorts.submission NodePort to use for Submission (defaults to 587/tcp)
   ## @param front.externalService.nodePorts.manageSieve NodePort to use for ManageSieve (defaults to 4190/tcp)
   externalService:
-    enabled: true
+    enabled: false
     type: ClusterIP
     ## Example for LoadBalancer:
     ## type: LoadBalancer
