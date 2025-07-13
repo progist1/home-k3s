@@ -27,6 +27,11 @@ spec:
         env:
         - name: LOG_LEVEL
           value: WARNING
+        - name: ROUNDCUBE_DB_PW
+          valueFrom:
+            secretKeyRef:
+              key: roundcube-db-password
+              name: mailu-secrets
         envFrom:
         - configMapRef:
             name: mailu-envvars
