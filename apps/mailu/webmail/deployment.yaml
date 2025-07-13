@@ -32,6 +32,11 @@ spec:
             secretKeyRef:
               key: roundcube-db-password
               name: mailu-secrets
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret-key
+              name: mailu-secrets
         envFrom:
         - configMapRef:
             name: mailu-envvars
