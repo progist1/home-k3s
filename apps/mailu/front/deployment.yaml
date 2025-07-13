@@ -21,7 +21,7 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - image: ghcr.io/mailu/nginx:2024.06.36
+      - image: ghcr.io/mailu/nginx:2024.06.37
         env:
         - name: LOG_LEVEL
           value: WARNING
