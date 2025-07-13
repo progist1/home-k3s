@@ -840,8 +840,8 @@ front:
   ## @param front.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param front.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -1049,8 +1049,8 @@ admin:
   ## @param admin.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param admin.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -1168,6 +1168,8 @@ postfix:
     repository: mailu/postfix
     tag: ""
     pullPolicy: IfNotPresent
+
+  claimName: mailu-pvc
 
   ## Pod persistence (if not using single_pvc)
   ## @param postfix.persistence.size Pod pvc size
@@ -1292,8 +1294,8 @@ postfix:
   ## @param postfix.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param postfix.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -1504,8 +1506,8 @@ dovecot:
   ## @param dovecot.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param dovecot.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -1739,8 +1741,8 @@ rspamd:
   ## @param rspamd.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param rspamd.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -1854,7 +1856,7 @@ clamav:
 
     ## @param clamav.persistence.existingClaim Use a existing PVC which must be created manually before bound
     ## NOTE: requires clamav.persistence.enabled: true
-    existingClaim: ""
+    existingClaim: "mailu-pvc"
 
   ## Pod resource requests and limits
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
@@ -1959,8 +1961,8 @@ clamav:
   ## @param clamav.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param clamav.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2187,8 +2189,8 @@ webmail:
   ## @param webmail.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param webmail.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2387,8 +2389,8 @@ webdav:
   ## @param webdav.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param webdav.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2590,8 +2592,8 @@ fetchmail:
   ## @param fetchmail.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param fetchmail.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2781,8 +2783,8 @@ oletools:
   ## @param oletools.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param oletools.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
@@ -2975,8 +2977,8 @@ tika:
   ## @param tika.containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   containerSecurityContext:
-    enabled: false
-    runAsUser: 1001
+    enabled: true
+    runAsUser: 1000
     runAsNonRoot: false
 
   ## @param tika.terminationGracePeriodSeconds In seconds, time given to the pod to terminate gracefully
