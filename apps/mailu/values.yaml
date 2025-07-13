@@ -124,13 +124,13 @@ networkPolicy:
 
   ## @param networkPolicy.ingressController.namespace Namespace where the ingress controller is deployed
   ## @param networkPolicy.ingressController.podSelector Selector for the ingress controller pods
-  ingressController:
-    namespace: ingress-nginx
-    podSelector: |
-      matchLabels:
-        app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/instance: ingress-nginx
-        app.kubernetes.io/component: controller
+  # ingressController:
+  #   namespace: ingress-nginx
+  #   podSelector: |
+  #     matchLabels:
+  #       app.kubernetes.io/name: ingress-nginx
+  #       app.kubernetes.io/instance: ingress-nginx
+  #       app.kubernetes.io/component: controller
 
 ## @param mailuVersion Override Mailu version to be deployed (tag of mailu images). Defaults to `Chart.AppVersion` - must be master or a version >= 2.0
 mailuVersion: ""
@@ -1825,36 +1825,36 @@ clamav:
   ## Pod persistence (if not using single_pvc)
   persistence:
     ## @param clamav.persistence.enabled Enable persistence using PVC
-    # enabled: true
+    enabled: true
 
     ## @param clamav.persistence.size Pod pvc size
-    size: 2Gi
+    # size: 2Gi
 
-    ## @param clamav.persistence.storageClass Pod pvc storage class
-    storageClass: ""
+    # ## @param clamav.persistence.storageClass Pod pvc storage class
+    # storageClass: ""
 
-    ## @param clamav.persistence.accessModes Pod pvc access modes
-    accessModes: [ReadWriteOnce]
+    # ## @param clamav.persistence.accessModes Pod pvc access modes
+    # accessModes: [ReadWriteOnce]
 
-    ## @param clamav.persistence.annotations Pod pvc annotations
-    annotations: {}
+    # ## @param clamav.persistence.annotations Pod pvc annotations
+    # annotations: {}
 
-    ## @param clamav.persistence.labels Pod pvc labels
-    labels: {}
+    # ## @param clamav.persistence.labels Pod pvc labels
+    # labels: {}
 
-    ## @param clamav.persistence.selector Additional labels to match for the PVC
-    ## e.g:
-    ## selector:
-    ##   matchLabels:
-    ##     app: my-app
-    selector: {}
+    # ## @param clamav.persistence.selector Additional labels to match for the PVC
+    # ## e.g:
+    # ## selector:
+    # ##   matchLabels:
+    # ##     app: my-app
+    # selector: {}
 
-    ## @param clamav.persistence.dataSource Custom PVC data source
-    dataSource: {}
+    # ## @param clamav.persistence.dataSource Custom PVC data source
+    # dataSource: {}
 
     ## @param clamav.persistence.existingClaim Use a existing PVC which must be created manually before bound
     ## NOTE: requires clamav.persistence.enabled: true
-    existingClaim: ""
+    existingClaim: "mailu-pvc"
 
   ## Pod resource requests and limits
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
