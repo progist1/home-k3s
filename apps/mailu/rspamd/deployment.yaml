@@ -81,7 +81,7 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/rspamd
           name: data
-          subPath: rspamd
+          subPath: data
         - mountPath: /etc/rspamd/local.d/maps.d
           name: data
           subPath: rspamd-local.d-maps.d

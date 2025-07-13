@@ -87,7 +87,6 @@ spec:
         volumeMounts:
         - mountPath: /queue
           name: data
-          subPath: mailqueue
       volumes:
       - name: data
         persistentVolumeClaim:
