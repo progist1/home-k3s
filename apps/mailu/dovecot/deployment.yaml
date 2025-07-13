@@ -80,10 +80,10 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-          subPath: dovecotdata
+          subPath: data
         - mountPath: /mail
           name: data
-          subPath: dovecotmail
+          subPath: mail
       volumes:
       - name: data
         persistentVolumeClaim:
