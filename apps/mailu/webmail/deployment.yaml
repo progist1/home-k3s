@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mailu-webmail
+    app-group: mailu
+  name: mailu-webmail
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailu-webmail
+  template:
+    metadata:
+      labels:
+        app: mailu-webmail
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 2
+      containers:
+      - image: ghcr.io/mailu/webmail:2024.06.36
+        env:
+        - name: LOG_LEVEL
+          value: WARNING
+        envFrom:
+        - configMapRef:
+            name: mailu-envvars
+        imagePullPolicy: IfNotPresent
+        name: webmail
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - -L
+            - -H
+            - 'User-Agent: health'
+            - http://localhost/ping
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - -L
+            - -H
+            - 'User-Agent: health'
+            - http://localhost/ping
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 25m
+            memory: 100Mi
+        securityContext:
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mailu-webmail-pvc

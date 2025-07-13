@@ -1,14 +1,10 @@
-namespace: apps
-
 resources:
-  - storage.yaml
-  - helm-release.yaml
+  - configmap.yaml
+  - admin
+  - dovecot
+  - front
+  - postfix
+  - rspamd
+  - webmail
   - ingress-internal.yaml
   - ingress-external.yaml
-
-configMapGenerator:
-  - name: mailu-values
-    files:
-      - values.yaml
-    options:
-      disableNameSuffixHash: true
