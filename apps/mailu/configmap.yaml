@@ -23,8 +23,8 @@ data:
   CREDENTIAL_ROUNDS: "12"
   DB_FLAVOR: postgresql
   DB_HOST: postgres.apps.svc.cluster.local:5432
-  DB_NAME: mailu
-  DB_USER: mailu
+  DB_NAME: bWFpbHU=
+  DB_USER: bWFpbHU=
   DEBUG: "false"
   DEBUG_ASSETS: ""
   DEBUG_PROFILER: "false"
