@@ -2,4 +2,5 @@ resources:
   - pmint93.yaml
   - nfs-subdir-external-provisioner.yaml
   - authentik.yaml
+  - reloader.yaml
   # - metallb.yaml

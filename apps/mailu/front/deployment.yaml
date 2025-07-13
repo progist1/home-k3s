@@ -6,6 +6,8 @@ metadata:
     app-group: mailu
   name: mailu-front
   namespace: apps
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -116,4 +118,4 @@ spec:
             path: cert.pem
           - key: tls.key
             path: key.pem
-          secretName: mailu-secrets
+          secretName: mailu-external-tls
