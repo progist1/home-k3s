@@ -24,6 +24,7 @@ spec:
       restartPolicy: Always
       securityContext:
         fsGroup: 1000
+        runAsUser: 0
       containers:
       - image: ghcr.io/mailu/nginx:2024.06.37
         env:
