@@ -20,6 +20,7 @@ spec:
       restartPolicy: Always
       securityContext:
         fsGroup: 1000
+        runAsUser: 0
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/postfix:2024.06.36

@@ -21,6 +21,7 @@ spec:
       restartPolicy: Always
       securityContext:
         fsGroup: 1000
+        runAsUser: 0
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/rspamd:2024.06.36
@@ -66,8 +67,6 @@ spec:
           requests:
             cpu: 25m
             memory: 100Mi
-        securityContext:
-          runAsUser: 1000
         startupProbe:
           failureThreshold: 90
           httpGet:
