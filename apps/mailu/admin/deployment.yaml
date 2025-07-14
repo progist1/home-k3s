@@ -90,7 +90,7 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: mailu-admin-admin-pvc
+          claimName: mailu-admin-data-pvc
       - name: dkim
         persistentVolumeClaim:
           claimName: mailu-admin-dkim-pvc
