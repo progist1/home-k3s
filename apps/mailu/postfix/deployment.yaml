@@ -21,8 +21,8 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       securityContext:
+        runAsUser: 1000
         fsGroup: 1000
-        runAsUser: 0
         runAsNonRoot: false
       terminationGracePeriodSeconds: 2
       containers:
