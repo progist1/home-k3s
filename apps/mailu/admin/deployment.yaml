@@ -14,12 +14,12 @@ spec:
     matchLabels:
       app: mailu-admin
   template:
-    securityContext:
-      fsGroup: 1001
     metadata:
       labels:
         app: mailu-admin
     spec:
+      securityContext:
+        fsGroup: 1001
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
