@@ -13,6 +13,9 @@ spec:
       labels:
         app: transmission
     spec:
+      securityContext:
+        fsGroup: 568
+        runAsUser: 568
       containers:
         - name: transmission
           image: linuxserver/transmission:2021.11.18
@@ -21,9 +24,9 @@ spec:
             - containerPort: 51413 # TCP/UDP peer
           env:
             - name: PUID
-              value: "1000"
+              value: "568"
             - name: PGID
-              value: "1000"
+              value: "568"
             - name: TZ
               value: "Europe/Moscow"
             - name: TRANSMISSION_WEB_HOME
