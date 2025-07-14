@@ -14,6 +14,8 @@ spec:
     matchLabels:
       app: mailu-admin
   template:
+    securityContext:
+      fsGroup: 1001
     metadata:
       labels:
         app: mailu-admin
