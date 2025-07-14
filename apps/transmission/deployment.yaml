@@ -15,7 +15,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 568
-        runAsUser: 568
       containers:
         - name: transmission
           image: linuxserver/transmission:2021.11.18
