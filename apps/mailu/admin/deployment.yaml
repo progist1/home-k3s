@@ -85,11 +85,12 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-          subPath: admin
         - mountPath: /dkim
-          name: data
-          subPath: dkim
+          name: dkim
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: mailu-admin-pvc
+          claimName: mailu-admin-admin-pvc
+      - name: dkim
+        persistentVolumeClaim:
+          claimName: mailu-admin-dkim-pvc

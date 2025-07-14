@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mailu-admin-data-pv
+  name: mailu-admin-dkim-pv
 spec:
   storageClassName: nfs-nvme-manual
   capacity:
@@ -9,14 +9,14 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Fast/k3s-data/mailu/admin/data
+    path: /mnt/Fast/k3s-data/mailu/admin/dkim
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mailu-admin-data-pvc
+  name: mailu-admin-dkim-pvc
   namespace: apps
 spec:
   storageClassName: nfs-nvme-manual
@@ -25,4 +25,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  volumeName: mailu-admin-data-pv
+  volumeName: mailu-admin-dkim-pv
