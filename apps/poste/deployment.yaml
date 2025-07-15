@@ -18,7 +18,7 @@ spec:
       hostNetwork: true
       containers:
         - name: poste
-          image: analogic/poste.io:2.5.4
+          image: analogic/poste.io:2.5.5
           ports:
             - containerPort: 25
               name: smtp
