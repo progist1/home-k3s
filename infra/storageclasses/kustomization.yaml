@@ -1,3 +1,3 @@
 resources:
   - nvme-manual.yaml
-  - hdd-manual.yaml
+  - mailu.yaml

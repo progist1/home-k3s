@@ -22,6 +22,7 @@ resources:
   - portainer
   - guacamole
   - photoprism
+  - mailu
   - home-assistant
   - plex
   - tautulli

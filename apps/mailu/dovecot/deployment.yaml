@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mailu-dovecot
+    app-group: mailu
+  name: mailu-dovecot
+  namespace: apps
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mailu-dovecot
+  template:
+    metadata:
+      labels:
+        app: mailu-dovecot
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 2
+      containers:
+      - image: ghcr.io/mailu/dovecot:2024.06.37
+        env:
+        - name: LOG_LEVEL
+          value: WARNING
+        envFrom:
+        - configMapRef:
+            name: mailu-envvars
+        name: dovecot
+        ports:
+        - containerPort: 2102
+          name: auth
+          protocol: TCP
+        - containerPort: 2525
+          name: lmtp
+          protocol: TCP
+        - containerPort: 143
+          name: imap
+          protocol: TCP
+        - containerPort: 110
+          name: pop3
+          protocol: TCP
+        - containerPort: 4190
+          name: sieve
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - kill -0 `cat /run/dovecot/master.pid`
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - kill -0 `cat /run/dovecot/master.pid`
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 25m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /data
+          name: data
+          subPath: data
+        - mountPath: /mail
+          name: data
+          subPath: mail
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mailu-dovecot-pvc
