@@ -50,6 +50,8 @@ spec:
           env:
             - name: TZ
               value: "Europe/Moscow"
+            - name: HTTPS
+              value: "OFF"
             - name: HTTP_PORT
               value: "8999"
           volumeMounts:
