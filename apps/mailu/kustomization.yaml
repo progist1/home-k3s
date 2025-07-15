@@ -1,0 +1,10 @@
+resources:
+  - configmap.yaml
+  - admin
+  - dovecot
+  - front
+  - postfix
+  - rspamd
+  - webmail
+  - ingress-internal.yaml
+  - ingress-external.yaml
