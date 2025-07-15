@@ -19,8 +19,9 @@ spec:
         app: mailu-admin
     spec:
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
