@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Fast/k3s-data/mailu/admin/dkim
+    path: /mnt/Fast/k3s-test/mailu/admin/dkim
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
 ---
