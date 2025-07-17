@@ -79,27 +79,27 @@ spec:
         - containerPort: 443
           name: https
           protocol: TCP
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 30
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-            scheme: HTTP
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 5
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   failureThreshold: 30
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   failureThreshold: 5
         resources:
           limits:
-            cpu: 200m
+            cpu: "2"
             memory: 200Mi
           requests:
             cpu: 25m
