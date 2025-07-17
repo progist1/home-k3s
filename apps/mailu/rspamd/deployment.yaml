@@ -21,10 +21,6 @@ spec:
       dnsPolicy: ClusterFirst
       hostname: rspamd
       restartPolicy: Always
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 1000
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/rspamd:2024.06.37
