@@ -20,7 +20,8 @@ spec:
       labels:
         app: mailu-front
     spec:
-      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always
       containers:
       - image: ghcr.io/mailu/nginx:2024.06.37
@@ -56,6 +57,9 @@ spec:
           protocol: TCP
         - containerPort: 4190
           name: sieve
+          protocol: TCP
+        - containerPort: 2525
+          name: lmtp
           protocol: TCP
         readinessProbe:
           exec:
