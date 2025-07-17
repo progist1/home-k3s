@@ -48,4 +48,8 @@ spec:
     targetPort: 4190
     protocol: TCP
     nodePort: 32190
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
   type: NodePort
