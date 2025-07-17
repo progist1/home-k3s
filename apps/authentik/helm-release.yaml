@@ -34,7 +34,7 @@ spec:
 
       redis:
         host: redis.apps.svc.cluster.local
-        db: 1
+        db: 4
 
     postgres:
       enabled: false
