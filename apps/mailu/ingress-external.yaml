@@ -17,7 +17,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: mailu-front
+            name: mailu-webmail
             port:
               number: 80
   tls:
