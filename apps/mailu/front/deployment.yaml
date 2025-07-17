@@ -34,69 +34,49 @@ spec:
         name: front
         ports:
         - containerPort: 110
-          hostPort: 110
           name: pop3
           protocol: TCP
         - containerPort: 995
-          hostPort: 995
           name: pop3s
           protocol: TCP
         - containerPort: 143
-          hostPort: 143
           name: imap
           protocol: TCP
         - containerPort: 993
-          hostPort: 993
           name: imaps
           protocol: TCP
         - containerPort: 25
-          hostPort: 25
           name: smtp
           protocol: TCP
         - containerPort: 465
-          hostPort: 465
           name: smtps
           protocol: TCP
-        - containerPort: 10025
-          name: smtp-auth
-          protocol: TCP
-        - containerPort: 10143
-          name: imap-auth
-          protocol: TCP
         - containerPort: 587
-          hostPort: 587
           name: smtpd
           protocol: TCP
-        - containerPort: 8000
-          name: auth
-          protocol: TCP
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        - containerPort: 14190
+        - containerPort: 4190
           name: sieve
           protocol: TCP
-        - containerPort: 443
-          name: https
-          protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 80
-        #     scheme: HTTP
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        #   timeoutSeconds: 5
-        #   failureThreshold: 30
-        # livenessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 80
-        #     scheme: HTTP
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 10
-        #   timeoutSeconds: 5
-        #   failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - 'curl -skfLo /dev/null http://127.0.0.1:10204/health && kill -0 `cat /run/dovecot/master.pid`'
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 30
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - 'curl -skfLo /dev/null http://127.0.0.1:10204/health && kill -0 `cat /run/dovecot/master.pid`'
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
         resources:
           limits:
             cpu: "2"

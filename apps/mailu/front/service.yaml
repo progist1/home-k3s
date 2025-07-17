@@ -10,54 +10,42 @@ spec:
   ports:
   - name: pop3
     port: 110
-    protocol: TCP
     targetPort: 110
+    protocol: TCP
+    nodePort: 30110
   - name: pop3s
     port: 995
-    protocol: TCP
     targetPort: 995
+    protocol: TCP
+    nodePort: 30995
   - name: imap
     port: 143
-    protocol: TCP
     targetPort: 143
+    protocol: TCP
+    nodePort: 30143
   - name: imaps
     port: 993
-    protocol: TCP
     targetPort: 993
+    protocol: TCP
+    nodePort: 30993
   - name: smtp
     port: 25
-    protocol: TCP
     targetPort: 25
+    protocol: TCP
+    nodePort: 30025
   - name: smtps
     port: 465
-    protocol: TCP
     targetPort: 465
+    protocol: TCP
+    nodePort: 30465
   - name: smtpd
     port: 587
-    protocol: TCP
     targetPort: 587
-  - name: lmtp
-    port: 2525
     protocol: TCP
-    targetPort: 2525
-  - name: smtp-auth
-    port: 10025
-    protocol: TCP
-    targetPort: 10025
-  - name: imap-auth
-    port: 10143
-    protocol: TCP
-    targetPort: 10143
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 80
+    nodePort: 30587
   - name: sieve
-    port: 14190
+    port: 4190
+    targetPort: 4190
     protocol: TCP
-    targetPort: 14190
-  - name: https
-    port: 443
-    protocol: TCP
-    targetPort: 443
-  type: ClusterIP
+    nodePort: 34190
+  type: NodePort
