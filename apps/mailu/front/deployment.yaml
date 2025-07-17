@@ -68,9 +68,9 @@ spec:
           hostPort: 587
           name: smtpd
           protocol: TCP
-        - containerPort: 8000
-          name: auth
-          protocol: TCP
+        # - containerPort: 8000
+        #   name: auth
+        #   protocol: TCP
         - containerPort: 14190
           name: sieve
           protocol: TCP
