@@ -84,19 +84,19 @@ spec:
             path: /health
             port: 80
             scheme: HTTP
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 3
+          failureThreshold: 30
         livenessProbe:
           httpGet:
             path: /health
             port: 80
             scheme: HTTP
-          initialDelaySeconds: 10
+          initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 3
+          failureThreshold: 5
         resources:
           limits:
             cpu: 200m
