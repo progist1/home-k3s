@@ -47,5 +47,5 @@ spec:
     port: 4190
     targetPort: 4190
     protocol: TCP
-    nodePort: 34190
+    nodePort: 32190
   type: NodePort
