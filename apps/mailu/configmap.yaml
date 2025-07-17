@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: mailu-envvars
   namespace: apps
+  annotations:
+    reconcile.fluxcd.io/recreate: "true"
 data:
   ADMIN: "true"
   ADMIN_ADDRESS: mailu-admin.apps.svc.cluster.local
