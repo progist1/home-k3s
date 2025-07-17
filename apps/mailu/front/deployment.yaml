@@ -21,7 +21,6 @@ spec:
         app: mailu-front
     spec:
       dnsPolicy: ClusterFirst
-      hostNetwork: true
       restartPolicy: Always
       containers:
       - image: ghcr.io/mailu/nginx:2024.06.37
@@ -68,27 +67,39 @@ spec:
           hostPort: 587
           name: smtpd
           protocol: TCP
-        # - containerPort: 8000
-        #   name: auth
-        #   protocol: TCP
+        - containerPort: 8000
+          name: auth
+          protocol: TCP
+        - containerPort: 80
+          name: http
+          protocol: TCP
         - containerPort: 14190
           name: sieve
           protocol: TCP
-        readinessProbe:
-          tcpSocket:
-            port: 25
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 15
-        livenessProbe:
-          tcpSocket:
-            port: 25
-          initialDelaySeconds: 20
-          periodSeconds: 30
-          failureThreshold: 10
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   failureThreshold: 30
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 80
+        #     scheme: HTTP
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   failureThreshold: 5
         resources:
           limits:
-            cpu: 200m
+            cpu: "2"
             memory: 200Mi
           requests:
             cpu: 25m
