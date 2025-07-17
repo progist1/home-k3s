@@ -8,52 +8,8 @@ spec:
   selector:
     app: mailu-front
   ports:
-  - name: pop3
-    port: 110
-    targetPort: 110
-    protocol: TCP
-    nodePort: 30110
-  - name: pop3s
-    port: 995
-    targetPort: 995
-    protocol: TCP
-    nodePort: 30995
-  - name: imap
-    port: 143
-    targetPort: 143
-    protocol: TCP
-    nodePort: 30143
-  - name: imaps
-    port: 993
-    targetPort: 993
-    protocol: TCP
-    nodePort: 30993
-  - name: smtp
-    port: 25
-    targetPort: 25
-    protocol: TCP
-    nodePort: 30025
-  - name: smtps
-    port: 465
-    targetPort: 465
-    protocol: TCP
-    nodePort: 30465
-  - name: smtpd
-    port: 587
-    targetPort: 587
-    protocol: TCP
-    nodePort: 30587
-  - name: sieve
-    port: 4190
-    targetPort: 4190
-    protocol: TCP
-    nodePort: 32190
   - name: http
     port: 80
     targetPort: 80
     protocol: TCP
-  - name: lmtp
-    port: 2525
-    targetPort: 2525
-    nodePort: 32525
-  type: NodePort
+  type: ClusterIP
