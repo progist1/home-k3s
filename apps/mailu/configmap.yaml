@@ -89,7 +89,7 @@ data:
   SUBNET: 10.42.0.0/16
   SUBNET6: ""
   TEMPLATES_AUTO_RELOAD: "true"
-  TLS_FLAVOR: cert
+  TLS_FLAVOR: mail
   TLS_PERMISSIVE: "true"
   TZ: Europe/Moscow
   WEB_ADMIN: /admin
