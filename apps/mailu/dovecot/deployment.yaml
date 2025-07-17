@@ -20,10 +20,6 @@ spec:
     spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 1000
       terminationGracePeriodSeconds: 2
       containers:
       - image: ghcr.io/mailu/dovecot:2024.06.37
