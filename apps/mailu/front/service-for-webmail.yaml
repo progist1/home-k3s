@@ -7,8 +7,10 @@ spec:
   selector:
     app: mailu-front
   ports:
-  - name: imap
+  - name: imap-auth
     port: 10143
-    targetPort: 143
+    protocol: TCP
+  - name: smtp-auth
+    port: 10025
     protocol: TCP
   type: ClusterIP
