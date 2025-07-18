@@ -4,7 +4,7 @@ metadata:
   name: mailu-front
   namespace: apps
 spec:
-  internalTrafficPolicy: Local
+  externalTrafficPolicy: Local
   selector:
     app: mailu-front
   ports:
@@ -44,8 +44,8 @@ spec:
     protocol: TCP
     nodePort: 30587
   - name: sieve
-    port: 4190
-    targetPort: 4190
+    port: 14190
+    targetPort: 14190
     protocol: TCP
     nodePort: 30190
   - name: http
