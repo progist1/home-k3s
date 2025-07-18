@@ -68,7 +68,7 @@ data:
   PROXY_AUTH_WHITELIST: ""
   PROXY_PROTOCOL: ""
   RATELIMIT_STORAGE_URL: redis://redis.apps.svc.cluster.local:6379/3
-  REAL_IP_FROM: ""
+  REAL_IP_FROM: 10.42.0.0/16
   REAL_IP_HEADER: X-Forwarded-For
   RECAPTCHA_PRIVATE_KEY: ""
   RECAPTCHA_PUBLIC_KEY: ""
