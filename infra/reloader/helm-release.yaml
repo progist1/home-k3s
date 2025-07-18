@@ -11,5 +11,5 @@ spec:
       version: "1.0.15"
       sourceRef:
         kind: HelmRepository
-        name: stakater
+        name: reloader
         namespace: flux-system
