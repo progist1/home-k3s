@@ -4,11 +4,20 @@ metadata:
   name: mailu-front
   namespace: apps
 spec:
-  internalTrafficPolicy: Cluster
-  type: ExternalName
-  externalName: 127.0.0.1
   ports:
   - name: http
     port: 80
     targetPort: 80
     protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mailu-front
+  namespace: apps
+subsets:
+  - addresses:
+      - ip: 10.0.0.2
+    ports:
+      - name: http
+        port: 80
