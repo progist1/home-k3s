@@ -19,4 +19,17 @@ spec:
     port: 2525
     targetPort: 2525
     protocol: TCP
+  - name: smtp-submission
+    port: 587
+    targetPort: 587
+    protocol: TCP
+  - name: smtp
+    port: 25
+    targetPort: 25
+    protocol: TCP
+  - name: smtps
+    port: 465
+    targetPort: 465
+    protocol: TCP
+
   type: ClusterIP
