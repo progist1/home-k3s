@@ -26,6 +26,11 @@
       "hostType": "helm",
       "matchHost": "charts.goauthentik.io",
       "registryUrls": ["https://charts.goauthentik.io"]
+    },
+    {
+      "hostType": "helm",
+      "matchHost": "stakater.github.io",
+      "registryUrls": ["https://stakater.github.io/stakater-charts/"]
     }
   ],
   "registryAliases": {
