@@ -60,6 +60,9 @@ spec:
         - containerPort: 2525
           name: lmtp
           protocol: TCP
+        - containerPort: 80
+          name: http
+          protocol: TCP
         readinessProbe:
           exec:
             command:
