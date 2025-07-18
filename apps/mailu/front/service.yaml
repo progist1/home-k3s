@@ -23,6 +23,10 @@ spec:
     targetPort: 143
     protocol: TCP
     nodePort: 30143
+  - name: imap-webmail
+    port: 10143
+    targetPort: 143
+    protocol: TCP
   - name: imaps
     port: 993
     targetPort: 993
