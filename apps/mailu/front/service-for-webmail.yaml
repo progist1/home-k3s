@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailu-front-webmail
+  namespace: apps
+spec:
+  selector:
+    app: mailu-front
+  ports:
+  - name: imap
+    port: 10143
+    targetPort: 143
+    protocol: TCP
+  type: ClusterIP
