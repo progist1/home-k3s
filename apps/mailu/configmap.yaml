@@ -43,7 +43,7 @@ data:
   DOMAIN_REGISTRATION: "false"
   FETCHMAIL_DELAY: "600"
   FETCHMAIL_ENABLED: "false"
-  FRONT_ADDRESS: mailu-front.apps.svc.cluster.local
+  FRONT_ADDRESS: mailu-front-webmail.apps.svc.cluster.local
   FULL_TEXT_SEARCH_ATTACHMENTS: "false"
   HOSTNAMES: mail.progist.ru
   I_KNOW_MY_SETUP_DOESNT_FIT_REQUIREMENTS_AND_WONT_FILE_ISSUES_WITHOUT_PATCHES: "true"
