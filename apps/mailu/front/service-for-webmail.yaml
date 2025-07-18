@@ -12,5 +12,8 @@ spec:
     protocol: TCP
   - name: smtp-auth
     port: 10025
+    protocol: TCP    
+  - name: lmtp
+    port: 2525
     protocol: TCP
   type: ClusterIP
