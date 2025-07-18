@@ -21,7 +21,7 @@ spec:
           service:
             name: mailu-front
             port:
-              number: 30800
+              number: 80
   tls:
   - hosts:
     - mail.home
