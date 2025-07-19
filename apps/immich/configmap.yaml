@@ -11,6 +11,8 @@ data:
     env:
       REDIS_HOSTNAME: 'redis.apps.svc.cluster.local'
       REDIS_DBINDEX: "5"
+      REDIS_PORT: "6379"
+      IMMICH_PORT: "2283"
       DB_HOSTNAME: "pgvecto.apps.svc.cluster.local"
       DB_PORT: "5432"
       IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
