@@ -51,6 +51,9 @@ data:
 
     server:
       enabled: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       image:
         repository: ghcr.io/immich-app/immich-server
         pullPolicy: IfNotPresent
@@ -78,6 +81,9 @@ data:
 
     machine-learning:
       enabled: true
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       image:
         repository: ghcr.io/immich-app/immich-machine-learning
         pullPolicy: IfNotPresent
