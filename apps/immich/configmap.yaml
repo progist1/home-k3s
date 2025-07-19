@@ -32,7 +32,7 @@ data:
         pullPolicy: IfNotPresent
       envFrom:
         - secretRef:
-          name: immich-secrets
+            name: immich-secrets
       persistence:
         backups:
           existingClaim: immich-hdd-pvc
@@ -63,4 +63,4 @@ data:
           existingClaim: immich-fast-ml-pvc
       envFrom:
         - secretRef:
-          name: immich-secrets
+            name: immich-secrets

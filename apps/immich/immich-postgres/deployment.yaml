@@ -39,8 +39,8 @@ spec:
             - name: PGPORT
               value: "5432"
           volumeMounts:
-            - name: config
-              mountPath: /config
+            - name: data
+              mountPath: /var/lib/postgresql/data
           resources:
             requests:
               cpu: "50m"
@@ -48,8 +48,7 @@ spec:
             limits:
               cpu: "250m"
               memory: "256Mi"
-
       volumes:
-        - name: config
+        - name: data
           persistentVolumeClaim:
-            claimName: pgvecto-config-pvc
+            claimName: immich-pgvecto-pvc
