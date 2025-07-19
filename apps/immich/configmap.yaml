@@ -63,12 +63,12 @@ data:
           existingClaim: immich-hdd-pvc
           subPath: backups
           mountPath: /usr/src/app/upload/backups
-        encodedVideo:
+        encoded-video:
           enabled: true
           existingClaim: immich-hdd-pvc
           subPath: encoded-video
           mountPath: /usr/src/app/upload/encoded-video
-        libraryDummy:
+        library-dummy:
           enabled: true
           existingClaim: immich-hdd-pvc
           subPath: library
