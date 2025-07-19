@@ -5,3 +5,4 @@ resources:
   - pvc-hdd-videos.yaml
   - pvc-photos.yaml
   - pvc-ml.yaml
+  - pvc-hdd-upload.yaml
