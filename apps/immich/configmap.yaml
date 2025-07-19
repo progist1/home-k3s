@@ -23,7 +23,7 @@ data:
         enabled: false
       persistence:
         library:
-          existingClaim: immich-fast-pvc
+          existingClaim: immich-upload-pvc
 
     server:
       enabled: true
