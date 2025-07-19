@@ -57,22 +57,32 @@ data:
       envFrom:
         - secretRef:
             name: immich-secrets
-      persistence:
-        backups:
-          existingClaim: immich-hdd-pvc
-          subPath: backups
-          mountPath: /usr/src/app/upload/backups
-        encodedVideo:
-          existingClaim: immich-hdd-pvc
-          subPath: encoded-video
+      extraVolumes:
+        - name: encoded-video
+          persistentVolumeClaim:
+            claimName: immich-hdd-pvc
+        - name: backups
+          persistentVolumeClaim:
+            claimName: immich-hdd-pvc
+        - name: library-dummy
+          persistentVolumeClaim:
+            claimName: immich-hdd-pvc
+        - name: external-photos
+          persistentVolumeClaim:
+            claimName: immich-photos-pvc
+      extraVolumeMounts:
+        - name: encoded-video
           mountPath: /usr/src/app/upload/encoded-video
-        libraryDummy:
-          existingClaim: immich-hdd-pvc
-          subPath: library
+          subPath: encoded-video
+        - name: backups
+          mountPath: /usr/src/app/upload/backups
+          subPath: backups
+        - name: library-dummy
           mountPath: /usr/src/app/upload/library
-        external:
-          existingClaim: immich-photos-pvc
+          subPath: library
+        - name: external-photos
           mountPath: /mnt/photos
+
 
     machine-learning:
       enabled: true
