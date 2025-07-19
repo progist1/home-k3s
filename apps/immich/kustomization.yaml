@@ -1,6 +1,12 @@
 resources:
+  - immich-postgres
+  - pvc-fast.yaml
+  - pvc-hdd.yaml
+  - pvc-library.yaml
+  - pvc-ml.yaml
+  - configmap.yaml
+  - helm-release.yaml
   - service.yaml
-  - endpoints.yaml
   - ingress-external-immich.yaml
   - ingress-external-photos.yaml
   - ingress-internal.yaml
