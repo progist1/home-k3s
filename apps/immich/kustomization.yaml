@@ -1,8 +1,8 @@
 resources:
   - immich-postgres
-  - pvc-fast.yaml
+  - pvc-upload.yaml
   - pvc-hdd.yaml
-  - pvc-library.yaml
+  - pvc-photos.yaml
   - pvc-ml.yaml
   - configmap.yaml
   - helm-release.yaml
