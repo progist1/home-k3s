@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgvecto
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgvecto
+  template:
+    metadata:
+      labels:
+        app: pgvecto
+    spec:
+      containers:
+        - name: pgvecto
+          image: ghcr.io/immich-app/postgres:15-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets
+                  key: DB_DATABASE_NAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets
+                  key: DB_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: immich-secrets
+                  key: DB_USERNAME
+            - name: TZ
+              value: "Europe/Moscow"
+            - name: PGPORT
+              value: "5432"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: pgvecto-config-pvc

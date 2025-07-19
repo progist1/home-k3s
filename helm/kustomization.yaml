@@ -4,3 +4,4 @@ resources:
   - authentik.yaml
   - reloader.yaml
   # - metallb.yaml
+  - immich.yaml

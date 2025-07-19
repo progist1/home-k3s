@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-photos-pv
+spec:
+  capacity:
+    storage: 3Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Main/Memories/Originals
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-hdd-manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-photos-pvc
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Ti
+  storageClassName: nfs-hdd-manual
+  volumeName: immich-photos-pv

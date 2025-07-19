@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-fast-ml-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/immich/ml
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-nvme-manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-fast-ml-pvc
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: nfs-nvme-manual
+  volumeName: immich-fast-ml-pv

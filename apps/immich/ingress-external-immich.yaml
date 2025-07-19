@@ -8,6 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+    traefik.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   rules:
   - host: immich.progist.ru
@@ -19,7 +20,7 @@ spec:
           service:
             name: immich-proxy
             port:
-              number: 80
+              number: 2283
   tls:
   - hosts:
     - immich.progist.ru
