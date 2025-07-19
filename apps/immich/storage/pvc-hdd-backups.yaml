@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: immich-hdd-pv
+  name: immich-hdd-backups-pv
 spec:
   capacity:
     storage: 500Gi
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Main/k3s-data/immich/server
+    path: /mnt/Main/k3s-data/immich/server/backups
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-hdd-manual
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-hdd-pvc
+  name: immich-hdd-backups-pvc
   namespace: apps
 spec:
   accessModes:
@@ -25,4 +25,4 @@ spec:
     requests:
       storage: 500Gi
   storageClassName: nfs-hdd-manual
-  volumeName: immich-hdd-pv
+  volumeName: immich-hdd-backups-pv
