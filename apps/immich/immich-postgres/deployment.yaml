@@ -18,6 +18,9 @@ spec:
           image: ghcr.io/immich-app/postgres:15-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0
           ports:
             - containerPort: 5432
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           env:
             - name: POSTGRES_DB
               valueFrom:
