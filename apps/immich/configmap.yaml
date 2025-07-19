@@ -11,6 +11,8 @@ data:
     env:
       - name: REDIS_HOSTNAME
         value: 'redis.apps.svc.cluster.local'
+      - name: TRANSFORMERS_CACHE
+        value: '/cache'
       - name: REDIS_DBINDEX
         value: "5"
       - name: REDIS_PORT
@@ -81,7 +83,6 @@ data:
           enabled: true
           existingClaim: immich-photos-pvc
           mountPath: /mnt/photos
-      
 
     machine-learning:
       enabled: true
@@ -91,8 +92,6 @@ data:
       image:
         repository: ghcr.io/immich-app/immich-machine-learning
         pullPolicy: IfNotPresent
-      env:
-        TRANSFORMERS_CACHE: /cache
       persistence:
         cache:
           enabled: true

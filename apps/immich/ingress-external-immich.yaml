@@ -18,7 +18,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: immich-proxy
+            name: immich
             port:
               number: 2283
   tls:
