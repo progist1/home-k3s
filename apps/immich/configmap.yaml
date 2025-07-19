@@ -73,6 +73,10 @@ data:
           enabled: true
           existingClaim: immich-hdd-library-pvc
           mountPath: /usr/src/app/upload/library
+        upload:
+          enabled: true
+          existingClaim: immich-hdd-upload-pvc
+          mountPath: /usr/src/app/upload/upload
         external:
           enabled: true
           existingClaim: immich-photos-pvc
