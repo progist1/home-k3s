@@ -1,0 +1,7 @@
+resources:
+  - pvc-upload.yaml
+  - pvc-hdd-backups.yaml
+  - pvc-hdd-library.yaml
+  - pvc-hdd-videos.yaml
+  - pvc-photos.yaml
+  - pvc-ml.yaml

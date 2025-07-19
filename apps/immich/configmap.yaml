@@ -60,18 +60,15 @@ data:
       persistence:
         backups:
           enabled: true
-          existingClaim: immich-hdd-pvc
-          subPath: backups
+          existingClaim: immich-hdd-backups-pvc
           mountPath: /usr/src/app/upload/backups
         encoded-video:
           enabled: true
-          existingClaim: immich-hdd-pvc
-          subPath: encoded-video
+          existingClaim: immich-hdd-videos-pvc
           mountPath: /usr/src/app/upload/encoded-video
         library-dummy:
           enabled: true
-          existingClaim: immich-hdd-pvc
-          subPath: library
+          existingClaim: immich-hdd-library-pvc
           mountPath: /usr/src/app/upload/library
         external:
           enabled: true
