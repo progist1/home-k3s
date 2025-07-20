@@ -53,9 +53,6 @@ data:
 
     server:
       enabled: true
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       image:
         repository: ghcr.io/immich-app/immich-server
         pullPolicy: IfNotPresent
@@ -83,6 +80,17 @@ data:
           enabled: true
           existingClaim: immich-photos-pvc
           mountPath: /mnt/photos
+      extraVolumeMounts:
+      - name: dev-dri
+        mountPath: /dev/dri
+      extraVolumes:
+        - name: dev-dri
+          hostPath:
+            path: /dev/dri
+            type: Directory
+      securityContext:
+        privileged: true
+        runAsUser: 0
 
     machine-learning:
       enabled: true
