@@ -2,3 +2,4 @@ resources:
   - apps
   - cluster
   - infra
+  - monitoring

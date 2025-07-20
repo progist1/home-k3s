@@ -1,0 +1,2 @@
+resources:
+  - alertmanager-secrets-sealed.yaml
