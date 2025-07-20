@@ -28,7 +28,7 @@ spec:
         - name: telegram
           telegram_configs:
             - bot_token_file: "/etc/alertmanager/secrets/telegram_token"
-              chat_id: "22183219"
+              chat_id: 22183219
               parse_mode: "HTML"
               send_resolved: true
 
