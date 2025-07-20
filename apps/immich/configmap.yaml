@@ -103,4 +103,3 @@ data:
             name: immich-secrets
       env:
         IMMICH_PORT: "2283"
-        IMMICH
