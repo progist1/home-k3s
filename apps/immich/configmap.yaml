@@ -43,10 +43,6 @@ data:
             name: immich-secrets
             key: DB_USERNAME
 
-    image:
-      # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server
-      tag: v1.135.3
-
     immich:
       metrics:
         enabled: false
@@ -58,6 +54,7 @@ data:
       enabled: true
       image:
         repository: ghcr.io/immich-app/immich-server
+        tag: v1.135.3
         pullPolicy: IfNotPresent
       envFrom:
         - secretRef:
@@ -99,6 +96,7 @@ data:
       enabled: true
       image:
         repository: ghcr.io/immich-app/immich-machine-learning
+        tag: v1.135.3
         pullPolicy: IfNotPresent
       persistence:
         cache:
