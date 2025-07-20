@@ -1,0 +1,5 @@
+resources:
+  - storage.yaml
+  - values.yaml
+  - helm-release.yaml
+  - ingress-internal.yaml

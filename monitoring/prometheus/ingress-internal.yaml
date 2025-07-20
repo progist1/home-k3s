@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-home
+  namespace: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  rules:
+    - host: prometheus.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - prometheus.home
+      secretName: prometheus-internal-tls

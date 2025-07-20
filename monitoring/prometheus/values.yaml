@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-values
+  namespace: monitoring
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+    reloader.stakater.com/match: "true"
+data:
+  values.yaml: |
+    server:
+      persistentVolume:
+        enabled: true
+        existingClaim: prometheus-storage-pvc
+      service:
+        type: ClusterIP
+      ingress:
+        enabled: false
+    alertmanager:
+      enabled: false
+    pushgateway:
+      enabled: false
+    extraScrapeConfigs: []
