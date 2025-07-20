@@ -38,14 +38,11 @@ spec:
 
       receivers:
         - name: telegram
-          webhook_configs:
-            - url: 'https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage'
+          telegram_configs:
+            - bot_token: ${TELEGRAM_BOT_TOKEN}
+              chat_id: ${TELEGRAM_CHAT_ID}
+              parse_mode: "HTML"
               send_resolved: true
-              http_config:
-                bearer_token: ${TELEGRAM_BOT_TOKEN}
-              url_parameters:
-                chat_id: ${TELEGRAM_CHAT_ID}
-                parse_mode: Markdown
 
     service:
       type: ClusterIP
