@@ -18,12 +18,12 @@ spec:
       - name: TELEGRAM_BOT_TOKEN
         valueFrom:
           secretKeyRef:
-            name: alertmanager-telegram
+            name: alertmanager-secrets
             key: token
       - name: TELEGRAM_CHAT_ID
         valueFrom:
           secretKeyRef:
-            name: alertmanager-telegram
+            name: alertmanager-secrets
             key: chat_id
 
     config:
