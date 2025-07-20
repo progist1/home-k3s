@@ -7,3 +7,4 @@ resources:
   - cert-manager-install.yaml
   - cert-manager-issuer.yaml
   - apps.yaml
+  - monitoring.yaml
