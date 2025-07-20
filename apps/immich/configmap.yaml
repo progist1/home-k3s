@@ -91,6 +91,13 @@ data:
       securityContext:
         privileged: true
         runAsUser: 0
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2000m"
+          memory: "3Gi"
 
     machine-learning:
       enabled: true
@@ -109,3 +116,10 @@ data:
             name: immich-secrets
       env:
         IMMICH_PORT: "3003"
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "2000m"
+          memory: "3Gi"
