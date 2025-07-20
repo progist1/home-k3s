@@ -9,6 +9,8 @@ metadata:
 data:
   values.yaml: |
     env:
+      - name: IMMICH_LOG_LEVEL
+        value: 'debug'
       - name: REDIS_HOSTNAME
         value: 'redis.apps.svc.cluster.local'
       - name: TRANSFORMERS_CACHE
