@@ -44,6 +44,7 @@ data:
             key: DB_USERNAME
 
     image:
+      # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server
       tag: v1.135.3
 
     immich:
@@ -96,10 +97,6 @@ data:
 
     machine-learning:
       enabled: true
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
       image:
         repository: ghcr.io/immich-app/immich-machine-learning
         pullPolicy: IfNotPresent
