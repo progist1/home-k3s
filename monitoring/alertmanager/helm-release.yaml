@@ -67,5 +67,5 @@ spec:
     extraSecretMounts:
       - name: alertmanager-telegram-token
         mountPath: /etc/alertmanager/secrets
-        secretName: alertmanager-telegram
+        secretName: alertmanager-secrets
         readOnly: true
