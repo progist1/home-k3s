@@ -13,6 +13,11 @@
       "helm/*.yaml"
     ]
   },
+  "helm-values": {
+    "fileMatch": [
+      ".*\\/values\\.ya?ml$"
+    ]
+  },
   "flux": {
     "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml"]
   },
