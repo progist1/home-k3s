@@ -96,6 +96,11 @@ data:
         cache:
           enabled: true
           existingClaim: immich-fast-ml-pvc
+          mountPath: "/cache"
+          type: pvc
       envFrom:
         - secretRef:
             name: immich-secrets
+      env:
+        IMMICH_PORT: "2283"
+        IMMICH
