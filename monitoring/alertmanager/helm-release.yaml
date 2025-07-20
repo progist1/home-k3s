@@ -1,0 +1,69 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: alertmanager
+      version: "0.26.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    extraEnv:
+      - name: TELEGRAM_BOT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: alertmanager-telegram
+            key: token
+      - name: TELEGRAM_CHAT_ID
+        valueFrom:
+          secretKeyRef:
+            name: alertmanager-telegram
+            key: chat_id
+
+    config:
+      global:
+        resolve_timeout: 5m
+
+      route:
+        receiver: telegram
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 3h
+
+      receivers:
+        - name: telegram
+          webhook_configs:
+            - url: 'https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage'
+              send_resolved: true
+              http_config:
+                bearer_token: ${TELEGRAM_BOT_TOKEN}
+              url_parameters:
+                chat_id: ${TELEGRAM_CHAT_ID}
+                parse_mode: Markdown
+
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: root-ca-issuer
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+      hosts:
+        - host: alerts.home
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - alerts.home
+          secretName: alertmanager-tls
+    persistence:
+      enabled: true
+      existingClaim: alertmanager-pvc
