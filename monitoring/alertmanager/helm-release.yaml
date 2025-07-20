@@ -63,7 +63,7 @@ spec:
       tls:
         - hosts:
             - alerts.home
-          secretName: alertmanager-tls
+          secretName: alertmanager-internal-tls
     persistence:
       enabled: true
-      existingClaim: alertmanager-pvc
+      existingClaim: alertmanager-storage-pvc
