@@ -102,4 +102,4 @@ data:
         - secretRef:
             name: immich-secrets
       env:
-        IMMICH_PORT: "2283"
+        IMMICH_PORT: "3003"
