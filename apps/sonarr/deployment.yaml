@@ -32,7 +32,7 @@ spec:
             - name: ALL_PROXY
               value: "socks5://xray.infra.svc.cluster.local:10809"
             - name: NO_PROXY
-              value: "transmission.apps.svc.cluster.local,10.43.*"
+              value: "transmission.apps.svc.cluster.local,jackett.apps.svc.cluster.local,10.43.*"
           volumeMounts:
             - name: config
               mountPath: /config
