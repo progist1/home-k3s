@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: home-assistant
-          image: homeassistant/home-assistant:2025.7.2
+          image: homeassistant/home-assistant:2025.7.3
           env:
           - name: HTTP_PROXY
             value: http://xray.infra.svc.cluster.local:10809
