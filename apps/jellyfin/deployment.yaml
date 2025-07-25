@@ -24,7 +24,8 @@ spec:
             fsGroup: 109
             capabilities:
               add: 
-                - "SYS_ADMIN"
+                - SYS_ADMIN
+                - MKNOD
           ports:
             - containerPort: 8096
           env:
