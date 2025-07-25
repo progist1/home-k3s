@@ -27,6 +27,14 @@ spec:
               value: Europe/Moscow
             - name: JELLYFIN_PublishedServerUrl
               value: "films.progist.ru"
+            - name: UID
+              value: "568"
+            - name: GID
+              value: "568"
+            - name: USER_ID
+              value: "568"
+            - name: GROUP_ID
+              value: "568"
           volumeMounts:
             - name: config
               mountPath: /config
