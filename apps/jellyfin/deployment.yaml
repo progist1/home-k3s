@@ -16,6 +16,7 @@ spec:
       securityContext:
         fsGroup: 109
         # privileged: true
+        supplementalGroups: [109, 44]
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.10.7
@@ -28,6 +29,7 @@ spec:
             capabilities:
               add: 
                 - DAC_OVERRIDE
+                - SYS_RAWIO
                 - MKNOD
               drop:
                 - ALL
