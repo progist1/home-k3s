@@ -13,26 +13,13 @@ spec:
       labels:
         app: jellyfin
     spec:
-      securityContext:
-        fsGroup: 109
-        # privileged: true
-        supplementalGroups: [109, 44]
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.10.7
           securityContext:
-            allowPrivilegeEscalation: true
-            # privileged: true
+            privileged: true
             fsGroup: 109
             supplementalGroups: [109]
-            readOnlyRootFilesystem: false
-            capabilities:
-              add: 
-                - DAC_OVERRIDE
-                - SYS_RAWIO
-                - MKNOD
-              drop:
-                - ALL
           ports:
             - containerPort: 8096
           env:
