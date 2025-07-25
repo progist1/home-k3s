@@ -22,6 +22,7 @@ spec:
           securityContext:
             # privileged: true
             fsGroup: 109
+            readOnlyRootFilesystem: false
             capabilities:
               add: 
                 - SYS_ADMIN
@@ -76,4 +77,5 @@ spec:
         - name: dev-dri
           hostPath:
             path: /dev/dri
+            type: Directory
             
