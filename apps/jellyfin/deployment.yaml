@@ -15,7 +15,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 109
-        privileged: true
+        # privileged: true
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.10.7
