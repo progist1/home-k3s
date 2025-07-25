@@ -20,6 +20,7 @@ spec:
         - name: jellyfin
           image: jellyfin/jellyfin:10.10.7
           securityContext:
+            allowPrivilegeEscalation: true
             # privileged: true
             fsGroup: 109
             readOnlyRootFilesystem: false
