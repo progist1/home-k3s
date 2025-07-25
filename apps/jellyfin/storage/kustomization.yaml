@@ -1,0 +1,5 @@
+resources:
+  - cache.yaml
+  - config.yaml
+  - media.yaml
+

@@ -17,9 +17,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: jellyfin-proxy
+            name: jellyfin
             port:
-              number: 80
+              number: 8096
   tls:
   - hosts:
     - watch.home

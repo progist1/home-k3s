@@ -1,5 +1,6 @@
 resources:
+  - storage
+  - deployment.yaml
   - service.yaml
-  - endpoints.yaml
   - ingress-external.yaml
   - ingress-internal.yaml
