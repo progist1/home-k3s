@@ -31,9 +31,9 @@ spec:
               value: "568"
             - name: GID
               value: "568"
-            - name: USER_ID
+            - name: PGID
               value: "568"
-            - name: GROUP_ID
+            - name: PUID
               value: "568"
           volumeMounts:
             - name: config
