@@ -23,11 +23,14 @@ spec:
             allowPrivilegeEscalation: true
             # privileged: true
             fsGroup: 109
+            supplementalGroups: [109]
             readOnlyRootFilesystem: false
             capabilities:
               add: 
-                - SYS_ADMIN
+                - DAC_OVERRIDE
                 - MKNOD
+              drop:
+                - ALL
           ports:
             - containerPort: 8096
           env:
