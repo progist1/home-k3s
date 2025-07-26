@@ -1,7 +1,7 @@
 resources:
   - nfs-provisioner
   # - metabase
-  # - renovate
+  - renovate
   - filebrowser
   - vikunja
   - memos
@@ -32,4 +32,4 @@ resources:
   - pihole
   - adguard
   # - poste
-  - mysql
+  # - mysql
