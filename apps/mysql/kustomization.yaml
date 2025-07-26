@@ -1,6 +1,7 @@
 resources:
   - data.yaml
   - hdd-data.yaml
+  - temp.yaml
   - configmap.yaml
   - deployment.yaml
   - service.yaml

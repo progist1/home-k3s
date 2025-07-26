@@ -30,6 +30,8 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: mysql-temp
+              mountPath: /temp
             - name: mysql-hdd-data
               mountPath: /mnt/hdd/mysql
             - name: config
@@ -46,6 +48,9 @@ spec:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: mysql-data-pvc
+        - name: mysql-temp
+          persistentVolumeClaim:
+            claimName: mysql-temp-pvc
         - name: mysql-hdd-data
           persistentVolumeClaim:
             claimName: mysql-hdd-data-pvc
