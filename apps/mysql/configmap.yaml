@@ -3,13 +3,14 @@ kind: ConfigMap
 metadata:
   name: mysql-config
   namespace: apps
+  annotations:
+    reconcile.fluxcd.io/recreate: "true"  
 data:
   mysqld.cnf: |
     [mysqld]
     user = mysql
     key_buffer_size = 16M
     myisam-recover-options = BACKUP
-    log_error = /var/log/mysql/error.log
     server-id = 2
     skip-log-bin
     binlog_expire_logs_seconds = 60
