@@ -33,7 +33,7 @@ spec:
             - name: mysql-hdd-data
               mountPath: /mnt/hdd/mysql
             - name: config
-              mountPath: /etc/mysql/mysql.conf.d/mysqld.cnf
+              mountPath: /etc/mysql/conf.d/99-custom.cnf
               subPath: mysqld.cnf
           resources:
             requests:
