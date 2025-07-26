@@ -12,6 +12,12 @@ spec:
     path: /mnt/Fast/k3s-data/mysql/data
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+  - noatime
+  - nolock
+  - vers=4.1
+  - async
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
