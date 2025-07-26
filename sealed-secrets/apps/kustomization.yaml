@@ -10,3 +10,4 @@ resources:
   - photoprism
   - mailu
   - immich
+  - mysql

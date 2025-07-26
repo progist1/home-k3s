@@ -32,3 +32,4 @@ resources:
   - pihole
   - adguard
   # - poste
+  - mysql
