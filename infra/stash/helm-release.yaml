@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: stash
-      version: v2024.3.11
+      version: v2025.6.30
       sourceRef:
         kind: HelmRepository
         name: appscode
