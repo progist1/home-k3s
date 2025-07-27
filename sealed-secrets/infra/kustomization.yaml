@@ -1,2 +1,3 @@
 resources:
   - xray-config-sealed.yaml
+  - restic-secret-sealed.yaml
