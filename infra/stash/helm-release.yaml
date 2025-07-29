@@ -22,3 +22,10 @@ spec:
     features:
       community: true
     license: ""
+    apiserver:
+      enableValidatingWebhook: true
+      enableMutatingWebhook: true
+      disableAdmissionWebhook: false
+      ca: ""
+      groupPriorityMinimum: 10000
+      versionPriority: 15
