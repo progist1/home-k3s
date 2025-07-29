@@ -1,24 +1,20 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: stash
+  name: stash-crds
   namespace: infra
 spec:
-  interval: 1h
-  dependsOn:
-  - name: stash-crds
-    namespace: infra
   chart:
     spec:
-      chart: stash
-      version: v2025.6.30
+      chart: stash-crds
       sourceRef:
         kind: HelmRepository
         name: appscode
         namespace: flux-system
+      version: v2025.6.30
+  interval: 1h
   install:
+    createNamespace: false
     crds: Create
-  values:
-    features:
-      community: true
-    license: ""
+  upgrade:
+    crds: CreateReplace
