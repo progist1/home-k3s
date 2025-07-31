@@ -21,6 +21,8 @@ spec:
           env:
             - name: TZ
               value: "Europe/Moscow"
+            - name: FORCE_LANGUAGE
+              value: ru
           volumeMounts:
             - name: database
               mountPath: /data/database
