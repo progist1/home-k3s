@@ -1,0 +1,12 @@
+apiVersion: k8up.io/v1
+kind: BackupLocation
+metadata:
+  name: local-backups
+  namespace: infra
+spec:
+  backend:
+    local:
+      mountPath: /mnt/backups
+  repoPasswordSecretRef:
+    name: k8up-secret
+    key: password

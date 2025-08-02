@@ -1,0 +1,15 @@
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: generic-pvc-backup
+  namespace: k8up
+spec:
+  backend:
+    repoPasswordSecretRef:
+      name: k8up-secret
+      key: password
+    local:
+      mountPath: /mnt/backups
+      subPath: generic
+  schedule: "0 3 * * *"
+  includeAnnotations: true
