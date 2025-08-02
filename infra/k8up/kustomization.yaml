@@ -1,4 +1,0 @@
-resources:
-  - helm-release.yaml
-  - backup-location.yaml
-  - backup-schedule.yaml
