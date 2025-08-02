@@ -1,0 +1,3 @@
+resources:
+  - install.yaml
+  - config.yaml
