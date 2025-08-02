@@ -7,5 +7,3 @@ resources:
   - reloader
   # - traefik до лучших времён, когда потребуется 2+ нод
   # - metallb до лучших времён, когда потребуется 2+ нод
-  - k8up/install
-  - k8up/config
