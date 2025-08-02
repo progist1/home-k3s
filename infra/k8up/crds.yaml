@@ -1,15 +1,16 @@
+# infra/k8up/crds.yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: k8up-install
+  name: k8up-crds
   namespace: flux-system
 spec:
   interval: 10m
-  prune: true
-  path: ./infra/k8up/install
+  path: ./infra/k8up/crds
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
-    namespace: flux-system
-  dependsOn:
-    - name: k8up-crds
+  targetNamespace: infra
+  wait: true
+  timeout: 2m
