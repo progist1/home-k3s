@@ -4,11 +4,13 @@ metadata:
   name: hostpath-backup-config
   namespace: infra
 spec:
-  volumes:
-    - name: backups
-      hostPath:
-        path: /mnt/backups
-        type: Directory
-  volumeMounts:
-    - name: backups
-      mountPath: /mnt/backups
+  template:
+    spec:
+      volumes:
+        - name: backups
+          hostPath:
+            path: /mnt/backups
+            type: Directory
+      volumeMounts:
+        - name: backups
+          mountPath: /mnt/backups
