@@ -13,6 +13,7 @@ spec:
     path: /mnt/Main/Backup/k3s
   mountOptions:
     - nfsvers=4.2
+  storageClassName: nfs-hdd-manual
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,3 +27,4 @@ spec:
     requests:
       storage: 1Ti
   volumeName: k8up-backups-pv
+  storageClassName: nfs-hdd-manual
