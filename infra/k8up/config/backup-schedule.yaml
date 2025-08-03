@@ -11,5 +11,15 @@ spec:
     local:
       mountPath: /mnt/backups
       subPath: generic
-  schedule: "0 3 * * *"
-  includeAnnotations: true
+  backup:
+    schedule: "0 3 * * *"
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 2
+  skipWithoutAnnotation: true
+  prune:
+    schedule: "0 4 * * 0"
+    retention:
+      keepLast: 5
+      keepDaily: 7
+      keepWeekly: 4
+      keepMonthly: 3
