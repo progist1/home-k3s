@@ -18,5 +18,7 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    k8up:
+      skipWithoutAnnotation: true
     metrics:
       enabled: true
