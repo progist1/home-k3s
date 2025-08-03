@@ -6,11 +6,13 @@ metadata:
 spec:
   template:
     spec:
+      containers:
+        - name: backup-runner
+          volumeMounts:
+            - name: backups
+              mountPath: /mnt/backups
       volumes:
         - name: backups
           hostPath:
             path: /mnt/backups
             type: Directory
-      volumeMounts:
-        - name: backups
-          mountPath: /mnt/backups
