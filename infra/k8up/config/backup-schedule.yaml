@@ -8,9 +8,9 @@ spec:
     schedule: "0 3 * * *"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 2
-    backend:
-      repoPasswordSecretRef:
-        name: k8up-secret
-        key: password
-      local:
-        mountPath: /mnt/backups
+  backend:
+    repoPasswordSecretRef:
+      name: k8up-secret
+      key: password
+    local:
+      mountPath: /mnt/backups
