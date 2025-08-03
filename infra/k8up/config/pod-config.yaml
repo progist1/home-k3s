@@ -1,7 +1,7 @@
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
-  name: hostpath-backup-config
+  name: pvc-backup-config
   namespace: apps
 spec:
   template:
@@ -13,6 +13,5 @@ spec:
               mountPath: /mnt/backups
       volumes:
         - name: backups
-          hostPath:
-            path: /mnt/backups
-            type: Directory
+          persistentVolumeClaim:
+            claimName: k8up-backups-pvc
