@@ -13,6 +13,6 @@ spec:
       name: k8up-secret
       key: password
     local:
-      mountPath: /mnt/backups
+      mountPath: /backups
   podConfigRef:
     name: hostpath-backup-config
