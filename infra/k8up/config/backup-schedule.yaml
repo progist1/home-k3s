@@ -2,20 +2,18 @@ apiVersion: k8up.io/v1
 kind: Schedule
 metadata:
   name: generic-pvc-backup
-  namespace: k8up
+  namespace: infra
 spec:
-  backend:
-    repoPasswordSecretRef:
-      name: k8up-secret
-      key: password
-    local:
-      mountPath: /mnt/backups
-      subPath: generic
   backup:
     schedule: "0 3 * * *"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 2
-  skipWithoutAnnotation: true
+    backend:
+      repoPasswordSecretRef:
+        name: k8up-secret
+        key: password
+      local:
+        mountPath: /mnt/backups
   prune:
     schedule: "0 4 * * 0"
     retention:
@@ -23,3 +21,9 @@ spec:
       keepDaily: 7
       keepWeekly: 4
       keepMonthly: 3
+    backend:
+      repoPasswordSecretRef:
+        name: k8up-secret
+        key: password
+      local:
+        mountPath: /mnt/backups
