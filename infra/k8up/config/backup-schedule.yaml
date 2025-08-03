@@ -16,4 +16,3 @@ spec:
       mountPath: /mnt/backups
   podConfigRef:
     name: hostpath-backup-config
-    namespace: infra
