@@ -10,7 +10,7 @@ spec:
         - name: backup-runner
           volumeMounts:
             - name: backups
-              mountPath: /mnt/backups/k3s
+              mountPath: /mnt/backups
       volumes:
         - name: backups
           persistentVolumeClaim:
