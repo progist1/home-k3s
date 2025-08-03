@@ -13,6 +13,6 @@ spec:
       name: k8up-secret
       key: password
     local:
-      mountPath: /home/progist/backup
+      mountPath: /mnt/backups
   podConfigRef:
     name: hostpath-backup-config
