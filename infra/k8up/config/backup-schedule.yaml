@@ -14,16 +14,3 @@ spec:
         key: password
       local:
         mountPath: /mnt/backups
-  prune:
-    schedule: "0 4 * * 0"
-    retention:
-      keepLast: 5
-      keepDaily: 7
-      keepWeekly: 4
-      keepMonthly: 3
-    backend:
-      repoPasswordSecretRef:
-        name: k8up-secret
-        key: password
-      local:
-        mountPath: /mnt/backups
