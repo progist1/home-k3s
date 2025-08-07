@@ -5,3 +5,4 @@ resources:
   - ingress-internal.yaml
   - media.yaml
   - service.yaml
+  - service-peer.yaml
