@@ -17,7 +17,7 @@ spec:
         fsGroup: 568
       containers:
         - name: transmission
-          image: linuxserver/transmission:2021.11.18
+          image: linuxserver/transmission:4.0.8
           ports:
             - containerPort: 9091 # Web UI
             - containerPort: 51413 # TCP/UDP peer
@@ -39,11 +39,11 @@ spec:
               mountPath: /mnt/Media
           resources:
             requests:
-              cpu: "50m"
-              memory: "128Mi"
+              cpu: "500m"
+              memory: "512Mi"
             limits:
-              cpu: "250m"
-              memory: "256Mi"
+              cpu: "1"
+              memory: "1Gi"
       volumes:
         - name: config
           persistentVolumeClaim:
