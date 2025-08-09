@@ -5,6 +5,6 @@ metadata:
   namespace: infra
 spec:
   ports:
-  - port: 8971
-    targetPort: 8971
-  clusterIP: None
+    - name: https
+      port: 8971
+      targetPort: 8971
