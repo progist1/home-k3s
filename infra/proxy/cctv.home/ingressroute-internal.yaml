@@ -11,7 +11,7 @@ spec:
     - match: Host(`cctv.home`)
       kind: Rule
       middlewares:
-        - name: infra-redirect-to-https
+        - name: redirect-to-https
       services:
         - name: cctv-home-proxy
           port: 8971
