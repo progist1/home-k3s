@@ -1,0 +1,5 @@
+resources:
+  - service.yaml
+  - endpoints.yaml
+  - servers-transport.yaml
+  - ingress-internal.yaml
