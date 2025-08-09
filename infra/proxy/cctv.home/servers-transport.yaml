@@ -1,8 +1,0 @@
-apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: ignore-upstream-cert
-  namespace: infra
-spec:
-  insecureSkipVerify: true
-  serverName: cctv.home
