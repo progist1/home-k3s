@@ -9,7 +9,7 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
     traefik.ingress.kubernetes.io/service.serversscheme: https
-    traefik.ingress.kubernetes.io/service.serverstransport: ignore-upstream-cert@kubernetescrd
+    traefik.ingress.kubernetes.io/service.serverstransport: infra-ignore-upstream-cert@kubernetescrd
 
 spec:
   rules:
