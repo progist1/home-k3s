@@ -8,3 +8,4 @@ subsets:
       - ip: 10.3.0.2
     ports:
       - port: 8971
+        protocol: TCP
