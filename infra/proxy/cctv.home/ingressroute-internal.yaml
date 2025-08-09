@@ -8,14 +8,13 @@ spec:
     - web
     - websecure
   routes:
-    - match: Host(`cctv.home`)
+    - match: Host(`cctv.home`) && PathPrefix(`/`)
       kind: Rule
-      middlewares:
-        - name: redirect-to-https
       services:
         - name: cctv-home-proxy
           port: 8971
           scheme: https
           serversTransport: ignore-upstream-cert
+          passHostHeader: false
   tls:
     secretName: cctv-home-internal-tls
