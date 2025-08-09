@@ -1,4 +1,5 @@
 resources:
+  - certificate.yaml
   - service.yaml
   - endpoints.yaml
   - servers-transport.yaml
