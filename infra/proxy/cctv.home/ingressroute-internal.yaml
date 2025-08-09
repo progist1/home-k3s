@@ -13,7 +13,6 @@ spec:
       services:
         - name: cctv-home-proxy
           port: 8971
-          scheme: https
           serversTransport: ignore-upstream-cert
           passHostHeader: false
   tls:
