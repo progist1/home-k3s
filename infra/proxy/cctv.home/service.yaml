@@ -4,6 +4,7 @@ metadata:
   name: cctv-home-proxy
   namespace: infra
 spec:
+  clusterIP: None        # headless, чтобы Traefik ходил прямо в Endpoints
   ports:
     - name: https
       port: 8971
