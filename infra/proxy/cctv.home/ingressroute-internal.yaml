@@ -1,29 +1,21 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: cctv-home-internal
   namespace: infra
-  annotations:
-    cert-manager.io/cluster-issuer: root-ca-issuer
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
-    traefik.ingress.kubernetes.io/service.serversscheme: https
-    traefik.ingress.kubernetes.io/service.serverstransport: infra-ignore-upstream-cert@kubernetescrd
-
 spec:
-  rules:
-  - host: cctv.home
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: cctv-home-proxy
-            port:
-              number: 8971
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`cctv.home`)
+      kind: Rule
+      middlewares:
+        - name: infra-redirect-to-https
+      services:
+        - name: cctv-home-proxy
+          port: 8971
+          scheme: https
+          serversTransport: ignore-upstream-cert
   tls:
-  - hosts:
-    - cctv.home
     secretName: cctv-home-internal-tls
