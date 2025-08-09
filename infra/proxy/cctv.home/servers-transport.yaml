@@ -5,7 +5,3 @@ metadata:
   namespace: infra
 spec:
   insecureSkipVerify: true
-  # опционально, если нужно жёстко зафиксировать TLS-версию/ALPN и т.п.
-  # serverName: cctv.home
-  alpnProtocols:
-    - http/1.1        # отключим h2 к апстриму
