@@ -31,5 +31,6 @@ resources:
   - wg-easy
   - pihole
   - adguard
+  - mosquitto
   # - poste
   # - mysql
