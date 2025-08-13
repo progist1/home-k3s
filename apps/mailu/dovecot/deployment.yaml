@@ -22,7 +22,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
       containers:
-      - image: ghcr.io/mailu/dovecot:2024.06.39
+      - image: ghcr.io/mailu/dovecot:2024.06.40
         env:
         - name: LOG_LEVEL
           value: WARNING
