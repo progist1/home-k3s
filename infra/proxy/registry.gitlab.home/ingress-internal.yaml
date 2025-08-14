@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitlab-registry-home-internal
+  namespace: infra
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  rules:
+  - host: registry.gitlab.home
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: registry-gitlab-home-proxy
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - registry.gitlab.home
+    secretName: registry-gitlab-home-internal-tls
