@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: photoprism
-          image: photoprism/photoprism:250426
+          image: photoprism/photoprism:250707
           ports:
             - containerPort: 20800
           env:
