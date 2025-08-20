@@ -14,7 +14,7 @@ spec:
         app: portainer
     spec:
       serviceAccountName: portainer
-      hostNetwork: true
+      # hostNetwork: true
       containers:
       - name: portainer
         image: portainer/portainer-ce:2.33.0
