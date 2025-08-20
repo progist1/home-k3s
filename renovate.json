@@ -64,6 +64,20 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "assignees": ["progist"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["photoprism/photoprism"],
+      "allowedVersions": "/^\\d{6}(-.*)?$/"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "linuxserver/transmission",
+        "lscr.io/linuxserver/transmission"
+      ],
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+(-.*)?$/",
+      "versioning": "semver"
     }
   ]
 }
