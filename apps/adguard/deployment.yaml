@@ -7,9 +7,6 @@ metadata:
     app: adguard-home
 spec:
   replicas: 1
-  strategy:
-    $patch: replace
-    type: Recreate
   selector:
     matchLabels:
       app: adguard-home
