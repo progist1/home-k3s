@@ -6,8 +6,8 @@ metadata:
 spec:
   replicas: 1
   strategy:
+    $patch: replace
     type: Recreate
-    rollingUpdate: null
   selector:
     matchLabels:
       app: home-assistant
