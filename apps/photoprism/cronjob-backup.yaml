@@ -45,6 +45,7 @@ spec:
                   mountPath: /backup
                 - name: storage
                   mountPath: /photoprism/storage
+                  readOnly: true
               command:
                 - /bin/sh
                 - -c

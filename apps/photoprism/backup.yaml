@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Main/Server/dbs
+    path: /mnt/Main/Backup/Server/dbs
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-hdd-manual
