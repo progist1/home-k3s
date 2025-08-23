@@ -66,10 +66,10 @@ spec:
             limits:
               cpu: "2"
               memory: "2Gi"
-      volumes:
-        - name: storage
-          persistentVolumeClaim:
-            claimName: photoprism-storage-pvc
-        - name: backup
-          persistentVolumeClaim:
-            claimName: photoprism-backup-pvc
+          volumes:
+            - name: storage
+              persistentVolumeClaim:
+                claimName: photoprism-storage-pvc
+            - name: backup
+              persistentVolumeClaim:
+                claimName: photoprism-backup-pvc
