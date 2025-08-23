@@ -37,25 +37,20 @@ spec:
                       name: photoprism-secrets
                       key: DB_PASSWORD
                 - name: PHOTOPRISM_STORAGE_PATH
-                  value: "/photoprism/storage"
+                  value: "/tmp/pp/storage"
                 - name: PHOTOPRISM_ORIGINALS_PATH
-                  value: "/photoprism/originals"
+                  value: "/tmp/pp/originals"
+                - name: PHOTOPRISM_BACKUP_PATH
+                  value: "/backup"
               volumeMounts:
                 - name: backup          # ← совпадает с volumes[].name ниже
                   mountPath: /backup
-                - name: storage
-                  mountPath: /photoprism/storage
-                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp/pp
               command: ["/bin/sh","-c"]
               args:
                 - |
                   set -euo pipefail
-                  # Пишем логи ещё и в витрину
-                  LOG="/backup/_meta/logs/${HOSTNAME}.log"
-                  mkdir -p "$(dirname "$LOG")"
-                  exec > >(tee -a "$LOG") 2>&1
-
-                  echo "[*] sanity"; id; df -h; ls -la /backup || true
 
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
                   DB_DIR="/backup/${TS}"
@@ -63,11 +58,10 @@ spec:
                   mkdir -p "${DB_DIR}"
 
                   echo "[*] Dumping MySQL via photoprism CLI..."
-                  photoprism backup -i - > "${DB_DIR}/dump.sql"
-                  gzip -9 "${DB_DIR}/dump.sql"
+                  photoprism backup -i - | gzip -9 > "/backup/${TS}/dump.sql.gz"
 
                   echo "[*] Done."
-              resources:                 # ← resources должны быть внутри контейнера
+              resources:
                 requests:
                   cpu: "250m"
                   memory: "512Mi"
@@ -75,9 +69,8 @@ spec:
                   cpu: "2"
                   memory: "2Gi"
           volumes:
-            - name: storage
-              persistentVolumeClaim:
-                claimName: photoprism-storage-pvc
+            - name: tmp
+              emptyDir: {}
             - name: backup
               persistentVolumeClaim:
                 claimName: photoprism-backup-pvc
