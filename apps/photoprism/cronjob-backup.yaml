@@ -41,8 +41,8 @@ spec:
                 - name: PHOTOPRISM_ORIGINALS_PATH
                   value: "/photoprism/originals"
               volumeMounts:
-                - name: backups
-                  mountPath: /backups
+                - name: backup
+                  mountPath: /backup
                 - name: storage
                   mountPath: /photoprism/storage
               command:
@@ -51,7 +51,7 @@ spec:
                 - |
                   set -euo pipefail
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
-                  DB_DIR="/backups/${TS}"
+                  DB_DIR="/backup/${TS}"
                   mkdir -p "${DB_DIR}"
 
                   echo "[*] Dumping MySQL via photoprism CLI..."
