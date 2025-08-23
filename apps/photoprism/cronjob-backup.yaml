@@ -41,8 +41,8 @@ spec:
                 - name: PHOTOPRISM_ORIGINALS_PATH
                   value: "/photoprism/originals"
               volumeMounts:
-                - name: backups          # ← совпадает с volumes[].name ниже
-                  mountPath: /backups
+                - name: backup          # ← совпадает с volumes[].name ниже
+                  mountPath: /backup
                 - name: storage
                   mountPath: /photoprism/storage
                   readOnly: true
@@ -51,14 +51,14 @@ spec:
                 - |
                   set -euo pipefail
                   # Пишем логи ещё и в витрину
-                  LOG="/backups/_meta/logs/${HOSTNAME}.log"
+                  LOG="/backup/_meta/logs/${HOSTNAME}.log"
                   mkdir -p "$(dirname "$LOG")"
                   exec > >(tee -a "$LOG") 2>&1
 
-                  echo "[*] sanity"; id; df -h; ls -la /backups || true
+                  echo "[*] sanity"; id; df -h; ls -la /backup || true
 
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
-                  DB_DIR="/backups/${TS}"
+                  DB_DIR="/backup/${TS}"
                   echo "[*] Creating ${DB_DIR}..."
                   mkdir -p "${DB_DIR}"
 
@@ -78,6 +78,6 @@ spec:
             - name: storage
               persistentVolumeClaim:
                 claimName: photoprism-storage-pvc
-            - name: backups
+            - name: backup
               persistentVolumeClaim:
                 claimName: photoprism-backup-pvc
