@@ -41,8 +41,8 @@ spec:
                 - name: PHOTOPRISM_ORIGINALS_PATH
                   value: "/photoprism/originals"
               volumeMounts:
-                - name: backup
-                  mountPath: /backup
+                - name: backups
+                  mountPath: /backups
                 - name: storage
                   mountPath: /photoprism/storage
                   readOnly: true
@@ -52,7 +52,8 @@ spec:
                 - |
                   set -euo pipefail
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
-                  DB_DIR="/backup/${TS}"
+                  DB_DIR="/backups/${TS}"
+                  echo "[*] Creating ${DB_DIR} $DB_DIR..."
                   mkdir -p "${DB_DIR}"
 
                   echo "[*] Dumping MySQL via photoprism CLI..."
@@ -71,6 +72,6 @@ spec:
             - name: storage
               persistentVolumeClaim:
                 claimName: photoprism-storage-pvc
-            - name: backup
+            - name: backups
               persistentVolumeClaim:
                 claimName: photoprism-backup-pvc
