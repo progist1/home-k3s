@@ -54,11 +54,9 @@ spec:
 
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
                   DB_DIR="/backup/${TS}"
-                  echo "[*] Creating ${DB_DIR}..."
-                  mkdir -p "${DB_DIR}"
 
                   echo "[*] Dumping MySQL via photoprism CLI..."
-                  photoprism backup -i - | gzip -9 > "/backup/${TS}/dump.sql.gz"
+                  photoprism backup -i - | gzip -9 > "/backup/${TS}_photoprism_dump.sql.gz"
 
                   echo "[*] Done."
               resources:
