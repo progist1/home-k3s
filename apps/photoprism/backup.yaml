@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photoprism-backup-pv
+spec:
+  capacity:
+    storage: 250Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Main/Server/dbs
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-hdd-manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photoprism-backup-pvc
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 250Gi
+  storageClassName: nfs-hdd-manual
+  volumeName: photoprism-backup-pv

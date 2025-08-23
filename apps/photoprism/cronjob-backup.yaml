@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: photoprism-backup
+  namespace: apps
+spec:
+  schedule: "25 3 * * *"  # каждый день в 03:25
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 568
+            runAsUser: 568
+            runAsGroup: 568
+          containers:
+            - name: backup
+              image: photoprism/photoprism:250426
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: PHOTOPRISM_DATABASE_DRIVER
+                  value: "mysql"
+                - name: PHOTOPRISM_DATABASE_SERVER
+                  value: "10.0.0.10:3307"
+                - name: PHOTOPRISM_DATABASE_NAME
+                  value: "photoprism"
+                - name: PHOTOPRISM_DATABASE_USER
+                  value: "photoprism"
+                - name: PHOTOPRISM_DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: photoprism-secrets
+                      key: DB_PASSWORD
+                - name: PHOTOPRISM_STORAGE_PATH
+                  value: "/photoprism/storage"
+                - name: PHOTOPRISM_ORIGINALS_PATH
+                  value: "/photoprism/originals"
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+                - name: storage
+                  mountPath: /photoprism/storage
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  TS="$(date +'%Y_%m_%d_%H_%M_%S')"
+                  DB_DIR="/backups/${TS}"
+                  mkdir -p "${DB_DIR}"
+
+                  echo "[*] Dumping MySQL via photoprism CLI..."
+                  photoprism backup -i - > "${DB_DIR}/dump.sql"
+                  gzip -9 "${DB_DIR}/dump.sql"
+
+                  echo "[*] Done."
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: photoprism-storage-pvc
+        - name: backup
+          persistentVolumeClaim:
+            claimName: photoprism-backup-pvc

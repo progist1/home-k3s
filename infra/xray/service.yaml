@@ -10,7 +10,9 @@ spec:
     - name: socks
       port: 10808
       targetPort: 10808
+      nodePort: 30808
     - name: http
       port: 10809
       targetPort: 10809
-  type: ClusterIP
+      nodePort: 30809
+  type: NodePort
