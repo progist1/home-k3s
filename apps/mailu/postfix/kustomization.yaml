@@ -2,3 +2,4 @@ resources:
   - data.yaml
   - deployment.yaml
   - service.yaml
+  - backup.yaml

@@ -6,3 +6,5 @@ resources:
   - service.yaml
   - ingress-external.yaml
   - ingress-internal.yaml
+  - backup-data.yaml
+  - backup-media.yaml

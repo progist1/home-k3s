@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pvc-archiver-mosquitto
+  namespace: apps
+spec:
+  interval: 10m
+  chart:
+    spec:
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      chart: charts/pvc-archiver
+  values:
+    name: mosquitto
+    archiveName: mosquitto
+    sourcePVC: mosquitto-data-pvc
+    destPVC: backups-pvc
+    schedule: "15 5 * * *"
+    exclude: "**/cache/**;**/.cache/**;**/tmp/**"
+    securityContext:
+      fsGroup: 1000
+      supplementalGroups: [1000]

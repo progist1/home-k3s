@@ -33,5 +33,4 @@ resources:
   - adguard
   - mosquitto
   - backups-pvc.yaml
-  # - poste
   # - mysql

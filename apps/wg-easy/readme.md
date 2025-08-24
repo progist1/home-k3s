@@ -1,7 +1,7 @@
 требуется hostnetwork.
 в настройках 
-PostUp: iptables -A INPUT -p udp --dport 51820 -j ACCEPT;    iptables -A FORWARD -i wg0 -o cni0 -j ACCEPT;    iptables -A FORWARD -i cni0 -o wg0 -j ACCEPT;    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE;  iptables -t nat -A POSTROUTING -s 10.3.0.0/24 -o ens3 -j MASQUERADE; 
-PostDown: iptables -D FORWARD -i wg0 -o cni0 -j ACCEPT;   iptables -D FORWARD -i cni0 -o wg0 -j ACCEPT;   iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE;  iptables -t nat -D POSTROUTING -s 10.3.0.0/24 -o ens3 -j MASQUERADE;
+PostUp: iptables -A INPUT -p udp --dport 51820 -j ACCEPT;    iptables -A FORWARD -i wg0 -o cni0 -j ACCEPT;    iptables -A FORWARD -i cni0 -o wg0 -j ACCEPT;    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE;  iptables -t nat -A POSTROUTING -s 10.3.0.0/24 -o ens3 -j MASQUERADE; iptables -t nat -A POSTROUTING -s 10.42.0.0/16 -o wg0 -j MASQUERADE; iptables -t mangle -A FORWARD -o %i -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu; iptables -t mangle -A FORWARD -i %i -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu; 
+PostDown: iptables -D FORWARD -i wg0 -o cni0 -j ACCEPT;   iptables -D FORWARD -i cni0 -o wg0 -j ACCEPT;   iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE;  iptables -t nat -D POSTROUTING -s 10.3.0.0/24 -o ens3 -j MASQUERADE; iptables -t nat -D POSTROUTING -s 10.42.0.0/16 -o wg0 -j MASQUERADE; iptables -t mangle -D FORWARD -o %i -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu; iptables -t mangle -D FORWARD -i %i -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 
 ens3 → нодовский внешний интерфейс
 можно без hostNetwork, но тогда не будет доступа из домашней сети к клиентам.
