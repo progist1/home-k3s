@@ -64,8 +64,10 @@ spec:
 
                   # если source пустой — создаём пустой архив корректно
                   if [ -z "$(ls -A /src 2>/dev/null)" ]; then
-                    echo "[*] Source is empty, creating empty tar"
-                    tar -czf "$TMP" --files-from /dev/null
+                    echo "[*] Source is empty, creating empty tar via temp dir"
+                    EMPTY_DIR="$(mktemp -d)"
+                    tar -czf "$TMP" -C "$EMPTY_DIR" .
+                    rmdir "$EMPTY_DIR"
                   else
                     echo "[*] Archiving /src → $TMP"
                     tar -czf "$TMP" "$@" -C /src .
