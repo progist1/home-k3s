@@ -21,4 +21,4 @@ spec:
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       fsGroup: 1000
-      supplementalGroups: [1000]
+      supplementalGroups: [999, 1000]
