@@ -43,14 +43,20 @@ spec:
 
                   # собрать --exclude из строки с ';'
                   EXCLUDES="{{ .Values.exclude }}"
-                  EXTRA=""
+                  set --   # обнуляем $@
                   IFS=';'
                   for p in $EXCLUDES; do
-                    [ -n "$p" ] && EXTRA="$EXTRA --exclude=$p"
+                    [ -n "$p" ] && set -- "$@" --exclude="$p"
                   done
+                  unset IFS
 
-                  # BusyBox tar умеет -z, так что без -I
-                  tar -czf "$TMP" $EXTRA -C /src .
+                  # если PVC пустой → создаём пустой архив
+                  if [ -z "$(ls -A /src 2>/dev/null)" ]; then
+                    echo "[*] Source is empty, creating empty tar"
+                    tar -czf "$TMP" --files-from /dev/null
+                  else
+                    tar -czf "$TMP" "$@" -C /src .
+                  fi
 
                   mv -f "$TMP" "$DEST"
               resources:
