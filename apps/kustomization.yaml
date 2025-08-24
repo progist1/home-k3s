@@ -32,5 +32,6 @@ resources:
   - pihole
   - adguard
   - mosquitto
+  - backups-pvc.yaml
   # - poste
   # - mysql

@@ -1,0 +1,47 @@
+# имя для различения релизов (используется только в именах ресурсов)
+name: app
+
+# как назвать итоговый файл: /backups/<archiveName>.tar.gz
+archiveName: app
+
+# исходный PVC (RO)
+sourcePVC: ""
+
+# PVC для складирования бэкапов (RW) — должен быть в том же namespace
+destPVC: "backups-pvc"
+
+# cron (UTC по умолчанию у k8s)
+schedule: "10 3 * * *"
+
+# список --exclude для tar, через ';'
+exclude: ""   # напр.: "**/cache/**;**/.cache/**;**/tmp/**;**/*.log"
+
+image:
+  repository: alpine
+  tag: "3.20"
+  pullPolicy: IfNotPresent
+
+securityContext:
+  runAsUser: 568
+  runAsGroup: 568
+  fsGroup: 568
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 1
+    memory: 512Mi
+
+concurrencyPolicy: Forbid
+successfulJobsHistoryLimit: 2
+failedJobsHistoryLimit: 2
+backoffLimit: 0
+ttlSecondsAfterFinished: 86400
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+extraLabels: {}
+extraAnnotations: {}

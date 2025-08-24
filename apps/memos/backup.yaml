@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pvc-archiver-memos
+  namespace: apps
+spec:
+  interval: 10m
+  chart:
+    spec:
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      chart: charts/pvc-archiver
+  values:
+    name: memos
+    archiveName: memos
+    sourcePVC: memos-config-pvc
+    destPVC: backups-pvc
+    schedule: "10 5 * * *"
+    exclude: "**/cache/**;**/.cache/**;**/tmp/**"

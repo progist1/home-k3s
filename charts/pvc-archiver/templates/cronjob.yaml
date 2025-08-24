@@ -1,0 +1,82 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pvc-archiver-{{ .Values.name }}
+  labels:
+    app.kubernetes.io/name: pvc-archiver
+    app.kubernetes.io/instance: {{ .Values.name }}
+    {{- with .Values.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.extraAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  schedule: "{{ .Values.schedule }}"
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.backoffLimit }}
+      ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: {{ .Values.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.securityContext.fsGroup }}
+          containers:
+            - name: tar
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command: ["/bin/sh","-c"]
+              args:
+                - |
+                  set -euo pipefail
+                  NAME="{{ .Values.archiveName }}"
+                  TS="$(date +'%Y_%m_%d_%H_%M_%S')"
+                  DEST="/backups/${NAME}_${TS}.tar.gz"
+                  TMP="/backups/.${NAME}_${TS}.tar.gz.$$"
+
+                  # собрать --exclude из строки с ';'
+                  EXCLUDES="{{ .Values.exclude }}"
+                  EXTRA=""
+                  IFS=';'
+                  for p in $EXCLUDES; do
+                    [ -n "$p" ] && EXTRA="$EXTRA --exclude=$p"
+                  done
+
+                  # BusyBox tar умеет -z, так что без -I
+                  tar -czf "$TMP" $EXTRA -C /src .
+
+                  mv -f "$TMP" "$DEST"
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              volumeMounts:
+                - name: src
+                  mountPath: /src
+                  readOnly: true
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: src
+              persistentVolumeClaim:
+                claimName: {{ required "values.sourcePVC is required" .Values.sourcePVC }}
+            - name: backups
+              persistentVolumeClaim:
+                claimName: {{ .Values.destPVC }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
