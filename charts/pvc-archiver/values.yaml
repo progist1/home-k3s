@@ -18,7 +18,7 @@ exclude: ""   # напр.: "**/cache/**;**/.cache/**;**/tmp/**;**/*.log"
 
 image:
   repository: alpine
-  tag: "3.20"
+  tag: "3.22"
   pullPolicy: IfNotPresent
 
 securityContext:
