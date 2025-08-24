@@ -15,7 +15,7 @@ spec:
   values:
     name: portainer
     archiveName: portainer
-    sourcePVC: portainer-config-pvc
+    sourcePVC: portainer-pvc
     destPVC: backups-pvc
     schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"

@@ -22,5 +22,5 @@ spec:
     securityContext:
       runAsUser: 999
       runAsGroup: 1000
-      fsGroup: 1000
-      supplementalGroups: [999, 1000]
+      fsGroup: 999
+      supplementalGroups: [999, 1000, 0]
