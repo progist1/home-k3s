@@ -17,7 +17,7 @@ spec:
     archiveName: sonarr
     sourcePVC: sonarr-config-pvc
     destPVC: backups-pvc
-    schedule: "16 5 * * *"
+    schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       runAsUser: 568
