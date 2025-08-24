@@ -41,13 +41,17 @@ spec:
               command: ["/bin/sh","-c"]
               args:
                 - |
-                  set -euo pipefail
+                  set -Eeuo pipefail
                   umask 0002
 
                   NAME="{{ .Values.archiveName }}"
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
                   DEST="/backups/${NAME}_${TS}.tar.gz"
-                  TMP="/backups/.${NAME}_${TS}.tar.gz.$$"
+                  mkdir -p /backups/.logs
+                  LOG="/backups/.logs/${NAME}_${TS}.log"
+                  # надёжный временный файл в той же директории, чтобы mv был атомарным на NFS
+                  TMP="$(mktemp -p /backups ".${NAME}_${TS}.tar.gz.XXXXXX")"
+                  exec > >(tee -a "$LOG") 2>&1
 
                   # собрать --exclude в массив ($@), а не строкой
                   EXCLUDES="{{ .Values.exclude }}"
@@ -60,12 +64,14 @@ spec:
 
                   # если source пустой — создаём пустой архив корректно
                   if [ -z "$(ls -A /src 2>/dev/null)" ]; then
-                  echo "[*] Source is empty, creating empty tar"
-                  tar -czf "$TMP" --files-from /dev/null
+                    echo "[*] Source is empty, creating empty tar"
+                    tar -czf "$TMP" --files-from /dev/null
                   else
-                  tar -czf "$TMP" "$@" -C /src .
+                    echo "[*] Archiving /src → $TMP"
+                    tar -czf "$TMP" "$@" -C /src .
                   fi
 
+                  echo "[*] Moving $TMP → $DEST"
                   mv -f "$TMP" "$DEST"
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
