@@ -30,9 +30,9 @@ spec:
             {{- if .Values.securityContext.fsGroup }}
             fsGroup: {{ .Values.securityContext.fsGroup }}
             {{- end }}
-            {{- if .Values.securityContext.supplementalGroups }}
+            {{- with .Values.securityContext.supplementalGroups }}
             supplementalGroups:
-            {{- toYaml .Values.securityContext.supplementalGroups | nindent 10 }}
+              {{- toYaml . | nindent 14 }}
             {{- end }}
           containers:
             - name: tar
