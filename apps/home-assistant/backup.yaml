@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: pvc-archiver-homer
+  name: pvc-archiver-home-assistant
   namespace: apps
 spec:
   interval: 10m
@@ -13,9 +13,9 @@ spec:
         namespace: flux-system
       chart: charts/pvc-archiver
   values:
-    name: homer
-    archiveName: homer
-    sourcePVC: homer-config-pvc
+    name: home-assistant
+    archiveName: home-assistant
+    sourcePVC: home-assistant-config-pvc
     destPVC: backups-pvc
     schedule: "12 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
