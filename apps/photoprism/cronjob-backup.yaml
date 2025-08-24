@@ -56,7 +56,7 @@ spec:
                   DB_DIR="/backup/${TS}"
 
                   echo "[*] Dumping MySQL via photoprism CLI..."
-                  photoprism backup -i - | gzip -9 > "/backup/${TS}_photoprism_dump.sql.gz"
+                  photoprism backup -i - | gzip -9 > "/backup/photoprism_dump_${TS}.sql.gz"
 
                   echo "[*] Done."
               resources:
