@@ -27,7 +27,13 @@ spec:
           securityContext:
             runAsUser: {{ .Values.securityContext.runAsUser }}
             runAsGroup: {{ .Values.securityContext.runAsGroup }}
+            {{- if .Values.securityContext.fsGroup }}
             fsGroup: {{ .Values.securityContext.fsGroup }}
+            {{- end }}
+            {{- if .Values.securityContext.supplementalGroups }}
+            supplementalGroups:
+            {{- toYaml .Values.securityContext.supplementalGroups | nindent 10 }}
+            {{- end }}
           containers:
             - name: tar
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -36,26 +42,28 @@ spec:
               args:
                 - |
                   set -euo pipefail
+                  umask 0002
+
                   NAME="{{ .Values.archiveName }}"
                   TS="$(date +'%Y_%m_%d_%H_%M_%S')"
                   DEST="/backups/${NAME}_${TS}.tar.gz"
                   TMP="/backups/.${NAME}_${TS}.tar.gz.$$"
 
-                  # собрать --exclude из строки с ';'
+                  # собрать --exclude в массив ($@), а не строкой
                   EXCLUDES="{{ .Values.exclude }}"
-                  set --   # обнуляем $@
+                  set --
                   IFS=';'
                   for p in $EXCLUDES; do
-                    [ -n "$p" ] && set -- "$@" --exclude="$p"
+                  [ -n "$p" ] && set -- "$@" --exclude="$p"
                   done
                   unset IFS
 
-                  # если PVC пустой → создаём пустой архив
+                  # если source пустой — создаём пустой архив корректно
                   if [ -z "$(ls -A /src 2>/dev/null)" ]; then
-                    echo "[*] Source is empty, creating empty tar"
-                    tar -czf "$TMP" --files-from /dev/null
+                  echo "[*] Source is empty, creating empty tar"
+                  tar -czf "$TMP" --files-from /dev/null
                   else
-                    tar -czf "$TMP" "$@" -C /src .
+                  tar -czf "$TMP" "$@" -C /src .
                   fi
 
                   mv -f "$TMP" "$DEST"

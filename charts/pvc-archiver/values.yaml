@@ -22,9 +22,10 @@ image:
   pullPolicy: IfNotPresent
 
 securityContext:
-  runAsUser: 568
-  runAsGroup: 568
-  fsGroup: 568
+  runAsUser: 0
+  runAsGroup: 0
+  fsGroup: null              # при необходимости поставить GID владельца файлов на source (напр., 1000)
+  supplementalGroups: []     # список доп. групп для доступа к source, напр.: [1000]
 
 resources:
   requests:
