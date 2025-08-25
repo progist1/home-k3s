@@ -6,5 +6,5 @@ configMapGenerator:
 generatorOptions:
   disableNameSuffixHash: true
 resources:
-  - helm-release.yaml
   - data.yaml
+  - helm-release.yaml
