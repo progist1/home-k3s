@@ -49,15 +49,6 @@ web:
   skipSSLVerification: false
   concurrency: 1
 
-externalRedis: # replaced with REDIS_URL
-  host: "dummy"
-  password: "dummy"
-  port: 6379
-  username: "dummy"
-
-extraEnvVars:
-  REDIS_URL: "redis://redis.apps.svc.cluster.local:6379/6"
-
 externalPostgresql:
   host: "postgres.apps.svc.cluster.local"
   database: outline
@@ -87,5 +78,14 @@ url: "https://outline.home"
 postgresql:
   enabled: false
 redis:
-  enabled: false
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+  master:
+    persistence:
+      enabled: false
+    service:
+      ports:
+        redis: 6379
 
