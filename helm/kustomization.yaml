@@ -7,3 +7,4 @@ resources:
   - immich.yaml
   - prometheus.yaml
   - k8up.yaml
+  - outline.yaml

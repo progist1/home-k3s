@@ -1,0 +1,88 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/community-charts/helm-charts/refs/heads/main/charts/outline/values.schema.json
+strategy:
+  type: Recreate
+
+secretKeyExternalSecret:
+  name: "outline-secrets"
+  key: "secret-key"
+
+utilsSecretExternalSecret:
+  name: "outline-secrets"
+  key: "utils-secret-key"
+
+auth:
+  oidc:
+    authUri: https://auth.progist.ru/application/o/authorize/
+    clientId: dempc5nzVrJ0LsBzLfmUoZ2IcKAAt85ZjaeeeAgy
+    displayName: Authentik
+    enabled: true
+    logoutUri: https://auth.progist.ru/application/o/outline/end-session/
+    scopes:
+      - openid
+      - profile
+      - email
+    tokenUri: https://auth.progist.ru/application/o/token/
+    userInfoUri: https://auth.progist.ru/application/o/userinfo/
+    usernameClaim: preferred_username
+    existingSecret:
+      name: outline-secrets
+      clientSecretKey: oidc-client-secret
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "root-ca-issuer"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: "infra-sec-headers@kubernetescrd,infra-ratelimit@kubernetescrd,infra-redirect-to-https@kubernetescrd"
+  hosts:
+    - host: outline.home
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts: ["outline.home"]
+      secretName: outline-internal-tls
+
+web:
+  forceHttps: true
+  skipSSLVerification: false
+  concurrency: 1
+
+extraEnvVars:
+  REDIS_DB: "6"
+
+externalRedis:
+  host: "redis.apps.svc.cluster.local"
+
+externalPostgresql:
+  host: "postgres.apps.svc.cluster.local"
+  database: outline
+  username: outline
+  port: 5432
+  existingSecret: "outline-secrets"
+  passwordSecretKey: "postgres-password"
+
+fileStorage:
+  mode: "local"
+
+  local:
+    persistence:
+      enabled: true
+      existingClaim: outline-data-pvc
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1Gi"
+url: "https://outline.home"
+
+
+postgresql:
+  enabled: false
+redis:
+  enabled: false
+

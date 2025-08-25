@@ -34,3 +34,4 @@ resources:
   - mosquitto
   - backups-pvc.yaml
   # - mysql
+  - outline
