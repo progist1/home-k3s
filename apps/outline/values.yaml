@@ -50,10 +50,7 @@ web:
   concurrency: 1
 
 extraEnvVars:
-  REDIS_DB: "6"
-
-externalRedis:
-  host: "redis.apps.svc.cluster.local"
+  REDIS_URL: "redis://redis.apps.svc.cluster.local:6379/6"
 
 externalPostgresql:
   host: "postgres.apps.svc.cluster.local"
