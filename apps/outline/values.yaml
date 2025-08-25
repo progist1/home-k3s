@@ -49,6 +49,12 @@ web:
   skipSSLVerification: false
   concurrency: 1
 
+externalRedis: # replaced with REDIS_URL
+  host: "dummy"
+  password: "dummy"
+  port: 6379
+  username: "dummy"
+
 extraEnvVars:
   REDIS_URL: "redis://redis.apps.svc.cluster.local:6379/6"
 
