@@ -2,6 +2,11 @@
 strategy:
   type: Recreate
 
+image:
+  repository: ghcr.io/flameshikari/outline-ru
+  tag: "0.86.1"
+  pullPolicy: IfNotPresent
+
 secretKeyExternalSecret:
   name: "outline-secrets"
   key: "secret-key"
