@@ -17,7 +17,7 @@ spec:
     archiveName: jellyfin
     sourcePVC: jellyfin-config-pvc
     destPVC: backups-pvc
-    schedule: "15 2 * * *"
+    schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       fsGroup: 1000

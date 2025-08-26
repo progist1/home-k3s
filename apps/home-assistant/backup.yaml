@@ -17,7 +17,7 @@ spec:
     archiveName: home-assistant
     sourcePVC: home-assistant-config-pvc
     destPVC: backups-pvc
-    schedule: "15 2 * * *"
+    schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       fsGroup: 1000

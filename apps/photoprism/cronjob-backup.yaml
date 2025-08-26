@@ -4,7 +4,7 @@ metadata:
   name: photoprism-backup
   namespace: apps
 spec:
-  schedule: "15 2 * * *"
+  schedule: "15 5 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 5
   failedJobsHistoryLimit: 5

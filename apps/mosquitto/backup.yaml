@@ -17,7 +17,7 @@ spec:
     archiveName: mosquitto
     sourcePVC: mosquitto-data-pvc
     destPVC: backups-pvc
-    schedule: "15 2 * * *"
+    schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       runAsUser: 1883

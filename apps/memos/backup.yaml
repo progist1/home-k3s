@@ -17,5 +17,5 @@ spec:
     archiveName: memos
     sourcePVC: memos-config-pvc
     destPVC: backups-pvc
-    schedule: "15 2 * * *"
+    schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"

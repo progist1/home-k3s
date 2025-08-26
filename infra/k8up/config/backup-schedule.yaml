@@ -6,6 +6,7 @@ metadata:
 spec:
   backup:
     schedule: "0 3 * * *"
+    timeZone: "Europe/Moscow"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 2
   backend:
