@@ -17,7 +17,7 @@ spec:
     archiveName: mailu-admin
     sourcePVC: mailu-admin-data-pvc
     destPVC: backups-pvc
-    schedule: "15 5 * * *"
+    schedule: "15 2 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
       fsGroup: 1000

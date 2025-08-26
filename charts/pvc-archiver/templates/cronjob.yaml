@@ -14,7 +14,6 @@ metadata:
   {{- end }}
 spec:
   schedule: "{{ .Values.schedule }}"
-  timeZone: "Europe/Moscow"
   concurrencyPolicy: {{ .Values.concurrencyPolicy }}
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
