@@ -5,6 +5,7 @@ metadata:
   namespace: renovate
 spec:
   schedule: "0 9 * * *"
+  timeZone: "Europe/Moscow"
   jobTemplate:
     spec:
       template:
