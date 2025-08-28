@@ -71,7 +71,7 @@ spec:
                     rmdir "$EMPTY_DIR"
                   else
                     echo "[*] Archiving /src → $TMP"
-                    tar -czf "$TMP" "$@" -C /src .
+                    tar --ignore-failed-read -czf "$TMP" "$@" -C /src .
                   fi
 
                   echo "[*] Moving $TMP → $DEST"
