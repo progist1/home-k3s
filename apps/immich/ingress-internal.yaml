@@ -11,7 +11,7 @@ metadata:
     traefik.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
   rules:
-  - host: immich.home
+  - host: photos.home
     http:
       paths:
       - path: /
@@ -23,5 +23,5 @@ spec:
               number: 2283
   tls:
   - hosts:
-    - immich.home
+    - photos.home
     secretName: immich-internal-tls
