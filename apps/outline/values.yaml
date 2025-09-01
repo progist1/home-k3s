@@ -4,7 +4,7 @@ strategy:
 
 image:
   repository: ghcr.io/flameshikari/outline-ru
-  tag: "0.86.1"
+  tag: "0.87.0"
   pullPolicy: IfNotPresent
 
 secretKeyExternalSecret:
