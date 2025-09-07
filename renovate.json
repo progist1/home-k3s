@@ -78,6 +78,13 @@
       ],
       "allowedVersions": "/^\\d+\\.\\d+\\.\\d+(-.*)?$/",
       "versioning": "semver"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["homeassistant/home-assistant"],
+      "versioning": "regex:^?(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d+)$",
+      "groupName": "Home Assistant Docker Image",
+      "automerge": false
     }
   ]
 }
