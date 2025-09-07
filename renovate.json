@@ -1,8 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "branchConcurrentLimit": 30,
+  "branchConcurrentLimit": 50,
   "prConcurrentLimit": 10,
-  "deleteBranchAfterMerge": true,
+  "pruneBranchAfterAutomerge": true,
   "enabledManagers": [
     "kubernetes",
     "helm-values",
