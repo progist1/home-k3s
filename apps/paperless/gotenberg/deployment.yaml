@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gotenberg
-          image: gotenberg/gotenberg:8.23.0
+          image: gotenberg/gotenberg:8.23.1
           command:
             - "gotenberg"
             - "--chromium-disable-javascript=true"
