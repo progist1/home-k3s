@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: pgvecto
-          image: ghcr.io/immich-app/postgres:15-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0
+          image: ghcr.io/immich-app/postgres:16-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0
           ports:
             - containerPort: 5432
           securityContext:
