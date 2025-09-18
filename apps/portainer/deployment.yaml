@@ -17,7 +17,7 @@ spec:
       # hostNetwork: true
       containers:
       - name: portainer
-        image: portainer/portainer-ce:2.33.1
+        image: portainer/portainer-ce:2.34.0
         ports:
           - containerPort: 9000
         volumeMounts:
