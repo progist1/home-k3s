@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: filebrowser
-          image: filebrowser/filebrowser:v2.43.0
+          image: filebrowser/filebrowser:v2.44.0
           ports:
             - containerPort: 80
           volumeMounts:
