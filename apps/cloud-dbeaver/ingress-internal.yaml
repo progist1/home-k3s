@@ -19,7 +19,7 @@ spec:
               service:
                 name: cloud-dbeaver
                 port:
-                  number: 8978
+                  number: 80
   tls:
     - hosts:
         - db.home
