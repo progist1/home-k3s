@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: cloud-dbeaver
-          image: dbeaver/cloudbeaver:v25.2.0
+          image: dbeaver/cloudbeaver:25.2.0
           env:
             - name: CLOUDBEAVER_DB_DRIVER
               value: postgres-jdbc
