@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-dbeaver
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-dbeaver
+  template:
+    metadata:
+      labels:
+        app: cloud-dbeaver
+    spec:
+      containers:
+        - name: cloud-dbeaver
+          image: dbeaver/cloudbeaver-ce:v25.2.0
+          env:
+            - name: CLOUDBEAVER_DB_DRIVER
+              value: postgres-jdbc
+            - name: CLOUDBEAVER_DB_URL
+              value: jdbc:postgresql://postgres.apps.svc.cluster.local:5432/cloud_dbeaver
+            - name: CLOUDBEAVER_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-dbeaver-secrets
+                  key: DB_USERNAME
+            - name: CLOUDBEAVER_DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-dbeaver-secrets
+                  key: DB_DATABASE_NAME
+            - name: CLOUDBEAVER_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-dbeaver-secrets
+                  key: DB_PASSWORD
+          ports:
+            - containerPort: 8978
+          volumeMounts:
+            - name: config
+              mountPath: /opt/cloudbeaver/workspace
+              subPath: workspace
+            - name: config
+              mountPath: /opt/cloudbeaver/conf/keys
+              subPath: keys
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
+      restartPolicy: Always
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: cloud-dbeaver-config-pvc
+          
+            

@@ -12,3 +12,4 @@ resources:
   - immich
   - mysql
   - outline
+  - cloud-dbeaver
