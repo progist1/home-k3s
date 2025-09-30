@@ -21,7 +21,7 @@ spec:
                   TS=$(date +%Y_%m_%d_%H_%M_%S)
                   FILE="/backups/postgres_${TS}.sql.gz"
                   echo "[*] Dumping Postgres → $FILE"
-                  pg_dumpall -h postgres.infra.svc.cluster.local \
+                  pg_dumpall -h postgres.apps.svc.cluster.local \
                              -U postgres \
                              --no-password \
                   | gzip > "$FILE"
