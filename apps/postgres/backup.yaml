@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-postgres
+  namespace: infra
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: pgdump
+              image: postgres:17.6
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  TS=$(date +%Y_%m_%d_%H_%M_%S)
+                  FILE="/backups/postgres_${TS}.sql.gz"
+                  echo "[*] Dumping Postgres → $FILE"
+                  pg_dumpall -h postgres.infra.svc.cluster.local \
+                             -U postgres \
+                             --no-password \
+                  | gzip > "$FILE"
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secrets
+                      key: password
+              volumeMounts:
+                - name: backup
+                  mountPath: /backups
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backup-nfs
