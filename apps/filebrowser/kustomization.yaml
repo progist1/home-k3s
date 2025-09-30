@@ -7,3 +7,4 @@ resources:
   - ingress-external.yaml
   - ingress-internal.yaml
   - backup.yaml
+  - backup-database.yaml
