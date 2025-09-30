@@ -16,6 +16,9 @@ spec:
       containers:
         - name: cloud-dbeaver
           image: dbeaver/cloudbeaver:25.2.1
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           env:
             - name: CLOUDBEAVER_DB_DRIVER
               value: postgres-jdbc
