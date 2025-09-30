@@ -18,8 +18,8 @@ timeZone: "Europe/Moscow"
 exclude: ""   # напр.: "**/cache/**;**/.cache/**;**/tmp/**;**/*.log"
 
 image:
-  repository: debian
-  tag: bookworm-slim
+  repository: bash
+  tag: 5.3.3
   pullPolicy: IfNotPresent
 
 securityContext:
