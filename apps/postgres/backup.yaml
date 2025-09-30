@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: backup-postgres
-  namespace: infra
+  namespace: apps
 spec:
   schedule: "0 3 * * *"
   jobTemplate:
@@ -37,4 +37,4 @@ spec:
           volumes:
             - name: backup
               persistentVolumeClaim:
-                claimName: backup-nfs
+                claimName: backups-pvc

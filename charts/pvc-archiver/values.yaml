@@ -18,8 +18,8 @@ timeZone: "Europe/Moscow"
 exclude: ""   # напр.: "**/cache/**;**/.cache/**;**/tmp/**;**/*.log"
 
 image:
-  repository: alpine
-  tag: "3.22"
+  repository: debian
+  tag: bookworm-slim
   pullPolicy: IfNotPresent
 
 securityContext:
