@@ -71,6 +71,7 @@ spec:
                     rmdir "$EMPTY_DIR"
                   else
                     echo "[*] Archiving /src → $TMP"
+                    apk add --no-cache tar
                     tar --ignore-failed-read -czf "$TMP" "$@" -C /src .
                   fi
 
