@@ -20,7 +20,7 @@ spec:
             - "gitlab.home"
           containers:
             - name: renovate
-              image: renovate/renovate:41.132.5
+              image: renovate/renovate:41.135.3
               env:
                 - name: LOG_LEVEL
                   value: debug
