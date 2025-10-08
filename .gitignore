@@ -1,2 +1,41 @@
-all_files_dump.txt
-over.py
+# --- OS / Editor noise ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+*.swp
+*.swo
+*.tmp
+*.bak
+*.log
+
+# --- IDE ---
+.idea/
+.vscode/
+*.code-workspace
+
+# --- Git / Merge ---
+*.orig
+*.rej
+
+# --- Kustomize / kubectl output ---
+*.yaml.tmp
+*.yml.tmp
+.kustomize-build/
+.kustomization.yaml.tmp
+
+# --- Flux / Helm / Tools ---
+# Кэш чарта при helm fetch/install
+charts/
+tmp/
+.cache/
+helmfile.d/.cache/
+# Локальные бэкапы при `flux export`
+flux-system/.flux_export_backup/
+
+# --- Misc ---
+# Файлы из CI/CD pipeline'ов, если они генерируют артефакты
+dist/
+build/
+*.tgz
+*.tar.gz
