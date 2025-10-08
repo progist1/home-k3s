@@ -1,2 +1,3 @@
 resources:
   - redirect-to-https.yaml
+  - large-payload.yaml
