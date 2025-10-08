@@ -1,0 +1,11 @@
+# traefik-config.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |
+    additionalArguments:
+      - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=0s"
+      - "--entrypoints.web.transport.respondingTimeouts.readTimeout=0s"
