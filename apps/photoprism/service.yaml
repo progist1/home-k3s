@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: photoprism
   namespace: apps
+  annotations:
+    traefik.ingress.kubernetes.io/service-response-timeout: "1800s"
+    traefik.ingress.kubernetes.io/service-request-timeout: "1800s"
+    traefik.ingress.kubernetes.io/connect-timeout: "30s"
 spec:
   selector:
     app: photoprism

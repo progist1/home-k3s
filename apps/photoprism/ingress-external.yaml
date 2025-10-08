@@ -11,10 +11,6 @@ metadata:
     traefik.ingress.kubernetes.io/proxy-body-size: "0"
     traefik.ingress.kubernetes.io/request-timeout: "1800"
     traefik.ingress.kubernetes.io/response-timeout: "1800"
-    traefik.ingress.kubernetes.io/buffering: |
-      maxrequestbodybytes: 10737418240
-      memrequestbodybytes: 10737418240
-
 spec:
   rules:
   - host: old.photos.progist.ru
