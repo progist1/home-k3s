@@ -10,7 +10,7 @@ spec:
     - ReadWriteMany
   nfs:
     server: 10.0.0.4
-    path: /mnt/Fast/k3s-html/nextcloud/html
+    path: /mnt/Fast/k3s-data/nextcloud/html
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
