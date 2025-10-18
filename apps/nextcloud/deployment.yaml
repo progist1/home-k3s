@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+        - name: nextcloud
+          image: nextcloud:32.0.0-apache
+          ports:
+            - containerPort: 80
+          env:
+            - name: POSTGRES_HOST
+              value: postgres.apps.svc.cluster.local
+            - name: POSTGRES_USER
+              valueFrom: 
+                secretKeyRef: 
+                  name: nextcloud-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_DB
+              valueFrom: 
+                secretKeyRef: 
+                  name: nextcloud-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: POSTGRES_PASSWORD
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: "cloud.progist.ru nc.home"
+            - name: NEXTCLOUD_DATA_DIR
+              value: /mnt/data
+            - name: REDIS_HOST
+              value: redis/6
+          volumeMounts:
+            - name: data
+              mountPath: /mnt/data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "2Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: nextcloud-data-pvc

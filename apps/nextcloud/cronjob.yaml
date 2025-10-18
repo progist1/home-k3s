@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-cron
+  namespace: apps
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nextcloud
+              image: nextcloud:32.0.0-apache
+              args: ["php", "-f", "/var/www/html/cron.php"]
+              envFrom:
+                - secretRef:
+                    name: nextcloud-secrets
+              env:
+                - name: NEXTCLOUD_TRUSTED_DOMAINS
+                  value: "nc.progist.ru nc.home"
+                - name: POSTGRES_HOST
+                  value: postgres.apps.svc.cluster.local
+              volumeMounts:
+                - name: data
+                  mountPath: /mnt/data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: nextcloud-data-pvc
+          restartPolicy: OnFailure

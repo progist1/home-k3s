@@ -36,3 +36,4 @@ resources:
   # - mysql
   - outline
   - cloud-dbeaver
+  - nextcloud
