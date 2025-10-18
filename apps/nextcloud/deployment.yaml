@@ -40,8 +40,8 @@ spec:
               value: "cloud.progist.ru nc.home"
             - name: NEXTCLOUD_DATA_DIR
               value: /mnt/data
-            - name: REDIS_HOST
-              value: redis/6
+            # - name: REDIS_HOST
+            #   value: redis/5
           volumeMounts:
             - name: data
               mountPath: /mnt/data
