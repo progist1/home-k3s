@@ -34,18 +34,6 @@ spec:
                     secretKeyRef:
                       name: nextcloud-secrets
                       key: POSTGRES_PASSWORD
-                - name: NEXTCLOUD_ADMIN_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-secrets
-                      key: NEXTCLOUD_ADMIN_USER
-                - name: NEXTCLOUD_ADMIN_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-secrets
-                      key: NEXTCLOUD_ADMIN_PASSWORD
-                - name: NEXTCLOUD_TRUSTED_DOMAINS
-                  value: "cloud.progist.ru nc.home"
               volumeMounts:
                 - name: html
                   mountPath: /var/www/html
