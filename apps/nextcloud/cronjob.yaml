@@ -13,6 +13,9 @@ spec:
             - name: nextcloud
               image: nextcloud:32.0.0-apache
               args: ["php", "-f", "/var/www/html/cron.php"]
+              securityContext:
+                runAsUser: 33
+                runAsGroup: 33
               env:
                 - name: POSTGRES_HOST
                   value: postgres.apps.svc.cluster.local
