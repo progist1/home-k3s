@@ -23,7 +23,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always
       containers:
-      - image: ghcr.io/mailu/nginx:2024.06.44
+      - image: ghcr.io/mailu/nginx:2024.06.45
         env:
         - name: LOG_LEVEL
           value: WARNING
