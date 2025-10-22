@@ -7,7 +7,7 @@ spec:
   schedule: "15 5 * * *"
   timeZone: "Europe/Moscow"
   concurrencyPolicy: Forbid
-  successfulJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 5
   jobTemplate:
     spec:

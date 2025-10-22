@@ -5,6 +5,8 @@ metadata:
   namespace: apps
 spec:
   schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
