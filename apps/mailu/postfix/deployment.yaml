@@ -68,11 +68,11 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            cpu: "8"
-            memory: 800Mi
+            cpu: "500m"
+            memory: 128Mi
           requests:
             cpu: 25m
-            memory: 100Mi
+            memory: 64Mi
         startupProbe:
           exec:
             command:
