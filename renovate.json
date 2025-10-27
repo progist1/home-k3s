@@ -79,7 +79,7 @@
         "linuxserver/transmission",
         "lscr.io/linuxserver/transmission"
       ],
-      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+(-.*)?$/",
+      "allowedVersions": "<2000",
       "versioning": "semver"
     },
     {
