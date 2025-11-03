@@ -1,3 +1,4 @@
-# resources:
+resources:
   # - prometheus
   # - alertmanager
+  - kube-prometheus-stack
