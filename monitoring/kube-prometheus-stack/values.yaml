@@ -57,10 +57,7 @@ data:
           traefik.ingress.kubernetes.io/router.entrypoints: websecure
           cert-manager.io/cluster-issuer: root-ca-issuer
         hosts:
-          - host: grafana.home
-            paths:
-              - path: /
-                pathType: Prefix
+          - grafana.home
         tls:
           - hosts:
               - grafana.home
