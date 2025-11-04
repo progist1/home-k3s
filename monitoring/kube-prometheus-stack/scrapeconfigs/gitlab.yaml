@@ -10,6 +10,8 @@ spec:
   scrapeInterval: 15s
   metricsPath: '/-/metrics'
   scheme: HTTPS
+  tlsConfig:
+    insecureSkipVerify: true # TODO
   staticConfigs:
   - targets:
     - 'gitlab.home'
