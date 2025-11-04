@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: external-nodes
+  namespace: monitoring
+spec:
+  jobName: external-nodes
+  scrapeInterval: 15s
+  staticConfigs:
+  - targets:
+    - 'vps.home:9100'
+    - 'bigb.home:9134'
+    labels:
+      group: 'external-nodes'

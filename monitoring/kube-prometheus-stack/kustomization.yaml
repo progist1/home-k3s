@@ -6,6 +6,7 @@ configMapGenerator:
 generatorOptions:
   disableNameSuffixHash: true
 resources:
+  - configs
   - helmrelease.yaml
   - alert-manager-pv.yaml
   - grafana-pvc.yaml
