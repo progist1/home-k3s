@@ -49,7 +49,7 @@ alertmanager:
       volumeClaimTemplate:
         spec:
           storageClassName: nfs-nvme-manual
-          accessModes: ["ReadWriteMany"]
+          accessModes: ["ReadWriteOnce"]
           resources:
             requests:
               storage: 2Gi

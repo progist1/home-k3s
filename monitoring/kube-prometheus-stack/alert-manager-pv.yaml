@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 2Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /mnt/Fast/k3s-data/monitoring/alert-manager/data
     server: 10.0.0.4
