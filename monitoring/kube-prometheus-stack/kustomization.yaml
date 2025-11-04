@@ -1,3 +1,9 @@
+configMapGenerator:
+  - name: outline-values
+    namespace: apps
+    files:
+      - values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - helmrelease.yaml
-  - values.yaml

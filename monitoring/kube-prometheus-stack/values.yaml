@@ -1,73 +1,125 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kps-values
-  namespace: monitoring
-data:
-  values.yaml: |
-    prometheus:
-      prometheusSpec:
-        replicas: 1
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: local-path
-              accessModes: ["ReadWriteOnce"]
-              resources:
-                requests:
-                  storage: 10Gi
-        retention: "72h"
-        resources:
-          requests:
-            cpu: "200m"
-            memory: "512Mi"
-          limits:
-            cpu: "1"
-            memory: "2Gi"
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    retention: "72h"
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "512Mi"
+      limits:
+        cpu: "1"
+        memory: "2Gi"
 
-    alertmanager:
-      enabled: true
-      alertmanagerSpec:
-        replicas: 1
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: local-path
-              accessModes: ["ReadWriteOnce"]
-              resources:
-                requests:
-                  storage: 2Gi
+alertmanager:
+  enabled: true
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: 'telegram'
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 2h
+    receivers:
+      - name: 'telegram'
+        telegram_configs:
+          - bot_token: 'redacted'
+            chat_id: 'redacted'
+      - name: 'email'
+        email_configs:
+          - to: progist11@gmail.com
+            from: redacted
+            smarthost: mail.progist.ru:587
+            auth_username: redacted
+            auth_password: redacted
+            require_tls: true
 
-    grafana:
-      enabled: true
-      admin:
-        existingSecret: "kps-secrets"
-        userKey: admin-user
-        passwordKey: admin-password
+  alertmanagerSpec:
+    replicas: 1
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nfs-nvme-manual
+          accessModes: ["ReadWriteMany"]
+          resources:
+            requests:
+              storage: 2Gi
+          selector:
+            matchLabels:
+              app: alert-manager
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      cert-manager.io/cluster-issuer: root-ca-issuer
+      traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+      traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+    hosts:
+      - alerts.home
+    tls:
+      - hosts:
+          - alerts.home
+        secretName: alerts-internal-tls
 
-      persistence:
-        enabled: true
-        storageClassName: local-path
-        accessModes: ["ReadWriteOnce"]
-        size: 5Gi
-      ingress:
-        enabled: true
-        ingressClassName: traefik
-        annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: websecure
-          cert-manager.io/cluster-issuer: root-ca-issuer
-        hosts:
+grafana:
+  enabled: true
+  admin:
+    existingSecret: "kps-secrets"
+    userKey: admin-user
+    passwordKey: admin-password
+
+  persistence:
+    enabled: true
+    existingClaim: grafana-data-pvc
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      cert-manager.io/cluster-issuer: root-ca-issuer
+      traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+      traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+    hosts:
+      - grafana.home
+    tls:
+      - hosts:
           - grafana.home
-        tls:
-          - hosts:
-              - grafana.home
-            secretName: grafana-internal-tls
+        secretName: grafana-internal-tls
 
-    kubeStateMetrics:
-      enabled: true
+kubeStateMetrics:
+  enabled: true
 
-    nodeExporter:
-      enabled: true
+nodeExporter:
+  enabled: true
 
-    prometheusOperator:
-      enabled: true
+prometheusOperator:
+  enabled: true
+
+defaultRules:
+  disabled:
+    KubeControllerManagerDown: true
+    KubeSchedulerDown: true
+    KubeProxyDown: true
+
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+
+coreDns:
+  serviceMonitor:
+    relabelings:
+      - sourceLabels: [__name__]
+        regex: ".*"
+        action: keep

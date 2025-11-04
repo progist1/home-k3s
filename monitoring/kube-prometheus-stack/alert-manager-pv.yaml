@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: alert-manager-data-pv
+  labels:
+    app: alert-manager
+spec:
+  storageClassName: nfs-nvme-manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/monitoring/alert-manager/data
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
