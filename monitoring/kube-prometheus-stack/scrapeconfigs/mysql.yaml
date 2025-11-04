@@ -8,7 +8,7 @@ metadata:
 spec:
   jobName: mysql-exporter
   scrapeInterval: 15s
-  metrics_path: '/metrics'
+  metricsPath: '/metrics'
   scheme: HTTP
   staticConfigs:
   - targets:

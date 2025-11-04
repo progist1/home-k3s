@@ -8,7 +8,7 @@ metadata:
 spec:
   jobName: frigate-exporter
   scrapeInterval: 15s
-  metrics_path: '/api/metrics'
+  metricsPath: '/api/metrics'
   scheme: HTTP
   staticConfigs:
   - targets:

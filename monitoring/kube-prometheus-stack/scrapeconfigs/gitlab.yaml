@@ -8,7 +8,7 @@ metadata:
 spec:
   jobName: gitlab-exporter
   scrapeInterval: 15s
-  metrics_path: '/-/metrics'
+  metricsPath: '/-/metrics'
   scheme: HTTPS
   staticConfigs:
   - targets:
