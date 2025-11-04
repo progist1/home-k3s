@@ -29,6 +29,7 @@ alertmanager:
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 2h
+      routes: []
     receivers:
       - name: 'telegram'
         telegram_configs:
@@ -42,6 +43,7 @@ alertmanager:
             auth_username: redacted
             auth_password: redacted
             require_tls: true
+      - name: 'null'
 
   alertmanagerSpec:
     replicas: 1
