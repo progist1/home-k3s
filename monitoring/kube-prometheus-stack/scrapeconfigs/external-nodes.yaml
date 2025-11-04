@@ -11,6 +11,38 @@ spec:
   staticConfigs:
   - targets:
     - 'vps.home:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'home-vps'
+      location: 'home'
+  - targets:
     - 'bigb.home:9134'
     labels:
       group: 'external-nodes'
+      host: 'home-truenas'
+      location: 'home'
+  - targets:
+    - 'vps.yolki:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'pi'
+      location: 'yolki'
+  - targets:
+    - '10.0.0.34:9101'
+    labels:
+      group: 'external-nodes'
+      host: 'gitlab'
+      location: 'home'
+  - targets:
+    - 'vps.amsterdam:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'vpn-vps'
+      location: 'amsterdam'
+  - targets:
+    - 'vps.spb:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'beget-vps'
+      location: 'spb-beget'
+  

@@ -1,12 +1,12 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-  name: gitlab-node
+  name: gitlab-exporter
   namespace: monitoring
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: gitlab-node
+  jobName: gitlab-exporter
   scrapeInterval: 15s
   metrics_path: '/-/metrics'
   scheme: HTTPS
@@ -14,4 +14,7 @@ spec:
   - targets:
     - 'gitlab.home'
     labels:
-      group: 'gitlab-node'
+      group: 'gitlab-exporter'
+      service: 'gitlab' 
+      location: 'home'
+      environment: 'production'

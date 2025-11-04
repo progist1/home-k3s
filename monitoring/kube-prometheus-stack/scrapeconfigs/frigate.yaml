@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: frigate-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: frigate-exporter
+  scrapeInterval: 15s
+  metrics_path: '/api/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - '10.3.0.2:5000'
+    labels:
+      group: 'frigate-exporter'
+      service: 'frigate' 
+      location: 'yolki'

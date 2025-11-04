@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: mysql-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: mysql-exporter
+  scrapeInterval: 15s
+  metrics_path: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'vps.home:9104'
+    labels:
+      group: 'mysql-exporter'
+      environment: 'staging'
+      host: 'home-vps'
+      location: 'home'
+  - targets:
+    - 'vps.spb:9104'
+    labels:
+      group: 'mysql-exporter'
+      environment: 'production'
+      host: 'beget-vps'
+      location: 'spb-beget'

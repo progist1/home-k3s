@@ -1,3 +1,5 @@
 resources:
   - external-nodes.yaml
   - gitlab.yaml
+  - frigate.yaml
+  - mysql.yaml
