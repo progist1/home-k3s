@@ -6,7 +6,7 @@ configMapGenerator:
 generatorOptions:
   disableNameSuffixHash: true
 resources:
-  - configs
+  - scrapeconfigs
   - helmrelease.yaml
   - alert-manager-pv.yaml
   - grafana-pvc.yaml
