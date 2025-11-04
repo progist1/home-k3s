@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: gitlab-node
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: gitlab-node
+  scrapeInterval: 15s
+  metrics_path: '/-/metrics'
+  scheme: HTTPS
+  staticConfigs:
+  - targets:
+    - 'gitlab.home'
+    labels:
+      group: 'gitlab-node'
