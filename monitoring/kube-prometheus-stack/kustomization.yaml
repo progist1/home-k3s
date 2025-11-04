@@ -1,6 +1,6 @@
 configMapGenerator:
-  - name: outline-values
-    namespace: apps
+  - name: kps-values
+    namespace: monitoring
     files:
       - values.yaml
 generatorOptions:
