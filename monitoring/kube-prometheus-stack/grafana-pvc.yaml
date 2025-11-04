@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 5Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /mnt/Fast/k3s-data/monitoring/grafana/data
     server: 10.0.0.4
@@ -23,7 +23,7 @@ metadata:
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi

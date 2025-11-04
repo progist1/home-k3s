@@ -45,7 +45,7 @@ alertmanager:
 
   alertmanagerSpec:
     replicas: 1
-    storage:
+    storageSpec:
       volumeClaimTemplate:
         spec:
           storageClassName: nfs-nvme-manual
@@ -56,6 +56,11 @@ alertmanager:
           selector:
             matchLabels:
               app: alert-manager
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+
   ingress:
     enabled: true
     ingressClassName: traefik
@@ -73,6 +78,11 @@ alertmanager:
 
 grafana:
   enabled: true
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
   admin:
     existingSecret: "kps-secrets"
     userKey: admin-user
@@ -81,6 +91,9 @@ grafana:
   persistence:
     enabled: true
     existingClaim: grafana-data-pvc
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
 
   ingress:
     enabled: true
