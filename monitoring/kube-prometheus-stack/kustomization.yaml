@@ -7,3 +7,5 @@ generatorOptions:
   disableNameSuffixHash: true
 resources:
   - helmrelease.yaml
+  - alert-manager-pv.yaml
+  - grafana-pvc.yaml
