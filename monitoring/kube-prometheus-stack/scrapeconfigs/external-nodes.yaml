@@ -3,6 +3,8 @@ kind: ScrapeConfig
 metadata:
   name: external-nodes
   namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
 spec:
   jobName: external-nodes
   scrapeInterval: 15s
