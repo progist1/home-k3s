@@ -164,19 +164,13 @@ kubelet:
     enabled: true
     metricRelabelings:
       - sourceLabels: ["__name__"]
-        regex: 'container_(blkio_|fs_|tasks_state|io_|.*(open_fds|user_ns))'
-        action: drop
-      
-      - sourceLabels: ["__name__"]
-        regex: 'container_(cpu_usage_seconds_total|memory_working_set_bytes|memory_usage_bytes|network_.*_bytes_total)'
+        regex: 'container_.*|node_.*'
         action: keep
-      
       - sourceLabels: ["__name__"]
         regex: '.*_bucket$|.*_sum$|.*_count$'
         action: drop
-      
       - sourceLabels: ["__name__"]
-        regex: 'container_fs_io_.*|container_blkio_io_serviced.*'
+        regex: 'container_(blkio_|fs_|tasks_state|io_|.*(open_fds|user_ns))'
         action: drop
 
 kubeApiServer:
@@ -184,6 +178,8 @@ kubeApiServer:
     enabled: true
     metricRelabelings:
       - sourceLabels: ["__name__"]
-        regex: 'apiserver_request_duration_seconds_bucket|apiserver_flow_control_.*_bucket'
+        regex: '.*_bucket$|.*_sum$|.*_count$|.*_total$'
         action: drop
-
+      - sourceLabels: ["__name__"]  
+        regex: 'apiserver_storage_|etcd_|workqueue_'
+        action: drop
