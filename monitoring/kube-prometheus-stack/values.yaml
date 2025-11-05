@@ -18,6 +18,10 @@ prometheus:
       limits:
         cpu: "2"
         memory: "4Gi"
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'prober_probe_duration_seconds_bucket'
+        action: drop
 
 alertmanager:
   enabled: true
@@ -115,24 +119,34 @@ grafana:
 
 kubeStateMetrics:
   enabled: true
+  metricLabelsAllowlist:
+    # Только необходимые лейблы для уменьшения кардинальности
+    - pods=[app,instance,job,namespace,pod]
+    - nodes=[instance,job,node]
+    - deployments=[app,instance,job,namespace]
+  
   serviceMonitor:
     enabled: true
     metricRelabelings:
+      # Удалить самые объемные и редко используемые метрики
       - sourceLabels: ["__name__"]
-        regex: 'kube_(secret|configmap|serviceaccount|role|clusterrole|storageclass).*'
+        regex: 'kube_(secret|configmap|serviceaccount|role|clusterrole|storageclass|persistentvolumeclaim).*'
         action: drop
       
+      # Удалить технические метрики
       - sourceLabels: ["__name__"]
-        regex: '.*_(generation|resource_version|annotations|labels|uid|owner)'
+        regex: 'kube_.*_(generation|resource_version|annotations|labels|uid)'
         action: drop
       
+      # Удалить детальные condition метрики (создают много series)
       - sourceLabels: ["__name__"]
         regex: 'kube_.*_condition'
         action: drop
       
+      # Удалить owner references
       - sourceLabels: ["__name__"]
-        regex: 'kube_(pod_status_phase|pod_status_ready|deployment_status_replicas|node_status_condition|namespace_created)'
-        action: keep
+        regex: 'kube_.*_owner'
+        action: drop
 
 nodeExporter:
   enabled: true
