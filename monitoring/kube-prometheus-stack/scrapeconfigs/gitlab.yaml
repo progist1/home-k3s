@@ -21,7 +21,6 @@ spec:
       location: 'home'
       environment: 'production'
   metricRelabelings:
-metricRelabelings:
   - sourceLabels: ["__name__"]
     regex: 'gitlab_(rails_requests_total|sidekiq_jobs_|puma_|transaction_seconds_bucket)'
     action: keep
