@@ -20,3 +20,15 @@ spec:
       service: 'gitlab' 
       location: 'home'
       environment: 'production'
+  metricRelabelings:
+metricRelabelings:
+  - sourceLabels: ["__name__"]
+    regex: 'gitlab_(rails_requests_total|sidekiq_jobs_|puma_|transaction_seconds_bucket)'
+    action: keep
+  
+  - sourceLabels: ["__name__"]
+    regex: '.*_created$|.*_gauge$'
+    action: drop
+  
+  - regex: '(endpoint_id|job_id)'
+    action: labeldrop

@@ -26,3 +26,19 @@ spec:
       environment: 'production'
       host: 'beget-vps'
       location: 'spb-beget'
+  metricRelabelings:
+    - sourceLabels: ["__name__"]
+      regex: 'mysql_global_status_bytes_.*|mysql_global_status_innodb_data_written'
+      action: drop
+
+    - sourceLabels: ["__name__"]
+      regex: '.*_bucket$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_created$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_(sum|count)$'
+      action: drop

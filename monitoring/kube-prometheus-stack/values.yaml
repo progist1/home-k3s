@@ -9,14 +9,15 @@ prometheus:
           resources:
             requests:
               storage: 10Gi
-    retention: "72h"
+    retention: "7d"
+    retentionSize: "20GB"
     resources:
       requests:
         cpu: "200m"
         memory: "512Mi"
       limits:
-        cpu: "1"
-        memory: "2Gi"
+        cpu: "2"
+        memory: "4Gi"
 
 alertmanager:
   enabled: true
@@ -114,9 +115,28 @@ grafana:
 
 kubeStateMetrics:
   enabled: true
+  serviceMonitor:
+    enabled: true
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: '.*_created$|.*_generation$|.*_resource_version$'
+        action: drop
 
 nodeExporter:
   enabled: true
+  serviceMonitor:
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'node_(cpu|memory|load|disk|network|filesystem).*'
+        action: keep
+      
+      - sourceLabels: ["__name__"]
+        regex: 'node_disk_io_time_seconds_total|node_disk_.*_completed'
+        action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: '.*_bucket$|.*_sum$|.*_count$'
+        action: drop
 
 prometheusOperator:
   enabled: true
@@ -138,3 +158,32 @@ coreDns:
       - sourceLabels: [__name__]
         regex: ".*"
         action: keep
+
+kubelet:
+  serviceMonitor:
+    enabled: true
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'container_(blkio_|fs_|tasks_state|io_|.*(open_fds|user_ns))'
+        action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: 'container_(cpu_usage_seconds_total|memory_working_set_bytes|memory_usage_bytes|network_.*_bytes_total)'
+        action: keep
+      
+      - sourceLabels: ["__name__"]
+        regex: '.*_bucket$|.*_sum$|.*_count$'
+        action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: 'container_fs_io_.*|container_blkio_io_serviced.*'
+        action: drop
+
+kubeApiServer:
+  serviceMonitor:
+    enabled: true
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'apiserver_request_duration_seconds_bucket|apiserver_flow_control_.*_bucket'
+        action: drop
+

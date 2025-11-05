@@ -17,3 +17,16 @@ spec:
       group: 'jellyfin-exporter'
       host: 'k3s'
       location: 'home'
+
+  metricRelabelings:
+    - sourceLabels: ["__name__"]
+      regex: '.*_bucket$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_created$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_(sum|count)$'
+      action: drop
