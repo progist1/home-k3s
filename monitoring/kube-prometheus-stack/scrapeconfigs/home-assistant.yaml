@@ -17,7 +17,7 @@ spec:
       key: token
   staticConfigs:
   - targets:
-    - 'home-assistant.apps.svc.cluster.local:8123'
+    - 'home-assistant.apps.svc.cluster.local:80'
     labels:
       group: 'home-assistant-exporter'
       host: 'k3s'

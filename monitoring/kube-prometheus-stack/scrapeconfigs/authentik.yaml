@@ -12,7 +12,7 @@ spec:
   scheme: HTTP
   staticConfigs:
   - targets:
-    - 'authentik-metrics.apps.svc.cluster.local:9300'
+    - 'authentik-server-metrics.apps.svc.cluster.local:9300'
     labels:
       group: 'authentik-exporter'
       host: 'k3s'
