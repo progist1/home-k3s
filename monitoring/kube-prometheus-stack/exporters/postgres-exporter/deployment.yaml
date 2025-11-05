@@ -25,7 +25,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-exporter-secrets
-                  key: username
+                  key: user
             - name: DATA_SOURCE_PASS
               valueFrom:
                 secretKeyRef:
