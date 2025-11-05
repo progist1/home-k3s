@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: authentik-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: authentik-exporter
+  scrapeInterval: 15s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'authentik-metrics.apps.svc.cluster.local:9300'
+    labels:
+      group: 'authentik-exporter'
+      host: 'k3s'
+      location: 'home'

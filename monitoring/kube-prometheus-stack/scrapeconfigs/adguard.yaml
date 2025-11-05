@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: adguard-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: adguard-exporter
+  scrapeInterval: 15s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'adguard-exporter.monitoring.svc.cluster.local:9618'
+    labels:
+      group: 'adguard-exporter'
+      host: 'k3s'
+      location: 'home'

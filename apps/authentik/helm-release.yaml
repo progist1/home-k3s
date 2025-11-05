@@ -47,6 +47,9 @@ spec:
       ingress:
         enabled: false
 
+      metrics:
+        enabled: true        
+
       volumes:
         - name: secrets
           secret:

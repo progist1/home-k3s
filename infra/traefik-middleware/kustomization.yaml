@@ -1,3 +1,4 @@
 resources:
   - redirect-to-https.yaml
   - nextcloud.yaml
+  - block-metrics.yaml

@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: home-assistant-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: home-assistant-exporter
+  scrapeInterval: 15s
+  metricsPath: '/api/prometheus'
+  scheme: HTTP
+  authorization:
+    type: Bearer
+    credentials:
+      name: home-assistant-exporter-token-secret
+      key: token
+  staticConfigs:
+  - targets:
+    - 'home-assistant.apps.svc.cluster.local:8123'
+    labels:
+      group: 'home-assistant-exporter'
+      host: 'k3s'
+      location: 'home'

@@ -1,0 +1,30 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: block-metrics
+  namespace: infra
+spec:
+  chain:
+    middlewares:
+      - metrics-path-matcher
+      - metrics-blocker
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: metrics-path-matcher
+  namespace: infra
+spec:
+  stripPrefix:
+    prefixes:
+      - "/metrics"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: metrics-blocker
+  namespace: infra
+spec:
+  ipWhiteList:
+    sourceRange:
+      - "127.0.0.1/32"

@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: redis-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: redis-exporter
+  scrapeInterval: 30s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'redis-exporter.monitoring.svc.cluster.local:9121'
+    labels:
+      group: 'redis-exporter'
+      host: 'k3s'
+      location: 'home'

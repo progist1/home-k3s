@@ -3,3 +3,9 @@ resources:
   - gitlab.yaml
   - frigate.yaml
   - mysql.yaml
+  - postgres.yaml
+  - home-assistant.yaml
+  - redis.yaml
+  - authentik.yaml
+  - adguard.yaml
+  - jellyfin.yaml

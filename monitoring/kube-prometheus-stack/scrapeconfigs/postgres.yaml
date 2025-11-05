@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: postgres-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: postgres-exporter
+  scrapeInterval: 30s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'postgres-exporter.monitoring.svc.cluster.local:9187'
+    labels:
+      group: 'postgres-exporter'
+      host: 'k3s'
+      location: 'home'

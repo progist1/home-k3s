@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-exporter
+  template:
+    metadata:
+      labels:
+        app: redis-exporter
+    spec:
+      containers:
+        - name: redis-exporter
+          image: ghcr.io/henrywhitaker3/adguard-exporter:v1.2.1
+          ports:
+            - containerPort: 9618
+          env:
+            - name: ADGUARD_SERVERS
+              value: http://adguard-home.apps.svc.cluster.local:3000
+            - name: ADGUARD_USERNAMES
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-exporter-secrets
+                  key: admin-username
+            - name: ADGUARD_PASSWORDS
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-exporter-secrets
+                  key: admin-password
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            

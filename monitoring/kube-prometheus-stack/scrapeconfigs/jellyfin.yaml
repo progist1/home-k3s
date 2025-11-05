@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: jellyfin-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: jellyfin-exporter
+  scrapeInterval: 15s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'jellyfin.apps.svc.cluster.local:8096'
+    labels:
+      group: 'jellyfin-exporter'
+      host: 'k3s'
+      location: 'home'
