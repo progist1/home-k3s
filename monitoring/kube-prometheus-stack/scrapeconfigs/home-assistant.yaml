@@ -24,14 +24,11 @@ spec:
       location: 'home'
 
   metricRelabelings:
-    - sourceLabels: ["__name__"]
-      regex: '.*_bucket$'
-      action: drop
-    
-    - sourceLabels: ["__name__"]
-      regex: '.*_created$'
-      action: drop
-    
-    - sourceLabels: ["__name__"]
-      regex: '.*_(sum|count)$'
-      action: drop
+  - sourceLabels: ["__name__"]
+    regex: 'homeassistant_(entity_available|state_change_total)'
+    action: keep
+
+  - sourceLabels: ["__name__"]
+    regex: 'homeassistant_last_updated_time_seconds'
+    action: drop
+

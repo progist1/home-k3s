@@ -119,8 +119,20 @@ kubeStateMetrics:
     enabled: true
     metricRelabelings:
       - sourceLabels: ["__name__"]
-        regex: '.*_created$|.*_generation$|.*_resource_version$'
+        regex: 'kube_(secret|configmap|serviceaccount|role|clusterrole|storageclass).*'
         action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: '.*_(generation|resource_version|annotations|labels|uid|owner)'
+        action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: 'kube_.*_condition'
+        action: drop
+      
+      - sourceLabels: ["__name__"]
+        regex: 'kube_(pod_status_phase|pod_status_ready|deployment_status_replicas|node_status_condition|namespace_created)'
+        action: keep
 
 nodeExporter:
   enabled: true
