@@ -16,12 +16,19 @@ spec:
       host: 'home-vps'
       location: 'home'
   - targets:
-    - 'bigb.home:9134'
-    - 'bigb.home:9100'
+    - 'bigb.home:9134'  # zfs-exporter
     labels:
       group: 'external-nodes'
       host: 'home-truenas'
       location: 'home'
+      exporter: 'zfs'
+  - targets:
+    - 'bigb.home:9100'  # node-exporter
+    labels:
+      group: 'external-nodes' 
+      host: 'home-truenas'
+      location: 'home'
+      exporter: 'node'
   - targets:
     - 'vps.yolki:9100'
     labels:
