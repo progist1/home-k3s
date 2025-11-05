@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-exporter
+  name: adguard-exporter
   namespace: monitoring
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-exporter
+      app: adguard-exporter
   template:
     metadata:
       labels:
-        app: redis-exporter
+        app: adguard-exporter
     spec:
       containers:
-        - name: redis-exporter
+        - name: adguard-exporter
           image: ghcr.io/henrywhitaker3/adguard-exporter:v1.2.1
           ports:
             - containerPort: 9618
