@@ -45,16 +45,3 @@ spec:
       group: 'external-nodes'
       host: 'beget-vps'
       location: 'spb-beget'
-  
-  metricRelabelings:
-    - sourceLabels: ["__name__"]
-      regex: 'node_(cpu|memory|load|disk|network|filesystem).*'
-      action: keep
-    
-    - sourceLabels: ["__name__"]
-      regex: 'node_disk_io_time_seconds_total|node_disk_.*_completed'
-      action: drop
-    
-    - sourceLabels: ["__name__"]
-      regex: '.*_bucket$|.*_sum$|.*_count$'
-      action: drop

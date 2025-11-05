@@ -167,6 +167,20 @@ defaultRules:
     KubeControllerManagerDown: true
     KubeSchedulerDown: true
     KubeProxyDown: true
+    etcdDatabaseHighFragmentationRatio: true
+    etcdDatabaseQuotaLowSpace: true
+    etcdExcessiveDatabaseGrowth: true
+    etcdGRPCRequestsSlow: true
+    etcdHighCommitDurations: true
+    etcdHighFsyncDurations: true
+    etcdHighNumberOfFailedGRPCRequests: true
+    etcdHighNumberOfFailedProposals: true
+    etcdHighNumberOfLeaderChanges: true
+    etcdInsufficientMembers: true
+    etcdMemberCommunicationSlow: true
+    etcdMembersDown: true
+    etcdNoLeader: true
+
 
 kubeControllerManager:
   enabled: false
