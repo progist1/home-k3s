@@ -1,0 +1,296 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: smartmon-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: smartmon-health
+    interval: 30s
+    rules:
+    # Критический алерт: диск помечен как нездоровый
+    - alert: SmartmonDeviceUnhealthy
+      expr: |
+        (
+          smartmon_device_smart_healthy == 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SMART health FAILED: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Type:** {{ $labels.type }}
+          **Model:** {{ $labels.device_model | default "N/A" }}
+          **Family:** {{ $labels.model_family | default "N/A" }}
+          **Serial:** {{ $labels.serial_number }}
+          **Firmware:** {{ $labels.firmware_version }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🚨 Replace drive immediately!
+        
+    # Внимание: перераспределенные сектора (критичный показатель)
+    - alert: SmartmonReallocatedSectors
+      expr: |
+        (
+          smartmon_reallocated_sector_ct_raw_value > 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Reallocated sectors: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Count:** {{ $value }} sectors
+          **Host:** {{ $labels.hostname }}
+          **Action:** ⚠️ Drive is failing, schedule replacement ASAP!
+        
+    # Внимание: сектора ожидают перераспределения
+    - alert: SmartmonPendingSectors
+      expr: |
+        (
+          smartmon_current_pending_sector_raw_value > 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pending sectors: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Pending:** {{ $value }} sectors
+          **Host:** {{ $labels.hostname }}
+          **Risk:** 🔥 Data loss possible, backup immediately!
+        
+    # Внимание: неисправимые ошибки
+    - alert: SmartmonOfflineUncorrectable
+      expr: |
+        (
+          smartmon_offline_uncorrectable_raw_value > 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Uncorrectable errors: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Errors:** {{ $value }} uncorrectable sectors
+          **Host:** {{ $labels.hostname }}
+          **Action:** 💾 Immediate backup recommended!
+
+  - name: smartmon-performance
+    interval: 30s
+    rules:
+    # Температура
+    - alert: SmartmonHighTemperature
+      expr: |
+        (
+          smartmon_temperature_celsius_raw_value > 55
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High temperature: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Temp:** {{ $value }}°C
+          **Host:** {{ $labels.hostname }}
+          **Threshold:** 55°C
+          **Action:** 🌡️ Check cooling/ventilation!
+        
+    # Ошибки UDMA CRC (проблема с кабелем/контроллером)
+    - alert: SmartmonUDMACRCError
+      expr: |
+        (
+          increase(smartmon_udma_crc_error_count_raw_value[1h]) > 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "UDMA CRC errors: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Errors:** {{ $value }} in last hour
+          **Host:** {{ $labels.hostname }}
+          **Issue:** 🔌 Cable or controller problem detected
+
+  - name: smartmon-wear
+    interval: 30s
+    rules:
+    # Для SSD: износ (если есть метрика)
+    - alert: SmartmonSSDwearHigh
+      expr: |
+        (
+          smartmon_wear_leveling_count_raw_value > 90
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "SSD wear high: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Wear level:** {{ $value }}%
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🔄 Consider SSD replacement soon
+
+  - name: smartmon-nvme
+    interval: 30s
+    rules:
+    # Критический износ NAND (порог 80%)
+    - alert: NVMeHighPercentageUsed
+      expr: |
+        (
+          smartmon_percentage_used > 80
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "NVMe wear high: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Wear:** {{ $value }}%
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🔄 Consider SSD replacement soon
+
+    # Критический уровень запасных блоков (<20%)
+    - alert: NVMeLowAvailableSpareCritical
+      expr: |
+        (
+          smartmon_available_spare_percentage < 20
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CRITICAL spare blocks low: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Available spare:** {{ $value }}%
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🚨 Backup data NOW, drive failure imminent!
+
+    # Предупреждение о запасных блоках (<50%)
+    - alert: NVMeLowAvailableSpareWarning
+      expr: |
+        (
+          smartmon_available_spare_percentage < 50
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low spare blocks: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Available spare:** {{ $value }}%
+          **Host:** {{ $labels.hostname }}
+          **Action:** ⚠️ Monitor drive closely
+
+    # Всплеск unsafe shutdowns (>5 за день)
+    - alert: NVMeHighUnsafeShutdowns
+      expr: |
+        (
+          increase(smartmon_unsafe_shutdown_count_raw_value[1d]) > 5
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Unsafe shutdowns spike: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Recent unsafe shutdowns:** {{ $value }}
+          **Host:** {{ $labels.hostname }}
+          **Issue:** 💡 Check power supply/UPS
+
+    # Критическая температура (>70°C)
+    - alert: NVMeCriticalTemperature
+      expr: |
+        (
+          smartmon_temperature_celsius_raw_value > 70
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CRITICAL temp: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Temp:** {{ $value }}°C
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🔥 Throttling imminent, improve cooling!
+
+    # Предупреждение температуры (>60°C)
+    - alert: NVMeHighTemperature
+      expr: |
+        (
+          smartmon_temperature_celsius_raw_value > 60
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High temperature: {{ $labels.device_model | default $labels.type }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Serial:** {{ $labels.serial_number }}
+          **Temp:** {{ $value }}°C
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🌡️ Monitor cooling

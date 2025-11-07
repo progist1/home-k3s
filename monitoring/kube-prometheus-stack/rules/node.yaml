@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: node-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: node-external
+    interval: 30s
+    rules:
+    - alert: NodeDown
+      expr: up{job="external-nodes"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node {{ $labels.hostname }} is down"
+        description: "Node {{ $labels.host }} ({{ $labels.instance }}) has been unreachable for 5m."
+        
+    - alert: NodeHighCPU
+      expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage on {{ $labels.hostname }}"
+        description: "CPU usage is {{ $value }}% on {{ $labels.hostname }}."
+        
+    - alert: NodeHighMemory
+      expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory usage on {{ $labels.hostname }}"
+        description: "Memory usage is {{ $value }}% on {{ $labels.hostname }}."
+        
+    - alert: NodeDiskFull
+      expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|fuse\\.lxcfs|vfat"} / node_filesystem_size_bytes)) * 100 > 85
+      for: 10m
+      labels:
+        severity: warning
+        fstype: "{{ $labels.fstype }}"
+      annotations:
+        summary: "Disk space usage high on {{ $labels.hostname }}"
+        description: "Mountpoint {{ $labels.mountpoint }} on {{ $labels.hostname }} is {{ $value }}% full."

@@ -1,0 +1,5 @@
+resources:
+  - db.yaml
+  - node.yaml
+  - smartmon.yaml
+  - zfs.yaml

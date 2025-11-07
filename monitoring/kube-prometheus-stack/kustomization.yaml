@@ -11,3 +11,4 @@ resources:
   - alert-manager-pv.yaml
   - grafana-pvc.yaml
   - exporters
+  - rules

@@ -1,0 +1,170 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: database-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: postgres
+    interval: 30s
+    rules:
+    - alert: PostgreSQLDown
+      expr: up{job="postgres-exporter"} == 0
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "PostgreSQL DOWN on {{ $labels.host }}"
+        description: "Cannot scrape PostgreSQL metrics for 3 minutes."
+
+    - alert: PostgreSQLReplicationLag
+      expr: |
+        (
+          pg_replication_lag_seconds > 10
+        )
+        * on(instance) group_left
+          pg_static
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "PostgreSQL replication lag high on {{ $labels.host }}"
+        description: |
+          **Lag:** {{ $value }} seconds
+          **Host:** {{ $labels.host }}
+          **Instance:** {{ $labels.instance }}
+          **Action:** ⚠️ Check replica status
+
+    - alert: PostgreSQLHighConnections
+      expr: |
+        (
+          pg_stat_database_numbackends{datname="postgres"} > 10
+        )
+        * on(instance) group_left
+          pg_static
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "PostgreSQL high connection count"
+        description: |
+          **Connections:** {{ $value }}
+          **Database:** {{ $labels.datname }}
+          **Host:** {{ $labels.host }}
+          **Action:** 🚦 Check connection pool
+
+    - alert: PostgreSQLDeadlocks
+      expr: |
+        (
+          increase(pg_stat_database_deadlocks[5m]) > 0
+        )
+        * on(instance, datname) group_left
+          pg_stat_database_size_bytes
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "PostgreSQL deadlocks detected on {{ $labels.datname }}"
+        description: |
+          **Database:** {{ $labels.datname }}
+          **Deadlocks:** {{ $value }}
+          **Instance:** {{ $labels.instance }}
+          **Action:** 🔒 Review transaction isolation
+
+    - alert: PostgreSQLDatabaseSize
+      expr: |
+        (
+          pg_database_size_bytes / (1024^3) > 10
+        )
+        * on(instance, datname) group_left
+          pg_database_size_bytes
+      for: 1h
+      labels:
+        severity: info
+      annotations:
+        summary: "PostgreSQL database {{ $labels.datname }} > 10GB"
+        description: |
+          **Database:** {{ $labels.datname }}
+          **Size:** {{ $value | humanize }}GB
+          **Instance:** {{ $labels.instance }}
+
+  - name: mysql
+    interval: 30s
+    rules:
+    - alert: MySQLDown
+      expr: up{job="mysql-exporter"} == 0
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MySQL DOWN on {{ $labels.host }}"
+        description: "Cannot reach MySQL at {{ $labels.instance }}."
+
+    - alert: MySQLReplicationLagCritical
+      expr: |
+        (
+          mysql_slave_status_seconds_behind_master > 30
+        )
+        * on(instance) group_left
+          mysql_version_info
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MySQL replication lag CRITICAL on {{ $labels.host }}"
+        description: |
+          **Lag:** {{ $value }} seconds
+          **Host:** {{ $labels.hostname }}
+          **Master:** {{ $labels.master_host }}
+          **Action:** 🚨 Replica is falling behind!
+
+    - alert: MySQLReplicationStopped
+      expr: |
+        (
+          mysql_slave_status_slave_io_running == 0
+          or
+          mysql_slave_status_slave_sql_running == 0
+        )
+        * on(instance) group_left
+          mysql_version_info
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MySQL replication STOPPED on {{ $labels.host }}"
+        description: |
+          **IO Running:** {{ $labels.mysql_slave_status_slave_io_running }}
+          **SQL Running:** {{ $labels.mysql_slave_status_slave_sql_running }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🔄 Restart replication threads
+
+    - alert: MySQLReplicationLagWarning
+      expr: |
+        (
+          mysql_slave_status_seconds_behind_master > 5
+        )
+        * on(instance) group_left
+          mysql_version_info
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "MySQL replication lag warning on {{ $labels.host }}"
+        description: |
+          **Lag:** {{ $value }} seconds
+          **Host:** {{ $labels.hostname }}
+          **Action:** ⚠️ Monitor replication performance
+
+  - name: redis
+    interval: 30s
+    rules:
+    - alert: RedisDown
+      expr: up{job="redis-exporter"} == 0
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Redis DOWN on {{ $labels.host }}"
+        description: "Cannot scrape Redis metrics."

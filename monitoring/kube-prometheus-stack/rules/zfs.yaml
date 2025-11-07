@@ -1,0 +1,143 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: zfs-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: zfs-pool-state
+    interval: 30s
+    rules:
+    # Критический алерт: пул НЕ online
+    - alert: ZFSPoolNotOnline
+      expr: |
+        # Ищем пулы, где online=0, но есть другие состояния = 1
+        (
+          node_zfs_zpool_state{state="online"} == 0
+          and on(instance, zpool) (
+            max by (instance, zpool) (node_zfs_zpool_state{state=~"degraded|faulted|unavail|removed"}) == 1
+          )
+        )
+        * on(instance, zpool) group_left(state)
+          max by (instance, zpool, state) (node_zfs_zpool_state{state=~"degraded|faulted|unavail|removed"} == 1)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ZFS pool {{ $labels.zpool }} is {{ $labels.state }} on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.zpool }}
+          **Status:** {{ $labels.state | title }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** ⚠️ Immediate attention required!
+
+  - name: zfs-capacity
+    interval: 30s
+    rules:
+    # Высокая заполненность пула (>80%)
+    - alert: ZFSPoolCapacityHigh
+      expr: |
+        (
+          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 80
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} is {{ $value | humanize }}% full on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Used:** {{ $value | humanize }}%
+          **Allocated:** {{ printf "%.2f TiB" (mulf $value 0.01) }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🗄️ Free up space or expand pool
+
+  - name: zfs-capacity-critical
+    interval: 30s
+    rules:
+    # Высокая заполненность пула (>90%)
+    - alert: ZFSPoolCapacityHigh
+      expr: |
+        (
+          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 90
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} is {{ $value | humanize }}% full on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Used:** {{ $value | humanize }}%
+          **Allocated:** {{ printf "%.2f TiB" (mulf $value 0.01) }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🗄️ Immediate free up space or expand pool
+
+  - name: zfs-performance
+    interval: 30s
+    rules:
+    # Высокая фрагментация пула (>60%)
+    - alert: ZFSPoolFragmentationHigh
+      expr: |
+        (
+          zfs_pool_fragmentation_ratio * 100 > 60
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} fragmentation high on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Fragmentation:** {{ $value | humanize }}%
+          **Host:** {{ $labels.hostname }}
+          **Action:** 💾 Consider pool scrub and balance
+
+    # Проблемы дедупликации (ratio < 1.0)
+    - alert: ZFSDeduplicationIssue
+      expr: |
+        (
+          zfs_pool_deduplication_ratio < 1.0
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} dedup ratio abnormal on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Deduplication ratio:** {{ $value }}
+          **Host:** {{ $labels.hostname }}
+          **Issue:** 🧹 Deduplication table may be corrupted
+
+  - name: zfs-health-met
+    interval: 30s
+    rules:
+    # Health метрика от zfs-exporter (если != 0)
+    - alert: ZFSPoolHealthBad
+      expr: |
+        (
+          zfs_pool_health != 0
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} health bad on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Health value:** {{ $value }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🚨 Check `zpool status` immediately!
