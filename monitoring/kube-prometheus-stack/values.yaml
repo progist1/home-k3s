@@ -197,16 +197,6 @@ coreDns:
 kubelet:
   serviceMonitor:
     enabled: true
-    metricRelabelings:
-      - sourceLabels: ["__name__"]
-        regex: 'container_.*|node_.*'
-        action: keep
-      - sourceLabels: ["__name__"]
-        regex: '.*_bucket$|.*_sum$|.*_count$'
-        action: drop
-      - sourceLabels: ["__name__"]
-        regex: 'container_(blkio_|fs_|tasks_state|io_|.*(open_fds|user_ns))'
-        action: drop
 
 kubeApiServer:
   serviceMonitor:
