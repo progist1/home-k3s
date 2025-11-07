@@ -20,7 +20,5 @@ spec:
     schedule: "15 5 * * *"
     exclude: "**/cache/**;**/.cache/**;**/tmp/**"
     securityContext:
-      runAsUser: 999
-      runAsGroup: 1000
       fsGroup: 999
       supplementalGroups: [999, 1000, 0]
