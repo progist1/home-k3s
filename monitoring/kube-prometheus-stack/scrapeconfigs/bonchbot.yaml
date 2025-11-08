@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: bonchbot-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  - jobName: bonchbot-exporter-production
+    scrapeInterval: 10s
+    metricsPath: '/metrics'
+    scheme: HTTPS
+    authorization:
+      type: Bearer
+      credentials:
+        name: bonchbot-secrets
+        key: production
+
+    staticConfigs:
+    - targets:
+      - 'bonchbot.ru'
+      labels:
+        group: 'bonchbot-exporter'
+        host: 'beget-vps'
+        location: 'spb-beget'
+        environment: production
+
+  - jobName: bonchbot-exporter-staging
+    scrapeInterval: 10s
+    metricsPath: '/metrics'
+    scheme: HTTPS
+    authorization:
+      type: Bearer
+      credentials:
+        name: bonchbot-secrets
+        key: staging
+
+    staticConfigs:
+    - targets:
+      - 'test.bonchbot.ru'
+      labels:
+        group: 'bonchbot-exporter'
+        host: 'beget-vps'
+        location: 'spb-beget'
+        environment: staging

@@ -9,3 +9,4 @@ resources:
   - authentik.yaml
   - adguard.yaml
   - jellyfin.yaml
+  - bonchbot.yaml
