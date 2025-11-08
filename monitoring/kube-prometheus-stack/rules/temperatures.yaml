@@ -23,8 +23,17 @@ spec:
         labels:
           severity: critical
         annotations:
-          summary: "Critical temperature on {{ $labels.host }}"
-          description: "{{ or $labels.disk $labels.device $labels.chip }} {{ or $labels.sensor '' }} temperature is {{ $value }}°C"
+          summary: "Critical temperature on {{ $labels.instance }}"
+          description: |
+            {{- if $labels.disk }}
+            Disk {{ $labels.disk }} temperature is {{ $value }}°C
+            {{- else if $labels.device }}
+            Device {{ $labels.device }} temperature is {{ $value }}°C  
+            {{- else if $labels.chip }}
+            Chip {{ $labels.chip }} temperature is {{ $value }}°C
+            {{- else }}
+            Temperature sensor {{ $labels.sensor }} is {{ $value }}°C
+            {{- end }}
 
       - alert: NodeHighTemperature  
         expr: |
@@ -39,5 +48,14 @@ spec:
         labels:
           severity: warning
         annotations:
-          summary: "High temperature on {{ $labels.host }}"
-          description: "{{ or $labels.disk $labels.device $labels.chip }} {{ or $labels.sensor '' }} temperature is {{ $value }}°C"
+          summary: "High temperature on {{ $labels.instance }}"
+          description: |
+            {{- if $labels.disk }}
+            Disk {{ $labels.disk }} temperature is {{ $value }}°C
+            {{- else if $labels.device }}
+            Device {{ $labels.device }} temperature is {{ $value }}°C  
+            {{- else if $labels.chip }}
+            Chip {{ $labels.chip }} temperature is {{ $value }}°C
+            {{- else }}
+            Temperature sensor {{ $labels.sensor }} is {{ $value }}°C
+            {{- end }}
