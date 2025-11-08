@@ -53,11 +53,11 @@ spec:
         summary: "Backup section {{ $labels.section }} is stale"
         description: "Backup section {{ $labels.section }} hasn't been updated for more than 24 hours."
 
-    # Мониторинг размера бэкапов (если это важно)
+    # Мониторинг размера бэкапов
     - alert: BackupSizeAnomaly
       expr: |
         (
-          backup_size_bytes > 1e9
+          backup_size_bytes > 1e10
           or
           backup_size_bytes < 1000
         )
