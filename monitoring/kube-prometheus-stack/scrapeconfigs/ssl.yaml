@@ -29,7 +29,7 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: "ssl-internal"
+  jobName: "ssl-external"
   metricsPath: /probe
   params:
     module: ["tcp"]
