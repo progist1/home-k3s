@@ -13,7 +13,6 @@ spec:
     # Критический алерт: пул НЕ online
     - alert: ZFSPoolNotOnline
       expr: |
-        # Ищем пулы, где online=0, но есть другие состояния = 1
         (
           node_zfs_zpool_state{state="online"} == 0
           and on(instance, zpool) (
@@ -52,7 +51,7 @@ spec:
         description: |
           **Pool:** {{ $labels.pool }}
           **Used:** {{ $value | humanize }}%
-          **Allocated:** {{ printf "%.2f TiB" (mulf $value 0.01) }}
+          **Allocated:** {{ printf "%.1f" $value }}
           **Host:** {{ $labels.hostname }}
           **Action:** 🗄️ Free up space or expand pool
 
@@ -75,7 +74,7 @@ spec:
         description: |
           **Pool:** {{ $labels.pool }}
           **Used:** {{ $value | humanize }}%
-          **Allocated:** {{ printf "%.2f TiB" (mulf $value 0.01) }}
+          **Allocated:** {{ printf "%.1f" $value }}
           **Host:** {{ $labels.hostname }}
           **Action:** 🗄️ Immediate free up space or expand pool
 
