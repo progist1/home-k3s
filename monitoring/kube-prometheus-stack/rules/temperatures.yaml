@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: temperature-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: temperature
+    interval: 5s
+    rules:
+      - alert: NodeCriticalTemperature
+        expr: |
+          (
+            node_hwmon_temp_celsius > 70
+            OR
+            smartmon_temperature_celsius_raw_value > 70
+            OR  
+            nvme_temperature_celsius > 75
+          )
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical temperature on {{ $labels.host }}"
+          description: "{{ or $labels.disk $labels.device $labels.chip }} {{ or $labels.sensor '' }} temperature is {{ $value }}°C"
+
+      - alert: NodeHighTemperature  
+        expr: |
+          (
+            node_hwmon_temp_celsius > 60
+            OR
+            smartmon_temperature_celsius_raw_value > 60
+            OR
+            nvme_temperature_celsius > 65
+          )
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High temperature on {{ $labels.host }}"
+          description: "{{ or $labels.disk $labels.device $labels.chip }} {{ or $labels.sensor '' }} temperature is {{ $value }}°C"

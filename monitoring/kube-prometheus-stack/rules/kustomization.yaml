@@ -5,3 +5,4 @@ resources:
   - zfs.yaml
   - bonchbot.yaml
   - backups.yaml
+  - temperatures.yaml
