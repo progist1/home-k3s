@@ -13,6 +13,10 @@ spec:
       labels:
         app: ssl-exporter
     spec:
+      dnsPolicy: ClusterFirst
+      dnsConfig:
+        nameservers:
+          - 10.0.0.2
       containers:
         - name: ssl-exporter
           image: ribbybibby/ssl-exporter:2.4.3
