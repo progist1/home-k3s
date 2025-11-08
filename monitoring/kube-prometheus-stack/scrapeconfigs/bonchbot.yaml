@@ -6,7 +6,7 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: bonchbot-exporter-production
+  jobName: bonchbot-exporter
   scrapeInterval: 10s
   metricsPath: '/metrics'
   scheme: HTTPS
