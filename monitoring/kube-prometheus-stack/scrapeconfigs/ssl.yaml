@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: adguard-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  job_name: "ssl"
+  metrics_path: /probe
+  static_configs:
+    - targets:
+        - ha.home:443
+        - ha.progist.ru:443
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: ssl-exporter.monitoring.svc.cluster.local:9219 # SSL exporter.

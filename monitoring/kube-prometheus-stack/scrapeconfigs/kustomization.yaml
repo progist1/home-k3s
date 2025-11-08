@@ -10,3 +10,4 @@ resources:
   - adguard.yaml
   - jellyfin.yaml
   - bonchbot.yaml
+  - ssl.yaml
