@@ -1,18 +1,40 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-  name: ssl-exporter
+  name: ssl-exporter-internal
   namespace: monitoring
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: "ssl"
+  jobName: "ssl-internal"
+  metricsPath: /probe
+  params:
+    module: ["tcp_internal"]
+  staticConfigs:
+    - targets:
+        - ha.home:443
+  relabelings:
+    - sourceLabels: [__address__]
+      targetLabel: __param_target
+    - sourceLabels: [__param_target]
+      targetLabel: instance
+    - targetLabel: __address__
+      replacement: ssl-exporter.monitoring.svc.cluster.local:9219 # SSL exporter.
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: ssl-exporter-external
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: "ssl-internal"
   metricsPath: /probe
   params:
     module: ["tcp"]
   staticConfigs:
     - targets:
-        - ha.home:443
         - ha.progist.ru:443
   relabelings:
     - sourceLabels: [__address__]

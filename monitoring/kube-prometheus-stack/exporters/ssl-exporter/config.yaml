@@ -7,12 +7,12 @@ data:
   config.yaml: |
     default_module: tcp
     modules:
-      tcp:
+      tcp_internal:
         prober: tcp
         tls_config:
           ca_file: /etc/ssl/certs/ca.crt
           insecure_skip_verify: false
-      https:
+      https_internal:
         prober: https
         tls_config:
           ca_file: /etc/ssl/certs/ca.crt
