@@ -6,16 +6,16 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
-  job_name: "ssl"
-  metrics_path: /probe
-  static_configs:
+  jobName: "ssl"
+  metricsPath: /probe
+  staticConfigs:
     - targets:
         - ha.home:443
         - ha.progist.ru:443
-  relabel_configs:
-    - source_labels: [__address__]
-      target_label: __param_target
-    - source_labels: [__param_target]
-      target_label: instance
-    - target_label: __address__
+  metricRelabelings:
+    - sourceLabels: [__address__]
+      targetLabel: __param_target
+    - sourceLabels: [__param_target]
+      targetLabel: instance
+    - targetLabel: __address__
       replacement: ssl-exporter.monitoring.svc.cluster.local:9219 # SSL exporter.
