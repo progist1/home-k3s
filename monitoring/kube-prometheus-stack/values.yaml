@@ -1,5 +1,7 @@
 prometheus:
   prometheusSpec:
+    query:
+      lookbackDelta: 2h
     replicas: 1
     enableAdminAPI: true
     storageSpec:
