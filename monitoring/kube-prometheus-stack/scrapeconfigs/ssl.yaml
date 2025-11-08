@@ -8,6 +8,7 @@ metadata:
 spec:
   jobName: "ssl-internal"
   metricsPath: /probe
+  scrapeInterval: 1h
   params:
     module: ["tcp_internal"]
   staticConfigs:
@@ -60,6 +61,7 @@ metadata:
 spec:
   jobName: "ssl-external"
   metricsPath: /probe
+  scrapeInterval: 1h
   staticConfigs:
     - targets:
         - ha.progist.ru:443
