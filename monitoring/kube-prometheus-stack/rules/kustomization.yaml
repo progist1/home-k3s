@@ -3,3 +3,4 @@ resources:
   - node.yaml
   - smartmon.yaml
   - zfs.yaml
+  - bonchbot.yaml

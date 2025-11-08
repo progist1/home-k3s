@@ -1,0 +1,97 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: database-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: bonchbot
+    interval: 5s
+    rules:
+    - alert: BonchBotExporterDown
+      expr: up{job="bonchbot-exporter-production"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "BonchBot scrapper DOWN on {{ $labels.host }}"
+        description: "Cannot scrape BonchbBot metrics for 1 minute."
+
+    - alert: BonchBotNotResponding
+      expr: |
+        bonchbot_last_answer_seconds > 20
+      for: 10s
+      labels:
+        severity: critical
+      annotations:
+        summary: "BonchBot not responding ({{ $labels.environment }})"
+        description: |
+          **Last answer was:** {{ $value }} seconds ago
+
+    - alert: BonchBotNotSendingNotifications
+      expr: |
+        bonchbot_last_answer_seconds > 5m
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "BonchBot not sending notifications ({{ $labels.environment }})"
+        description: |
+          **Last notification was sent:** {{ $value }} seconds ago
+
+    - alert: BonchBotHighLKErrorRate
+      expr: |
+        bonchbot_lk_errors_last_hour > 2000
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "BonchBot High LK Error rate ({{ $labels.environment }})"
+        description: |
+          **Errors for last hour:** {{ $value }}
+
+    - alert: BonchBotCriticalLKErrorRate
+      expr: |
+        bonchbot_lk_errors_last_hour > 5000
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: "BonchBot Critical LK Error rate ({{ $labels.environment }})"
+        description: |
+          **Errors for last hour:** {{ $value }}
+
+    - alert: BonchBotLkSyncAge
+      expr: |
+        bonchbot_lk_sync_seconds_ago > 10m
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "BonchBot LK Sync stopped ({{ $labels.environment }})"
+        description: |
+          **Last sync:** {{ $value }} seconds ago
+
+    - alert: BonchBotTimetableAge
+      expr: |
+        bonchbot_timetable_age_seconds > 24h
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "BonchBot Timetable expired ({{ $labels.environment }})"
+        description: |
+          **Last successful sync:** {{ value }}
+
+    - alert: BonchBotArchiving
+      expr: |
+        bonchbot_archiving_total_seconds == 0
+      for: 1h
+      labels:
+        severity: warning
+      annotations:
+        summary: "BonchBot archiving failed ({{ $labels.environment }})"
+        description: |
+          **Archiving failed**

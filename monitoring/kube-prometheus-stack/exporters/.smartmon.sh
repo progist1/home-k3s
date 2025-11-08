@@ -186,6 +186,10 @@ format_output() {
 smartctl_version="$(/usr/sbin/smartctl -V | head -n1 | awk '$1 == "smartctl" {print $2}')"
 
 echo "smartctl_version{version=\"${smartctl_version}\"} 1" | format_output
+echo "smartctl_version{version=\"${smartctl_version}\"} 1" | format_output
+echo "# HELP smartmon_data_collection_timestamp Timestamp of last data collection"
+echo "# TYPE smartmon_data_collection_timestamp gauge"
+echo "smartmon_data_collection_timestamp $(date +%s)"
 
 if [[ "$(expr "${smartctl_version}" : '\([0-9]*\)\..*')" -lt 6 ]]; then
   exit
