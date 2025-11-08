@@ -10,52 +10,98 @@ spec:
   - name: temperature
     interval: 5s
     rules:
-      - alert: NodeCriticalTemperature
+      # Критические температуры для разных типов устройств
+      - alert: CPUCriticalTemperature
+        expr: node_hwmon_temp_celsius{chip=~"platform_coretemp.*"} > 85
+        for: 30s
+        labels:
+          severity: critical
+          device_type: cpu
+        annotations:
+          summary: "Critical CPU temperature on {{ $labels.instance }}"
+          description: "CPU {{ $labels.chip }} sensor {{ $labels.sensor }} temperature is {{ $value }}°C"
+          
+      - alert: NVMeCriticalTemperature
         expr: |
           (
-            node_hwmon_temp_celsius > 70
+            node_hwmon_temp_celsius{chip=~"nvme.*"} > 80
             OR
-            smartmon_temperature_celsius_raw_value > 70
-            OR  
-            nvme_temperature_celsius > 75
+            smartmon_temperature_celsius_raw_value{type="nvme"} > 80
+            OR
+            nvme_temperature_celsius > 80
           )
         for: 30s
         labels:
           severity: critical
+          device_type: nvme
         annotations:
-          summary: "Critical temperature on {{ $labels.instance }}"
-          description: |
-            {{- if $labels.disk }}
-            Disk {{ $labels.disk }} temperature is {{ $value }}°C
-            {{- else if $labels.device }}
-            Device {{ $labels.device }} temperature is {{ $value }}°C  
-            {{- else if $labels.chip }}
-            Chip {{ $labels.chip }} temperature is {{ $value }}°C
-            {{- else }}
-            Temperature sensor {{ $labels.sensor }} is {{ $value }}°C
-            {{- end }}
-
-      - alert: NodeHighTemperature  
-        expr: |
-          (
-            node_hwmon_temp_celsius > 60
-            OR
-            smartmon_temperature_celsius_raw_value > 60
-            OR
-            nvme_temperature_celsius > 65
-          )
+          summary: "Critical NVMe temperature on {{ $labels.instance }}"
+          description: "{{ $labels.disk | default $labels.device | default $labels.chip }} temperature is {{ $value }}°C"
+          
+      - alert: SATACriticalTemperature
+        expr: smartmon_temperature_celsius_raw_value{type="sat"} > 65
         for: 30s
         labels:
+          severity: critical
+          device_type: sata
+        annotations:
+          summary: "Critical SATA disk temperature on {{ $labels.instance }}"
+          description: "Disk {{ $labels.disk }} temperature is {{ $value }}°C"
+          
+      - alert: OtherCriticalTemperature
+        expr: node_hwmon_temp_celsius{chip!~"platform_coretemp.*|nvme.*"} > 75
+        for: 30s
+        labels:
+          severity: critical
+          device_type: other
+        annotations:
+          summary: "Critical temperature on {{ $labels.instance }}"
+          description: "{{ $labels.chip }} sensor {{ $labels.sensor }} temperature is {{ $value }}°C"
+
+      # Предупреждения для разных типов устройств
+      - alert: CPUHighTemperature
+        expr: node_hwmon_temp_celsius{chip=~"platform_coretemp.*"} > 75
+        for: 1m
+        labels:
           severity: warning
+          device_type: cpu
+        annotations:
+          summary: "High CPU temperature on {{ $labels.instance }}"
+          description: "CPU {{ $labels.chip }} sensor {{ $labels.sensor }} temperature is {{ $value }}°C"
+          
+      - alert: NVMeHighTemperature
+        expr: |
+          (
+            node_hwmon_temp_celsius{chip=~"nvme.*"} > 70
+            OR
+            smartmon_temperature_celsius_raw_value{type="nvme"} > 70
+            OR
+            nvme_temperature_celsius > 70
+          )
+        for: 1m
+        labels:
+          severity: warning
+          device_type: nvme
+        annotations:
+          summary: "High NVMe temperature on {{ $labels.instance }}"
+          description: "{{ $labels.disk | default $labels.device | default $labels.chip }} temperature is {{ $value }}°C"
+          
+      - alert: SATAHighTemperature
+        expr: smartmon_temperature_celsius_raw_value{type="sat"} > 55
+        for: 1m
+        labels:
+          severity: warning
+          device_type: sata
+        annotations:
+          summary: "High SATA disk temperature on {{ $labels.instance }}"
+          description: "Disk {{ $labels.disk }} temperature is {{ $value }}°C"
+          
+      - alert: OtherHighTemperature
+        expr: node_hwmon_temp_celsius{chip!~"platform_coretemp.*|nvme.*"} > 65
+        for: 1m
+        labels:
+          severity: warning
+          device_type: other
         annotations:
           summary: "High temperature on {{ $labels.instance }}"
-          description: |
-            {{- if $labels.disk }}
-            Disk {{ $labels.disk }} temperature is {{ $value }}°C
-            {{- else if $labels.device }}
-            Device {{ $labels.device }} temperature is {{ $value }}°C  
-            {{- else if $labels.chip }}
-            Chip {{ $labels.chip }} temperature is {{ $value }}°C
-            {{- else }}
-            Temperature sensor {{ $labels.sensor }} is {{ $value }}°C
-            {{- end }}
+          description: "{{ $labels.chip }} sensor {{ $labels.sensor }} temperature is {{ $value }}°C"

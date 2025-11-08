@@ -17,7 +17,7 @@ spec:
         severity: critical
       annotations:
         summary: "BonchBot scrapper DOWN on {{ $labels.host }}"
-        description: "Cannot scrape BonchbBot metrics for 1 minute."
+        description: "Cannot scrape BonchBot metrics for 1 minute."
 
     - alert: BonchBotNotResponding
       expr: |
