@@ -1,0 +1,71 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backup-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: backup
+    interval: 5s
+    rules:
+    # Критический алерт - бэкап отсутствует
+    - alert: BackupMissing
+      expr: backup_missing == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Backup is missing ({{ $labels.section }}/{{ $labels.name }})"
+        description: "Backup {{ $labels.section }}/{{ $labels.name }} has been missing for more than 5 minutes."
+
+    # Критический алерт - бэкап слишком старый (>24 часов)
+    - alert: BackupTooOld
+      expr: backup_missing == 0 and backup_age_hours > 24
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Backup is too old ({{ $labels.section }}/{{ $labels.name }})"
+        description: "Backup {{ $labels.section }}/{{ $labels.name }} is {{ $value }} hours old (max 24h allowed)."
+
+    # Критический алерт - не собираются метрики бэкапов
+    - alert: BackupMetricsMissing
+      expr: absent(backup_missing) or absent(backup_age_hours)
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Backup metrics are missing"
+        description: "No backup metrics have been collected for 30 minutes. Check the backup collector."
+
+    # Предупреждение - один из типов бэкапов не обновляется
+    - alert: BackupSectionStale
+      expr: |
+        time() - (
+          max by (section) (backup_last_taken_at)
+        ) > 86400  # 24 hours in seconds
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Backup section {{ $labels.section }} is stale"
+        description: "Backup section {{ $labels.section }} hasn't been updated for more than 24 hours."
+
+    # Мониторинг размера бэкапов (если это важно)
+    - alert: BackupSizeAnomaly
+      expr: |
+        (
+          backup_size_bytes > 1e9
+          or
+          backup_size_bytes < 1000
+        )
+        and backup_missing == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Unusual backup size detected ({{ $labels.section }}/{{ $labels.name }})"
+        description: "Backup {{ $labels.section }}/{{ $labels.name }} has unusual size: {{ $value }} bytes"
+

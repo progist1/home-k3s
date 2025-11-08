@@ -4,3 +4,4 @@ resources:
   - smartmon.yaml
   - zfs.yaml
   - bonchbot.yaml
+  - backups.yaml
