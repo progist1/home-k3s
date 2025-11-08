@@ -8,6 +8,8 @@ metadata:
 spec:
   jobName: "ssl"
   metricsPath: /probe
+  params:
+    module: ["tcp"]
   staticConfigs:
     - targets:
         - ha.home:443

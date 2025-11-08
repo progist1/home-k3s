@@ -16,8 +16,17 @@ spec:
       containers:
         - name: ssl-exporter
           image: ribbybibby/ssl-exporter:2.4.3
+          args:
+            - --config.file=/etc/ssl-exporter/config.yaml
           ports:
             - containerPort: 9219
+          volumeMounts:
+            - name: config
+              mountPath: /etc/ssl-exporter
+              readOnly: true
+            - name: ca-cert
+              mountPath: /etc/ssl/certs
+              readOnly: true
           resources:
             requests:
               cpu: "50m"
@@ -25,4 +34,10 @@ spec:
             limits:
               cpu: "500m"
               memory: "64Mi"
-            
+      volumes:
+        - name: config
+          configMap:
+            name: ssl-exporter-config
+        - name: ca-cert
+          configMap:
+            name: ssl-exporter-ca

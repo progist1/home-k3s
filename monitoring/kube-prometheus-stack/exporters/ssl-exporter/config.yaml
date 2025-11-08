@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ssl-exporter-config
+  namespace: monitoring
+data:
+  config.yaml: |
+    default_module: tcp
+    modules:
+      - name: tcp
+        prober: tcp
+        tls_config:
+          ca_file: /etc/ssl/certs/ca.crt
+          insecure_skip_verify: false
+      - name: https
+        prober: https
+        tls_config:
+          ca_file: /etc/ssl/certs/ca.crt
+          insecure_skip_verify: false
