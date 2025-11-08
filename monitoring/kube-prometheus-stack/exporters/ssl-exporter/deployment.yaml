@@ -13,7 +13,7 @@ spec:
       labels:
         app: ssl-exporter
     spec:
-      dnsPolicy: ClusterFirst
+      dnsPolicy: None
       dnsConfig:
         nameservers:
           - 10.0.0.2
