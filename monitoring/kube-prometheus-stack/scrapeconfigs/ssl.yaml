@@ -12,7 +12,7 @@ spec:
     - targets:
         - ha.home:443
         - ha.progist.ru:443
-  metricRelabelings:
+  relabelings:
     - sourceLabels: [__address__]
       targetLabel: __param_target
     - sourceLabels: [__param_target]
