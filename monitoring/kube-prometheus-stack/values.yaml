@@ -1,6 +1,7 @@
 prometheus:
   prometheusSpec:
     replicas: 1
+    enableAdminAPI: true
     storageSpec:
       volumeClaimTemplate:
         spec:
