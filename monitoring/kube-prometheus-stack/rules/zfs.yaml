@@ -60,7 +60,7 @@ spec:
     interval: 30s
     rules:
     # Высокая заполненность пула (>90%)
-    - alert: ZFSPoolCapacityHigh
+    - alert: ZFSPoolCapacityCritical
       expr: |
         (
           (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 90
