@@ -13,6 +13,35 @@ spec:
   staticConfigs:
     - targets:
         - ha.home:443
+        - dns.home:443
+        - auth.home:443
+        - db.home:443
+        - share.home:443
+        - start.home:443
+        - photos.home:443
+        - jackett.home:443
+        - watch.home:443
+        - jellyseerr.home:443
+        - mail.home:443
+        - memos.home:443
+        - metabase.home:443
+        - nc.home:443
+        - outline.home:443
+        - docs.home:443
+        - old.photos.home:443
+        - portainer.home:443
+        - radarr.home:443
+        - gitlab.home:443
+        - sonarr.home:443
+        - tautulli.home:443
+        - tdarr.home:443
+        - transmission.home:443
+        - vpn.home:443
+        - router.home:443
+        - cctv.home:443
+        - registry.gitlab.home:443
+        - alerts.home:443
+        - grafana.home:443
   relabelings:
     - sourceLabels: [__address__]
       targetLabel: __param_target
@@ -34,6 +63,21 @@ spec:
   staticConfigs:
     - targets:
         - ha.progist.ru:443
+        - mail.progist.ru:443
+        - auth.progist.ru:443
+        - share.progist.ru:443
+        - gua.progist.ru:443
+        - immich.progist.ru:443
+        - photos.progist.ru:443
+        - old.photos.progist.ru:443
+        - films.progist.ru:443
+        - r.films.progist.ru:443
+        - m.progist.ru:443
+        - cloud.progist.ru:443
+        - docs.progist.ru:443
+        - vw.progist.ru:443
+        - v.progist.ru:443
+        - invite.progist.ru:443
   relabelings:
     - sourceLabels: [__address__]
       targetLabel: __param_target
