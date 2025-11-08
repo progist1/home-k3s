@@ -4,7 +4,7 @@ metadata:
   name: ssl-exporter-ca
   namespace: monitoring
 data:
-  root-ca.crt: |
+  ca.crt: |
     -----BEGIN CERTIFICATE-----
     MIIGNDCCBBygAwIBAgIDenCTMA0GCSqGSIb3DQEBCwUAMIGaMSUwIwYDVQQDDBxQ
     cm9naXN0IEhvbWUgUHJpdmF0ZSBOZXR3b3JrMQswCQYDVQQGEwJSVTEZMBcGA1UE
