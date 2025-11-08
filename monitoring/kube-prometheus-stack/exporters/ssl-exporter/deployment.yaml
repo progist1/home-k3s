@@ -29,7 +29,7 @@ spec:
               mountPath: /etc/ssl-exporter
               readOnly: true
             - name: ca-cert
-              mountPath: /etc/ssl/certs
+              mountPath: /etc/ssl/custom-ca
               readOnly: true
           resources:
             requests:

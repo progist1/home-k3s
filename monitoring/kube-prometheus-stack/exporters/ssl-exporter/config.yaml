@@ -10,14 +10,14 @@ data:
       tcp_internal:
         prober: tcp
         tls_config:
-          ca_file: /etc/ssl/certs/ca.crt
+          ca_file: /etc/ssl/custom-ca/ca.crt
           insecure_skip_verify: false
       tcp:
         prober: tcp
       https_internal:
         prober: https
         tls_config:
-          ca_file: /etc/ssl/certs/ca.crt
+          ca_file: /etc/ssl/custom-ca/ca.crt
           insecure_skip_verify: false
       https:
         prober: https
