@@ -22,12 +22,12 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "SMART health FAILED: {{ $labels.device_model | default $labels.type }}"
+        summary: "SMART health FAILED: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
           **Type:** {{ $labels.type }}
-          **Model:** {{ $labels.device_model | default "N/A" }}
-          **Family:** {{ $labels.model_family | default "N/A" }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}N/A{{ end }}
+          **Family:** {{ if $labels.model_family }}{{ $labels.model_family }}{{ else }}N/A{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Firmware:** {{ $labels.firmware_version }}
           **Host:** {{ $labels.hostname }}
@@ -45,10 +45,10 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "Reallocated sectors: {{ $labels.device_model | default $labels.type }}"
+        summary: "Reallocated sectors: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Count:** {{ $value }} sectors
           **Host:** {{ $labels.hostname }}
@@ -66,10 +66,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "Pending sectors: {{ $labels.device_model | default $labels.type }}"
+        summary: "Pending sectors: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Pending:** {{ $value }} sectors
           **Host:** {{ $labels.hostname }}
@@ -87,10 +87,10 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "Uncorrectable errors: {{ $labels.device_model | default $labels.type }}"
+        summary: "Uncorrectable errors: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Errors:** {{ $value }} uncorrectable sectors
           **Host:** {{ $labels.hostname }}
@@ -111,10 +111,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "High temperature: {{ $labels.device_model | default $labels.type }}"
+        summary: "High temperature: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Temp:** {{ $value }}°C
           **Host:** {{ $labels.hostname }}
@@ -133,10 +133,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "UDMA CRC errors: {{ $labels.device_model | default $labels.type }}"
+        summary: "UDMA CRC errors: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Errors:** {{ $value }} in last hour
           **Host:** {{ $labels.hostname }}
@@ -157,10 +157,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "SSD wear high: {{ $labels.device_model | default $labels.type }}"
+        summary: "SSD wear high: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Wear level:** {{ $value }}%
           **Host:** {{ $labels.hostname }}
@@ -181,10 +181,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "NVMe wear high: {{ $labels.device_model | default $labels.type }}"
+        summary: "NVMe wear high: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Wear:** {{ $value }}%
           **Host:** {{ $labels.hostname }}
@@ -202,10 +202,10 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "CRITICAL spare blocks low: {{ $labels.device_model | default $labels.type }}"
+        summary: "CRITICAL spare blocks low: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Available spare:** {{ $value }}%
           **Host:** {{ $labels.hostname }}
@@ -223,10 +223,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "Low spare blocks: {{ $labels.device_model | default $labels.type }}"
+        summary: "Low spare blocks: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Available spare:** {{ $value }}%
           **Host:** {{ $labels.hostname }}
@@ -244,10 +244,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "Unsafe shutdowns spike: {{ $labels.device_model | default $labels.type }}"
+        summary: "Unsafe shutdowns spike: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Recent unsafe shutdowns:** {{ $value }}
           **Host:** {{ $labels.hostname }}
@@ -265,10 +265,10 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "CRITICAL temp: {{ $labels.device_model | default $labels.type }}"
+        summary: "CRITICAL temp: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Temp:** {{ $value }}°C
           **Host:** {{ $labels.hostname }}
@@ -286,10 +286,10 @@ spec:
       labels:
         severity: warning
       annotations:
-        summary: "High temperature: {{ $labels.device_model | default $labels.type }}"
+        summary: "High temperature: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
         description: |
           **Device:** {{ $labels.disk }}
-          **Model:** {{ $labels.device_model | default $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}
           **Serial:** {{ $labels.serial_number }}
           **Temp:** {{ $value }}°C
           **Host:** {{ $labels.hostname }}
