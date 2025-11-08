@@ -155,14 +155,24 @@ parse_smartctl_nvme_attributes() {
   local disk_type="$2"
   local labels="disk=\"${disk}\",type=\"${disk_type}\""
   awk -v labels="${labels}" '
-    /^Temperature:/                     {printf "temperature_celsius_raw_value{%s} %e\n", labels, $2}
-    /^Available Spare:/                 {printf "available_spare_percentage{%s} %e\n", labels, $3}
-    /^Percentage Used:/                 {printf "percentage_used{%s} %e\n", labels, $3}
-    /^Data Units Read:/                 {gsub(/[,.\[\]]/, "", $4); printf "data_units_read_total{%s} %e\n", labels, $4}
-    /^Data Units Written:/              {gsub(/[,.\[\]]/, "", $4); printf "data_units_written_total{%s} %e\n", labels, $4}
-    /^Power Cycles:/                    {printf "power_cycle_count_raw_value{%s} %e\n", labels, $3}
-    /^Power On Hours:/                  {printf "power_on_hours_raw_value{%s} %e\n", labels, $4}
-    /^Unsafe Shutdowns:/                {printf "unsafe_shutdown_count_raw_value{%s} %e\n", labels, $3}
+    function clean_number(num) {
+      # Убираем запятые и преобразуем в число
+      gsub(/[,]/, "", num)
+      return num + 0  # Приводим к числу
+    }
+    /^Temperature:/                     {printf "temperature_celsius_raw_value{%s} %e\n", labels, clean_number($2)}
+    /^Available Spare:/                 {printf "available_spare_percentage{%s} %e\n", labels, clean_number($3)}
+    /^Percentage Used:/                 {printf "percentage_used{%s} %e\n", labels, clean_number($3)}
+    /^Data Units Read:/                 {gsub(/[,.\[\]]/, "", $4); printf "data_units_read_total{%s} %e\n", labels, clean_number($4)}
+    /^Data Units Written:/              {gsub(/[,.\[\]]/, "", $4); printf "data_units_written_total{%s} %e\n", labels, clean_number($4)}
+    /^Power Cycles:/                    {printf "power_cycle_count_raw_value{%s} %e\n", labels, clean_number($3)}
+    /^Power On Hours:/                  {printf "power_on_hours_raw_value{%s} %e\n", labels, clean_number($4)}
+    /^Unsafe Shutdowns:/                {printf "unsafe_shutdown_count_raw_value{%s} %e\n", labels, clean_number($3)}
+    /^Host Read Commands:/              {gsub(/[,.\[\]]/, "", $4); printf "host_read_commands_total{%s} %e\n", labels, clean_number($4)}
+    /^Host Write Commands:/             {gsub(/[,.\[\]]/, "", $4); printf "host_write_commands_total{%s} %e\n", labels, clean_number($4)}
+    /^Controller Busy Time:/            {gsub(/[,.\[\]]/, "", $4); printf "controller_busy_time_minutes{%s} %e\n", labels, clean_number($4)}
+    /^Media and Data Integrity Errors:/ {printf "media_data_integrity_errors_total{%s} %e\n", labels, clean_number($6)}
+    /^Error Information Log Entries:/   {printf "error_info_log_entries_total{%s} %e\n", labels, clean_number($5)}
   ' | tr '[:upper:]' '[:lower:]'
 }
 
