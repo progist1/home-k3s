@@ -36,7 +36,16 @@ spec:
           device_type: nvme
         annotations:
           summary: "Critical NVMe temperature on {{ $labels.instance }}"
-          description: "{{ $labels.disk | default $labels.device | default $labels.chip }} temperature is {{ $value }}°C"
+          description: |
+            {{- if $labels.disk }}
+            NVMe disk {{ $labels.disk }} temperature is {{ $value }}°C
+            {{- else if $labels.device }}
+            NVMe device {{ $labels.device }} temperature is {{ $value }}°C
+            {{- else if $labels.chip }}
+            NVMe chip {{ $labels.chip }} temperature is {{ $value }}°C
+            {{- else }}
+            NVMe temperature is {{ $value }}°C
+            {{- end }}
           
       - alert: SATACriticalTemperature
         expr: smartmon_temperature_celsius_raw_value{type="sat"} > 65
@@ -46,7 +55,7 @@ spec:
           device_type: sata
         annotations:
           summary: "Critical SATA disk temperature on {{ $labels.instance }}"
-          description: "Disk {{ $labels.disk }} temperature is {{ $value }}°C"
+          description: "SATA disk {{ $labels.disk }} temperature is {{ $value }}°C"
           
       - alert: OtherCriticalTemperature
         expr: node_hwmon_temp_celsius{chip!~"platform_coretemp.*|nvme.*"} > 75
@@ -84,7 +93,16 @@ spec:
           device_type: nvme
         annotations:
           summary: "High NVMe temperature on {{ $labels.instance }}"
-          description: "{{ $labels.disk | default $labels.device | default $labels.chip }} temperature is {{ $value }}°C"
+          description: |
+            {{- if $labels.disk }}
+            NVMe disk {{ $labels.disk }} temperature is {{ $value }}°C
+            {{- else if $labels.device }}
+            NVMe device {{ $labels.device }} temperature is {{ $value }}°C
+            {{- else if $labels.chip }}
+            NVMe chip {{ $labels.chip }} temperature is {{ $value }}°C
+            {{- else }}
+            NVMe temperature is {{ $value }}°C
+            {{- end }}
           
       - alert: SATAHighTemperature
         expr: smartmon_temperature_celsius_raw_value{type="sat"} > 55
@@ -94,7 +112,7 @@ spec:
           device_type: sata
         annotations:
           summary: "High SATA disk temperature on {{ $labels.instance }}"
-          description: "Disk {{ $labels.disk }} temperature is {{ $value }}°C"
+          description: "SATA disk {{ $labels.disk }} temperature is {{ $value }}°C"
           
       - alert: OtherHighTemperature
         expr: node_hwmon_temp_celsius{chip!~"platform_coretemp.*|nvme.*"} > 65
