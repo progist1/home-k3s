@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: cloud-dbeaver
-          image: dbeaver/cloudbeaver:25.2.1
+          image: dbeaver/cloudbeaver:25.2.4
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
