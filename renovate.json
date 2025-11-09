@@ -26,6 +26,14 @@
     "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml", "monitoring/**/*.yaml"]
   },
   "hostRules": [
+        {
+      "matchHost": "index.docker.io",
+      "concurrentRequestLimit": 1
+    },
+    {
+      "matchHost": "hub.docker.com",
+      "concurrentRequestLimit": 1
+    },
     {
       "hostType": "helm",
       "matchHost": "pmint93.github.io",
