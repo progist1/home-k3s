@@ -13,7 +13,8 @@
     "managerFilePatterns": [
       "apps/**/*.yaml",
       "helm-repositories/**/*.yaml",
-      "helm/*.yaml"
+      "helm/*.yaml",
+      "monitoring/**/*.yaml"
     ]
   },
   "helm-values": {
@@ -22,7 +23,7 @@
     ]
   },
   "flux": {
-    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml"]
+    "managerFilePatterns": ["clusters/home/flux-system/**/*.yaml", "apps/**/*.yaml", "helm/*.yaml", "monitoring/**/*.yaml"]
   },
   "hostRules": [
     {
