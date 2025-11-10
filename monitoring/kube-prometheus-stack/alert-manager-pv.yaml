@@ -20,6 +20,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: alert-manager-data-pvc
   namespace: monitoring
+  labels:
+    app: alert-manager
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:
