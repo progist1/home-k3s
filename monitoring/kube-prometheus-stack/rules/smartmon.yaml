@@ -294,3 +294,27 @@ spec:
           **Temp:** {{ $value }}°C
           **Host:** {{ $labels.hostname }}
           **Action:** 🌡️ Monitor cooling
+
+    # Перестал обновляться smart
+    - alert: SmartmonStaled
+      expr: |
+        time() - smartmon_data_collection_timestamp
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Smartmon data staled"
+        description: |
+          Smartmon staled for {{ $value / 60 }} minutes
+
+    # Пишем много на nvme
+    - alert: NVMeHighTBWIncrease
+      expr: |
+        increase(nvme_data_units_written_total[24h]) * 512000 / 10^12
+      for: 1h
+      labels:
+        severity: critical
+      annotations:
+        summary: "High write rate on {{ $labels.device }}"
+        description: |
+          TBW increase: {{ $value }} / 24h
