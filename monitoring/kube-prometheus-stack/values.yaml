@@ -149,6 +149,8 @@ grafana:
         secretName: grafana-internal-tls
 
   grafana.ini:
+    server:
+      root_url: https://grafana.home/
     auth:
       signout_redirect_url: "https://auth.progist.ru/application/o/grafana/end-session/"
       oauth_auto_login: true
