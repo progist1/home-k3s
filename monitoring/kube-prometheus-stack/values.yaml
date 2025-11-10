@@ -55,7 +55,7 @@ alertmanager:
 
   alertmanagerSpec:
     replicas: 1
-    storageSpec:
+    storage:
       volumeClaimTemplate:
         spec:
           storageClassName: nfs-nvme-manual

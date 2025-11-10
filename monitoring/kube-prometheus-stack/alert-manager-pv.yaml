@@ -14,19 +14,3 @@ spec:
     path: /mnt/Fast/k3s-data/monitoring/alert-manager/data
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: alert-manager-data-pvc
-  namespace: monitoring
-  labels:
-    app: alert-manager
-spec:
-  storageClassName: nfs-nvme-manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-  volumeName: alert-manager-data-pv
