@@ -5,3 +5,4 @@ resources:
   - adguard-exporter-secrets-sealed.yaml
   - home-assistant-exporter-token-secret-sealed.yaml
   - bonchbot-secrets-sealed.yaml
+  - grafana-secrets-sealed.yaml

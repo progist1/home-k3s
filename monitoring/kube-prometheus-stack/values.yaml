@@ -147,6 +147,21 @@ grafana:
           - grafana.home
         secretName: grafana-internal-tls
 
+  grafana.ini:
+    auth:
+      signout_redirect_url: "https://auth.progist.ru/application/o/grafana/end-session/"
+      oauth_auto_login: true
+    auth.generic_oauth:
+      name: authentik
+      enabled: true
+      client_id: "redacted"
+      client_secret: "redacted"
+      scopes: "openid profile email"
+      auth_url: "https://auth.progist.ru/application/o/authorize/"
+      token_url: "https://auth.progist.ru/application/o/token/"
+      api_url: "https://auth.progist.ru/application/o/userinfo/"
+      role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
+
 kubeStateMetrics:
   enabled: true
   metricLabelsAllowlist:
