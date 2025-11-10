@@ -151,19 +151,31 @@ grafana:
   grafana.ini:
     server:
       root_url: https://grafana.home/
+    users:
+      allow_sign_up: true
+      auto_assign_org: true
+      auto_assign_org_role: Viewer
     auth:
-      signout_redirect_url: "https://auth.progist.ru/application/o/grafana/end-session/"
       oauth_auto_login: true
+      signout_redirect_url: "https://auth.progist.ru/application/o/grafana/end-session/"
     auth.generic_oauth:
-      name: authentik
       enabled: true
+      name: Authentik
+      allow_sign_up: true
       client_id: "${OAUTH_CLIENT_ID}"
-      client_secret: "${OAUTH_CLIENT_SECRET}"
-      scopes: "openid profile email"
-      auth_url: "https://auth.progist.ru/application/o/authorize/"
-      token_url: "https://auth.progist.ru/application/o/token/"
-      api_url: "https://auth.progist.ru/application/o/userinfo/"
-      role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
+      client_secret: ${OAUTH_CLIENT_SECRET}
+      scopes: openid profile email
+      auth_url: https://auth.progist.ru/application/o/authorize/
+      token_url: https://auth.progist.ru/application/o/token/
+      api_url: https://auth.progist.ru/application/o/userinfo/
+      email_attribute_path: email
+      login_attribute_path: preferred_username
+      name_attribute_path: name
+      groups_attribute_path: groups
+      role_attribute_path: >
+        contains(groups, 'Grafana Admins') && 'Admin' ||
+        contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
+      allow_assign_grafana_admin: true
 
 kubeStateMetrics:
   enabled: true
