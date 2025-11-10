@@ -115,6 +115,7 @@ alertmanager:
 
 grafana:
   enabled: true
+  envFromSecret: grafana-secrets
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
@@ -154,8 +155,8 @@ grafana:
     auth.generic_oauth:
       name: authentik
       enabled: true
-      client_id: "redacted"
-      client_secret: "redacted"
+      client_id: "${OAUTH_CLIENT_ID}"
+      client_secret: "${OAUTH_CLIENT_SECRET}"
       scopes: "openid profile email"
       auth_url: "https://auth.progist.ru/application/o/authorize/"
       token_url: "https://auth.progist.ru/application/o/token/"
