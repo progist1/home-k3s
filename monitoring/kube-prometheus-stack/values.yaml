@@ -52,33 +52,6 @@ alertmanager:
             auth_password: redacted
             require_tls: true
       - name: 'null'
-  extraObjects:
-    - apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      metadata:
-        name: grafana-external
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
-          traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-          traefik.ingress.kubernetes.io/redirect-entry-point: websecure
-          traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
-      spec:
-        ingressClassName: traefik
-        rules:
-          - host: grafana.progist.ru
-            http:
-              paths:
-                - path: /
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: kube-prometheus-stack-grafana
-                      port:
-                        number: 80
-        tls:
-          - hosts:
-              - grafana.progist.ru
-            secretName: grafana-external-tls
 
   alertmanagerSpec:
     replicas: 1
@@ -176,6 +149,34 @@ grafana:
         contains(groups, 'Grafana Admins') && 'Admin' ||
         contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
+
+  extraObjects:
+    - apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: grafana-external
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+          traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+          traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+      spec:
+        ingressClassName: traefik
+        rules:
+          - host: grafana.progist.ru
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: kube-prometheus-stack-grafana
+                      port:
+                        number: 80
+        tls:
+          - hosts:
+              - grafana.progist.ru
+            secretName: grafana-external-tls
 
 kubeStateMetrics:
   enabled: true
