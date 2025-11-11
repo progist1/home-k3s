@@ -317,4 +317,4 @@ spec:
       annotations:
         summary: "High write rate on {{ $labels.device }}"
         description: |
-          TBW increase: {{ $value }} / 24h
+          TBW increase: {{ $value }} per 24h
