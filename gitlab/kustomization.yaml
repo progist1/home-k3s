@@ -1,0 +1,10 @@
+resources:
+  - backups.yaml
+  - config.yaml
+  - data.yaml
+  - deployment.yaml
+  - ingress-internal.yaml
+  - logs.yaml
+  - registry.yaml
+  - service.yaml
+  - service-ssh.yaml

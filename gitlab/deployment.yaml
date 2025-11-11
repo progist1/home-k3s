@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+  namespace: gitlab
+  labels:
+    app: gitlab
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: gitlab
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      containers:
+        - name: gitlab
+          image: gitlab/gitlab-ce:18.5.1-ce.0
+          env:
+          - name: GITLAB_OMNIBUS_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: gitlab-rb-config
+                key: gitlab.rb
+          - name: GITLAB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: root-password
+          - name: SMTP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: smtp-username
+          - name: SMTP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: smtp-password
+          - name: SMTP_REPLY_TO
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: smtp-reply-to
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 22
+              name: ssh
+          volumeMounts:
+            - name: data
+              mountPath: /var/opt/gitlab
+            - name: backup
+              mountPath: /mnt/backups
+            - name: registry
+              mountPath: /mnt/registry
+            - name: logs
+              mountPath: /var/log/gitlab
+            - name: dshm
+              mountPath: /dev/shm
+            - name: gitlab-secrets-json
+              mountPath: /etc/gitlab/gitlab-secrets.json
+              subPath: gitlab-secrets.json
+          resources:
+            requests:
+              cpu: 1
+              memory: 1Gi
+            limits:
+              cpu: 4
+              memory: 6Gi
+
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+
+          livenessProbe:
+            httpGet:
+              path: /-/health
+              port: http
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 50
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitlab-data-pvc
+        - name: backup
+          persistentVolumeClaim:
+            claimName: gitlab-backup-pvc
+        - name: registry
+          persistentVolumeClaim:
+            claimName: gitlab-registry-pvc
+        - name: logs
+          persistentVolumeClaim:
+            claimName: gitlab-logs-pvc
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        - name: gitlab-secrets-json
+          secret:
+            secretName: gitlab-secrets
+            items:
+            - key: gitlab-secrets.json
+              path: gitlab-secrets.json

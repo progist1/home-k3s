@@ -5,3 +5,4 @@ resources:
   - infra.yaml
   # - metallb.yaml до лучших времён, когда потребуется 2+ нод
   - monitoring.yaml
+  - gitlab.yaml

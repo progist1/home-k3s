@@ -8,3 +8,4 @@ resources:
   - cert-manager-issuer.yaml
   - apps.yaml
   - monitoring.yaml
+  - gitlab.yaml
