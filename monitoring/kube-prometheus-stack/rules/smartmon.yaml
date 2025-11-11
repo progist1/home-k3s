@@ -298,7 +298,7 @@ spec:
     # Перестал обновляться smart
     - alert: SmartmonStaled
       expr: |
-        time() - smartmon_data_collection_timestamp
+        time() - smartmon_data_collection_timestamp > 20*60
       for: 10m
       labels:
         severity: critical
