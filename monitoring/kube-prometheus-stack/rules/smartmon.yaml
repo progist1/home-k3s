@@ -305,7 +305,7 @@ spec:
       annotations:
         summary: "Smartmon data staled"
         description: |
-          Smartmon staled for {{ $value / 60 }} minutes
+          Smartmon staled for {{ $value }} seconds
 
     # Пишем много на nvme
     - alert: NVMeHighTBWIncrease
