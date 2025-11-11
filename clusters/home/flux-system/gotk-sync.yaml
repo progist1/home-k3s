@@ -9,9 +9,10 @@ spec:
   interval: 1m0s
   ref:
     branch: main
-  secretRef:
-    name: flux-system
-  url: ssh://git@10.0.0.34:22/local/gitops.git
+  # secretRef:
+  #   name: flux-system
+  # url: ssh://git@10.0.0.34:22/local/gitops.git
+  url: https://github.com/progist1/home-k3s.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
