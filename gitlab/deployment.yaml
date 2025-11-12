@@ -20,6 +20,17 @@ spec:
       labels:
         app: gitlab
     spec:
+      dnsConfig:
+        nameservers:
+          - 10.0.0.2
+        searches:
+          - home
+          - default.svc.cluster.local  # Важно!
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
         - name: gitlab
           image: gitlab/gitlab-ce:18.5.1-ce.0
@@ -77,9 +88,6 @@ spec:
               mountPath: /var/log/gitlab
             - name: dshm
               mountPath: /dev/shm
-            - name: gitlab-secrets-json
-              mountPath: /etc/gitlab/gitlab-secrets.json
-              subPath: gitlab-secrets.json
           resources:
             requests:
               cpu: 1
@@ -126,9 +134,3 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 256Mi
-        - name: gitlab-secrets-json
-          secret:
-            secretName: gitlab-secrets
-            items:
-            - key: gitlab-secrets.json
-              path: gitlab-secrets.json
