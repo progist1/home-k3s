@@ -20,7 +20,7 @@ spec:
         image: gitlab/gitlab-runner:v18.1.2
         env:
         - name: DOCKER_HOST
-          value: "tcp://localhost:2375"
+          value: "tcp://localhost:2376"
         volumeMounts:
         - name: config
           mountPath: /etc/gitlab-runner
