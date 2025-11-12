@@ -310,7 +310,7 @@ spec:
     # Пишем много на nvme
     - alert: NVMeHighTBWIncrease
       expr: |
-        increase(nvme_data_units_written_total[24h]) * 512000 / 10^12
+        increase(nvme_data_units_written_total[24h]) * 512000 / 10^12 > 1.0
       for: 1h
       labels:
         severity: critical
