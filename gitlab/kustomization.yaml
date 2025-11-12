@@ -9,4 +9,3 @@ resources:
   - registry.yaml
   - service.yaml
   - service-ssh.yaml
-  - cert.yaml
