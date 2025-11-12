@@ -2,8 +2,6 @@ gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
 concurrent: 4
 
-certsSecretName: gitlab-root-ca
-
 rbac:
   create: true
 
@@ -23,9 +21,6 @@ runners:
         [[runners.kubernetes.services]]
           name = "docker"
           alias = "docker"
-        [[runners.kubernetes.volumes.secret]]
-          name = "gitlab-root-ca"
-          mount_path = "/usr/local/share/ca-certificates§"
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-root-ca"
           mount_path = "/etc/gitlab-runner/certs"
