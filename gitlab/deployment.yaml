@@ -49,6 +49,16 @@ spec:
               secretKeyRef:
                 name: gitlab-secrets
                 key: smtp-reply-to
+          - name: OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: oauth-client-id
+          - name: OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: gitlab-secrets
+                key: oauth-client-secret
           ports:
             - containerPort: 80
               name: http
@@ -67,20 +77,20 @@ spec:
               mountPath: /var/log/gitlab
             - name: dshm
               mountPath: /dev/shm
-            # - name: gitlab-secrets-json
-            #   mountPath: /etc/gitlab/gitlab-secrets.json
-            #   subPath: gitlab-secrets.json
+            - name: gitlab-secrets-json
+              mountPath: /etc/gitlab/gitlab-secrets.json
+              subPath: gitlab-secrets.json
           resources:
             requests:
               cpu: 1
               memory: 1Gi
             limits:
               cpu: 4
-              memory: 6Gi
+              memory: 12Gi
 
           readinessProbe:
             httpGet:
-              path: /-/ready
+              path: /-/health
               port: http
             initialDelaySeconds: 120
             periodSeconds: 10
@@ -116,9 +126,9 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 256Mi
-        # - name: gitlab-secrets-json
-        #   secret:
-        #     secretName: gitlab-secrets
-        #     items:
-        #     - key: gitlab-secrets.json
-        #       path: gitlab-secrets.json
+        - name: gitlab-secrets-json
+          secret:
+            secretName: gitlab-secrets
+            items:
+            - key: gitlab-secrets.json
+              path: gitlab-secrets.json
