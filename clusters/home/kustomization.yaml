@@ -8,5 +8,6 @@ resources:
   - cert-manager-issuer.yaml
   - apps.yaml
   - monitoring.yaml
-  - gitlab.yaml
   - coredns-config.yaml
+  - gitlab.yaml
+  - gitlab-runner.yaml

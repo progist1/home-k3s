@@ -33,6 +33,7 @@ data:
     registry_external_url 'https://registry.gitlab.home'
     gitlab_rails['registry_enabled'] = true
     gitlab_rails['registry_path'] = "/mnt/registry"
+    gitlab_rails['registry_api_url'] = "https://registry.gitlab.home"
     registry['enable'] = true
     sidekiq['concurrency'] = 3
     nginx['proxy_set_headers'] = {

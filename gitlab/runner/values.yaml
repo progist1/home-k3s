@@ -1,0 +1,34 @@
+gitlabUrl: http://gitlab.gitlab.svc.cluster.local
+
+concurrent: 4
+
+
+rbac:
+  create: true
+
+runners:
+  secret: gitlab-runner-secrets
+  secretKey: token
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        privileged = true
+
+        image = "docker:20.10.16-dind"
+
+        helper_image = "gitlab/gitlab-runner-helper:ubuntu-x86_64-latest"
+
+        [[runners.kubernetes.services]]
+          name = "docker"
+          alias = "docker"
+
+volumes:
+  - name: docker-storage
+    emptyDir:
+      medium: Memory
+  - name: workspace
+    emptyDir: {}
+
+securityContext:
+  fsGroup: 999
+  runAsUser: 999

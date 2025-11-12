@@ -6,3 +6,4 @@ resources:
   # - metallb.yaml до лучших времён, когда потребуется 2+ нод
   - monitoring.yaml
   - gitlab.yaml
+  - gitlab-runner.yaml

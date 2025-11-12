@@ -8,3 +8,4 @@ resources:
   - prometheus.yaml
   - k8up.yaml
   - outline.yaml
+  - gitlab-runner.yaml

@@ -4,3 +4,4 @@ resources:
   - infra
   - monitoring
   - gitlab
+  - gitlab-runner

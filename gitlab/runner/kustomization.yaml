@@ -1,3 +1,9 @@
+configMapGenerator:
+  - name: gitlab-runner-values
+    namespace: gitlab-runner
+    files:
+      - values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
-  - config.yaml
-  - deployment.yaml
+  - helmrelease.yaml
