@@ -9,10 +9,11 @@ rbac:
 
 runners:
   secret: gitlab-runner-secrets
-  secretKey: token
   config: |
     [[runners]]
       [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+
         privileged = true
 
         image = "docker:20.10.16-dind"
@@ -22,6 +23,10 @@ runners:
         [[runners.kubernetes.services]]
           name = "docker"
           alias = "docker"
+        [[runners.kubernetes.volumes.secret]]
+          name = "gitlab-root-ca"
+          mount_path = "/etc/gitlab-runner/certs"
+
 
 volumes:
   - name: docker-storage
