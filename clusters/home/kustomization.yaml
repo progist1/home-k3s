@@ -9,3 +9,4 @@ resources:
   - apps.yaml
   - monitoring.yaml
   - gitlab.yaml
+  - coredns-config.yaml

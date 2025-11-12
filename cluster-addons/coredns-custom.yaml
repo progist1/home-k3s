@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+  labels:
+    coredns.k8s.io/generated: "true"
+data:
+  home.server: |
+    home:53 {
+        errors
+        cache 30
+        forward . 10.0.0.2
+    }
