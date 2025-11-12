@@ -5,6 +5,7 @@ resources:
   - data.yaml
   - deployment.yaml
   - ingress-internal.yaml
+  - ingress-registry-internal.yaml
   - logs.yaml
   - registry.yaml
   - service.yaml
