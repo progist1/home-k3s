@@ -2,7 +2,6 @@ gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
 concurrent: 4
 
-
 rbac:
   create: true
 
