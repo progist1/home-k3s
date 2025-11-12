@@ -27,7 +27,3 @@ volumes:
       medium: Memory
   - name: workspace
     emptyDir: {}
-
-securityContext:
-  fsGroup: 999
-  runAsUser: 999
