@@ -1,2 +1,3 @@
 resources:
-  - gitlab-runner-secrets.yaml
+  - gitlab-runner-secrets-sealed.yaml
+  - gitlab-root-ca-sealed.yaml

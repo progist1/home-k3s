@@ -2,6 +2,8 @@ gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
 concurrent: 4
 
+certsSecretName: gitlab-root-ca
+
 rbac:
   create: true
 
