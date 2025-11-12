@@ -77,6 +77,9 @@ spec:
               mountPath: /var/log/gitlab
             - name: dshm
               mountPath: /dev/shm
+            - name: cert
+              mountPath: /etc/gitlab/trusted-certs/home-ca.crt
+              subPath: home-ca.crt
           resources:
             requests:
               cpu: 1
@@ -123,3 +126,6 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 256Mi
+        - name: cert
+          configMap:
+            name: gitlab-home-ca
