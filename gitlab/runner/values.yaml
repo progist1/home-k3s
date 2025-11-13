@@ -14,15 +14,10 @@ runners:
         privileged = true
         image = "docker:20.10.16"
 
-        [runners.kubernetes.service_account]
-          name = "default"
-
-        # Монтируем CA в JOB CONTAINER
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-root-ca"
           mount_path = "/usr/local/share/ca-certificates"
 
-        # Монтируем CA в DOCKER:DIND
         [[runners.kubernetes.services]]
           name = "docker:20.10.16-dind"
           alias = "docker"
