@@ -26,11 +26,11 @@ runners:
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-root-ca"
           mount_path = "/etc/gitlab-runner/certs"
-
-    [runners.environment]
-      DOCKER_HOST = "tcp://docker:2375"
-      DOCKER_TLS_CERTDIR = ""
-      GIT_SSL_CAINFO = "/etc/gitlab-runner/certs/gitlab.home.crt"
+      environment = [
+        "DOCKER_HOST=tcp://docker:2375",
+        "DOCKER_TLS_CERTDIR=",
+        "GIT_SSL_CAINFO=/etc/gitlab-runner/certs/gitlab.home.crt"
+      ]
 volumes:
   - name: docker-storage
     emptyDir:
