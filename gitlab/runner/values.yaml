@@ -14,17 +14,23 @@ runners:
 
         privileged = true
 
-        image = "docker:20.10.16-dind"
+        image = "docker:20.10.16"
 
         helper_image = "gitlab/gitlab-runner-helper:ubuntu-x86_64-latest"
 
         [[runners.kubernetes.services]]
-          name = "docker"
+          name = "docker:20.10.16-dind"
           alias = "docker"
+          command = ["--tls=false"]
+
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-root-ca"
           mount_path = "/etc/gitlab-runner/certs"
 
+    [runners.environment]
+      DOCKER_HOST = "tcp://docker:2375"
+      DOCKER_TLS_CERTDIR = ""
+      GIT_SSL_CAINFO = "/etc/gitlab-runner/certs/gitlab.home.crt"
 volumes:
   - name: docker-storage
     emptyDir:
