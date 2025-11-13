@@ -38,12 +38,6 @@ spec:
       host: 'pi'
       location: 'yolki'
   - targets:
-    - '10.0.0.34:9101'
-    labels:
-      group: 'external-nodes'
-      host: 'gitlab'
-      location: 'home'
-  - targets:
     - 'vps.amsterdam:9100'
     labels:
       group: 'external-nodes'
