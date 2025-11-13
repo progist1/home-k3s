@@ -14,10 +14,6 @@ spec:
             app: renovate
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-          - ip: "10.0.0.34"
-            hostnames:
-            - "gitlab.home"
           containers:
             - name: renovate
               image: renovate/renovate:42.8.0
