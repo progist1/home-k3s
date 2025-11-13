@@ -11,29 +11,26 @@ runners:
     [[runners]]
       [runners.kubernetes]
         namespace = "{{.Release.Namespace}}"
-
         privileged = true
-
         image = "docker:20.10.16"
 
-        helper_image = "gitlab/gitlab-runner-helper:ubuntu-x86_64-latest"
+        [runners.kubernetes.service_account]
+          name = "default"
 
+        # Монтируем CA в JOB CONTAINER
+        [[runners.kubernetes.volumes.secret]]
+          name = "gitlab-root-ca"
+          mount_path = "/usr/local/share/ca-certificates"
+
+        # Монтируем CA в DOCKER:DIND
         [[runners.kubernetes.services]]
           name = "docker:20.10.16-dind"
           alias = "docker"
           command = ["--tls=false"]
+
           [[runners.kubernetes.services.volumes.secret]]
             name = "gitlab-root-ca"
             mount_path = "/usr/local/share/ca-certificates"
-
-        [[runners.kubernetes.volumes.secret]]
-          name = "gitlab-root-ca"
-          mount_path = "/etc/gitlab-runner/certs"
-      environment = [
-        "DOCKER_HOST=tcp://docker:2375",
-        "DOCKER_TLS_CERTDIR=",
-        "GIT_SSL_CAINFO=/etc/gitlab-runner/certs/gitlab.home.crt"
-      ]
 volumes:
   - name: docker-storage
     emptyDir:
