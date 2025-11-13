@@ -22,9 +22,9 @@ runners:
           name = "docker:20.10.16-dind"
           alias = "docker"
           command = ["--tls=false"]
-            [[runners.kubernetes.services.volumes.secret]]
-              name = "gitlab-root-ca"
-              mount_path = "/usr/local/share/ca-certificates"
+          [[runners.kubernetes.services.volumes.secret]]
+            name = "gitlab-root-ca"
+            mount_path = "/usr/local/share/ca-certificates"
 
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-root-ca"
