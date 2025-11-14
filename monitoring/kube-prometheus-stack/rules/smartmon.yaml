@@ -99,14 +99,14 @@ spec:
   - name: smartmon-performance
     interval: 30s
     rules:
-    # Температура
-    - alert: SmartmonHighTemperature
+    # Температура для остальных дисков
+    - alert: SmartmonHighTemperatureOther
       expr: |
         (
           smartmon_temperature_celsius_raw_value > 55
         )
         * on(disk) group_left
-          smartmon_device_info
+          smartmon_device_info{disk!~".*nvme.*"}
       for: 10m
       labels:
         severity: warning
