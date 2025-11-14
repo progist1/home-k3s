@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:17.6
+          image: postgres:17.7
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
