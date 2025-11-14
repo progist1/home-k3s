@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gitlab-backup-exec
+  namespace: gitlab
+spec:
+  schedule: "30 5 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          serviceAccountName: gitlab-backup-sa
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "Starting GitLab backup via exec..."
+              
+              POD=$(kubectl get pods -n gitlab -l app=gitlab -o jsonpath='{.items[0].metadata.name}')
+              echo "Found GitLab pod: $POD"
+              
+              kubectl exec -n gitlab $POD -- /bin/bash -c "
+                set -e
+                echo '=== Starting backup at \$(date) ==='
+                
+                gitlab-ctl backup-etc
+                
+                mkdir -p /mnt/backups/gitlab
+                cd /etc/gitlab/config_backup
+                
+                LATEST_CONFIG=\$(ls -t | head -n1)
+                echo 'Copying config: '\$LATEST_CONFIG
+                rm -rf /mnt/backups/gitlab/*
+                cp \$LATEST_CONFIG /mnt/backups/gitlab/
+                
+                chgrp -R 1000 /mnt/backups/gitlab
+                chmod -R 770 /mnt/backups/gitlab
+                
+                gitlab-backup create SKIP=registry CRON=1
+                
+                rm -rf /var/opt/gitlab/backups/*
+                
+                echo '=== Backup completed at \$(date) ==='
+              "
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "50m"
+              limits:
+                memory: "128Mi"
+                cpu: "100m"
+          restartPolicy: OnFailure

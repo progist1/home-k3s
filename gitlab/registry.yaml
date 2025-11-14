@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Main/k3s-data/gitlab/registry
+    path: /mnt/Main/k3s-data/gitlab/registry # todo offsite backup
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-hdd-manual
