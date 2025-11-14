@@ -13,14 +13,14 @@ spec:
   scheme: HTTP
   staticConfigs:
   - targets:
-    - 'vps.home:9104'
+    - 'mysql-exporter-home.monitoring.svc.cluster.local:9104'
     labels:
       group: 'mysql-exporter'
       environment: 'staging'
       host: 'home-vps'
       location: 'home'
   - targets:
-    - 'vps.spb:9104'
+    - 'mysql-exporter-spb.monitoring.svc.cluster.local:9105'
     labels:
       group: 'mysql-exporter'
       environment: 'production'

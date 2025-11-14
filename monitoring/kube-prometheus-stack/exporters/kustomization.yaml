@@ -3,3 +3,4 @@ resources:
   - redis-exporter
   - adguard-exporter
   - ssl-exporter
+  - mysql-exporter
