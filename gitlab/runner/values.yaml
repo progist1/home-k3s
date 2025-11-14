@@ -9,23 +9,31 @@ runners:
   secret: gitlab-runner-secrets
   config: |
     [[runners]]
+      name = "k3s-runner"
+
+      executor = "kubernetes"
+      tls-ca-file = "/etc/docker/certs.d/registry.gitlab.home/ca.crt"
+
+      environment = [
+        "DOCKER_TLS_CERTDIR=",
+        "DOCKER_HOST=tcp://docker:2375",
+        "GIT_SSL_CAINFO=/etc/docker/certs.d/registry.gitlab.home/ca.crt"
+      ]
+
       [runners.kubernetes]
-        namespace = "{{.Release.Namespace}}"
+        namespace = "gitlab-runner"
         privileged = true
         image = "docker:20.10.16"
-
-        [[runners.kubernetes.volumes.secret]]
-          name = "gitlab-root-ca"
-          mount_path = "/usr/local/share/ca-certificates"
+        poll_timeout = 600
+        
+        [[runners.kubernetes.volumes.config_map]]
+          name = "home-root-ca"
+          mount_path = "/etc/docker/certs.d/registry.gitlab.home"
 
         [[runners.kubernetes.services]]
           name = "docker:20.10.16-dind"
           alias = "docker"
-          command = ["--tls=false"]
-
-          [[runners.kubernetes.services.volumes.secret]]
-            name = "gitlab-root-ca"
-            mount_path = "/usr/local/share/ca-certificates"
+          command = ["dockerd", "--host=tcp://0.0.0.0:2375", "--tls=false"]
 volumes:
   - name: docker-storage
     emptyDir:
