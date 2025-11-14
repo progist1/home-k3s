@@ -21,7 +21,7 @@ spec:
 
     - alert: BonchBotNotResponding
       expr: |
-        bonchbot_last_answer_seconds > 20
+        bonchbot_last_answer_seconds > 10
       for: 10s
       labels:
         severity: critical
@@ -32,8 +32,8 @@ spec:
 
     - alert: BonchBotNotSendingNotifications
       expr: |
-        bonchbot_last_answer_seconds > 5m
-      for: 1m
+        bonchbot_dispatches_seconds_ago > 1m
+      for: 10m
       labels:
         severity: critical
       annotations:
@@ -43,8 +43,8 @@ spec:
 
     - alert: BonchBotHighLKErrorRate
       expr: |
-        bonchbot_lk_errors_last_hour > 2000
-      for: 10m
+        bonchbot_lk_errors_last_hour > 1000
+      for: 1m
       labels:
         severity: warning
       annotations:
@@ -54,8 +54,8 @@ spec:
 
     - alert: BonchBotCriticalLKErrorRate
       expr: |
-        bonchbot_lk_errors_last_hour > 5000
-      for: 10m
+        bonchbot_lk_errors_last_hour > 2000
+      for: 1m
       labels:
         severity: critical
       annotations:
@@ -95,3 +95,14 @@ spec:
         summary: "BonchBot archiving failed ({{ $labels.environment }})"
         description: |
           **Archiving failed**
+
+    - alert: BonchBotSlowResponse
+      expr: |
+        bonchbot_timeout_response_ms{environment="production"} > 1000
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "BonchBot slow response ({{ $labels.environment }})"
+        description: |
+          **Slow response detected: {{ $value }} ms**
