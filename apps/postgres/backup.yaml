@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: pgdump
-              image: postgres:17.7
+              image: postgres:18.1
               command:
                 - /bin/sh
                 - -c
