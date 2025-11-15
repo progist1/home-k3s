@@ -5,6 +5,7 @@ metadata:
   namespace: gitlab
 spec:
   schedule: "30 5 * * *"
+  timeZone: "Europe/Moscow"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 2
