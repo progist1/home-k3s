@@ -29,7 +29,7 @@ spec:
                   key: root-password
           volumeMounts:
             - name: data
-              mountPath: /var/lib/mariadb
+              mountPath: /var/lib/mysql
           resources:
             requests:
               cpu: "100m"
