@@ -1,37 +1,41 @@
-env:
-  - name: IMMICH_LOG_LEVEL
-    value: 'debug'
-  - name: REDIS_HOSTNAME
-    value: 'redis.apps.svc.cluster.local'
-  - name: TRANSFORMERS_CACHE
-    value: '/cache'
-  - name: REDIS_DBINDEX
-    value: "5"
-  - name: REDIS_PORT
-    value: "6379"
-  - name: IMMICH_PORT
-    value: "2283"
-  - name: DB_HOSTNAME
-    value: "pgvecto.apps.svc.cluster.local"
-  - name: DB_PORT
-    value: "5432"
-  - name: IMMICH_MACHINE_LEARNING_URL
-    value: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
-  - name: DB_DATABASE_NAME
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_DATABASE_NAME
-  - name: DB_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_PASSWORD
-  - name: DB_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_USERNAME
+controllers:
+  main:
+    containers:
+      main:
+        env:
+          - name: IMMICH_LOG_LEVEL
+            value: 'debug'
+          - name: REDIS_HOSTNAME
+            value: 'redis.apps.svc.cluster.local'
+          - name: TRANSFORMERS_CACHE
+            value: '/cache'
+          - name: REDIS_DBINDEX
+            value: "5"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: IMMICH_PORT
+            value: "2283"
+          - name: DB_HOSTNAME
+            value: "pgvecto.apps.svc.cluster.local"
+          - name: DB_PORT
+            value: "5432"
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+          - name: DB_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_DATABASE_NAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_PASSWORD
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_USERNAME
 
 immich:
   metrics:
@@ -42,10 +46,14 @@ immich:
 
 server:
   enabled: true
-  image:
-    repository: ghcr.io/immich-app/immich-server
-    tag: v2.2.3
-    pullPolicy: IfNotPresent
+  controllers:
+    main:
+      containers:
+        main:
+          image:
+            repository: ghcr.io/immich-app/immich-server
+            tag: v2.2.3
+            pullPolicy: IfNotPresent
   envFrom:
     - secretRef:
         name: immich-secrets
@@ -91,10 +99,14 @@ server:
 
 machine-learning:
   enabled: true
-  image:
-    repository: ghcr.io/immich-app/immich-machine-learning
-    tag: v2.2.3
-    pullPolicy: IfNotPresent
+  controllers:
+    main:
+      containers:
+        main:
+          image:
+            repository: ghcr.io/immich-app/immich-machine-learning
+            tag: v2.2.3
+            pullPolicy: IfNotPresent
   persistence:
     cache:
       enabled: true
@@ -116,4 +128,3 @@ machine-learning:
 
 valkey:
   enabled: true
-  
