@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: photoprism-mariadb
+  namespace: apps
+spec:
+  serviceName: photoprism-mariadb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photoprism-mariadb
+  template:
+    metadata:
+      labels:
+        app: photoprism-mariadb
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: mariadb
+          image: mariadb:10.11.8
+          ports:
+            - containerPort: 3306
+              name: photoprism-mariadb
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: photoprism-mariadb-secrets
+                  key: root-password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mariadb
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs-nvme-manual
+        resources:
+          requests:
+            storage: 10Gi
+        volumeName: photoprism-mariadb-pv

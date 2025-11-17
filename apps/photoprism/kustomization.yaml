@@ -8,3 +8,4 @@ resources:
   - ingress-external.yaml
   - backup.yaml
   - cronjob-backup.yaml
+  - mariadb
