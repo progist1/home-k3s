@@ -11,9 +11,6 @@ spec:
   nfs:
     path: /mnt/Fast/k3s-data/photoprism/mariadb
     server: 10.0.0.4
-  claimRef:
-    name: data-photoprism-mariadb-0
-    namespace: apps
   persistentVolumeReclaimPolicy: Retain
   mountOptions:
   - noatime
