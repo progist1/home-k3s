@@ -37,13 +37,7 @@ spec:
             limits:
               cpu: "2"
               memory: "2Gi"
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: nfs-nvme-manual
-        resources:
-          requests:
-            storage: 10Gi
-        volumeName: photoprism-mariadb-pv
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: photoprism-mariadb-pvc

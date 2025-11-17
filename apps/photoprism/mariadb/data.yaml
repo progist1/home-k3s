@@ -25,3 +25,17 @@ spec:
   - timeo=600
   - retrans=3
   - sync
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photoprism-mariadb-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-nvme-manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: photoprism-mariadb-pv
