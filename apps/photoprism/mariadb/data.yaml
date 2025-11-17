@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: photoprism-mariadb-pv
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: nfs-nvme-db-manual
   capacity:
     storage: 10Gi
   accessModes:
@@ -12,16 +12,6 @@ spec:
     path: /mnt/Fast/k3s-data/photoprism/mariadb
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
-  mountOptions:
-  - noatime
-  - vers=4.1
-  - hard
-  - nfsvers=4.1
-  - rsize=1048576
-  - wsize=1048576
-  - timeo=600
-  - retrans=3
-  - sync
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -29,7 +19,7 @@ metadata:
   name: photoprism-mariadb-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: nfs-nvme-db-manual
   accessModes:
     - ReadWriteOnce
   resources:

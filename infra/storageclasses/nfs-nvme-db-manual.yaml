@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-nvme-db-manual
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+mountOptions:
+  - noatime
+  - vers=4.1
+  - hard
+  - nfsvers=4.1
+  - rsize=1048576
+  - wsize=1048576
+  - timeo=600
+  - retrans=3
+  - sync
