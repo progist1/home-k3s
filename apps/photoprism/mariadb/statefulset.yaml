@@ -18,7 +18,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: mariadb
-          image: mariadb:10.11.8
+          image: mariadb:10.11.15
           ports:
             - containerPort: 3306
           env:
