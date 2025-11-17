@@ -107,6 +107,11 @@
       "versioning": "regex:^?(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d+)$",
       "groupName": "Home Assistant Docker Image",
       "automerge": false
+    },
+    {
+      "matchFileNames": ["apps/immich/helm-release.yaml"],
+      "matchDatasources": ["helm"],
+      "automerge": false
     }
   ]
 }
