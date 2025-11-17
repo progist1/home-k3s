@@ -100,7 +100,6 @@ machine-learning:
       enabled: true
       existingClaim: immich-fast-ml-pvc
       mountPath: "/cache"
-      type: pvc
   envFrom:
     - secretRef:
         name: immich-secrets
