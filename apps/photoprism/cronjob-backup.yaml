@@ -27,7 +27,7 @@ spec:
                 - name: PHOTOPRISM_DATABASE_DRIVER
                   value: "mysql"
                 - name: PHOTOPRISM_DATABASE_SERVER
-                  value: "10.0.0.10:3307"
+                  value: "photoprism-mariadb"
                 - name: PHOTOPRISM_DATABASE_NAME
                   value: "photoprism"
                 - name: PHOTOPRISM_DATABASE_USER
@@ -44,7 +44,7 @@ spec:
                 - name: PHOTOPRISM_BACKUP_PATH
                   value: "/backup"
               volumeMounts:
-                - name: backup          # ← совпадает с volumes[].name ниже
+                - name: backup
                   mountPath: /backup
                 - name: tmp
                   mountPath: /tmp/pp
