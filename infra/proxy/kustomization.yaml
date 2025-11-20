@@ -6,4 +6,3 @@ resources:
   - prtg.home
   - proxy.home
   - cctv.home
-  - registry.gitlab.home
