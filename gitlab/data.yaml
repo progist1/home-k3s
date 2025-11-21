@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/zvols/gitlab
+    path: /mnt/zvols/gitlab/data
   persistentVolumeReclaimPolicy: Retain
   storageClassName: zvol-local
   volumeMode: Filesystem
