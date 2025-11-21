@@ -40,7 +40,7 @@ concurrencyPolicy: Forbid
 successfulJobsHistoryLimit: 0
 failedJobsHistoryLimit: 2
 backoffLimit: 0
-ttlSecondsAfterFinished: 86400
+ttlSecondsAfterFinished: 5
 
 nodeSelector: {}
 tolerations: []

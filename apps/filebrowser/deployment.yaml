@@ -25,6 +25,13 @@ spec:
               mountPath: /config
             - name: database
               mountPath: /database
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -35,4 +42,3 @@ spec:
         - name: database
           persistentVolumeClaim:
             claimName: filebrowser-database-pvc
-            

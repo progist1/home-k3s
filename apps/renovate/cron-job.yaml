@@ -59,3 +59,4 @@ spec:
             - name: root-ca
               configMap:
                 name: renovate-root-ca
+      ttlSecondsAfterFinished: 5
