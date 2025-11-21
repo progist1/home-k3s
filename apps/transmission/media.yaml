@@ -19,7 +19,7 @@ metadata:
   name: transmission-media-pvc
   namespace: apps
 spec:
-  storageClassName: nnfs-hdd-manual-media
+  storageClassName: nfs-hdd-manual-media
   accessModes:
     - ReadWriteMany
   resources:
