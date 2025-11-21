@@ -3,15 +3,15 @@ kind: PersistentVolume
 metadata:
   name: postgres-data-pv
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   capacity:
     storage: 10Gi
   accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/postgres/data
-    server: 10.0.0.4
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/zvols/postgres
   persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,9 +19,9 @@ metadata:
   name: postgres-data-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi

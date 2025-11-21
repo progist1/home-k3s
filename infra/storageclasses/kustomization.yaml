@@ -3,3 +3,4 @@ resources:
   - mailu.yaml
   - nfs-nvme-db-manual.yaml
   - hdd-manual.yaml
+  - zvol-local.yaml

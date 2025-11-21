@@ -3,21 +3,15 @@ kind: PersistentVolume
 metadata:
   name: mysql-data-pv
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   capacity:
-    storage: 10Gi
+    storage: 100Gi
   accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/mysql/data
-    server: 10.0.0.4
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/zvols/mysql
   persistentVolumeReclaimPolicy: Retain
-  mountOptions:
-  - noatime
-  - nolock
-  - vers=4.1
-  - async
-
+  volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -25,10 +19,10 @@ metadata:
   name: mysql-data-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 100Gi
   volumeName: mysql-data-pv

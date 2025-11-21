@@ -3,15 +3,15 @@ kind: PersistentVolume
 metadata:
   name: redis-data-pv
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   capacity:
-    storage: 512Mi
+    storage: 1Gi
   accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/redis/data
-    server: 10.0.0.4
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/zvols/redis
   persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,10 +19,10 @@ metadata:
   name: redis-data-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 512Mi
+      storage: 1Gi
   volumeName: redis-data-pv

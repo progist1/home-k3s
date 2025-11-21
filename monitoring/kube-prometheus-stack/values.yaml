@@ -7,13 +7,16 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: local-path
+          storageClassName: zvol-local
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 10Gi
-    retention: "7d"
-    retentionSize: "20GB"
+              storage: 50Gi
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+    retention: "1y"
+    retentionSize: "48GB"
     resources:
       requests:
         cpu: "200m"

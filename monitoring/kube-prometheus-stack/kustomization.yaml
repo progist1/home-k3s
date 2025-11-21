@@ -12,3 +12,4 @@ resources:
   - grafana-pvc.yaml
   - exporters
   - rules
+  - data.yaml

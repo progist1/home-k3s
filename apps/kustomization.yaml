@@ -1,6 +1,6 @@
 resources:
   - nfs-provisioner
-  # - metabase
+  - metabase
   - renovate
   - filebrowser
   - vikunja
@@ -33,7 +33,7 @@ resources:
   - adguard
   - mosquitto
   - backups-pvc.yaml
-  # - mysql
+  - mysql
   - outline
   - cloud-dbeaver
   - nextcloud

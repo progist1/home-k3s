@@ -4,14 +4,14 @@ metadata:
   name: gitlab-data-pv
 spec:
   capacity:
-    storage: 100Gi
+    storage: 20Gi
   accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/gitlab/data
-    server: 10.0.0.4
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/zvols/gitlab
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs-nvme-manual
+  storageClassName: zvol-local
+  volumeMode: Filesystem
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -20,9 +20,9 @@ metadata:
   namespace: gitlab
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
-  storageClassName: nfs-nvme-manual
+      storage: 20Gi
+  storageClassName: zvol-local
   volumeName: gitlab-data-pv
