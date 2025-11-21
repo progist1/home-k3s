@@ -10,12 +10,6 @@ spec:
   scrapeInterval: 15s
   staticConfigs:
   - targets:
-    - 'vps.home:9100'
-    labels:
-      group: 'external-nodes'
-      host: 'home-vps'
-      location: 'home'
-  - targets:
     - 'bigb.home:9134'  # zfs-exporter
     labels:
       group: 'external-nodes'
