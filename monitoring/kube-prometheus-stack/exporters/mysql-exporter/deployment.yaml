@@ -17,7 +17,7 @@ spec:
         - name: mysql-exporter-home
           image: prom/mysqld-exporter:v0.18.0
           args:
-            - --mysqld.address=vps.home:3306
+            - --mysqld.address=mysql.apps.svc.cluster.local:3306
             - --mysqld.username=exporter
           ports:
             - containerPort: 9104

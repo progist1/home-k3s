@@ -48,7 +48,7 @@ spec:
             - name: VIKUNJA_DATABASE_USER
               value: "vikunja"
             - name: VIKUNJA_DATABASE_HOST
-              value: "10.0.0.10:3306"
+              value: "mysql.apps.svc.cluster.local:3306"
             - name: VIKUNJA_DATABASE_DATABASE
               value: "vikunja"
           envFrom:
