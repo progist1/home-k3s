@@ -4,3 +4,4 @@ resources:
   - nfs-nvme-db-manual.yaml
   - hdd-manual.yaml
   - zvol-local.yaml
+  - hdd-manual-media.yaml

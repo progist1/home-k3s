@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: transmission-media-pv
 spec:
-  storageClassName: nfs-hdd-manual
+  storageClassName: nfs-hdd-manual-media
   capacity:
     storage: 12Ti
   accessModes:
@@ -19,7 +19,7 @@ metadata:
   name: transmission-media-pvc
   namespace: apps
 spec:
-  storageClassName: nfs-hdd-manual
+  storageClassName: nnfs-hdd-manual-media
   accessModes:
     - ReadWriteMany
   resources:
