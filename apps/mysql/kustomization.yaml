@@ -3,3 +3,4 @@ resources:
   - configmap.yaml
   - deployment.yaml
   - service.yaml
+  - backup.yaml

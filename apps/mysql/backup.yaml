@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-mysql
+  namespace: apps
+spec:
+  schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: mysqldump
+              image: mysql:8.4.7
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  TS=$(date +%Y_%m_%d_%H_%M_%S)
+                  FILE="/backups/mysql_${TS}.sql.gz"
+                  echo "[*] Dumping MySQL → $FILE"
+                  mysqldump --host=mysql.apps.svc.cluster.local \
+                            --user=root \
+                            --all-databases \
+                  | gzip > "$FILE"
+              env:
+                - name: MYSQL_PWD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-secrets
+                      key: root-password
+              volumeMounts:
+                - name: backup
+                  mountPath: /backups
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backups-pvc
