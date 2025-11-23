@@ -24,6 +24,8 @@ spec:
                 secretKeyRef:
                   name: mysql-secrets
                   key: root-password
+            - name: TZ
+              value: Europe/Moscow
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
