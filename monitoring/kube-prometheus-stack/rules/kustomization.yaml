@@ -8,3 +8,4 @@ resources:
   - temperatures.yaml
   - traefik.yaml
   - ssl.yaml
+  - flux.yaml
