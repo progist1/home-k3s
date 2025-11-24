@@ -135,8 +135,8 @@ spec:
       annotations:
         summary: "MySQL replication STOPPED on {{ $labels.host }}"
         description: |
-          **IO Running:** {{ $labels.mysql_slave_status_slave_io_running }}
-          **SQL Running:** {{ $labels.mysql_slave_status_slave_sql_running }}
+          **IO Running:** {{ $labels.mysql_slave_status_replica_io_running }}
+          **SQL Running:** {{ $labels.mysql_slave_status_replica_sql_running }}
           **Host:** {{ $labels.hostname }}
           **Action:** 🔄 Restart replication threads
 
@@ -156,6 +156,57 @@ spec:
           **Lag:** {{ $value }} seconds
           **Host:** {{ $labels.hostname }}
           **Action:** ⚠️ Monitor replication performance
+
+    - alert: MysqlTooManyConnections(>80%)
+      expr: max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections * 100 > 80
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: MySQL too many connections (> 80%) (instance {{ $labels.instance }})
+        description: "More than 80% of MySQL connections are in use on {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: MysqlHighThreadsRunning
+      expr: max_over_time(mysql_global_status_threads_running[1m]) / mysql_global_variables_max_connections * 100 > 60
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: MySQL high threads running (instance {{ $labels.instance }})
+        description: "More than 60% of MySQL connections are in running state on {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: MysqlSlaveIoThreadNotRunning
+      expr: ( mysql_slave_status_replica_io_running and ON (instance) mysql_slave_status_source_server_id > 0 ) == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: MySQL Slave IO thread not running (instance {{ $labels.instance }})
+        description: "MySQL Slave IO thread not running on {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: MysqlSlaveSqlThreadNotRunning
+      expr: ( mysql_slave_status_replica_sql_running and ON (instance) mysql_slave_status_source_server_id > 0) == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: MySQL Slave SQL thread not running (instance {{ $labels.instance }})
+        description: "MySQL Slave SQL thread not running on {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: MysqlRestarted
+      expr: mysql_global_status_uptime < 60
+      for: 0m
+      labels:
+        severity: info
+      annotations:
+        summary: MySQL restarted (instance {{ $labels.instance }})
+        description: "MySQL has just been restarted, less than one minute ago on {{ $labels.instance }}.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    - alert: MysqlHighQps
+      expr: irate(mysql_global_status_questions[1m]) > 5000
+      for: 2m
+      labels:
+        severity: info
+      annotations:
+        summary: MySQL High QPS (instance {{ $labels.instance }})
+        description: "MySQL is being overload with unusual QPS (> 10k QPS).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+
 
   - name: redis
     interval: 30s

@@ -6,3 +6,5 @@ resources:
   - bonchbot.yaml
   - backups.yaml
   - temperatures.yaml
+  - traefik.yaml
+  - ssl.yaml
