@@ -24,7 +24,6 @@ resources:
   - photoprism
   - mailu
   - home-assistant
-  - plex
   - tautulli
   - webdav
   - tdarr
