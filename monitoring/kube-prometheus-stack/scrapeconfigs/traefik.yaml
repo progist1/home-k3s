@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: traefik
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: traefik
+  scrapeInterval: 15s
+  scheme: HTTP
+  metricsPath: /metrics
+  staticConfigs:
+    - targets:
+        - traefik-metrics.kube-system.svc.cluster.local:9100
+      labels:
+        component: traefik
+        environment: home
+  metricRelabelings:
+    - sourceLabels: ["__name__"]
+      regex: '.*_bucket$'
+      action: drop
+    - sourceLabels: ["__name__"]
+      regex: '.*_(sum|count)$'
+      action: drop

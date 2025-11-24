@@ -10,4 +10,5 @@ resources:
   - adguard.yaml
   - jellyfin.yaml
   - bonchbot.yaml
+  - traefik.yaml
   - ssl.yaml
