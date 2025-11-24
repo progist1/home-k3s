@@ -13,7 +13,7 @@ spec:
         namespace: flux-system
       chart: charts/pvc-archiver
   values:
-    name: nextcloud
+    name: nextcloud-data
     archiveName: nextcloud
     sourcePVC: nextcloud-data-pvc
     destPVC: backups-pvc
@@ -38,7 +38,7 @@ spec:
         namespace: flux-system
       chart: charts/pvc-archiver
   values:
-    name: nextcloud
+    name: nextcloud-html
     archiveName: nextcloud
     sourcePVC: nextcloud-html-pvc
     destPVC: backups-pvc
