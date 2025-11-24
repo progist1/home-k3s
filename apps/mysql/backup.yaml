@@ -26,7 +26,9 @@ spec:
                   mysqldump --host=mysql.apps.svc.cluster.local \
                             --user=root \
                             --single-transaction \
+                            --quick \
                             --all-databases \
+                            2>$FILE.log \
                   | gzip > "$FILE"
               env:
                 - name: MYSQL_PWD
@@ -37,6 +39,13 @@ spec:
               volumeMounts:
                 - name: backup
                   mountPath: /backups
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "64Mi"
+                limits:
+                  cpu: "1"
+                  memory: "1Gi"
           volumes:
             - name: backup
               persistentVolumeClaim:
