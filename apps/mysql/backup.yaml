@@ -25,6 +25,7 @@ spec:
                   echo "[*] Dumping MySQL → $FILE"
                   mysqldump --host=mysql.apps.svc.cluster.local \
                             --user=root \
+                            --single-transaction \
                             --all-databases \
                   | gzip > "$FILE"
               env:
