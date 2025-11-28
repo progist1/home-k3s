@@ -35,11 +35,11 @@ spec:
   - name: zfs-capacity
     interval: 30s
     rules:
-    # Высокая заполненность пула (>80%)
+    # Высокая заполненность пула (>85%)
     - alert: ZFSPoolCapacityHigh
       expr: |
         (
-          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 80
+          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 85
         )
         * on(instance, pool) group_left
           zfs_pool_size_bytes
