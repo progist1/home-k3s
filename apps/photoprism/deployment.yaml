@@ -25,6 +25,8 @@ spec:
               value: "20800"
             - name: PHOTOPRISM_HTTP_HOST
               value: "0.0.0.0"
+            - name: PHOTOPRISM_TRUSTED_PROXY
+              value: "10.42.0.0/16"
 
             - name: PHOTOPRISM_ORIGINALS_PATH
               value: "/photoprism/originals"
