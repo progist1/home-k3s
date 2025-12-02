@@ -21,7 +21,7 @@ spec:
             runAsGroup: 568
           containers:
             - name: backup
-              image: photoprism/photoprism:250707
+              image: photoprism/photoprism:251130
               imagePullPolicy: IfNotPresent
               env:
                 - name: PHOTOPRISM_DATABASE_DRIVER
