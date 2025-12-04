@@ -20,8 +20,8 @@ spec:
         description: "All Traefik services are down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: TraefikHighHttp4xxErrorRateService
-      expr: sum(rate(traefik_service_requests_total{code=~"4.*"}[15m])) by (service) / sum(rate(traefik_service_requests_total[15m])) by (service) * 100 > 5
-      for: 1m
+      expr: sum(rate(traefik_service_requests_total{code=~"4.*"}[5m])) by (service) / sum(rate(traefik_service_requests_total[5m])) by (service) * 100 > 5
+      for: 7m
       labels:
         severity: critical
       annotations:
@@ -29,8 +29,8 @@ spec:
         description: "Traefik service 4xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: TraefikHighHttp5xxErrorRateService
-      expr: sum(rate(traefik_service_requests_total{code=~"5.*"}[15m])) by (service) / sum(rate(traefik_service_requests_total[15m])) by (service) * 100 > 5
-      for: 1m
+      expr: sum(rate(traefik_service_requests_total{code=~"5.*"}[5m])) by (service) / sum(rate(traefik_service_requests_total[5m])) by (service) * 100 > 5
+      for: 7m
       labels:
         severity: critical
       annotations:
