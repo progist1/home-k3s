@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: mail-chain
+  namespace: infra
+spec:
+  chain:
+    middlewares:
+      - name: redirect-to-https
+        namespace: infra
+      - name: ratelimit-mail
+        namespace: infra
+

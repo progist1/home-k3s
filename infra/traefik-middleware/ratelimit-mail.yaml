@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: ratelimit-mail
+  namespace: infra
+spec:
+  rateLimit:
+    average: 10
+    burst: 20
+    sourceCriterion:
+      ipStrategy:
+        depth: 0
+

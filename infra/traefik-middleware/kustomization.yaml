@@ -1,4 +1,17 @@
 resources:
+  # Базовые middleware
   - redirect-to-https.yaml
   - nextcloud.yaml
-#  - block-metrics.yaml #TODO!
+  
+  # Rate limiting middleware
+  - ratelimit-mail.yaml
+  - ratelimit-strict.yaml
+  - ratelimit-media.yaml
+  
+  # Chain middleware (комбинации)
+  - mail-chain.yaml
+  - strict-chain.yaml
+  - media-chain.yaml
+  
+  # TODO: блокировка метрик
+  # - block-metrics.yaml

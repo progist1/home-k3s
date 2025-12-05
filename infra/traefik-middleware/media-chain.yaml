@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: media-chain
+  namespace: infra
+spec:
+  chain:
+    middlewares:
+      - name: redirect-to-https
+        namespace: infra
+      - name: ratelimit-media
+        namespace: infra
+
