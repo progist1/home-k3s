@@ -78,9 +78,13 @@ server:
       hostPath:
         path: /dev/dri
         type: Directory
-  securityContext:
-    privileged: true
-    runAsUser: 0
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    supplementalGroups:
+      - 109  # render group for GPU
+      - 44   # video group
   resources:
     requests:
       cpu: "500m"

@@ -13,13 +13,16 @@ spec:
       labels:
         app: jellyfin
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        supplementalGroups:
+          - 109  # render group for GPU
+          - 44   # video group
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.4
-          securityContext:
-            privileged: true
-            fsGroup: 109
-            supplementalGroups: [109]
           ports:
             - containerPort: 8096
           env:

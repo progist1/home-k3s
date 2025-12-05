@@ -4,3 +4,4 @@ resources:
   - service.yaml
   - ingress-external.yaml
   - backup.yaml
+  - networkpolicy.yaml
