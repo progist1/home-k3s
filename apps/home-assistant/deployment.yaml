@@ -45,16 +45,20 @@ spec:
               memory: "1Gi"
           readinessProbe:
             httpGet:
-              path: /api/
+              path: /
               port: 8123
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /api/
+              path: /
               port: 8123
             initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: config
           persistentVolumeClaim:

@@ -56,17 +56,25 @@ spec:
               cpu: "2"
               memory: "512Mi"
           readinessProbe:
-            httpGet:
-              path: /status.php
-              port: 80
-            initialDelaySeconds: 10
+            exec:
+              command:
+                - sh
+                - -c
+                - 'curl -f http://localhost/status.php || exit 1'
+            initialDelaySeconds: 15
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           livenessProbe:
-            httpGet:
-              path: /status.php
-              port: 80
-            initialDelaySeconds: 30
+            exec:
+              command:
+                - sh
+                - -c
+                - 'curl -f http://localhost/ || exit 1'
+            initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: data
           persistentVolumeClaim:
