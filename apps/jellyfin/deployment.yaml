@@ -20,6 +20,7 @@ spec:
         supplementalGroups:
           - 109  # render group for GPU
           - 44   # video group
+          - 568  # transmission group for media access
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.4
