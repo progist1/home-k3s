@@ -36,3 +36,39 @@ spec:
       annotations:
         summary: Traefik high HTTP 5xx error rate service (instance {{ $labels.instance }})
         description: "Traefik service 5xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: TraefikHighHttp403ErrorRate
+      expr: sum(rate(traefik_service_requests_total{code="403"}[5m])) by (service) > 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High 403 error rate on {{ $labels.service }}"
+        description: "Possible brute force attack detected. 403 errors: {{ $value }}/s on service {{ $labels.service }}"
+
+    - alert: TraefikBruteForceAttack
+      expr: sum(rate(traefik_service_requests_total{code="403"}[1m])) by (service) > 50
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "🚨 Possible brute force attack on {{ $labels.service }}"
+        description: "Very high 403 error rate: {{ $value }}/s on service {{ $labels.service }}. Consider checking logs and blocking IPs."
+
+    - alert: TraefikRateLimitTriggered
+      expr: sum(rate(traefik_service_requests_total{code="429"}[5m])) by (service) > 1
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Rate limit triggered on {{ $labels.service }}"
+        description: "Rate limiting is active: {{ $value }}/s requests with 429 status on service {{ $labels.service }}. Possible attack or legitimate traffic spike."
+
+    - alert: TraefikHighRateLimitRate
+      expr: sum(rate(traefik_service_requests_total{code="429"}[5m])) by (service) > 10
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "🚨 High rate limit rate on {{ $labels.service }}"
+        description: "Very high rate of rate-limited requests: {{ $value }}/s on service {{ $labels.service }}. Likely brute force attack or DDoS attempt."
