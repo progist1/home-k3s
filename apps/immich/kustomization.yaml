@@ -7,3 +7,9 @@ resources:
   - ingress-external-immich.yaml
   - ingress-external-photos.yaml
   - ingress-internal.yaml
+
+patches:
+  - path: server-gpu-patch.yaml
+    target:
+      kind: Deployment
+      name: immich-server
