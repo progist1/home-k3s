@@ -1,0 +1,52 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kubernetes-storage-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: pvc
+    interval: 30s
+    rules:
+    # Критический алерт - PVC в состоянии Pending
+    - alert: PVCPending
+      expr: kube_persistentvolumeclaim_status_phase{phase="Pending"} == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "PVC {{ $labels.persistentvolumeclaim }} is Pending in namespace {{ $labels.namespace }}"
+        description: "PVC {{ $labels.persistentvolumeclaim }} has been in Pending state for more than 5 minutes. Check storage class and available storage."
+
+    # Предупреждение - мало места в PVC (<10%)
+    - alert: PVCLowSpace
+      expr: |
+        (
+          (kubelet_volume_stats_available_bytes / kubelet_volume_stats_capacity_bytes) * 100 < 10
+        )
+        and
+        kubelet_volume_stats_capacity_bytes > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "PVC {{ $labels.persistentvolumeclaim }} is running low on space"
+        description: "PVC {{ $labels.persistentvolumeclaim }} in namespace {{ $labels.namespace }} has only {{ $value | humanize }}% free space remaining."
+
+    # Критический алерт - очень мало места в PVC (<5%)
+    - alert: PVCCriticalSpace
+      expr: |
+        (
+          (kubelet_volume_stats_available_bytes / kubelet_volume_stats_capacity_bytes) * 100 < 5
+        )
+        and
+        kubelet_volume_stats_capacity_bytes > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "🚨 PVC {{ $labels.persistentvolumeclaim }} is critically low on space"
+        description: "PVC {{ $labels.persistentvolumeclaim }} in namespace {{ $labels.namespace }} has only {{ $value | humanize }}% free space remaining. Immediate action required!"
+

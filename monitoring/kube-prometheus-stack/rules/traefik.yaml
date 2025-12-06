@@ -72,3 +72,20 @@ spec:
       annotations:
         summary: "🚨 High rate limit rate on {{ $labels.service }}"
         description: "Very high rate of rate-limited requests: {{ $value }}/s on service {{ $labels.service }}. Likely brute force attack or DDoS attempt."
+
+    # Критический алерт - Ingress backend возвращает только 5xx ошибки
+    - alert: IngressBackendDown
+      expr: |
+        (
+          sum(rate(traefik_service_requests_total{code=~"5.."}[5m])) by (service)
+          /
+          sum(rate(traefik_service_requests_total[5m])) by (service)
+        ) > 0.9
+        and
+        sum(rate(traefik_service_requests_total[5m])) by (service) > 0.1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Ingress backend {{ $labels.service }} is returning mostly 5xx errors"
+        description: "Service {{ $labels.service }} is returning {{ $value | humanize }}% 5xx errors. Check pod status and service endpoints."

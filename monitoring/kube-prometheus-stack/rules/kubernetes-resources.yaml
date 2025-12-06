@@ -1,0 +1,58 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kubernetes-resources-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: resources
+    interval: 30s
+    rules:
+    # Критический алерт - Pod был убит из-за OOM
+    - alert: PodOOMKilled
+      expr: |
+        increase(container_oom_events_total[5m]) > 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: "🚨 Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} was OOMKilled"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) was killed due to OOM. Increase memory limits or investigate memory leaks."
+
+    # Предупреждение - высокое использование памяти (>80% от limit)
+    # Используем container_memory_usage_bytes и kube_pod_container_resource_limits
+    - alert: PodHighMemoryUsage
+      expr: |
+        (
+          container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"} 
+          / 
+          on(pod, container, namespace) kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""}
+        ) * 100 > 80
+        and
+        kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""} > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod {{ $labels.pod }} is using {{ $value | humanize }}% of memory limit"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is using {{ $value | humanize }}% of its memory limit. Consider increasing limits or optimizing memory usage."
+
+    # Предупреждение - высокое использование CPU (>80% от limit)
+    - alert: PodHighCPUUsage
+      expr: |
+        (
+          rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]) 
+          / 
+          on(pod, container, namespace) kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""}
+        ) * 100 > 80
+        and
+        kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""} > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod {{ $labels.pod }} is using {{ $value | humanize }}% of CPU limit"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is using {{ $value | humanize }}% of its CPU limit. Consider increasing limits or optimizing CPU usage."
+

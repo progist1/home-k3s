@@ -9,3 +9,5 @@ resources:
   - traefik.yaml
   - ssl.yaml
   - flux.yaml
+  - kubernetes-storage.yaml
+  - kubernetes-resources.yaml
