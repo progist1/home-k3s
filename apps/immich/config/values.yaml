@@ -42,6 +42,8 @@ immich:
 
 server:
   enabled: true
+  strategy:
+    type: Recreate
   image:
     repository: ghcr.io/immich-app/immich-server
     tag: v2.3.1
