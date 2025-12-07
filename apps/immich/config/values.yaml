@@ -85,7 +85,10 @@ server:
       gpu.intel.com/i915: "1"
   nodeSelector:
     gpu: "true"
-
+  tolerations:
+    - key: "gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
 machine-learning:
   enabled: true
   image:

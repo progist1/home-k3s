@@ -15,6 +15,11 @@ spec:
     spec:
       nodeSelector:
         gpu: "true"
+      tolerations:
+        - key: "gpu"
+          operator: "Exists"
+          effect: "NoSchedule"
+
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
