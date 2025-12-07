@@ -24,9 +24,6 @@ spec:
           image: jellyfin/jellyfin:10.11.4
           ports:
             - containerPort: 8096
-          securityContext:
-            privileged: false
-            allowPrivilegeEscalation: false
           env:
             - name: TZ
               value: Europe/Moscow
