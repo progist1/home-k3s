@@ -1,4 +1,0 @@
-resources:
-  - crds.yaml
-  - install.yaml
-  - config.yaml

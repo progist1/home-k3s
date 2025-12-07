@@ -1,3 +1,2 @@
 resources:
   - xray-config-sealed.yaml
-  - k8up-secret-sealed.yaml

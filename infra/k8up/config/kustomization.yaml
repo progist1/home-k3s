@@ -1,4 +1,0 @@
-resources:
-  - pod-config.yaml
-  - backup-pvc.yaml
-  - backup-schedule.yaml
