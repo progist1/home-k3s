@@ -11,3 +11,22 @@ spec:
     name: flux-system
   path: ./cluster-addons
   prune: true
+  patches:
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: coredns
+          namespace: kube-system
+        spec:
+          template:
+            spec:
+              tolerations:
+                - key: "gpu"
+                  operator: "Equal"
+                  value: "true"
+                  effect: "NoSchedule"
+      target:
+        kind: Deployment
+        name: coredns
+        namespace: kube-system

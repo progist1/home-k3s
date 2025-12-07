@@ -11,3 +11,4 @@ resources:
   # - k8up
   - traefik-args.yaml
   - traefik-metrics-service.yaml
+  - traefik-svclb-tolerations.yaml

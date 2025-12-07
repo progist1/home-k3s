@@ -444,6 +444,11 @@ kube-state-metrics:
       - sourceLabels: ["__name__"]
         regex: 'kube_(pod_status_phase|pod_status_ready|deployment_status_replicas_available|node_status_ready|persistentvolumeclaim_status_phase)'
         action: keep
+  tolerations:
+    - key: "gpu"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 
 nodeExporter:
   enabled: true

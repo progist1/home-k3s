@@ -8,4 +8,9 @@ spec:
   # shared-dev-num: количество подов, которые могут использовать один GPU одновременно
   # Для media transcode (Jellyfin, Immich) это подходит - они не критичны по времени
   sharedDevNum: 4  # Позволяет Jellyfin и Immich использовать один GPU одновременно
+  tolerations:
+    - key: "gpu"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 
