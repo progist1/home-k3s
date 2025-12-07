@@ -8,3 +8,4 @@ generatorOptions:
 resources:
   - data.yaml
   - helm-release.yaml
+  - backup.yaml

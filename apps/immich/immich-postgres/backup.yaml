@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-immich-postgres
+  namespace: apps
+spec:
+  schedule: "30 5 * * *"
+  timeZone: "Europe/Moscow"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: pgdump
+              image: postgres:17.7
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  TS=$(date +%Y_%m_%d_%H_%M_%S)
+                  FILE="/backups/immich-postgres_${TS}.sql.gz"
+                  echo "[*] Dumping Immich Postgres → $FILE"
+                  pg_dumpall -h pgvecto.apps.svc.cluster.local \
+                             -U $POSTGRES_USER \
+                             --no-password \
+                  | gzip > "$FILE"
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-secrets
+                      key: DB_USERNAME
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-secrets
+                      key: DB_PASSWORD
+              volumeMounts:
+                - name: backup
+                  mountPath: /backups
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "64Mi"
+                limits:
+                  cpu: "1"
+                  memory: "1Gi"
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: backups-pvc
+
