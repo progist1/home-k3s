@@ -83,6 +83,8 @@ server:
       cpu: "2000m"
       memory: "3Gi"
       gpu.intel.com/i915: "1"
+  nodeSelector:
+    gpu: "true"
 
 machine-learning:
   enabled: true
