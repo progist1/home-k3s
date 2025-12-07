@@ -9,3 +9,4 @@ resources:
   - k8up.yaml
   - outline.yaml
   - gitlab-runner.yaml
+  - intel-device-plugin.yaml

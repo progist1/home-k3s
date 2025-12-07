@@ -70,28 +70,19 @@ server:
       enabled: true
       existingClaim: immich-photos-pvc
       mountPath: /mnt/photos
-  extraVolumeMounts:
-  - name: dev-dri
-    mountPath: /dev/dri
-  extraVolumes:
-    - name: dev-dri
-      hostPath:
-        path: /dev/dri
-        type: Directory
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
     fsGroup: 1000
-    supplementalGroups:
-      - 109  # render group for GPU
-      - 44   # video group
   resources:
     requests:
       cpu: "500m"
       memory: "1Gi"
+      gpu.intel.com/i915: "1"
     limits:
       cpu: "2000m"
       memory: "3Gi"
+      gpu.intel.com/i915: "1"
 
 machine-learning:
   enabled: true
