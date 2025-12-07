@@ -3,6 +3,9 @@
   "branchConcurrentLimit": 50,
   "prConcurrentLimit": 10,
   "pruneBranchAfterAutomerge": true,
+  "ignorePaths": [
+    "sealed-secrets/**"
+  ],
   "enabledManagers": [
     "kubernetes",
     "helm-values",
