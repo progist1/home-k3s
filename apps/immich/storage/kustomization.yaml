@@ -6,6 +6,6 @@ resources:
   - pvc-photos.yaml
   - pvc-ml.yaml
   - pvc-hdd-upload.yaml
-  - backup-upload.yaml
+  - backup-hdd-upload.yaml
   - backup-ml.yaml
   - backup-library.yaml
