@@ -9,5 +9,3 @@ resources:
   - backup-upload.yaml
   - backup-ml.yaml
   - backup-library.yaml
-  - backup-videos.yaml
-  - backup-hdd-upload.yaml
