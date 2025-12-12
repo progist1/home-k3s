@@ -38,33 +38,46 @@ spec:
             - |
               set -e
               
-              # Настройка MinIO клиента
+              echo "Configuring MinIO client..."
               mc alias set minio http://minio.infra.svc.cluster.local:9000 \
-                "$(cat /secrets/root-user)" \
-                "$(cat /secrets/root-password)"
+                "${MINIO_ROOT_USER}" \
+                "${MINIO_ROOT_PASSWORD}"
+              
+              echo "Testing connection..."
+              mc admin info minio
               
               # Создание бакетов (idempotent - не ошибка если уже существует)
               echo "Creating buckets..."
               
               # Бакет для k8up backups
-              mc mb minio/k8up-backups --ignore-existing || true
+              mc mb minio/k8up-backups --ignore-existing || echo "Bucket k8up-backups already exists or error occurred"
+              
+              # Проверка что бакет создан
+              echo "Listing buckets:"
+              mc ls minio/
               
               # Настройка политик доступа для бакетов (если нужно)
               # mc anonymous set download minio/k8up-backups
               
               # Создание пользователей и политик (если нужно)
               # Пример: создание пользователя для k8up
-              # mc admin user add minio k8up-user "$(cat /secrets/k8up-access-key)" || true
+              # mc admin user add minio k8up-user "${K8UP_ACCESS_KEY}" || true
               # mc admin policy attach minio readwrite --user k8up-user || true
               
               echo "Setup completed successfully!"
           env:
             - name: MC_HOST_minio
               value: http://minio.infra.svc.cluster.local:9000
-          volumeMounts:
-            - name: secrets
-              mountPath: /secrets
-              readOnly: true
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: root-password
           resources:
             requests:
               cpu: "50m"
