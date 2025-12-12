@@ -13,7 +13,7 @@ spec:
         spec:
           containers:
             - name: nextcloud
-              image: nextcloud:32.0.2-apache
+              image: nextcloud:32.0.3-apache
               args: ["php", "-f", "/var/www/html/cron.php"]
               securityContext:
                 runAsUser: 33
