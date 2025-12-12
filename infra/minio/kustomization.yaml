@@ -1,0 +1,8 @@
+resources:
+  - storage.yaml
+  - deployment.yaml
+  - service.yaml
+  - service-internal.yaml
+  - ingress-internal.yaml
+  - setup-job.yaml
+

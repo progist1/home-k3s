@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-internal
+  namespace: infra
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  rules:
+    - host: minio.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-internal
+                port:
+                  number: 9001
+  tls:
+    - hosts:
+        - minio.home
+      secretName: minio-internal-tls
+

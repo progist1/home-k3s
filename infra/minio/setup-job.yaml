@@ -1,0 +1,79 @@
+# Job для декларативного создания бакетов и аккаунтов в MinIO
+# Запускается один раз при первом развертывании или при изменении конфигурации
+# Для повторного запуска: kubectl delete job minio-setup -n infra && kubectl apply -f setup-job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-setup
+  namespace: infra
+  annotations:
+    # Job будет пересоздан при изменении этого манифеста
+    "fluxcd.io/ignore": "false"
+spec:
+  ttlSecondsAfterFinished: 300  # Удалить через 5 минут после завершения
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        # Ждем готовности MinIO
+        - name: wait-for-minio
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z minio.infra.svc.cluster.local 9000; do
+                echo "Waiting for MinIO..."
+                sleep 2
+              done
+              echo "MinIO is ready!"
+      containers:
+        - name: mc
+          image: minio/mc:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              
+              # Настройка MinIO клиента
+              mc alias set minio http://minio.infra.svc.cluster.local:9000 \
+                "$(cat /secrets/root-user)" \
+                "$(cat /secrets/root-password)"
+              
+              # Создание бакетов (idempotent - не ошибка если уже существует)
+              echo "Creating buckets..."
+              
+              # Бакет для k8up backups
+              mc mb minio/k8up-backups --ignore-existing || true
+              
+              # Настройка политик доступа для бакетов (если нужно)
+              # mc anonymous set download minio/k8up-backups
+              
+              # Создание пользователей и политик (если нужно)
+              # Пример: создание пользователя для k8up
+              # mc admin user add minio k8up-user "$(cat /secrets/k8up-access-key)" || true
+              # mc admin policy attach minio readwrite --user k8up-user || true
+              
+              echo "Setup completed successfully!"
+          env:
+            - name: MC_HOST_minio
+              value: http://minio.infra.svc.cluster.local:9000
+          volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+      volumes:
+        - name: secrets
+          secret:
+            secretName: minio-secrets
+
