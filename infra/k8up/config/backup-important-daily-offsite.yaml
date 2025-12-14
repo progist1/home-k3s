@@ -19,7 +19,6 @@ spec:
 
   backup:
     schedule: "0 2 * * *"
-    timeZone: "Europe/Moscow"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 0
     tags:
@@ -41,11 +40,11 @@ spec:
 
   prune:
     schedule: "0 6 * * *"
-    timeZone: "Europe/Moscow"
-    keepLast: 12
-    keepDaily: 7
-    keepWeekly: 4
-    keepMonthly: 1
+    retention:
+      keepLast: 12
+      keepDaily: 7
+      keepWeekly: 4
+      keepMonthly: 1
 
 
 

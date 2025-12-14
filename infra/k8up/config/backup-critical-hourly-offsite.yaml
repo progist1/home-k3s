@@ -40,12 +40,12 @@ spec:
 
   prune:
     schedule: "0 6 * * *"
-    timeZone: "Europe/Moscow"
-    keepLast: 12
-    keepHourly: 10
-    keepDaily: 7
-    keepWeekly: 1
-    keepMonthly: 0
+    retention:
+      keepLast: 12
+      keepHourly: 10
+      keepDaily: 7
+      keepWeekly: 1
+      keepMonthly: 0
 
 
 
