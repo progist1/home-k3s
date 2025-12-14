@@ -1,7 +1,3 @@
-# Job для декларативного создания бакетов и аккаунтов в MinIO
-# Запускается один раз при первом развертывании или при изменении конфигурации
-# Для повторного запуска: kubectl delete job minio-setup -n infra && kubectl apply -f setup-job.yaml
-
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -11,8 +7,8 @@ metadata:
     # Job будет пересоздан при изменении этого манифеста
     "fluxcd.io/ignore": "false"
 spec:
-  ttlSecondsAfterFinished: 300  # Удалить через 5 минут после завершения
-  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600  # Удалить через 1 час после завершения (для отладки)
+  backoffLimit: 5  # Увеличиваем количество попыток
   template:
     spec:
       restartPolicy: OnFailure
@@ -35,30 +31,52 @@ spec:
           command:
             - /bin/sh
             - -c
-            - |              
+            - |
+              set -e
+              
+              # ============================================
+              # 1. Настройка MinIO клиента
+              # ============================================
               echo "Configuring MinIO client..."
               mc alias set minio ${MINIO_HOST} "${MINIO_ACCESS_KEY}" "${MINIO_SECRET_KEY}"
               
-              echo "Testing connection..."
-              mc admin info minio
+              # ============================================
+              # 2. Создание бакета
+              # ============================================
+              K8UP_BUCKET="${K8UP_BUCKET:-k8up-backups}"
+              echo "Creating bucket ${K8UP_BUCKET}..."
+              mc mb minio/${K8UP_BUCKET} --ignore-existing
               
-              # Создание бакетов (idempotent - не ошибка если уже существует)
-              echo "Creating buckets..."
-              
-              # Бакет для k8up backups
-              mc mb minio/k8up-backups --ignore-existing || echo "Bucket k8up-backups already exists or error occurred"
+              # ============================================
+              # 3. Создание пользователя и политики (если credentials заданы)
+              # ============================================
+              if [ -n "${K8UP_ACCESS_KEY}" ] && [ -n "${K8UP_SECRET_KEY}" ]; then
+                # 3.1. Создание/обновление пользователя
+                echo "Creating user ${K8UP_ACCESS_KEY}..."
+                mc admin user remove minio "${K8UP_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "${K8UP_ACCESS_KEY}" "${K8UP_SECRET_KEY}"
+                
+                # 3.2. Создание политики для бакета
+                echo "Creating policy for bucket ${K8UP_BUCKET}..."
+                POLICY_NAME="k8up-${K8UP_BUCKET}-policy"
+                POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${K8UP_BUCKET}"'/*","arn:aws:s3:::'"${K8UP_BUCKET}"'"]}]}'
+                echo "$POLICY_JSON" > /tmp/k8up-policy.json
+                
+                mc admin policy remove minio "${POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "${POLICY_NAME}" /tmp/k8up-policy.json
+                
+                # 3.3. Прикрепление политики к пользователю
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "${POLICY_NAME}" --user "${K8UP_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "${POLICY_NAME}" --user "${K8UP_ACCESS_KEY}"
+              fi
               
               # Проверка что бакет создан
               echo "Listing buckets:"
               mc ls minio/
               
-              # Настройка политик доступа для бакетов (если нужно)
-              # mc anonymous set download minio/k8up-backups
-              
-              # Создание пользователей и политик (если нужно)
-              # Пример: создание пользователя для k8up
-              # mc admin user add minio k8up-user "${K8UP_ACCESS_KEY}" || true
-              # mc admin policy attach minio readwrite --user k8up-user || true
+              echo "Listing users:"
+              mc admin user list minio
               
               echo "Setup completed successfully!"
           env:
@@ -74,13 +92,27 @@ spec:
                 secretKeyRef:
                   name: minio-secrets
                   key: root-password
+            - name: K8UP_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: k8up-secrets
+                  key: access-key
+                  optional: true
+            - name: K8UP_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: k8up-secrets
+                  key: secret-key
+                  optional: true
+            - name: K8UP_BUCKET
+              value: k8up-backups
           resources:
             requests:
               cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "200m"
               memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
       volumes:
         - name: secrets
           secret:
