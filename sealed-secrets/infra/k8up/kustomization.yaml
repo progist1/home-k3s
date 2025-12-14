@@ -1,0 +1,4 @@
+resources:
+  - k8up-secrets-sealed.yaml
+  - k8up-backblaze-secrets-sealed.yaml
+

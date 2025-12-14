@@ -1,0 +1,51 @@
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: backup-important-daily-offsite
+  namespace: apps
+spec:
+  backend:
+     b2:
+      bucket: progist-k8up
+      accountIDSecretRef:
+        name: k8up-backblaze-secrets
+        key: access-key
+      accountKeySecretRef:
+        name: k8up-backblaze-secrets
+        key: secret-key
+    repoPasswordSecretRef:
+      name: k8up-backblaze-secrets
+      key: password
+
+  backup:
+    schedule: "0 2 * * *"
+    timeZone: "Europe/Moscow"
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 0
+    tags:
+      - "backblaze"
+      - "offsite"
+      - "important"
+    labelSelectors:
+      - matchExpressions:
+        - key: backup-level
+          operator: In
+          values:
+            - important
+            - daily
+      - matchExpressions:
+        - key: backup-offsite
+          operator: In
+          values:
+            - true
+
+  prune:
+    schedule: "0 6 * * *"
+    timeZone: "Europe/Moscow"
+    keepLast: 12
+    keepDaily: 7
+    keepWeekly: 4
+    keepMonthly: 1
+
+
+
