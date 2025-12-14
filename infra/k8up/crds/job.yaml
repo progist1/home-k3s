@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k8up-crd-installer
+  namespace: flux-system
+  annotations:
+    "fluxcd.io/ignore": "false"
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: k8up-crd-installer
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl:1.30
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Downloading k8up CRD from GitHub release..."
+              curl -Lf https://github.com/k8up-io/k8up/releases/download/k8up-4.8.6/k8up-crd.yaml \
+                | kubectl apply --server-side --force-conflicts -f -
+              echo "✓ k8up CRD installed successfully"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8up-crd-installer
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8up-crd-installer
+rules:
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8up-crd-installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: k8up-crd-installer
+subjects:
+  - kind: ServiceAccount
+    name: k8up-crd-installer
+    namespace: flux-system
+

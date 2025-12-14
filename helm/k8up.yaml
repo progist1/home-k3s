@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://charts.appuio.ch
+  url: https://k8up-io.github.io/k8up
 
 
 

@@ -2,6 +2,7 @@ resources:
   - namespaces.yaml
   - flux-system
   - sealed-secrets.yaml
+  - k8up-crds.yaml
   - infra.yaml
   - ../../helm
   - cert-manager-install.yaml

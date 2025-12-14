@@ -1,17 +1,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra
+  name: k8up-crds
   namespace: flux-system
 spec:
   interval: 1m
-  path: ./infra
+  path: ./infra/k8up/crds
   prune: true
+  wait: true
+  timeout: 5m
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: cert-manager-issuer
     - name: namespaces
-    - name: sealed-secrets
-    - name: k8up-crds
+
