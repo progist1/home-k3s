@@ -5,7 +5,7 @@ metadata:
   namespace: apps
 spec:
   backend:
-     b2:
+    b2:
       bucket: progist-k8up
       accountIDSecretRef:
         name: k8up-backblaze-secrets

@@ -5,7 +5,7 @@ metadata:
   namespace: apps
 spec:
   backend:
-     s3:
+    s3:
       endpoint: http://minio.infra.svc.cluster.local:9000
       bucket: k8up-backups
       accessKeyIDSecretRef:
