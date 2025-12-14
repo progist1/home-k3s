@@ -36,7 +36,7 @@ spec:
         - key: backup-offsite
           operator: In
           values:
-            - true
+            - "true"
 
   prune:
     schedule: "0 6 * * *"
