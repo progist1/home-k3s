@@ -35,13 +35,9 @@ spec:
           command:
             - /bin/sh
             - -c
-            - |
-              set -e
-              
+            - |              
               echo "Configuring MinIO client..."
-              mc alias set minio http://minio.infra.svc.cluster.local:9000 \
-                "${MINIO_ROOT_USER}" \
-                "${MINIO_ROOT_PASSWORD}"
+              mc alias set minio ${MINIO_HOST} "${MINIO_ACCESS_KEY}" "${MINIO_SECRET_KEY}"
               
               echo "Testing connection..."
               mc admin info minio
@@ -66,14 +62,14 @@ spec:
               
               echo "Setup completed successfully!"
           env:
-            - name: MC_HOST_minio
+            - name: MINIO_HOST
               value: http://minio.infra.svc.cluster.local:9000
-            - name: MINIO_ROOT_USER
+            - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: minio-secrets
                   key: root-user
-            - name: MINIO_ROOT_PASSWORD
+            - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: minio-secrets
