@@ -1,4 +1,4 @@
 resources:
   - xray-config-sealed.yaml
   - minio
-  - k8up-minio
+  - k8up
