@@ -1,7 +1,7 @@
 apiVersion: k8up.io/v1
 kind: Schedule
 metadata:
-  name: backup-important-daily-offsite
+  name: backup-important-daily-offsite-root
   namespace: apps
 spec:
   backend:
@@ -26,6 +26,7 @@ spec:
       - "backblaze"
       - "offsite"
       - "important"
+      - "root"
     labelSelectors:
       - matchExpressions:
         - key: backup-level
@@ -38,10 +39,15 @@ spec:
           operator: In
           values:
             - "true"
+      - matchExpressions:
+        - key: backup-user
+          operator: In
+          values:
+            - root
     podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
 
   prune:
     schedule: "0 6 * * *"

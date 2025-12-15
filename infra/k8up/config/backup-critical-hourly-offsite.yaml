@@ -21,6 +21,7 @@ spec:
     schedule: "@hourly-random"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 0
+    promURL: "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091"
     tags:
       - "backblaze"
       - "offsite"

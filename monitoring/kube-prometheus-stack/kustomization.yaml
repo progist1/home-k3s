@@ -13,3 +13,4 @@ resources:
   - exporters
   - rules
   - data.yaml
+  - pushgateway
