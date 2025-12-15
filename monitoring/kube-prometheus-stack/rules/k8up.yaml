@@ -102,3 +102,51 @@ spec:
         description: |
           No backup activity detected for PVC {{ $labels.pvc }} in namespace {{ $labels.namespace }} for more than 24 hours.
           **Action:** 🚨 Check backup schedule and job status
+
+  - name: k8up.operator
+    interval: 30s
+    rules:
+    # Критический алерт - ошибки контроллеров k8up
+    - alert: K8upControllerErrors
+      expr: increase(controller_runtime_reconcile_errors_total{controller=~".*k8up.*"}[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "K8up controller errors ({{ $labels.controller }})"
+        description: |
+          K8up controller {{ $labels.controller }} has reconciliation errors.
+          **Errors:** {{ $value }}
+          **Controller:** {{ $labels.controller }}
+          **Action:** 🔍 Check controller logs and CRD resources
+
+    # Предупреждение - высокий процент неуспешных джоб
+    - alert: K8upHighJobFailureRate
+      expr: |
+        (
+          (k8up_jobs_total - on(jobType, namespace) k8up_jobs_successful_counter) 
+          / on(jobType, namespace) k8up_jobs_total
+        ) > 0.1
+        and on(jobType, namespace) k8up_jobs_total > 10
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "K8up high job failure rate ({{ $labels.jobType }}/{{ $labels.namespace }})"
+        description: |
+          K8up has high failure rate for {{ $labels.jobType }} jobs in namespace {{ $labels.namespace }}.
+          **Failure rate:** {{ $value | humanizePercentage }}
+          **Total jobs:** {{ $labels.jobType }}
+          **Action:** ⚠️ Check job logs and backup configuration
+
+    # Предупреждение - отсутствие метрик оператора
+    - alert: K8upOperatorMetricsMissing
+      expr: absent(k8up_schedules_gauge)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "K8up operator metrics are missing"
+        description: |
+          No K8up operator metrics have been collected for more than 5 minutes.
+          **Action:** 🔍 Check if k8up operator is running and ServiceMonitor is configured correctly
