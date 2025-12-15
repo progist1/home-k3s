@@ -1,7 +1,10 @@
 crds:
   enabled: true
   upgradeJob:
-    enabled: false
+    enabled: true
+    backoffLimit: 5
+    timeout: 300
+    activeDeadlineSeconds: 600
 
 prometheus:
   prometheusSpec:
