@@ -22,7 +22,7 @@ metadata:
   labels:
     app: wg-easy
     backup-level: critical
-    backup-offsite: true
+    backup-offsite: "true"
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:
