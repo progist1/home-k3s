@@ -11,3 +11,4 @@ resources:
   - flux.yaml
   - kubernetes-storage.yaml
   - kubernetes-resources.yaml
+  - k8up.yaml
