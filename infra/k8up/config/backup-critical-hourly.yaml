@@ -32,6 +32,10 @@ spec:
           values:
             - critical
             - hourly
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
 
   prune:
     schedule: "0 6 * * *"
