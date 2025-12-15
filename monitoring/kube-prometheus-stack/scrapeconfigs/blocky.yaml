@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: blocky-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blocky-exporter
+  scrapeInterval: 15s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'blocky.apps.svc.cluster.local:4000'
+    labels:
+      group: 'blocky-exporter'
+      host: 'k3s'
+      location: 'home'
+
+  metricRelabelings:
+    - sourceLabels: ["__name__"]
+      regex: '.*_bucket$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_created$'
+      action: drop
+    
+    - sourceLabels: ["__name__"]
+      regex: '.*_(sum|count)$'
+      action: drop
+

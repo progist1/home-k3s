@@ -8,6 +8,7 @@ resources:
   - redis.yaml
   - authentik.yaml
   - adguard.yaml
+  - blocky.yaml
   - jellyfin.yaml
   - bonchbot.yaml
   - traefik.yaml

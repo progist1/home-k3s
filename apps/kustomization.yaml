@@ -29,6 +29,7 @@ resources:
   - wg-easy
   - pihole
   - adguard
+  - blocky
   - mosquitto
   - backups-pvc.yaml
   - mysql
