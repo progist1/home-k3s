@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: reflector
+  namespace: infra
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: reflector
+      version: "7.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: reflector
+        namespace: flux-system
+  values:
+    # RBAC
+    rbac:
+      create: true
+    
+    # Ресурсы для контроллера
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "128Mi"
+
+
+
