@@ -5,7 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://charts.emberstack.com
+  url: https://emberstack.github.io/helm-charts
+
 
 
 
