@@ -12,3 +12,4 @@ resources:
   - bonchbot.yaml
   - traefik.yaml
   - ssl.yaml
+  - k8up.yaml
