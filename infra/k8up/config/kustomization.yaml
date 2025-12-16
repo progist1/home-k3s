@@ -1,6 +1,4 @@
 resources:
-  - backup-critical-hourly-offsite.yaml
-  - backup-critical-hourly-offsite-root.yaml
   - backup-critical-hourly-root.yaml
   - backup-critical-hourly.yaml
   - backup-important-daily-offsite-root.yaml
