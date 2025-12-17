@@ -28,6 +28,11 @@ data:
           - https://adguardteam.github.io/HostlistsRegistry/assets/filter_3.txt  # RU AdList
         tracking:
           - https://adguardteam.github.io/HostlistsRegistry/assets/filter_4.txt  # Peter Lowe's List
+      allowlists:
+        allowed:
+          - |
+            # LG ThinQ domain (must be accessible)
+            lgthinq.com
       clientGroupsBlock:
         default:
           - ads
@@ -44,19 +49,19 @@ data:
           attempts: 5
           cooldown: 10s
     
-    whitelist:
-      - lgthinq.com
-    
     customDNS:
+      filterUnmappedTypes: false
       mapping:
-        # Local domains - specific hosts override wildcard
+        # Specific hosts (highest priority)
         bigb.home: 10.0.0.4
         vps.home: 10.0.0.10
         direct.router.home: 10.0.0.1
         pc.home: 10.0.0.100
         wvps.home: 10.0.0.11
+        ha.home: 10.0.0.2
+        dns.home: 10.0.0.2
         # Wildcard for all other .home domains
-        "*.home": 10.0.0.2
+        home: 10.0.0.2
         # External domain override
         films.progist.ru: 10.0.0.2
         # VPN networks
