@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: authentik-internal
+  name: blocky
   namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: root-ca-issuer
@@ -10,17 +10,18 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-    - host: auth.home
+    - host: dns.home
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: authentik-server
+                name: blocky
                 port:
-                  number: 80
+                  number: 4000
   tls:
     - hosts:
-        - auth.home
-      secretName: authentik-internal-tls
+        - dns.home
+      secretName: blocky-internal-tls
+
