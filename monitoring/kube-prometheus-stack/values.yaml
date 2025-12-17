@@ -160,6 +160,8 @@ grafana:
         contains(groups, 'Grafana Admins') && 'Admin' ||
         contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
       allow_assign_grafana_admin: true
+    panels:
+      disable_sanitize_html: true
 
 kube-state-metrics:
   enabled: true
