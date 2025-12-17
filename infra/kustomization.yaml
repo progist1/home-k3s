@@ -7,6 +7,7 @@ resources:
   - reloader
   - intel-device-plugin
   - minio
+  - reflector
 
   # - traefik до лучших времён, когда потребуется 2+ нод
   # - metallb до лучших времён, когда потребуется 2+ нод

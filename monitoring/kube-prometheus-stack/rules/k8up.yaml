@@ -88,7 +88,7 @@ spec:
     - alert: K8upBackupStale
       expr: |
         (
-          time() - (
+          time() - timestamp(
             max by (namespace, pvc) (
               k8up_backup_restic_changed_files_during_backup
             )
@@ -101,6 +101,7 @@ spec:
         summary: "K8up backup is stale ({{ $labels.namespace }}/{{ $labels.pvc }})"
         description: |
           No backup activity detected for PVC {{ $labels.pvc }} in namespace {{ $labels.namespace }} for more than 24 hours.
+          Last backup was {{ $value | humanizeDuration }} ago.
           **Action:** 🚨 Check backup schedule and job status
 
   - name: k8up.operator
