@@ -33,6 +33,7 @@ spec:
           values:
             - important
             - daily
+            - critical  # Добавлено для поддержки critical PVC с оффсайт бэкапами
       - matchExpressions:
         - key: backup-offsite
           operator: In
