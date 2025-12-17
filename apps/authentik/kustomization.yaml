@@ -1,0 +1,6 @@
+resources:
+  - media.yaml
+  - helm-release.yaml
+  - ingress-external.yaml
+  - ingress-internal.yaml
+  - backup.yaml

@@ -1,7 +1,0 @@
-resources:
-  - config.yaml
-  - work.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress-internal.yaml
-  - backup.yaml

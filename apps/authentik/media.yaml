@@ -1,28 +1,28 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: adguard-work-pv
+  name: authentik-media-pv
 spec:
+  storageClassName: nfs-nvme-manual
   capacity:
-    storage: 1Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /mnt/Fast/k3s-data/adguard/work
+    path: /mnt/Fast/k3s-data/authentik/media
     server: 10.0.0.4
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs-nvme-manual
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: adguard-work-pvc
+  name: authentik-media-pvc
   namespace: apps
 spec:
+  storageClassName: nfs-nvme-manual
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: nfs-nvme-manual
-  volumeName: adguard-work-pv
+      storage: 5Gi
+  volumeName: authentik-media-pv
