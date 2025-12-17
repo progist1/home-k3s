@@ -11,7 +11,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: blocky
@@ -19,31 +19,40 @@ spec:
     metadata:
       labels:
         app: blocky
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "4000"
+        prometheus.io/path: "/metrics"
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - key: k3s-gpu
+          operator: Exists
+          effect: NoSchedule
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - blocky
-                topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - blocky
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: blocky
-          image: spx01/blocky:latest
+          image: spx01/blocky:v0.28.2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 53
               name: dns-udp
               protocol: UDP
+              hostPort: 53
             - containerPort: 53
               name: dns-tcp
               protocol: TCP
+              hostPort: 53
             - containerPort: 4000
               name: http
               protocol: TCP
@@ -51,28 +60,31 @@ spec:
             - name: config
               mountPath: /app/config.yaml
               subPath: config.yaml
+              readOnly: true
           resources:
             requests:
-              cpu: 50m
-              memory: 64Mi
+              cpu: 100m
+              memory: 128Mi
             limits:
-              cpu: 500m
-              memory: 256Mi
+              cpu: 1000m
+              memory: 512Mi
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /
               port: 4000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 10
-            timeoutSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /ready
+              path: /
               port: 4000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 30
-            timeoutSeconds: 5
+            timeoutSeconds: 3
+            successThreshold: 1
             failureThreshold: 3
       volumes:
         - name: config

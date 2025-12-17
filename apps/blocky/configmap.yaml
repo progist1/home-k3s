@@ -7,59 +7,75 @@ data:
   config.yaml: |
     upstream:
       default:
+        - tcp-tls:dns.quad9.net:853
+        - tcp-tls:one.one.one.one:853
+        - 9.9.9.9
         - 1.1.1.1
-        - 1.0.0.1
-        - 8.8.8.8
-        - 8.8.4.4
+    bootstrapDns:
+      - tcp+udp:9.9.9.9
+      - tcp+udp:1.1.1.1
     
     blocking:
       blackLists:
-        adguard-dns:
-          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
-        adaway:
-          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+        ads:
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt  # AdGuard DNS filter
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt  # AdAway Default Blocklist
         hagezi-normal:
-          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_34.txt
-        adguard-popup:
-          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_59.txt
-        easylist-rus:
-          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_3.txt
-        easylist-dutch:
-          - https://easylist-downloads.adblockplus.org/easylistdutch+easylist.txt
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_34.txt  # HaGeZi's Normal Blocklist
+        popups:
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_59.txt  # AdGuard Popups filter
+        russian:
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_3.txt  # RU AdList
+        tracking:
+          - https://adguardteam.github.io/HostlistsRegistry/assets/filter_4.txt  # Peter Lowe's List
       clientGroupsBlock:
         default:
-          - adguard-dns
-          - adaway
+          - ads
           - hagezi-normal
-          - adguard-popup
-          - easylist-rus
-          - easylist-dutch
+          - popups
+          - russian
+          - tracking
+      blockType: zeroIp
+      blockTTL: 1m
+      loading:
+        refreshPeriod: 4h
+        downloads:
+          timeout: 60s
+          attempts: 5
+          cooldown: 10s
     
     whitelist:
       - lgthinq.com
     
-    conditional:
-      rewrites:
-        - domain: ".home"
-          answer: "10.0.0.2"
-        - domain: "films.progist.ru"
-          answer: "10.0.0.2"
-        - domain: "bigb.home"
-          answer: "10.0.0.4"
-        - domain: "vps.home"
-          answer: "10.0.0.10"
-        - domain: "direct.router.home"
-          answer: "10.0.0.1"
-        - domain: "pc.home"
-          answer: "10.0.0.100"
-        - domain: "wvps.home"
-          answer: "10.0.0.11"
-        - domain: "vps.spb"
-          answer: "10.8.0.2"
-        - domain: "vps.amsterdam"
-          answer: "10.8.0.3"
-        - domain: "vps.yolki"
-          answer: "10.3.0.2"
+    customDNS:
+      mapping:
+        # Local domains - specific hosts override wildcard
+        bigb.home: 10.0.0.4
+        vps.home: 10.0.0.10
+        direct.router.home: 10.0.0.1
+        pc.home: 10.0.0.100
+        wvps.home: 10.0.0.11
+        # Wildcard for all other .home domains
+        "*.home": 10.0.0.2
+        # External domain override
+        films.progist.ru: 10.0.0.2
+        # VPN networks
+        vps.spb: 10.8.0.2
+        vps.amsterdam: 10.8.0.3
+        vps.yolki: 10.3.0.2
+    
+    caching:
+      minTime: 5m
+      maxTime: 30m
+      maxItemsCount: 10000
+      prefetching: true
+      prefetchExpires: 2h
+      prefetchThreshold: 5
+      prefetchMaxItemsCount: 1000
+    
+    queryLog:
+      type: console
+      logRetentionDays: 7
     
     port: 53
     httpPort: 4000
