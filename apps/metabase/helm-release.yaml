@@ -16,7 +16,7 @@ spec:
   values:
     image:
       repository: metabase/metabase
-      tag: v0.57.6
+      tag: v0.57.7
     service:
       type: ClusterIP
     ingress:
