@@ -46,7 +46,7 @@ server:
     type: Recreate
   image:
     repository: ghcr.io/immich-app/immich-server
-    tag: v2.4.0
+    tag: v2.4.1
     pullPolicy: IfNotPresent
   envFrom:
     - secretRef:
