@@ -10,6 +10,7 @@ resources:
   - helmrelease.yaml
   - alert-manager-pv.yaml
   - grafana-pvc.yaml
+  - grafana-alerts-auth.yaml
   - exporters
   - rules
   - data.yaml

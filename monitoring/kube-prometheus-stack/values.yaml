@@ -172,8 +172,15 @@ grafana:
           access: proxy
           url: http://loki-gateway.monitoring.svc.cluster.local:80
           isDefault: false
+          uid: loki
           jsonData:
             maxLines: 1000
+
+  sidecar:
+    alerts:
+      enabled: true
+      label: grafana_alert
+      labelValue: "1"
 
 kube-state-metrics:
   enabled: true

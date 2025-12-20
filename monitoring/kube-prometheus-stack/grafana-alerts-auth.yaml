@@ -1,0 +1,270 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alerts-auth
+  namespace: monitoring
+  labels:
+    grafana_alert: "1"
+data:
+  auth-alerts.yaml: |
+    apiVersion: 1
+    groups:
+      - orgId: 1
+        name: Authentication Monitoring
+        folder: Loki Alerts
+        interval: 1m
+        rules:
+          # ============================================
+          # Immich OAuth Authentication
+          # ============================================
+          - uid: immich_oauth_logins
+            title: Immich OAuth Login Activity
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/(authorize|callback)" |~ "20[01]" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [1]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 0s
+            annotations:
+              description: 'Immich: {{ $values.A.Value }} OAuth login(s) detected in last 5 minutes'
+              summary: 'Immich OAuth authentication detected'
+            labels:
+              severity: info
+              service: immich
+              alert_type: auth_success
+
+          - uid: immich_oauth_high_activity
+            title: Immich High OAuth Activity
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [5]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 2m
+            annotations:
+              description: 'Immich: {{ $values.A.Value }} OAuth requests in last 5 minutes (threshold: 20)'
+              summary: 'Immich: Suspicious OAuth activity detected'
+            labels:
+              severity: warning
+              service: immich
+              alert_type: suspicious_activity
+
+          # ============================================
+          # Authentik Authentication Flow
+          # ============================================
+          - uid: authentik_auth_activity
+            title: Authentik Authentication Activity
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/.*authentication" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [1]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 0s
+            annotations:
+              description: 'Authentik: {{ $values.A.Value }} authentication flow(s) executed in last 5 minutes'
+              summary: 'Authentik authentication activity detected'
+            labels:
+              severity: info
+              service: authentik
+              alert_type: auth_attempts
+
+          - uid: authentik_high_activity
+            title: Authentik High Authentication Activity
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [3]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 5m
+            annotations:
+              description: 'Authentik: {{ $values.A.Value }} flow executions in last 5 minutes (threshold: 30)'
+              summary: 'Authentik: Suspicious authentication activity detected'
+            labels:
+              severity: warning
+              service: authentik
+              alert_type: suspicious_activity
+
+          # ============================================
+          # PhotoPrism Authentication
+          # ============================================
+          - uid: photoprism_auth_success
+            title: PhotoPrism Successful Logins
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(200\\)" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [1]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 0s
+            annotations:
+              description: 'PhotoPrism: {{ $values.A.Value }} successful login(s) detected in last 5 minutes'
+              summary: 'PhotoPrism: Successful authentication detected'
+            labels:
+              severity: info
+              service: photoprism
+              alert_type: auth_success
+
+          - uid: photoprism_auth_failures
+            title: PhotoPrism Failed Login Attempts
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [3]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 2m
+            annotations:
+              description: 'PhotoPrism: {{ $values.A.Value }} failed login attempts in last 5 minutes (threshold: 3)'
+              summary: 'PhotoPrism: Multiple failed login attempts detected'
+            labels:
+              severity: warning
+              service: photoprism
+              alert_type: auth_failures
+
+          - uid: photoprism_brute_force
+            title: PhotoPrism Potential Brute Force Attack
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: loki
+                model:
+                  expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
+                  queryType: instant
+              - refId: C
+                relativeTimeRange:
+                  from: 0
+                  to: 0
+                datasourceUid: __expr__
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator:
+                        params: [10]
+                        type: gt
+            noDataState: NoData
+            execErrState: Error
+            for: 5m
+            annotations:
+              description: 'PhotoPrism: {{ $values.A.Value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack'
+              summary: 'PhotoPrism: CRITICAL - Brute force attack detected'
+            labels:
+              severity: critical
+              service: photoprism
+              alert_type: brute_force
+
