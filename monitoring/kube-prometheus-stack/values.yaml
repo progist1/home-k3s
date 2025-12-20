@@ -171,7 +171,7 @@ grafana:
       isDefault: false
       uid: loki
       jsonData:
-        maxLines: 1000
+        maxLines: 1001
 
   sidecar:
     alerts:
