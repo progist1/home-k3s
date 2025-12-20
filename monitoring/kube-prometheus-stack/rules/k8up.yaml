@@ -122,22 +122,26 @@ spec:
           **Action:** 🔍 Check controller logs and CRD resources
 
     # Предупреждение - высокий процент неуспешных джоб
+    # Учитывает только джобы за последние 2 дня (не исторические данные)
     - alert: K8upHighJobFailureRate
       expr: |
         (
-          (k8up_jobs_total - on(jobType, namespace) k8up_jobs_successful_counter) 
-          / on(jobType, namespace) k8up_jobs_total
+          (
+            increase(k8up_jobs_total{jobType="backup"}[2d]) 
+            - on(jobType, namespace) increase(k8up_jobs_successful_counter{jobType="backup"}[2d])
+          ) 
+          / on(jobType, namespace) increase(k8up_jobs_total{jobType="backup"}[2d])
         ) > 0.1
-        and on(jobType, namespace) k8up_jobs_total > 10
+        and on(jobType, namespace) increase(k8up_jobs_total{jobType="backup"}[2d]) > 10
       for: 10m
       labels:
         severity: warning
       annotations:
         summary: "K8up high job failure rate ({{ $labels.jobType }}/{{ $labels.namespace }})"
         description: |
-          K8up has high failure rate for {{ $labels.jobType }} jobs in namespace {{ $labels.namespace }}.
+          K8up has high failure rate for {{ $labels.jobType }} jobs in namespace {{ $labels.namespace }} over the last 2 days.
           **Failure rate:** {{ $value | humanizePercentage }}
-          **Total jobs:** {{ $labels.jobType }}
+          **Total jobs (last 2 days):** {{ $labels.jobType }}
           **Action:** ⚠️ Check job logs and backup configuration
 
     # Предупреждение - отсутствие метрик оператора

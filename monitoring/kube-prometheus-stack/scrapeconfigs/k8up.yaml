@@ -9,6 +9,7 @@ spec:
   namespaceSelector:
     matchNames:
       - infra
+      - apps
   selector:
     matchLabels:
       app.kubernetes.io/name: k8up
