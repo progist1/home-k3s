@@ -31,6 +31,15 @@ loki:
       region: us-east-1
       s3ForcePathStyle: true
       insecure: true
+  # Additional storage config for tsdb (required by helm chart)
+  storage_config:
+    tsdb_shipper:
+      active_index_directory: /var/loki/index
+      cache_location: /var/loki/cache
+    hedging:
+      at: "250ms"
+      max_per_second: 20
+      up_to: 3
 
 deploymentMode: SingleBinary
 
