@@ -183,6 +183,21 @@ grafana:
       skipReload: false
     datasources:
       enabled: true
+      defaultDatasourceEnabled: true
+      isDefaultDatasource: true
+      name: Prometheus
+      uid: prometheus
+      createPrometheusReplicasDatasources: false
+      prometheusServiceName: prometheus-operated
+      label: grafana_datasource
+      labelValue: "1"
+      httpMethod: POST
+      alertmanager:
+        enabled: true
+        name: Alertmanager
+        uid: alertmanager
+        handleGrafanaManagedAlerts: false
+        implementation: prometheus
       initDatasources: false
       skipReload: false
 
