@@ -179,9 +179,11 @@ grafana:
       label: grafana_alert
       labelValue: "1"
       searchNamespace: monitoring
+      initAlerts: false
       skipReload: false
     datasources:
       enabled: true
+      initDatasources: false
       skipReload: false
 
 kube-state-metrics:
