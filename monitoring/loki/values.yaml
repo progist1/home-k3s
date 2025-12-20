@@ -26,9 +26,10 @@ loki:
       ruler: loki
       admin: loki
     s3:
-      s3: s3://loki-user:${LOKI_MINIO_PASSWORD}@minio.infra.svc.cluster.local:9000/loki
       endpoint: minio.infra.svc.cluster.local:9000
       region: us-east-1
+      accessKeyId: loki-user
+      secretAccessKey: ${LOKI_MINIO_PASSWORD}
       s3ForcePathStyle: true
       insecure: true
 
@@ -46,6 +47,8 @@ singleBinary:
   extraVolumeMounts:
     - name: loki-data
       mountPath: /var/loki
+  extraArgs:
+    - -config.expand-env=true
   extraEnv:
     - name: LOKI_MINIO_PASSWORD
       valueFrom:
