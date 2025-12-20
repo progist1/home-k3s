@@ -25,7 +25,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/(authorize|callback)" |~ "20[01]" [5m]))'
                   queryType: instant
@@ -60,7 +62,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/" [5m]))'
                   queryType: instant
@@ -98,7 +102,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/.*authentication" [5m]))'
                   queryType: instant
@@ -133,7 +139,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/" [5m]))'
                   queryType: instant
@@ -171,7 +179,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(200\\)" [5m]))'
                   queryType: instant
@@ -206,7 +216,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
                   queryType: instant
@@ -241,7 +253,9 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: loki
+                datasource:
+                  type: loki
+                  uid: loki
                 model:
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
                   queryType: instant
