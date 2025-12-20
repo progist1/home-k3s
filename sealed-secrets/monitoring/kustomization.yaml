@@ -7,3 +7,4 @@ resources:
   - bonchbot-secrets-sealed.yaml
   - grafana-secrets-sealed.yaml
   - mysql-exporter-secrets-sealed.yaml
+  - loki-secrets-sealed.yaml

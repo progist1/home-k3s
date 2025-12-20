@@ -11,3 +11,4 @@ resources:
   - intel-device-plugin.yaml
   - k8up.yaml
   - reflector.yaml
+  - loki.yaml

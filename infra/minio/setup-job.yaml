@@ -71,7 +71,32 @@ spec:
                 mc admin policy attach minio "${POLICY_NAME}" --user "${K8UP_ACCESS_KEY}"
               fi
               
-              # Проверка что бакет создан
+              # ============================================
+              # 4. Создание бакета и пользователя для Loki
+              # ============================================
+              if [ -n "${LOKI_ACCESS_KEY}" ] && [ -n "${LOKI_SECRET_KEY}" ]; then
+                LOKI_BUCKET="${LOKI_BUCKET:-loki}"
+                echo "Creating bucket ${LOKI_BUCKET}..."
+                mc mb minio/${LOKI_BUCKET} --ignore-existing
+                
+                echo "Creating user ${LOKI_ACCESS_KEY}..."
+                mc admin user remove minio "${LOKI_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "${LOKI_ACCESS_KEY}" "${LOKI_SECRET_KEY}"
+                
+                echo "Creating policy for bucket ${LOKI_BUCKET}..."
+                LOKI_POLICY_NAME="loki-${LOKI_BUCKET}-policy"
+                LOKI_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${LOKI_BUCKET}"'/*","arn:aws:s3:::'"${LOKI_BUCKET}"'"]}]}'
+                echo "$LOKI_POLICY_JSON" > /tmp/loki-policy.json
+                
+                mc admin policy remove minio "${LOKI_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "${LOKI_POLICY_NAME}" /tmp/loki-policy.json
+                
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "${LOKI_POLICY_NAME}" --user "${LOKI_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "${LOKI_POLICY_NAME}" --user "${LOKI_ACCESS_KEY}"
+              fi
+              
+              # Проверка что бакеты созданы
               echo "Listing buckets:"
               mc ls minio/
               
@@ -106,6 +131,16 @@ spec:
                   optional: true
             - name: K8UP_BUCKET
               value: k8up-backups
+            - name: LOKI_ACCESS_KEY
+              value: loki-user
+            - name: LOKI_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: loki-secrets
+                  key: minio-password
+                  optional: true
+            - name: LOKI_BUCKET
+              value: loki
           resources:
             requests:
               cpu: "50m"

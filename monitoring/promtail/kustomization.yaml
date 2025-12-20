@@ -1,0 +1,10 @@
+configMapGenerator:
+  - name: promtail-values
+    namespace: monitoring
+    files:
+      - values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+resources:
+  - helmrelease.yaml
+
