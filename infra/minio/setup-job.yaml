@@ -4,8 +4,7 @@ metadata:
   name: minio-setup
   namespace: infra
   annotations:
-    # Job будет пересоздан при изменении этого манифеста
-    "fluxcd.io/ignore": "false"
+    kustomize.toolkit.fluxcd.io/force: "enabled"
 spec:
   ttlSecondsAfterFinished: 3600  # Удалить через 1 час после завершения (для отладки)
   backoffLimit: 5  # Увеличиваем количество попыток

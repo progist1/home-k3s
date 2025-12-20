@@ -11,14 +11,6 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
-  storage_config:
-    aws:
-      s3: http://loki-user:${LOKI_MINIO_PASSWORD}@minio.infra.svc.cluster.local:9000/loki
-      s3forcepathstyle: true
-      insecure: true
-    tsdb_shipper:
-      active_index_directory: /var/loki/index
-      cache_location: /var/loki/cache
   pattern_ingester:
     enabled: true
   limits_config:
@@ -27,6 +19,18 @@ loki:
     retention_period: 672h  # 28 days retention
   ruler:
     enable_api: true
+  storage:
+    type: s3
+    bucketNames:
+      chunks: loki
+      ruler: loki
+      admin: loki
+    s3:
+      s3: s3://loki-user:${LOKI_MINIO_PASSWORD}@minio.infra.svc.cluster.local:9000/loki
+      endpoint: minio.infra.svc.cluster.local:9000
+      region: us-east-1
+      s3ForcePathStyle: true
+      insecure: true
 
 deploymentMode: SingleBinary
 
