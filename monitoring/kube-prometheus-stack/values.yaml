@@ -180,6 +180,9 @@ grafana:
       labelValue: "1"
       searchNamespace: monitoring
       initAlerts: true
+    datasources:
+      enabled: true
+      initDatasources: true
 
 kube-state-metrics:
   enabled: true
