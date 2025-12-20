@@ -163,18 +163,15 @@ grafana:
     panels:
       disable_sanitize_html: true
 
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Loki
-          type: loki
-          access: proxy
-          url: http://loki-gateway.monitoring.svc.cluster.local:80
-          isDefault: false
-          uid: loki
-          jsonData:
-            maxLines: 1000
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.monitoring.svc.cluster.local:80
+      isDefault: false
+      uid: loki
+      jsonData:
+        maxLines: 1000
 
   sidecar:
     alerts:
