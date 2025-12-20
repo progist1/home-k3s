@@ -176,11 +176,11 @@ grafana:
           jsonData:
             maxLines: 1000
 
-  sidecar:
-    alerts:
-      enabled: true
-      label: grafana_alert
-      labelValue: "1"
+  extraConfigmapMounts:
+    - name: grafana-alerts-auth
+      mountPath: /etc/grafana/provisioning/alerting
+      configMap: grafana-alerts-auth
+      readOnly: true
 
 kube-state-metrics:
   enabled: true
