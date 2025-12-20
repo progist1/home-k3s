@@ -179,6 +179,7 @@ grafana:
       label: grafana_alert
       labelValue: "1"
       searchNamespace: monitoring
+      initAlerts: true
 
 kube-state-metrics:
   enabled: true
