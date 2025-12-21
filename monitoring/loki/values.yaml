@@ -151,4 +151,4 @@ resultsCache:
 
 ruler:
   enabled: true
-  replicas: 1
+  replicas: 0  # В SingleBinary режиме ruler работает внутри singleBinary pod
