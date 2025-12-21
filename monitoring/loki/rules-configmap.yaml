@@ -51,7 +51,7 @@ data:
         rules:
           - alert: AuthentikAuthenticationActivity
             expr: |
-              sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/.*authentication" [5m])) > 0
+              sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",app_kubernetes_io_name="authentik",app_kubernetes_io_component="server",container="server"} |~ "POST" |~ "flows/executor" [5m])) > 0
             for: 0s
             labels:
               severity: info
@@ -61,9 +61,21 @@ data:
               summary: "Authentik authentication activity detected"
               description: "Authentik: {{ $value }} authentication flow(s) executed in last 5 minutes"
 
+          - alert: AuthentikSuccessfulLogin
+            expr: |
+              sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",app_kubernetes_io_name="authentik",app_kubernetes_io_component="server",container="server"} |~ "action.*login" [5m])) > 0
+            for: 0s
+            labels:
+              severity: info
+              service: authentik
+              alert_type: auth_success
+            annotations:
+              summary: "Authentik successful login detected"
+              description: "Authentik: {{ $value }} successful login(s) detected in last 5 minutes"
+
           - alert: AuthentikHighAuthenticationActivity
             expr: |
-              sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/" [5m])) > 3
+              sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",app_kubernetes_io_name="authentik",app_kubernetes_io_component="server",container="server"} |~ "POST" |~ "flows/executor" [5m])) > 3
             for: 5m
             labels:
               severity: warning
