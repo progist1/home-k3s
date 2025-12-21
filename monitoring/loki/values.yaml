@@ -1,43 +1,38 @@
 loki:
-  auth_enabled: false
-  commonConfig:
-    replication_factor: 1
-  schemaConfig:
-    configs:
-      - from: "2024-01-01"
-        store: tsdb
-        object_store: s3
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
-  pattern_ingester:
-    enabled: true
-  limits_config:
-    allow_structured_metadata: true
-    volume_enabled: true
-    retention_period: 672h  # 28 days retention
-    max_label_names_per_series: 30  # Увеличиваем лимит labels (default: 15)
-  rulerConfig:
-    wal:
-      dir: /var/loki/ruler-wal
-    storage:
-      type: local
-      local:
-        directory: /var/loki/rules
-  storage:
-    type: s3
-    bucketNames:
-      chunks: loki
-      ruler: loki
-      admin: loki
-    s3:
-      endpoint: minio.infra.svc.cluster.local:9000
-      region: us-east-1
-      accessKeyId: loki-user
-      secretAccessKey: ${LOKI_MINIO_PASSWORD}
-      s3ForcePathStyle: true
-      insecure: true
+  config: |
+    auth_enabled: false
+
+    common:
+      replication_factor: 1
+      storage:
+        s3:
+          endpoint: minio.infra.svc.cluster.local:9000
+          bucketnames: loki
+          access_key_id: loki-user
+          secret_access_key: ${LOKI_MINIO_PASSWORD}
+          insecure: true
+
+    schema_config:
+      configs:
+        - from: "2024-01-01"
+          store: tsdb
+          object_store: s3
+          schema: v13
+          index:
+            prefix: loki_index_
+            period: 24h
+
+    limits_config:
+      retention_period: 672h
+
+    ruler:
+      alertmanager_url: http://alertmanager-operated.monitoring.svc:9093
+      enable_api: true
+      rule_path: /var/loki/rules-temp
+      storage:
+        type: local
+        local:
+          directory: /var/loki/rules
 
 deploymentMode: SingleBinary
 
@@ -47,45 +42,18 @@ singleBinary:
     # Используем emptyDir вместо PV для WAL и кеша
     # Основные данные (chunks) хранятся в MinIO, поэтому потеря WAL при рестарте не критична
     enabled: false
-  extraInitContainers:
-    - name: setup-rules
-      image: busybox:latest
-      command:
-        - sh
-        - -c
-        - |
-          # Sidecar копирует файлы из ConfigMap в /rules
-          # Нам нужно переместить их в структуру /var/loki/rules/fake/ для Loki Ruler
-          mkdir -p /var/loki/rules/fake
-          # Ждем, пока sidecar загрузит файлы (максимум 30 секунд)
-          for i in $(seq 1 30); do
-            if [ -f /rules/fake ]; then
-              cp /rules/fake /var/loki/rules/fake/rules.yaml
-              echo "✓ Rules file copied from sidecar volume to /var/loki/rules/fake/rules.yaml"
-              ls -la /var/loki/rules/fake/
-              exit 0
-            fi
-            sleep 1
-          done
-          echo "⚠ WARNING: Rules file not found in /rules/ after 30s wait"
-          ls -la /rules/ || echo "Directory /rules/ does not exist"
-          exit 1
-      volumeMounts:
-        - name: sc-rules-volume  # Volume, куда sidecar копирует файлы
-          mountPath: /rules
-          readOnly: true
-        - name: loki-rules  # Volume для Loki Ruler
-          mountPath: /var/loki/rules
   extraVolumes:
     - name: loki-data
       emptyDir: {}
     - name: loki-rules
-      emptyDir: {}
+      configMap:
+        name: loki-rules-auth
   extraVolumeMounts:
     - name: loki-data
       mountPath: /var/loki
     - name: loki-rules
       mountPath: /var/loki/rules
+
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -160,5 +128,4 @@ resultsCache:
   enabled: false
 
 ruler:
-  enabled: true
-  replicas: 0  # В SingleBinary режиме ruler работает внутри singleBinary pod
+  enabled: false
