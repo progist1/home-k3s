@@ -7,4 +7,5 @@ generatorOptions:
   disableNameSuffixHash: true
 resources:
   - helmrelease.yaml
+  - rules-configmap.yaml
 

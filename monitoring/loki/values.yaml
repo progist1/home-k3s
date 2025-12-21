@@ -51,12 +51,35 @@ singleBinary:
     # Используем emptyDir вместо PV для WAL и кеша
     # Основные данные (chunks) хранятся в MinIO, поэтому потеря WAL при рестарте не критична
     enabled: false
+  extraInitContainers:
+    - name: setup-rules
+      image: busybox:latest
+      command:
+        - sh
+        - -c
+        - |
+          mkdir -p /var/loki/rules/fake
+          cp /rules-config/rules.yaml /var/loki/rules/fake/rules.yaml
+          ls -la /var/loki/rules/fake/
+      volumeMounts:
+        - name: rules-config
+          mountPath: /rules-config
+          readOnly: true
+        - name: loki-rules
+          mountPath: /var/loki/rules
   extraVolumes:
     - name: loki-data
+      emptyDir: {}
+    - name: rules-config
+      configMap:
+        name: loki-rules-auth
+    - name: loki-rules
       emptyDir: {}
   extraVolumeMounts:
     - name: loki-data
       mountPath: /var/loki
+    - name: loki-rules
+      mountPath: /var/loki/rules
   extraArgs:
     - -config.expand-env=true
   extraEnv:
@@ -133,10 +156,3 @@ resultsCache:
 ruler:
   enabled: true
   replicas: 1
-  extraVolumeMounts:
-  - name: rules
-    mountPath: /var/loki/rules
-  extraVolumes:
-  - name: rules
-    configMap:
-      name: loki-rules-authentik
