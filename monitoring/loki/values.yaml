@@ -33,6 +33,15 @@ loki:
       secretAccessKey: ${LOKI_MINIO_PASSWORD}
       s3ForcePathStyle: true
       insecure: true
+  config:
+    ruler:
+      alertmanager_url: http://alertmanager-operated.monitoring.svc:9093
+      enable_api: true
+      storage:
+        type: local
+        local:
+          directory: /var/loki/rules
+      rule_path: /var/loki/rules-temp
 
 deploymentMode: SingleBinary
 
@@ -87,6 +96,22 @@ gateway:
   replicas: 1
   service:
     type: ClusterIP
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: gateway
+                app.kubernetes.io/instance: loki
+                app.kubernetes.io/name: loki
+            topologyKey: kubernetes.io/hostname
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
 
 monitoring:
   serviceMonitor:
@@ -105,3 +130,13 @@ chunksCache:
 resultsCache:
   enabled: false
 
+ruler:
+  enabled: true
+  replicas: 1
+  extraVolumeMounts:
+  - name: rules
+    mountPath: /var/loki/rules
+  extraVolumes:
+  - name: rules
+    configMap:
+      name: loki-rules-authentik
