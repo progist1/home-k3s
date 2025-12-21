@@ -163,92 +163,17 @@ grafana:
     panels:
       disable_sanitize_html: true
 
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      access: proxy
-      url: http://loki-gateway.monitoring.svc.cluster.local:80
-      isDefault: false
-      uid: loki
-      jsonData:
-        maxLines: 1000
-
-  sidecar:
-    alerts:
-      enabled: true
-      label: grafana_alert
-      labelValue: "1"
-      searchNamespace: monitoring
-      initAlerts: true
-      skipReload: false
-    datasources:
-      enabled: true
-      defaultDatasourceEnabled: true
-      isDefaultDatasource: true
-      name: Prometheus
-      uid: prometheus
-      createPrometheusReplicasDatasources: false
-      prometheusServiceName: prometheus-operated
-      label: grafana_datasource
-      labelValue: "1"
-      httpMethod: POST
-      alertmanager:
-        enabled: true
-        name: Alertmanager
-        uid: alertmanager
-        handleGrafanaManagedAlerts: false
-        implementation: prometheus
-      initDatasources: false
-      skipReload: false
-
-  extraConfigmapMounts:
-    - name: grafana-notifications
-      mountPath: /etc/grafana/provisioning/notifiers-templates
-      configMap: grafana-notifications
-      readOnly: true
-
-  extraInitContainers:
-    - name: substitute-telegram-secrets
-      image: alpine:latest
-      command:
-        - sh
-        - -c
-        - |
-          apk add --no-cache gettext
-          export TELEGRAM_BOT_TOKEN=$(cat /secrets/telegram-bot-token | tr -d '\n')
-          export TELEGRAM_CHAT_ID=$(cat /secrets/telegram-chat-id | tr -d '\n')
-          mkdir -p /output
-          envsubst < /templates/contactpoints.yaml > /output/contactpoints.yaml
-          cp /templates/policies.yaml /output/policies.yaml
-      volumeMounts:
-        - name: grafana-notifications-templates
-          mountPath: /templates
-          readOnly: true
-        - name: grafana-notifications-output
-          mountPath: /output
-        - name: telegram-secrets
-          mountPath: /secrets
-          readOnly: true
-
-  extraVolumes:
-    - name: grafana-notifications-templates
-      configMap:
-        name: grafana-notifications
-    - name: grafana-notifications-output
-      emptyDir: {}
-    - name: telegram-secrets
-      secret:
-        secretName: kps-secrets
-        items:
-          - key: telegram-bot-token
-            path: telegram-bot-token
-          - key: telegram-chat-id
-            path: telegram-chat-id
-
-  extraVolumeMounts:
-    - name: grafana-notifications-output
-      mountPath: /etc/grafana/provisioning/notifiers
-      readOnly: false
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://loki-gateway.monitoring.svc.cluster.local:80
+          isDefault: false
+          jsonData:
+            maxLines: 1000
 
 kube-state-metrics:
   enabled: true
