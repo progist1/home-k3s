@@ -18,8 +18,13 @@ loki:
     volume_enabled: true
     retention_period: 672h  # 28 days retention
     max_label_names_per_series: 30  # Увеличиваем лимит labels (default: 15)
-  ruler:
-    enable_api: true
+  rulerConfig:
+    wal:
+      dir: /var/loki/ruler-wal
+    storage:
+      type: local
+      local:
+        directory: /var/loki/rules
   storage:
     type: s3
     bucketNames:
@@ -33,15 +38,6 @@ loki:
       secretAccessKey: ${LOKI_MINIO_PASSWORD}
       s3ForcePathStyle: true
       insecure: true
-  config:
-    ruler:
-      alertmanager_url: http://alertmanager-operated.monitoring.svc:9093
-      enable_api: true
-      storage:
-        type: local
-        local:
-          directory: /var/loki/rules
-      rule_path: /var/loki/rules-temp
 
 deploymentMode: SingleBinary
 
