@@ -65,6 +65,9 @@ config:
             regex: Pending|Succeeded|Failed
             source_labels:
               - __meta_kubernetes_pod_phase
+          # Удаляем лишние метки для уменьшения количества labels (лимит Loki - 15)
+          - action: labeldrop
+            regex: app_kubernetes_io_managed_by|app_kubernetes_io_part_of|app_kubernetes_io_version|helm_sh_chart|pod_template_hash
 
 resources:
   requests:
