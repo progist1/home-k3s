@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-notifications
+  namespace: monitoring
+data:
+  contactpoints.yaml: |
+    apiVersion: 1
+    contactPoints:
+      - orgId: 1
+        name: telegram
+        receivers:
+          - uid: telegram_uid
+            type: telegram
+            settings:
+              bottoken: ${TELEGRAM_BOT_TOKEN}
+              chatid: ${TELEGRAM_CHAT_ID}
+              message: |
+                {{ range .Alerts }}
+                🔔 *{{ .Labels.alertname }}*
+                {{ if .Labels.severity }}Severity: {{ .Labels.severity }}{{ end }}
+                {{ if .Labels.service }}Service: {{ .Labels.service }}{{ end }}
+                {{ if .Annotations.summary }}{{ .Annotations.summary }}{{ end }}
+                {{ if .Annotations.description }}{{ .Annotations.description }}{{ end }}
+                {{ end }}
+  
+  policies.yaml: |
+    apiVersion: 1
+    policies:
+      - orgId: 1
+        receiver: telegram
+        group_by: ['alertname', 'severity']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 2h
+        routes:
+          - receiver: telegram
+            matchers:
+              - severity =~ "warning|critical"
+          - receiver: grafana-default-email
+            matchers:
+              - severity = "info"
+

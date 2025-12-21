@@ -11,6 +11,8 @@ resources:
   - alert-manager-pv.yaml
   - grafana-pvc.yaml
   - grafana-alerts-auth.yaml
+  - grafana-notifications.yaml
+  - loki-datasource.yaml
   - exporters
   - rules
   - data.yaml

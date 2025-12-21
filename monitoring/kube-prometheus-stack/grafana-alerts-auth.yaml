@@ -14,89 +14,6 @@ data:
         folder: Loki Alerts
         interval: 1m
         rules:
-          - uid: ff7p9nsgzz3ls
-            title: еу
-            condition: C
-            data:
-              - refId: A
-                queryType: range
-                relativeTimeRange:
-                  from: 600
-                  to: 0
-                datasourceUid: P8E80F9AEF21F6940
-                model:
-                  datasource:
-                      type: loki
-                      uid: P8E80F9AEF21F6940
-                  editorMode: builder
-                  expr: sum(count_over_time({namespace="apps", app_kubernetes_io_instance="authentik", container="server"} |~ `POST` |~ `flows/executor/.*authentication` [5m]))
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: reducer
-                queryType: expression
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                      - evaluator:
-                          params:
-                              - 0
-                              - 0
-                          type: gt
-                        operator:
-                          type: and
-                        query:
-                          params: []
-                        reducer:
-                          params: []
-                          type: avg
-                        type: query
-                  datasource:
-                      name: Expression
-                      type: __expr__
-                      uid: __expr__
-                  expression: A
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  reducer: last
-                  refId: reducer
-                  type: reduce
-              - refId: C
-                datasourceUid: __expr__
-                model:
-                  conditions:
-                      - evaluator:
-                          params:
-                              - 0
-                          type: gt
-                        operator:
-                          type: and
-                        query:
-                          params:
-                              - C
-                        reducer:
-                          params: []
-                          type: last
-                        type: query
-                  datasource:
-                      type: __expr__
-                      uid: __expr__
-                  expression: reducer
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  refId: C
-                  type: threshold
-            noDataState: NoData
-            execErrState: Error
-            for: 1m
-            annotations: {}
-            labels: {}
-            isPaused: false
-            notification_settings:
-              receiver: grafana-default-email
-
           # ============================================
           # Immich OAuth Authentication
           # ============================================
@@ -109,11 +26,11 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/(authorize|callback)" |~ "20[01]" [5m]))'
                   instant: true
@@ -121,18 +38,59 @@ data:
                   maxDataPoints: 43200
                   queryType: range
                   refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [1]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 0s
@@ -153,11 +111,11 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_name="server"} |~ "POST /api/oauth/" [5m]))'
                   instant: true
@@ -165,18 +123,59 @@ data:
                   maxDataPoints: 43200
                   queryType: range
                   refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [5]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 2m
@@ -200,30 +199,67 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/.*authentication" [5m]))'
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+                  queryType: instant
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [1]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 0s
@@ -244,30 +280,67 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app_kubernetes_io_instance="authentik",container="server"} |~ "POST" |~ "flows/executor/" [5m]))'
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+                  queryType: instant
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [3]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 5m
@@ -291,30 +364,67 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(200\\)" [5m]))'
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+                  queryType: instant
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [1]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 0s
@@ -335,30 +445,67 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+                  queryType: instant
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [3]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 2m
@@ -379,30 +526,67 @@ data:
                 relativeTimeRange:
                   from: 300
                   to: 0
-                datasourceUid: P8E80F9AEF21F6940
+                datasourceUid: loki
                 model:
                   datasource:
                     type: loki
-                    uid: P8E80F9AEF21F6940
+                    uid: loki
                   editorMode: builder
                   expr: 'sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m]))'
-                  instant: true
-                  intervalMs: 1000
-                  maxDataPoints: 43200
-                  queryType: range
-                  refId: A
-              - refId: C
-                relativeTimeRange:
-                  from: 0
-                  to: 0
+                  queryType: instant
+              - refId: reducer
+                queryType: expression
                 datasourceUid: __expr__
                 model:
-                  type: threshold
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 0
+                          - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                  datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  reducer: last
+                  refId: reducer
+                  type: reduce
+              - refId: C
+                queryType: expression
+                datasourceUid: __expr__
+                model:
                   conditions:
                     - evaluator:
                         params: [10]
                         type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: reducer
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
             noDataState: NoData
             execErrState: Error
             for: 5m
