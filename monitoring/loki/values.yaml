@@ -54,21 +54,31 @@ singleBinary:
         - sh
         - -c
         - |
+          # Sidecar копирует файлы из ConfigMap в /rules
+          # Нам нужно переместить их в структуру /var/loki/rules/fake/ для Loki Ruler
           mkdir -p /var/loki/rules/fake
-          cp /rules-config/rules.yaml /var/loki/rules/fake/rules.yaml
-          ls -la /var/loki/rules/fake/
+          # Ждем, пока sidecar загрузит файлы (максимум 30 секунд)
+          for i in $(seq 1 30); do
+            if [ -f /rules/fake ]; then
+              cp /rules/fake /var/loki/rules/fake/rules.yaml
+              echo "✓ Rules file copied from sidecar volume to /var/loki/rules/fake/rules.yaml"
+              ls -la /var/loki/rules/fake/
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "⚠ WARNING: Rules file not found in /rules/ after 30s wait"
+          ls -la /rules/ || echo "Directory /rules/ does not exist"
+          exit 1
       volumeMounts:
-        - name: rules-config
-          mountPath: /rules-config
+        - name: sc-rules-volume  # Volume, куда sidecar копирует файлы
+          mountPath: /rules
           readOnly: true
-        - name: loki-rules
+        - name: loki-rules  # Volume для Loki Ruler
           mountPath: /var/loki/rules
   extraVolumes:
     - name: loki-data
       emptyDir: {}
-    - name: rules-config
-      configMap:
-        name: loki-rules-auth
     - name: loki-rules
       emptyDir: {}
   extraVolumeMounts:
@@ -129,8 +139,8 @@ gateway:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
+      maxSurge: 1  # Разрешаем создание нового pod перед удалением старого
+      maxUnavailable: 0  # Не допускаем недоступности во время обновления
 
 monitoring:
   serviceMonitor:

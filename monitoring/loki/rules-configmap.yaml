@@ -4,13 +4,14 @@ metadata:
   name: loki-rules-auth
   namespace: monitoring
   labels:
+    loki_rule: "1"  # Sidecar ищет ConfigMap с этим label
     app.kubernetes.io/name: loki
     app.kubernetes.io/component: ruler
 data:
   # Loki Ruler rules file
   # For single-tenant (auth_enabled: false), Loki uses "fake" tenant
-  # Rules will be placed in /var/loki/rules/fake/rules.yaml via initContainer
-  rules.yaml: |
+  # Sidecar копирует файлы в /rules, затем они должны быть в /var/loki/rules/fake/
+  fake: |
     groups:
       # ============================================
       # Immich OAuth Authentication
