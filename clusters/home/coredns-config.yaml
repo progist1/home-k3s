@@ -26,6 +26,9 @@ spec:
                   operator: "Equal"
                   value: "true"
                   effect: "NoSchedule"
+                - key: "yolki"
+                  operator: "Exists"
+                  effect: "NoSchedule"
       target:
         kind: Deployment
         name: coredns

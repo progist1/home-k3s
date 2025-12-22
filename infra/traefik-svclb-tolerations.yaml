@@ -4,6 +4,6 @@ metadata:
   name: traefik
   namespace: kube-system
   annotations:
-    svccontroller.k3s.cattle.io/svclb-tolerations: '[{"key":"gpu","operator":"Equal","value":"true","effect":"NoSchedule"}]'
+    svccontroller.k3s.cattle.io/svclb-tolerations: '[{"key":"gpu","operator":"Equal","value":"true","effect":"NoSchedule"},{"key":"yolki","operator":"Exists","effect":"NoSchedule"}]'
 spec: {}
 
