@@ -15,3 +15,5 @@ resources:
   - traefik-args.yaml
   - traefik-metrics-service.yaml
   - traefik-svclb-tolerations.yaml
+  # nodes управляется отдельным Kustomization с prune: false
+  # - nodes
