@@ -10,15 +10,12 @@ spec:
       bucket: k8up-backups
       accessKeyIDSecretRef:
         name: k8up-secrets
-        namespace: infra
         key: access-key
       secretAccessKeySecretRef:
         name: k8up-secrets
-        namespace: infra
         key: secret-key
     repoPasswordSecretRef:
       name: k8up-secrets
-      namespace: infra
       key: password
 
   backup:
