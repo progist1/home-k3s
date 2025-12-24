@@ -57,7 +57,18 @@ alertmanager:
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 2h
-      routes: []
+      routes:
+        # InfoInhibitor должен идти в null receiver, чтобы не шуметь
+        - match:
+            alertname: InfoInhibitor
+          receiver: 'null'
+    # Подавление info-алертов когда активен InfoInhibitor
+    inhibit_rules:
+      - source_match:
+          alertname: InfoInhibitor
+        target_match:
+          severity: info
+        equal: ['namespace']
     receivers:
       - name: 'telegram'
         telegram_configs:
