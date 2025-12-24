@@ -23,6 +23,11 @@ prometheus:
                     - "true"
     storageSpec:
       volumeClaimTemplate:
+        metadata:
+          annotations:
+            k8up.io/backup: "true"
+          labels:
+            backup-level: important
         spec:
           storageClassName: zvol-local
           accessModes: ["ReadWriteOnce"]
@@ -88,6 +93,11 @@ alertmanager:
     replicas: 1
     storage:
       volumeClaimTemplate:
+        metadata:
+          annotations:
+            k8up.io/backup: "true"
+          labels:
+            backup-level: important
         spec:
           storageClassName: nfs-nvme-manual
           accessModes: ["ReadWriteOnce"]

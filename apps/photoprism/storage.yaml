@@ -18,6 +18,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: photoprism-storage-pvc
   namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: daily
 spec:
   accessModes:
     - ReadWriteMany

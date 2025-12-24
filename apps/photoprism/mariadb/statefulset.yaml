@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: photoprism-mariadb
+      annotations:
+        k8up.io/backupcommand: 'sh -c ''MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --user=root --host=localhost --single-transaction --quick --all-databases'''
+        k8up.io/file-extension: .sql
     spec:
       affinity:
         nodeAffinity:

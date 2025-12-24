@@ -18,6 +18,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-config-pvc
   namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:

@@ -18,6 +18,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: authentik-media-pvc
   namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: critical
+    backup-offsite: "true"
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:

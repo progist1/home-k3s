@@ -18,6 +18,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: memos-config-pvc
   namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
+    backup-offsite: "true"
 spec:
   storageClassName: nfs-nvme-manual
   accessModes:

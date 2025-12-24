@@ -21,7 +21,7 @@ metadata:
   namespace: apps
   labels:
     app: wg-easy
-    backup-level: critical
+    backup-level: important
     backup-offsite: "true"
 spec:
   storageClassName: nfs-nvme-manual

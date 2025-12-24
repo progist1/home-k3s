@@ -5,3 +5,4 @@ resources:
   - backup-important-daily-offsite.yaml
   # - backup-important-daily-root.yaml
   - backup-important-daily.yaml
+  - backup-monitoring-daily.yaml
