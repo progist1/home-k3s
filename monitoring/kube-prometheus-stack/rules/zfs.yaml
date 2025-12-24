@@ -35,14 +35,15 @@ spec:
   - name: zfs-capacity
     interval: 30s
     rules:
-    # Высокая заполненность пула (>85%)
+    # Высокая заполненность пула (>80%) для обычных пулов
     - alert: ZFSPoolCapacityHigh
       expr: |
         (
-          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 85
+          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 80
+          and on(instance, pool) (zfs_pool_size_bytes{device!="Unsafe/Media"} > 0)
         )
         * on(instance, pool) group_left
-          zfs_pool_size_bytes
+          zfs_pool_size_bytes{device!="Unsafe/Media"}
       for: 15m
       labels:
         severity: warning
@@ -55,14 +56,36 @@ spec:
           **Host:** {{ $labels.hostname }}
           **Action:** 🗄️ Free up space or expand pool
 
-  - name: zfs-capacity-critical
-    interval: 30s
-    rules:
-    # Высокая заполненность пула (>90%)
-    - alert: ZFSPoolCapacityCritical
+    # Высокая заполненность пула (>90%) для Unsafe/Media
+    - alert: ZFSPoolCapacityHighUnsafeMedia
       expr: |
         (
           (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 90
+          and on(instance, pool) (zfs_pool_size_bytes{device="Unsafe/Media"} > 0)
+        )
+        * on(instance, pool) group_left
+          zfs_pool_size_bytes{device="Unsafe/Media"}
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} (Unsafe/Media) is {{ $value | humanize }}% full on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Device:** Unsafe/Media
+          **Used:** {{ $value | humanize }}%
+          **Allocated:** {{ printf "%.1f" $value }}
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🗄️ Free up space or expand pool
+
+  - name: zfs-capacity-critical
+    interval: 30s
+    rules:
+    # Критическая заполненность пула (>93%)
+    - alert: ZFSPoolCapacityCritical
+      expr: |
+        (
+          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 93
         )
         * on(instance, pool) group_left
           zfs_pool_size_bytes
