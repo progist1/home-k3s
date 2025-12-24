@@ -28,10 +28,11 @@ spec:
         (
           container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"} 
           / 
-          on(pod, container, namespace) kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""}
+          on(pod, container, namespace) 
+          max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
         ) * 100 > 80
         and
-        kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""} > 0
+        max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""}) > 0
       for: 10m
       labels:
         severity: warning
@@ -45,10 +46,11 @@ spec:
         (
           rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]) 
           / 
-          on(pod, container, namespace) kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""}
+          on(pod, container, namespace) 
+          max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""})
         ) * 100 > 80
         and
-        kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""} > 0
+        max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""}) > 0
       for: 10m
       labels:
         severity: warning

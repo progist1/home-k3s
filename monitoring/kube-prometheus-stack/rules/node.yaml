@@ -47,7 +47,12 @@ spec:
         description: "Memory usage is {{ $value }}% on {{ $labels.host }}."
         
     - alert: NodeDiskFull
-      expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|fuse\\.lxcfs|vfat"} / node_filesystem_size_bytes)) * 100 > 85
+      expr: |
+        (
+          (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|fuse\\.lxcfs|vfat",device!="Unsafe/Media"} / node_filesystem_size_bytes)) * 100 > 85
+        ) or (
+          (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|fuse\\.lxcfs|vfat",device="Unsafe/Media"} / node_filesystem_size_bytes)) * 100 > 90
+        )
       for: 10m
       labels:
         severity: warning
