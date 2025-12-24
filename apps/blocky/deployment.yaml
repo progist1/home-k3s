@@ -27,9 +27,9 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       tolerations:
-        - key: gpu
+        - key: node.hardware.gpu
           operator: Equal
-          value: "true"
+          value: "intel-igpu"
           effect: NoSchedule
       affinity:
         podAntiAffinity:
