@@ -6,6 +6,8 @@ metadata:
 spec:
   serviceName: photoprism-mariadb
   replicas: 1
+  updateStrategy:
+    type: OnDelete
   selector:
     matchLabels:
       app: photoprism-mariadb
