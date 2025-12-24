@@ -12,3 +12,4 @@ resources:
   - coredns-config.yaml
   - gitlab.yaml
   - gitlab-runner.yaml
+  - nodes.yaml

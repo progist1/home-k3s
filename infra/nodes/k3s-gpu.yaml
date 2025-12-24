@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: k3s-gpu
+  labels:
+    # Локация / Топология
+    topology.kubernetes.io/region: ru
+    topology.kubernetes.io/zone: local
+    node.location.site: home
+    node.location.type: local
+
+    # Роль ноды
+    node.role: worker
+    node.workload.class: gpu
+
+    # Надёжность
+    node.reliability: high
+
+    # Хранилище
+    node.storage.local: "false"
+    node.storage.backend: nvme
+
+    # Спец-железо
+    node.hardware.gpu: intel-igpu
+    node.hardware.video-accel: qsv
+    node.hardware.arch: amd64
+spec:
+  taints:
+    - key: node.hardware.gpu
+      value: intel-igpu
+      effect: NoSchedule
+

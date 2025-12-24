@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: k3s-prod
+  labels:
+    # Локация / Топология
+    topology.kubernetes.io/region: ru
+    topology.kubernetes.io/zone: local
+    node.location.site: home
+    node.location.type: local
+
+    # Роль ноды
+    node.role: control-plane
+    node.workload.class: general
+
+    # Надёжность
+    node.reliability: high
+
+    # Хранилище
+    node.storage.local: "true"
+    node.storage.backend: zvol
+    node.storage.class: fast
+    node.storage.mount.mysql: "true"
+    node.storage.mount.postgres: "true"
+    node.storage.mount.prometheus: "true"
+    node.storage.mount.gitlab: "true"
+    node.storage.mount.photoprism-mariadb: "true"
+    node.storage.mount.redis: "true"
+
+    # Спец-железо
+    node.hardware.gpu: none
+    node.hardware.video-accel: none
+    node.hardware.arch: amd64
+spec:
+  taints: []
