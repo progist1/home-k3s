@@ -13,6 +13,15 @@ spec:
       labels:
         app: postgres
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node.storage.mount.postgres
+                    operator: In
+                    values:
+                      - "true"
       containers:
         - name: postgres
           image: postgres:17.7

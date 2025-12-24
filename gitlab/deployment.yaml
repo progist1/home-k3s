@@ -20,6 +20,15 @@ spec:
       labels:
         app: gitlab
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node.storage.mount.gitlab
+                    operator: In
+                    values:
+                      - "true"
       # TODO: InitContainer для secrets.json и trusted-certs
       containers:
         - name: gitlab

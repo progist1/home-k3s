@@ -14,11 +14,12 @@ spec:
         app: jellyfin
     spec:
       nodeSelector:
-        gpu: "true"
+        node.hardware.gpu: intel-igpu
       tolerations:
-        - key: "gpu"
-          operator: "Exists"
-          effect: "NoSchedule"
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
 
       securityContext:
         runAsUser: 1000

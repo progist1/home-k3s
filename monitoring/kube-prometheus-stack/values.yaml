@@ -12,6 +12,15 @@ prometheus:
       lookbackDelta: 2h
     replicas: 1
     enableAdminAPI: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node.storage.mount.prometheus
+                  operator: In
+                  values:
+                    - "true"
     storageSpec:
       volumeClaimTemplate:
         spec:

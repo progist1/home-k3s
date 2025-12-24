@@ -86,11 +86,12 @@ server:
       memory: "3Gi"
       gpu.intel.com/i915: "1"
   nodeSelector:
-    gpu: "true"
+    node.hardware.gpu: intel-igpu
   tolerations:
-    - key: "gpu"
-      operator: "Exists"
-      effect: "NoSchedule"
+    - key: node.hardware.gpu
+      operator: Equal
+      value: intel-igpu
+      effect: NoSchedule
 machine-learning:
   enabled: true
   image:
