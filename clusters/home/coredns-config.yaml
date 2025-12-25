@@ -22,13 +22,10 @@ spec:
           template:
             spec:
               tolerations:
-                - key: "gpu"
-                  operator: "Equal"
-                  value: "true"
-                  effect: "NoSchedule"
-                - key: "yolki"
-                  operator: "Exists"
-                  effect: "NoSchedule"
+              - key: "node.hardware.gpu"
+                operator: "Equal"
+                value: "intel-igpu"
+                effect: "NoSchedule"
       target:
         kind: Deployment
         name: coredns

@@ -497,23 +497,17 @@ kube-state-metrics:
         regex: 'kube_(pod_status_phase|pod_status_ready|deployment_status_replicas_available|node_status_ready|persistentvolumeclaim_status_phase)'
         action: keep
   tolerations:
-    - key: "gpu"
+    - key: "node.hardware.gpu"
       operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "yolki"
-      operator: "Exists"
+      value: "intel-igpu"
       effect: "NoSchedule"
 
 nodeExporter:
   enabled: true
   tolerations:
-    - key: "gpu"
+    - key: "node.hardware.gpu"
       operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "yolki"
-      operator: "Exists"
+      value: "intel-igpu"
       effect: "NoSchedule"
   serviceMonitor:
     metricRelabelings:

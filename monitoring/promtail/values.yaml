@@ -78,11 +78,8 @@ resources:
     memory: "512Mi"
 
 tolerations:
-  - key: "gpu"
+  - key: "node.hardware.gpu"
     operator: "Equal"
-    value: "true"
-    effect: "NoSchedule"
-  - key: "yolki"
-    operator: "Exists"
+    value: "intel-igpu"
     effect: "NoSchedule"
 
