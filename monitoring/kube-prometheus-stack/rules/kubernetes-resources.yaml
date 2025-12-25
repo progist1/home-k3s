@@ -42,25 +42,6 @@ spec:
         summary: "Pod {{ $labels.pod }} is using {{ $value | humanize }}% of memory limit"
         description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is using {{ $value | humanize }}% of its memory limit (working set, excluding cache). Consider increasing limits or optimizing memory usage."
 
-    # Критический алерт - очень высокое использование памяти (>95% от limit по usage_bytes)
-    # Это предупреждает о возможном OOMKill, так как Kubernetes проверяет usage_bytes для лимитов
-    - alert: PodCriticalMemoryUsage
-      expr: |
-        (
-          max_over_time(container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"}[5m])
-          / 
-          on(pod, container, namespace) 
-          max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
-        ) * 100 > 95
-        and
-        max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""}) > 0
-      for: 5m
-      labels:
-        severity: critical
-      annotations:
-        summary: "🚨 Pod {{ $labels.pod }} is using {{ $value | humanize }}% of memory limit (risk of OOMKill)"
-        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is using {{ $value | humanize }}% of its memory limit (includes cache). This may lead to OOMKill. Check if cache can be freed or increase memory limits."
-
     # Предупреждение - высокое использование CPU (>80% от limit)
     - alert: PodHighCPUUsage
       expr: |
