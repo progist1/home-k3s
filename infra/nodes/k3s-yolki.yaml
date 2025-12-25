@@ -37,9 +37,6 @@ spec:
     - key: node.reliability
       value: low
       effect: NoSchedule
-    - key: node.location.site
-      value: yolki-house
-      effect: NoSchedule
     - key: node.workload.class
       value: cctv
       effect: NoSchedule

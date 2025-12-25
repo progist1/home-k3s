@@ -26,6 +26,22 @@ spec:
                 operator: "Equal"
                 value: "intel-igpu"
                 effect: "NoSchedule"
+              - key: "node.location.type"
+                operator: "Equal"
+                value: "remote"
+                effect: "NoSchedule"
+              - key: "node.role"
+                operator: "Equal"
+                value: "edge"
+                effect: "NoSchedule"
+              - key: "node.reliability"
+                operator: "Equal"
+                value: "low"
+                effect: "NoSchedule"
+              - key: "node.workload.class"
+                operator: "Equal"
+                value: "cctv"
+                effect: "NoSchedule"
       target:
         kind: Deployment
         name: coredns
