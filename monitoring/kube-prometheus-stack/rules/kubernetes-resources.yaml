@@ -26,7 +26,7 @@ spec:
     - alert: PodHighMemoryUsage
       expr: |
         (
-          container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"} 
+          avg by(pod, container, namespace) (container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"})
           / 
           on(pod, container, namespace) 
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
