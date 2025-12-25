@@ -22,3 +22,12 @@ data:
     innodb_flush_log_at_trx_commit = 1
     sync_binlog = 1
     innodb_flush_method = fsync
+    # Replication persistence settings for MySQL 8.x
+    # Store replication info in tables instead of files (survives restarts)
+    master-info-repository = TABLE
+    relay-log-info-repository = TABLE
+    # Relay log settings
+    relay-log = /var/lib/mysql/relay-bin
+    relay-log-recovery = 1
+    # Automatically start replication on server startup
+    skip-slave-start = 0
