@@ -44,9 +44,9 @@ spec:
     - alert: PodHighCPUUsage
       expr: |
         (
-          rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]) 
+          avg by(pod, container, namespace) (rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]))
           / 
-          on(pod, container, namespace) 
+          on(pod, container, namespace) group_left
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""})
         ) * 100 > 80
         and

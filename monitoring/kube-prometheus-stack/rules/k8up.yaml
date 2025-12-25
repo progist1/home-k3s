@@ -127,12 +127,12 @@ spec:
       expr: |
         (
           (
-            increase(k8up_jobs_total{jobType="backup"}[2d]) 
-            - on(jobType, namespace) increase(k8up_jobs_successful_counter{jobType="backup"}[2d])
+            sum by(jobType, namespace) (increase(k8up_jobs_total{jobType="backup"}[2d]))
+            - on(jobType, namespace) sum by(jobType, namespace) (increase(k8up_jobs_successful_counter{jobType="backup"}[2d]))
           ) 
-          / on(jobType, namespace) increase(k8up_jobs_total{jobType="backup"}[2d])
+          / on(jobType, namespace) sum by(jobType, namespace) (increase(k8up_jobs_total{jobType="backup"}[2d]))
         ) > 0.1
-        and on(jobType, namespace) increase(k8up_jobs_total{jobType="backup"}[2d]) > 10
+        and on(jobType, namespace) sum by(jobType, namespace) (increase(k8up_jobs_total{jobType="backup"}[2d])) > 10
       for: 10m
       labels:
         severity: warning
