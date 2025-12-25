@@ -21,13 +21,14 @@ spec:
         summary: "🚨 Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} was OOMKilled"
         description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) was killed due to OOM. Increase memory limits or investigate memory leaks."
 
-    # Предупреждение - высокое использование памяти (>80% от limit)
-    # Используем container_memory_working_set_bytes (реальная память без кеша) вместо container_memory_usage_bytes
+    # Предупреждение - высокое использование памяти (>90% от limit)
+    # Используем container_memory_usage_bytes (то, что проверяет Kubernetes для OOMKill)
+    # Порог 90% вместо 80%, чтобы не срабатывать на кеш файловой системы
     # Используем max_over_time за последние 5 минут, чтобы исключить старые значения до рестарта
     - alert: PodHighMemoryUsage
       expr: |
         (
-          max_over_time(container_memory_working_set_bytes{container!="POD",container!="",namespace=~"apps|infra"}[5m])
+          max_over_time(container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"}[5m])
           / 
           on(pod, container, namespace) 
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
