@@ -22,11 +22,11 @@ spec:
         description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) was killed due to OOM. Increase memory limits or investigate memory leaks."
 
     # Предупреждение - высокое использование памяти (>80% от limit)
-    # Используем container_memory_usage_bytes и kube_pod_container_resource_limits
+    # Используем max_over_time за последние 5 минут, чтобы исключить старые значения до рестарта
     - alert: PodHighMemoryUsage
       expr: |
         (
-          avg by(pod, container, namespace) (container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"})
+          max_over_time(container_memory_usage_bytes{container!="POD",container!="",namespace=~"apps|infra"}[5m])
           / 
           on(pod, container, namespace) 
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
