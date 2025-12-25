@@ -37,6 +37,7 @@ spec:
       group: 'external-nodes'
       host: 'vpn-vps'
       location: 'amsterdam'
+      unstable: 'true'
   - targets:
     - 'vps.spb:9100'
     labels:

@@ -11,7 +11,7 @@ spec:
     interval: 30s
     rules:
     - alert: NodeDown
-      expr: up{job="external-nodes"} == 0
+      expr: up{job="external-nodes",unstable!="true"} == 0
       for: 5m
       labels:
         severity: critical

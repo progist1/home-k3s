@@ -537,6 +537,7 @@ defaultRules:
     KubeControllerManagerDown: true
     KubeSchedulerDown: true
     KubeProxyDown: true
+    TargetDown: true
     etcdDatabaseHighFragmentationRatio: true
     etcdDatabaseQuotaLowSpace: true
     etcdExcessiveDatabaseGrowth: true
