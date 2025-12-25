@@ -51,7 +51,7 @@ spec:
               gpu.intel.com/i915: "1"
             limits:
               cpu: "4"
-              memory: "4Gi"
+              memory: "6Gi"
               gpu.intel.com/i915: "1"
           livenessProbe:
             httpGet:
