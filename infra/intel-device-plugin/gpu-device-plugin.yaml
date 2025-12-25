@@ -9,11 +9,7 @@ spec:
   # Для media transcode (Jellyfin, Immich) это подходит - они не критичны по времени
   sharedDevNum: 4  # Позволяет Jellyfin и Immich использовать один GPU одновременно
   tolerations:
-    - key: "gpu"
+    - key: "node.hardware.gpu"
       operator: "Equal"
-      value: "true"
+      value: "intel-igpu"
       effect: "NoSchedule"
-    - key: "yolki"
-      operator: "Exists"
-      effect: "NoSchedule"
-
