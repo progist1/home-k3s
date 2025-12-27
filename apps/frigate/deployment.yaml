@@ -27,9 +27,9 @@ spec:
           operator: Equal
           value: edge
           effect: NoSchedule
-        - key: node.reliability
+        - key: node.workload.class
           operator: Equal
-          value: low
+          value: cctv
           effect: NoSchedule
       containers:
         - name: frigate
