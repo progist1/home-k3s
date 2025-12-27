@@ -112,8 +112,6 @@ spec:
               readOnly: true
             - name: usb
               mountPath: /dev/bus/usb
-            - name: video11
-              mountPath: /dev/video11
           resources:
             requests:
               cpu: "500m"
