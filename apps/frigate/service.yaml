@@ -18,21 +18,21 @@ spec:
     - name: metrics
       port: 8971
       targetPort: 8971
-      nodePort: 38971
+      nodePort: 30971
       protocol: TCP
     - name: rtsp
       port: 8554
       targetPort: 8554
-      nodePort: 38554
+      nodePort: 30554
       protocol: TCP
     - name: webrtc-tcp
       port: 8555
-      nodePort: 38555
+      nodePort: 30555
       targetPort: 8555
       protocol: TCP
     - name: webrtc-udp
       port: 8555
-      nodePort: 38555
+      nodePort: 30555
       targetPort: 8555
       protocol: UDP
     - name: rtmp
