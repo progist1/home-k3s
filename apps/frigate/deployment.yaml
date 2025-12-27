@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate
+  namespace: apps
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: frigate
+  template:
+    metadata:
+      labels:
+        app: frigate
+    spec:
+      nodeSelector:
+        node.role: edge
+        node.workload.class: cctv
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+      containers:
+        - name: frigate
+          image: ghcr.io/blakeblackshear/frigate:0.16.3
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            oomScoreAdj: 500
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: FRIGATE_TERASSA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: terassa-user
+            - name: FRIGATE_TERASSA_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: terassa-pwd
+            - name: FRIGATE_ENTRANCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: entrance-user
+            - name: FRIGATE_ENTRANCE_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: entrance-pwd
+            - name: FRIGATE_HALL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: hall-user
+            - name: FRIGATE_HALL_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: hall-pwd
+            - name: FRIGATE_BEDROOM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: bedroom-user
+            - name: FRIGATE_BEDROOM_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: bedroom-pwd
+          ports:
+            - containerPort: 5000
+              name: http
+            - containerPort: 8971
+              name: metrics
+            - containerPort: 8554
+              name: rtsp
+            - containerPort: 8555
+              name: webrtc-tcp
+              protocol: TCP
+            - containerPort: 8555
+              name: webrtc-udp
+              protocol: UDP
+            - containerPort: 1935
+              name: rtmp
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media/frigate
+            - name: shm
+              mountPath: /dev/shm
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: usb
+              mountPath: /dev/bus/usb
+            - name: video11
+              mountPath: /dev/video11
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+            limits:
+              cpu: "4000m"
+              memory: "4Gi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: frigate-config-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: frigate-media-pvc
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 292Mi
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: usb
+          hostPath:
+            path: /dev/bus/usb
+            type: Directory
+        - name: video11
+          hostPath:
+            path: /dev/video11
+            type: CharDevice
+
