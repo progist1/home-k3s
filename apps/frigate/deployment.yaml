@@ -31,6 +31,10 @@ spec:
           operator: Equal
           value: cctv
           effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
       containers:
         - name: frigate
           image: ghcr.io/blakeblackshear/frigate:0.16.3
