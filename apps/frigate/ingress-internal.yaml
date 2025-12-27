@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-  - host: frigate.home
+  - host: cctv.home
     http:
       paths:
       - path: /
@@ -22,7 +22,7 @@ spec:
               number: 5000
   tls:
   - hosts:
-    - frigate.home
+    - cctv.home
     secretName: frigate-internal-tls
 
 
