@@ -4,5 +4,5 @@ metadata:
   name: traefik
   namespace: kube-system
   annotations:
-    svccontroller.k3s.cattle.io/svclb-tolerations: '[{"key":"node.hardware.gpu","operator":"Equal","value":"intel-igpu","effect":"NoSchedule"},{"key":"node.location.type","operator":"Equal","value":"remote","effect":"NoSchedule"},{"key":"node.role","operator":"Equal","value":"edge","effect":"NoSchedule"},{"key":"node.reliability","operator":"Equal","value":"low","effect":"NoSchedule"},{"key":"node.workload.class","operator":"Equal","value":"cctv","effect":"NoSchedule"}]'
+    svccontroller.k3s.cattle.io/svclb-tolerations: '[{"key":"node.hardware.gpu","operator":"Equal","value":"intel-igpu","effect":"NoSchedule"},{"key":"node.hardware.arch","operator":"Equal","value":"arm64","effect":"NoSchedule"},{"key":"node.location.type","operator":"Equal","value":"remote","effect":"NoSchedule"},{"key":"node.role","operator":"Equal","value":"edge","effect":"NoSchedule"},{"key":"node.reliability","operator":"Equal","value":"low","effect":"NoSchedule"},{"key":"node.workload.class","operator":"Equal","value":"cctv","effect":"NoSchedule"}]'
 spec: {}

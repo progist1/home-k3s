@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: k3s-pi
+  labels:
+    # Локация / Топология
+    topology.kubernetes.io/region: ru
+    topology.kubernetes.io/zone: local
+    node.location.site: home
+    node.location.type: local
+
+    # Роль ноды
+    node.role: worker
+    node.workload.class: general
+
+    # Надёжность
+    node.reliability: medium
+
+    # Хранилище
+    node.storage.local: "false"
+    node.storage.backend: usb
+
+    # Спец-железо
+    node.hardware.gpu: none
+    node.hardware.video-accel: none
+    node.hardware.arch: arm64
+spec:
+  taints:
+    - key: node.hardware.arch
+      value: arm64
+      effect: NoSchedule
+

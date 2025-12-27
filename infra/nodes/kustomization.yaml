@@ -4,4 +4,5 @@ resources:
   - k3s-prod.yaml
   - k3s-yolki.yaml
   - k3s-gpu.yaml
+  - k3s-pi.yaml
 
