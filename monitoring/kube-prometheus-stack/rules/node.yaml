@@ -28,6 +28,52 @@ spec:
         summary: "High CPU usage on {{ $labels.host }}"
         description: "CPU usage is {{ $value }}% on {{ $labels.host }}."
         
+    - alert: NodeHighSystemCPU
+      expr: avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~".*"}[5m])) * 100 > 20
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High System CPU usage on {{ $labels.host }}"
+        description: "System CPU usage is {{ $value | humanize }}% on {{ $labels.host }} ({{ $labels.instance }}). This indicates kernel-space activity (NFS, ZFS, virtualization overhead)."
+        
+    - alert: NodeSystemCPUAnomaly
+      expr: |
+        (
+          avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~".*"}[5m])) * 100
+        ) > (
+          avg_over_time((avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~".*"}[5m])) * 100)[1d:5m]) * 2
+        )
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "System CPU anomaly on {{ $labels.host }}"
+        description: "System CPU usage ({{ $value | humanize }}%) is more than 2x the 24h average on {{ $labels.host }}. Possible NFS state storm, ZFS issues, or virtualization overhead."
+        
+    - alert: NodeCPUAnomaly
+      expr: |
+        (
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+        ) > (
+          avg_over_time((100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100))[1d:5m]) * 1.5
+        )
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CPU usage anomaly on {{ $labels.host }}"
+        description: "Total CPU usage ({{ $value | humanize }}%) is 1.5x higher than 24h average on {{ $labels.host }}. Check for unusual workload or system issues."
+        
+    - alert: NodeHighContextSwitches
+      expr: rate(node_context_switches_total{instance=~".*"}[5m]) > 100000
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High context switches rate on {{ $labels.host }}"
+        description: "Context switches rate is {{ $value | humanize }}/s on {{ $labels.host }} ({{ $labels.instance }}). Normal: 20-30k/s. High values indicate excessive process switching, possibly due to NFS operations or system calls."
+        
     - alert: NodeHighMemory
       expr: (1 - (node_memory_MemAvailable_bytes{host!="home-truenas"} / node_memory_MemTotal_bytes)) * 100 > 85
       for: 15m
