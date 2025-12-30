@@ -32,7 +32,7 @@ spec:
               command:
                 - sh
                 - -c
-                - curl -f -s -H "Host: cloud.progist.ru" http://nextcloud.apps.svc.cluster.local/cron.php || exit 1
+                - 'curl -f -s -H "Host: cloud.progist.ru" http://nextcloud.apps.svc.cluster.local/cron.php || exit 1'
               resources:
                 requests:
                   cpu: "10m"
