@@ -11,48 +11,33 @@ spec:
     spec:
       template:
         spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  preference:
+                    matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values:
+                          - k3s-pi
+          tolerations:
+            - key: node.hardware.arch
+              operator: Equal
+              value: "arm64"
+              effect: NoSchedule
           containers:
-            - name: nextcloud
-              image: nextcloud:32.0.3-apache
-              args: ["php", "-f", "/var/www/html/cron.php"]
-              securityContext:
-                runAsUser: 33
-                runAsGroup: 33
-              env:
-                - name: POSTGRES_HOST
-                  value: postgres.apps.svc.cluster.local
-                - name: POSTGRES_USER
-                  valueFrom: 
-                    secretKeyRef: 
-                      name: nextcloud-secrets
-                      key: POSTGRES_USER
-                - name: POSTGRES_DB
-                  valueFrom: 
-                    secretKeyRef: 
-                      name: nextcloud-secrets
-                      key: POSTGRES_DB
-                - name: POSTGRES_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-secrets
-                      key: POSTGRES_PASSWORD
-              volumeMounts:
-                - name: html
-                  mountPath: /var/www/html
-                - name: data
-                  mountPath: /var/www/html/data
+            - name: nextcloud-cron
+              image: curlimages/curl:latest
+              command:
+                - sh
+                - -c
+                - curl -f -s http://nextcloud.apps.svc.cluster.local/cron.php || exit 1
               resources:
                 requests:
-                  cpu: "100m"
-                  memory: "64Mi"
+                  cpu: "10m"
+                  memory: "16Mi"
                 limits:
-                  cpu: "200m"
-                  memory: "256Mi"
-          volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: nextcloud-data-pvc
-            - name: html
-              persistentVolumeClaim:
-                claimName: nextcloud-html-pvc
+                  cpu: "50m"
+                  memory: "32Mi"
           restartPolicy: OnFailure
