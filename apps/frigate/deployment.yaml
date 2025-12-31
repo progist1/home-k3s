@@ -85,6 +85,26 @@ spec:
                 secretKeyRef:
                   name: frigate-secrets
                   key: bedroom-pwd
+            - name: FRIGATE_BOLERROOM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: boilerroom-user
+            - name: FRIGATE_BOLERROOM_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: boilerroom-pwd
+            - name: FRIGATE_CORRIDOR_USER
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: corridor-user
+            - name: FRIGATE_CORRIDOR_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: corridor-pwd
           ports:
             - containerPort: 5000
               name: http
