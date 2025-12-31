@@ -21,11 +21,11 @@ spec:
       type: ClusterIP
     env:
       - name: MB_DB_TYPE
-        value: "postgres"
+        value: "mysql"
       - name: MB_DB_DBNAME
         value: "metabase"
       - name: MB_DB_PORT
-        value: "5432"
+        value: "3306"
       - name: MB_DB_USER
         valueFrom:
           secretKeyRef:
@@ -37,7 +37,7 @@ spec:
             name: metabase-secrets
             key: database-password
       - name: MB_DB_HOST
-        value: "postgres.apps.svc.cluster.local"
+        value: "mysql.apps.svc.cluster.local"
     ingress:
       enabled: true
       annotations:
