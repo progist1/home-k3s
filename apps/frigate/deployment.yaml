@@ -85,12 +85,12 @@ spec:
                 secretKeyRef:
                   name: frigate-secrets
                   key: bedroom-pwd
-            - name: FRIGATE_BOLERROOM_USER
+            - name: FRIGATE_BOILERROOM_USER
               valueFrom:
                 secretKeyRef:
                   name: frigate-secrets
                   key: boilerroom-user
-            - name: FRIGATE_BOLERROOM_PWD
+            - name: FRIGATE_BOILERROOM_PWD
               valueFrom:
                 secretKeyRef:
                   name: frigate-secrets
