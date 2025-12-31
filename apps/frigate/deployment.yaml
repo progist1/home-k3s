@@ -132,6 +132,8 @@ spec:
               readOnly: true
             - name: usb
               mountPath: /dev/bus/usb
+            - name: dri
+              mountPath: /dev/dri
           resources:
             requests:
               cpu: "500m"
@@ -178,4 +180,6 @@ spec:
           hostPath:
             path: /dev/video11
             type: CharDevice
-
+        - name: dri
+          hostPath:
+            path: /dev/dri
