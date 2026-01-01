@@ -28,9 +28,9 @@ spec:
     - alert: PodHighMemoryUsage
       expr: |
         (
-          max_over_time(container_memory_working_set_bytes{container!="POD",container!="",namespace=~"apps|infra"}[5m])
+          max_over_time(container_memory_working_set_bytes{container!="POD",container!="",namespace=~"apps|infra",container!="transmission"}[5m])
           / 
-          on(pod, container, namespace) 
+          on(pod, container, namespace) group_left
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
         ) * 100 > 80
         and
