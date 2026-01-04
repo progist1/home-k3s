@@ -135,61 +135,37 @@ data:
         rules:
           - alert: JellyfinSuccessfulLogin
             expr: |
-              sum by (user) (
-                count_over_time(
-                  {namespace="apps",app="jellyfin",container="jellyfin"} 
-                  |~ "Authentication request" 
-                  |~ "succeeded"
-                  | regex "for (?P<user>[a-zA-Z0-9_]+) has succeeded"
-                  [5m]
-                )
-              ) > 0
+              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "succeeded" [5m])) > 0
             for: 0s
             labels:
               severity: info
               service: jellyfin
               alert_type: auth_success
             annotations:
-              summary: "Jellyfin: User {{ $labels.user }} successfully authenticated"
-              description: "Jellyfin: User '{{ $labels.user }}' has successfully logged in ({{ $value }} login(s) in last 5 minutes)"
+              summary: "Jellyfin: Successful authentication detected"
+              description: "Jellyfin: {{ $value }} successful login(s) detected in last 5 minutes. Check Loki logs for username details."
 
           - alert: JellyfinFailedLoginAttempts
             expr: |
-              sum by (user) (
-                count_over_time(
-                  {namespace="apps",app="jellyfin",container="jellyfin"} 
-                  |~ "Authentication request" 
-                  |~ "failed"
-                  | regex "for (?P<user>[a-zA-Z0-9_]+) has failed"
-                  [5m]
-                )
-              ) > 3
+              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "failed" [5m])) > 3
             for: 2m
             labels:
               severity: warning
               service: jellyfin
               alert_type: auth_failures
             annotations:
-              summary: "Jellyfin: Multiple failed login attempts for user {{ $labels.user }}"
-              description: "Jellyfin: User '{{ $labels.user }}' has {{ $value }} failed login attempts in last 5 minutes (threshold: 3)"
+              summary: "Jellyfin: Multiple failed login attempts detected"
+              description: "Jellyfin: {{ $value }} failed login attempts in last 5 minutes (threshold: 3). Check Loki logs for username details."
 
           - alert: JellyfinBruteForceAttack
             expr: |
-              sum by (user) (
-                count_over_time(
-                  {namespace="apps",app="jellyfin",container="jellyfin"} 
-                  |~ "Authentication request" 
-                  |~ "failed"
-                  | regex "for (?P<user>[a-zA-Z0-9_]+) has failed"
-                  [5m]
-                )
-              ) > 10
+              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "failed" [5m])) > 10
             for: 5m
             labels:
               severity: critical
               service: jellyfin
               alert_type: brute_force
             annotations:
-              summary: "Jellyfin: CRITICAL - Brute force attack detected for user {{ $labels.user }}"
-              description: "Jellyfin: User '{{ $labels.user }}' has {{ $value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack"
+              summary: "Jellyfin: CRITICAL - Brute force attack detected"
+              description: "Jellyfin: {{ $value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack. Check Loki logs for username details."
 
