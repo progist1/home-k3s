@@ -147,7 +147,7 @@ data:
 
           - alert: JellyfinFailedLoginAttempts
             expr: |
-              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "failed" [5m])) > 3
+              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "denied" [5m])) > 3
             for: 2m
             labels:
               severity: warning
@@ -159,7 +159,7 @@ data:
 
           - alert: JellyfinBruteForceAttack
             expr: |
-              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "failed" [5m])) > 10
+              sum(count_over_time({namespace="apps",app="jellyfin",container="jellyfin"} |~ "Authentication request" |~ "denied" [5m])) > 10
             for: 5m
             labels:
               severity: critical
