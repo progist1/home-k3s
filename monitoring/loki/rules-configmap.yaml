@@ -139,7 +139,8 @@ data:
                 count_over_time(
                   {namespace="apps",app="jellyfin",container="jellyfin"} 
                   |~ "Authentication request" 
-                  | regex "for (?P<user>\\w+) has succeeded"
+                  |~ "succeeded"
+                  | regex "for (?P<user>[a-zA-Z0-9_]+) has succeeded"
                   [5m]
                 )
               ) > 0
@@ -158,7 +159,8 @@ data:
                 count_over_time(
                   {namespace="apps",app="jellyfin",container="jellyfin"} 
                   |~ "Authentication request" 
-                  | regex "for (?P<user>\\w+) has failed"
+                  |~ "failed"
+                  | regex "for (?P<user>[a-zA-Z0-9_]+) has failed"
                   [5m]
                 )
               ) > 3
@@ -177,7 +179,8 @@ data:
                 count_over_time(
                   {namespace="apps",app="jellyfin",container="jellyfin"} 
                   |~ "Authentication request" 
-                  | regex "for (?P<user>\\w+) has failed"
+                  |~ "failed"
+                  | regex "for (?P<user>[a-zA-Z0-9_]+) has failed"
                   [5m]
                 )
               ) > 10
