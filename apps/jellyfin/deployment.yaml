@@ -27,6 +27,8 @@ spec:
         fsGroup: 1000
         supplementalGroups:
           - 568
+          - 44
+          - 993
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.5
@@ -59,7 +61,6 @@ spec:
               port: 8096
             initialDelaySeconds: 20
             periodSeconds: 30
-
           readinessProbe:
             httpGet:
               path: /health
