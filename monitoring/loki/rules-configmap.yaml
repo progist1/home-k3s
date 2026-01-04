@@ -127,3 +127,66 @@ data:
               summary: "PhotoPrism: CRITICAL - Brute force attack detected"
               description: "PhotoPrism: {{ $value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack"
 
+      # ============================================
+      # Jellyfin Authentication
+      # ============================================
+      - name: jellyfin_auth
+        interval: 1m
+        rules:
+          - alert: JellyfinSuccessfulLogin
+            expr: |
+              sum by (user) (
+                count_over_time(
+                  {namespace="apps",app="jellyfin",container="jellyfin"} 
+                  |~ "Authentication request" 
+                  | regex "for (?P<user>\\w+) has succeeded"
+                  [5m]
+                )
+              ) > 0
+            for: 0s
+            labels:
+              severity: info
+              service: jellyfin
+              alert_type: auth_success
+            annotations:
+              summary: "Jellyfin: User {{ $labels.user }} successfully authenticated"
+              description: "Jellyfin: User '{{ $labels.user }}' has successfully logged in ({{ $value }} login(s) in last 5 minutes)"
+
+          - alert: JellyfinFailedLoginAttempts
+            expr: |
+              sum by (user) (
+                count_over_time(
+                  {namespace="apps",app="jellyfin",container="jellyfin"} 
+                  |~ "Authentication request" 
+                  | regex "for (?P<user>\\w+) has failed"
+                  [5m]
+                )
+              ) > 3
+            for: 2m
+            labels:
+              severity: warning
+              service: jellyfin
+              alert_type: auth_failures
+            annotations:
+              summary: "Jellyfin: Multiple failed login attempts for user {{ $labels.user }}"
+              description: "Jellyfin: User '{{ $labels.user }}' has {{ $value }} failed login attempts in last 5 minutes (threshold: 3)"
+
+          - alert: JellyfinBruteForceAttack
+            expr: |
+              sum by (user) (
+                count_over_time(
+                  {namespace="apps",app="jellyfin",container="jellyfin"} 
+                  |~ "Authentication request" 
+                  | regex "for (?P<user>\\w+) has failed"
+                  [5m]
+                )
+              ) > 10
+            for: 5m
+            labels:
+              severity: critical
+              service: jellyfin
+              alert_type: brute_force
+            annotations:
+              summary: "Jellyfin: CRITICAL - Brute force attack detected for user {{ $labels.user }}"
+              description: "Jellyfin: User '{{ $labels.user }}' has {{ $value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack"
+
