@@ -22,18 +22,18 @@ spec:
     - alert: TraefikHighHttp4xxErrorRateService
       expr: |
         (
-          sum(rate(traefik_service_requests_total{code=~"4.*"}[5m])) by (service)
+          sum(rate(traefik_service_requests_total{code=~"4.*",service!~"gitlab-gitlab-80@kubernetes"}[5m])) by (service)
           /
-          sum(rate(traefik_service_requests_total[5m])) by (service)
+          sum(rate(traefik_service_requests_total{service!~"gitlab-gitlab-80@kubernetes"}[5m])) by (service)
         ) * 100 > 5
         and
-        sum(rate(traefik_service_requests_total[5m])) by (service) > 0.1
+        sum(rate(traefik_service_requests_total{service!~"gitlab-gitlab-80@kubernetes"}[5m])) by (service) > 0.1
       for: 7m
       labels:
         severity: critical
       annotations:
         summary: Traefik high HTTP 4xx error rate service (instance {{ $labels.instance }})
-        description: "Traefik service 4xx error rate is above 5% ({{ $value | humanize }}%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        description: "Traefik service 4xx error rate is above 5% ({{ $value | humanize }}%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}\n  Note: gitlab-gitlab-80@kubernetes excluded due to known KAS 404s in CE"
 
     - alert: TraefikHighHttp5xxErrorRateService
       expr: |
