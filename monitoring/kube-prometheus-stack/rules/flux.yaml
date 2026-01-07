@@ -11,7 +11,10 @@ spec:
     interval: 5s
     rules:
     - alert: FluxKustomizationFailure
-      expr: gotk_resource_info{ready="False", customresource_kind="Kustomization"} > 0
+      expr: |
+        count by (name, exported_namespace) (gotk_resource_info{customresource_kind="Kustomization",ready="False"}) > 0
+        and on(name, exported_namespace)
+        count by (name, exported_namespace) (gotk_resource_info{customresource_kind="Kustomization",ready="True"}) == 0
       for: 15m
       labels:
         severity: warning
