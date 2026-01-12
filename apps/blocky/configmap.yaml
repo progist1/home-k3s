@@ -8,12 +8,11 @@ data:
     upstream:
       default:
         - tcp-tls:dns.quad9.net:853
+        - tcp-tls:common.dot.dns.yandex.net:853
         - tcp-tls:one.one.one.one:853
-        - 9.9.9.9
-        - 1.1.1.1
     bootstrapDns:
-      - tcp+udp:9.9.9.9
       - tcp+udp:1.1.1.1
+      - tcp+udp:77.88.8.8
     
     blocking:
       blackLists:
@@ -68,6 +67,12 @@ data:
         vps.spb: 10.8.0.2
         vps.amsterdam: 10.8.0.3
         vps.yolki: 10.3.0.2
+
+    # Drop AAAA (IPv6) queries so clients fall back to IPv4 (A records).
+    # Blocky v0.28.x docs: https://raw.githubusercontent.com/0xERR0R/blocky/v0.28.2/docs/configuration.md
+    filtering:
+      queryTypes:
+        - AAAA
     
     caching:
       minTime: 5m
