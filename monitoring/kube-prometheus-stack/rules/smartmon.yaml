@@ -96,6 +96,31 @@ spec:
           **Host:** {{ $labels.hostname }}
           **Action:** 💾 Immediate backup recommended!
 
+    # Внимание: SMART недоступен (диск может быть faulted в ZFS)
+    # Это особенно важно для ZFS пулов, где пул может быть ONLINE,
+    # но устройство внутри пула может быть faulted (например, INQUIRY failed)
+    - alert: SmartmonDeviceUnavailable
+      expr: |
+        (
+          smartmon_device_smart_available == 0
+        )
+        * on(disk) group_left
+          smartmon_device_info
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SMART unavailable: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.disk }}{{ end }}"
+        description: |
+          **Device:** {{ $labels.disk }}
+          **Type:** {{ $labels.type }}
+          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}N/A{{ end }}
+          **Serial:** {{ $labels.serial_number }}
+          **Host:** {{ $labels.hostname }}
+          **Issue:** SMART is unavailable (INQUIRY failed or device not responding)
+          **Action:** 🚨 Device may be faulted! Check `zpool status` if this device is in a ZFS pool.
+          **Note:** Even if ZFS pool shows ONLINE, run `zpool status` to check for faulted devices inside the pool.
+
   - name: smartmon-performance
     interval: 30s
     rules:
@@ -306,6 +331,41 @@ spec:
         summary: "Smartmon data staled"
         description: |
           Smartmon staled for {{ $value }} seconds
+
+  - name: smartmon-zfs-integration
+    interval: 30s
+    rules:
+    # Внимание: ZFS пул ONLINE, но есть диски с проблемами SMART
+    # node_exporter не экспортирует метрики для отдельных vdev,
+    # поэтому это правило проверяет наличие проблем через SMART метрики
+    # и предупреждает о возможных проблемах в пулах
+    - alert: ZFSPoolPossibleDeviceIssues
+      expr: |
+        (
+          node_zfs_zpool_state{state="online"} == 1
+        )
+        and on(instance, hostname) (
+          count by (instance, hostname) (
+            smartmon_device_smart_healthy == 0
+            or smartmon_reallocated_sector_ct_raw_value > 10
+            or smartmon_offline_uncorrectable_raw_value > 0
+            or smartmon_current_pending_sector_raw_value > 0
+            or smartmon_device_smart_available == 0
+          ) > 0
+        )
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.zpool }} is ONLINE but disks with SMART issues detected on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.zpool }}
+          **Status:** ONLINE (but may have degraded devices internally)
+          **Host:** {{ $labels.hostname }}
+          **Issue:** One or more disks on this host have SMART errors or SMART is unavailable (device may be faulted)
+          **Action:** ⚠️ Check `zpool status {{ $labels.zpool }}` to verify if any devices are faulted
+          **Note:** Even if pool shows ONLINE, run `zpool status` to check for faulted devices inside the pool.
+          If devices are faulted, replace them or run `zpool clear` after fixing.
 
     # Пишем много на nvme
     - alert: NVMeHighTBWIncrease
