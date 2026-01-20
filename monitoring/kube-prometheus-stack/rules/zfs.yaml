@@ -10,27 +10,27 @@ spec:
   - name: zfs-pool-state
     interval: 30s
     rules:
-    # Критический алерт: пул НЕ online
+    # Критический алерт: пул не в состоянии ONLINE
+    # Охватывает все проблемные состояния: degraded, faulted, unavail, offline, removed, suspended
     - alert: ZFSPoolNotOnline
-      expr: |
-        (
-          node_zfs_zpool_state{state="online"} == 0
-          and on(instance, zpool) (
-            max by (instance, zpool) (node_zfs_zpool_state{state=~"degraded|faulted|unavail|removed"}) == 1
-          )
-        )
-        * on(instance, zpool) group_left(state)
-          max by (instance, zpool, state) (node_zfs_zpool_state{state=~"degraded|faulted|unavail|removed"} == 1)
+      expr: node_zfs_zpool_state{state!="online"} == 1
       for: 1m
       labels:
         severity: critical
       annotations:
-        summary: "ZFS pool {{ $labels.zpool }} is {{ $labels.state }} on {{ $labels.hostname }}"
+        summary: "ZFS pool {{ $labels.zpool }} is {{ $labels.state | upper }} on {{ $labels.hostname }}"
         description: |
           **Pool:** {{ $labels.zpool }}
-          **Status:** {{ $labels.state | title }}
+          **Status:** {{ $labels.state | upper }}
           **Host:** {{ $labels.hostname }}
-          **Action:** ⚠️ Immediate attention required!
+          **Action:** ⚠️ Check `zpool status {{ $labels.zpool }}` immediately!
+          **Note:** 
+          - DEGRADED: Pool functional but redundancy reduced, replace faulted devices
+          - FAULTED: Pool completely unavailable, IMMEDIATE ACTION REQUIRED
+          - UNAVAIL: Pool cannot be opened, check device connections
+          - OFFLINE: Pool was taken offline, check if safe to bring online
+          - REMOVED: Pool was removed, check if intentional
+          - SUSPENDED: Pool is suspended, check system state
 
   - name: zfs-capacity
     interval: 30s
@@ -145,21 +145,44 @@ spec:
   - name: zfs-health-met
     interval: 30s
     rules:
-    # Health метрика от zfs-exporter (если != 0)
-    - alert: ZFSPoolHealthBad
-      expr: |
-        (
-          zfs_pool_health != 0
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes
-      for: 5m
+    # Health метрика от zfs-exporter
+    # 0: ONLINE, 1: DEGRADED, 2: FAULTED, 3: OFFLINE, 4: UNAVAIL, 5: REMOVED, 6: SUSPENDED
+    - alert: ZFSPoolHealthDegraded
+      expr: zfs_pool_health == 1
+      for: 1m
       labels:
         severity: critical
       annotations:
-        summary: "ZFS pool {{ $labels.pool }} health bad on {{ $labels.hostname }}"
+        summary: "ZFS pool {{ $labels.pool }} is DEGRADED (health=1) on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Health:** DEGRADED (value: 1)
+          **Host:** {{ $labels.hostname }}
+          **Action:** ⚠️ Check `zpool status {{ $labels.pool }}` - one or more devices may be faulted or have errors
+
+    - alert: ZFSPoolHealthFaulted
+      expr: zfs_pool_health == 2
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} is FAULTED (health=2) on {{ $labels.hostname }}"
+        description: |
+          **Pool:** {{ $labels.pool }}
+          **Health:** FAULTED (value: 2)
+          **Host:** {{ $labels.hostname }}
+          **Action:** 🚨 IMMEDIATE ACTION REQUIRED! Pool is completely unavailable. Check `zpool status {{ $labels.pool }}`
+
+    - alert: ZFSPoolHealthUnavailable
+      expr: zfs_pool_health >= 3
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} health is {{ $value }} (OFFLINE/UNAVAIL/REMOVED/SUSPENDED) on {{ $labels.hostname }}"
         description: |
           **Pool:** {{ $labels.pool }}
           **Health value:** {{ $value }}
           **Host:** {{ $labels.hostname }}
-          **Action:** 🚨 Check `zpool status` immediately!
+          **Health codes:** 3=OFFLINE, 4=UNAVAIL, 5=REMOVED, 6=SUSPENDED
+          **Action:** 🚨 Check `zpool status {{ $labels.pool }}` immediately!
