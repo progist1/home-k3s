@@ -18,10 +18,10 @@ spec:
       labels:
         severity: critical
       annotations:
-        summary: "ZFS pool {{ $labels.zpool }} is {{ $labels.state | upper }} on {{ $labels.hostname }}"
+        summary: "ZFS pool {{ $labels.zpool }} is {{ $labels.state }} on {{ $labels.hostname }}"
         description: |
           **Pool:** {{ $labels.zpool }}
-          **Status:** {{ $labels.state | upper }}
+          **Status:** {{ $labels.state }}
           **Host:** {{ $labels.hostname }}
           **Action:** ⚠️ Check `zpool status {{ $labels.zpool }}` immediately!
           **Note:** 
