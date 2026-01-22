@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: mysqldump
-              image: mysql:8.4.7
+              image: mysql:8.4.8
               command:
                 - /bin/sh
                 - -c
