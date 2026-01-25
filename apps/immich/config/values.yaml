@@ -79,11 +79,11 @@ server:
   resources:
     requests:
       cpu: "500m"
-      memory: "1Gi"
+      memory: "2Gi"
       gpu.intel.com/i915: "1"
     limits:
       cpu: "2000m"
-      memory: "4Gi"
+      memory: "8Gi"
       gpu.intel.com/i915: "1"
   nodeSelector:
     node.hardware.gpu: intel-igpu
