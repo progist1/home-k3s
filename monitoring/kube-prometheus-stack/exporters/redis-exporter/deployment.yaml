@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: redis-exporter
-          image: oliver006/redis_exporter:v1.80.1
+          image: oliver006/redis_exporter:v1.80.2
           ports:
             - containerPort: 9121
           env:
