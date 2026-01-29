@@ -96,7 +96,7 @@ machine-learning:
   enabled: true
   image:
     repository: ghcr.io/immich-app/immich-machine-learning
-    tag: v2.5.0
+    tag: v2.5.2
     pullPolicy: IfNotPresent
   persistence:
     cache:
