@@ -17,7 +17,7 @@ spec:
         fsGroup: 568
       containers:
         - name: transmission
-          image: linuxserver/transmission:4.0.6
+          image: linuxserver/transmission:4.1.0
           ports:
             - containerPort: 9091 # Web UI
             - containerPort: 51413 # TCP/UDP peer
