@@ -70,7 +70,7 @@ spec:
             - name: REMOTE_IP_VALVE_ENABLED
               value: "true"
             - name: PROXY_ALLOWED_IPS_REGEX
-              value: "10\\.0\\.0\\.0/8|10\\.42\\.0\\.0/16|10\\.43\\.0\\.0/16"
+              value: "10\\..*|192\\.168\\..*|172\\.(1[6-9]|2[0-9]|3[0-1])\\..*"
           resources:
             requests:
               cpu: "50m"
