@@ -75,6 +75,8 @@ spec:
               value: "false"
             - name: MYSQL_ENABLED
               value: "true"
+            - name: EXTENSION_PRIORITY
+              value: "openid"
           resources:
             requests:
               cpu: "50m"
