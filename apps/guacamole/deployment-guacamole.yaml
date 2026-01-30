@@ -69,8 +69,8 @@ spec:
                   key: openid-redirect-uri
             - name: REMOTE_IP_VALVE_ENABLED
               value: "true"
-            - name: PROXY_ALLOWED_IPS_REGEX
-              value: "10\\..*|192\\.168\\..*|172\\.(1[6-9]|2[0-9]|3[0-1])\\..*"
+            - name: OPENID_ENABLED
+              value: "true"
           resources:
             requests:
               cpu: "50m"
