@@ -10,7 +10,7 @@ metadata:
     metallb.universe.tf/address-pool: traefik-pool
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   ports:
     - name: web
       port: 80
