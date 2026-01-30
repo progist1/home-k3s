@@ -71,6 +71,10 @@ spec:
               value: "true"
             - name: OPENID_ENABLED
               value: "true"
+            - name: POSTGRESQL_ENABLED
+              value: "false"
+            - name: MYSQL_ENABLED
+              value: "true"
           resources:
             requests:
               cpu: "50m"
