@@ -8,6 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd,infra-guacamole-rewrite@kubernetescrd
+    traefik.ingress.kubernetes.io/forwarded-headers-trusted-ip: "10.0.0.0/8,10.42.0.0/16,10.43.0.0/16"
 spec:
   rules:
   - host: gua.progist.ru
