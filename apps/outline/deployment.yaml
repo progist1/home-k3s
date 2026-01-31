@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outline
+  namespace: apps
+  labels:
+    app: outline
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: outline
+  template:
+    metadata:
+      labels:
+        app: outline
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: outline
+          image: ghcr.io/flameshikari/outline-ru:1.4.0
+          imagePullPolicy: IfNotPresent
+          command: ["node", "build/server/index.js"]
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret-key
+                  name: outline-secrets
+            - name: UTILS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: utils-secret-key
+                  name: outline-secrets
+            - name: PORT
+              value: "3000"
+            - name: DEFAULT_LANGUAGE
+              value: en_US
+            - name: URL
+              value: https://outline.home
+            - name: RATE_LIMITER_ENABLED
+              value: "false"
+            - name: ENABLE_UPDATES
+              value: "false"
+            - name: TELEMETRY
+              value: "false"
+            - name: FORCE_HTTPS
+              value: "true"
+            - name: WEB_CONCURRENCY
+              value: "1"
+            - name: LOG_LEVEL
+              value: info
+            # PostgreSQL
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-url
+                  name: outline-secrets
+            - name: PGSSLMODE
+              value: disable
+            # Redis
+            - name: REDIS_URL
+              value: redis://redis.apps.svc.cluster.local:6379
+            # OIDC 
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: oidc-client-secret
+                  name: outline-secrets
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: oidc-client-id
+                  name: outline-secrets
+            - name: OIDC_AUTH_URI
+              value: https://auth.progist.ru/application/o/authorize/
+            - name: OIDC_TOKEN_URI
+              value: https://auth.progist.ru/application/o/token/
+            - name: OIDC_USERINFO_URI
+              value: https://auth.progist.ru/application/o/userinfo/
+            - name: OIDC_LOGOUT_URI
+              value: https://auth.progist.ru/application/o/outline/end-session/
+            - name: OIDC_USERNAME_CLAIM
+              value: preferred_username
+            - name: OIDC_DISPLAY_NAME
+              value: authentik
+            - name: OIDC_SCOPES
+              value: openid profile email
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/outline/data
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: outline-data-pvc
