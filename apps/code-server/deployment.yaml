@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: code-server
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: code-server
+          image: codercom/code-server:4.108.2
+          args:
+            - --bind-addr
+            - 0.0.0.0:8080
+            - --auth
+            - none
+            - /home/coder
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: home
+              mountPath: /home/coder
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+      volumes:
+        - name: home
+          persistentVolumeClaim:
+            claimName: code-server-home-pvc

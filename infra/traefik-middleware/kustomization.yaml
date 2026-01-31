@@ -1,6 +1,7 @@
 resources:
   # Базовые middleware
   - redirect-to-https.yaml
+  - authentik-forward-auth.yaml
   - nextcloud.yaml
   
   # Rate limiting middleware
