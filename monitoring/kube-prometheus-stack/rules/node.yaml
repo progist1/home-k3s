@@ -40,9 +40,9 @@ spec:
     - alert: NodeSystemCPUAnomaly
       expr: |
         (
-          avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~".*"}[5m])) * 100
+          avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~"bigb.home:.*"}[5m])) * 100
         ) > (
-          avg_over_time((avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~".*"}[5m])) * 100)[1d:5m]) * 2
+          avg_over_time((avg by (instance) (rate(node_cpu_seconds_total{mode="system",instance=~"bigb.home:.*"}[5m])) * 100)[1d:5m]) * 2
         )
       for: 15m
       labels:
@@ -54,9 +54,9 @@ spec:
     - alert: NodeCPUAnomaly
       expr: |
         (
-          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle",instance=~"bigb.home:.*"}[5m])) * 100)
         ) > (
-          avg_over_time((100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100))[1d:5m]) * 1.5
+          avg_over_time((100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle",instance=~"bigb.home:.*"}[5m])) * 100))[1d:5m]) * 1.5
         )
       for: 15m
       labels:

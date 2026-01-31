@@ -2,6 +2,6 @@ apiVersion: v2
 name: pvc-archiver
 description: "Tar a PVC into /backups/<name>.tar.gz on a destination PVC"
 type: application
-version: 0.1.2
+version: 0.1.3
 appVersion: "1.0"
 kubeVersion: ">=1.25.0"
