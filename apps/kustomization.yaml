@@ -5,6 +5,10 @@ resources:
   - filebrowser
   - vikunja
   - memos
+  - mealie
+  - actual-budget
+  - stirling-pdf
+  - prowlarr
   - wizarr
   - jellyseerr
   - homer

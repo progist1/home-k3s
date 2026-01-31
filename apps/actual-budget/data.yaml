@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: actual-budget-data-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/actual-budget/data
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-budget-data-pvc
+  namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
+    backup-offsite: "true"
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: actual-budget-data-pv
