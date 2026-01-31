@@ -20,7 +20,6 @@ spec:
         - share.home:443
         - start.home:443
         - photos.home:443
-        - jackett.home:443
         - watch.home:443
         - jellyseerr.home:443
         - mail.home:443
