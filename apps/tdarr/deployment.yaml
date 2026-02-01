@@ -38,8 +38,8 @@ spec:
               value: "http://tdarr.apps.svc.cluster.local:8266"
             - name: transcodegpuWorkers
               value: "1"
-            - name: healthcheckgpuWorkers
-              value: "1"
+            - name: healthcheckcpuWorkers
+              value: "5"
           ports:
             - containerPort: 8267
           volumeMounts:
