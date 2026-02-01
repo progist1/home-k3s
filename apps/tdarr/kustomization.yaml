@@ -5,6 +5,6 @@ resources:
   - node-data.yaml
   - node-temp.yaml
   - deployment-server.yaml
-  - deployment.yaml
+  - statefulset-node.yaml
   - service.yaml
   - ingress-internal.yaml

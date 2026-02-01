@@ -14,3 +14,18 @@ spec:
       port: 8266
       targetPort: 8266
   type: ClusterIP
+---
+# Headless Service для StatefulSet tdarr-node (стабильный DNS: tdarr-node-0.tdarr-node.apps.svc.cluster.local)
+apiVersion: v1
+kind: Service
+metadata:
+  name: tdarr-node
+  namespace: apps
+spec:
+  clusterIP: None
+  selector:
+    app: tdarr-node
+  ports:
+    - name: node
+      port: 8267
+      targetPort: 8267

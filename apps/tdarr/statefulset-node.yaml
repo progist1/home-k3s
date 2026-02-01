@@ -1,10 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: tdarr-node
   namespace: apps
 spec:
+  serviceName: tdarr-node
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
   selector:
     matchLabels:
       app: tdarr-node
@@ -33,7 +38,9 @@ spec:
             - name: inContainer
               value: "true"
             - name: nodeName
-              value: tdarr-node-gpu
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: serverURL
               value: "http://tdarr.apps.svc.cluster.local:8266"
             - name: transcodegpuWorkers
@@ -61,7 +68,7 @@ spec:
               memory: "512Mi"
               gpu.intel.com/i915: "1"
             limits:
-              cpu: "4"
+              cpu: "8"
               memory: "4Gi"
               gpu.intel.com/i915: "1"
           livenessProbe:
