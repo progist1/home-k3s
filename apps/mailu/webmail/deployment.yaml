@@ -22,7 +22,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
       containers:
-      - image: ghcr.io/mailu/webmail:2024.06.46
+      - image: ghcr.io/mailu/webmail:2024.06.47
         env:
         - name: LOG_LEVEL
           value: WARNING
