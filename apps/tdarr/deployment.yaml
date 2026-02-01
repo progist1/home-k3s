@@ -23,14 +23,7 @@ spec:
           value: intel-igpu
           effect: NoSchedule
 
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        supplementalGroups:
-          - 44   # render (доступ к /dev/dri)
-          - 108
-
+      # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:
         - name: tdarr-node
           image: ghcr.io/haveagitgat/tdarr_node:2.58.02

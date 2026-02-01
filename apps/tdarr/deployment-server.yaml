@@ -13,10 +13,7 @@ spec:
       labels:
         app: tdarr-server
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+      # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:
         - name: tdarr-server
           image: ghcr.io/haveagitgat/tdarr:2.58.02
