@@ -60,22 +60,18 @@ spec:
               memory: "4Gi"
               gpu.intel.com/i915: "1"
           livenessProbe:
-            # Node не отдаёт HTTP; проверяем, что процесс жив
-            exec:
-              command:
-                - /bin/sh
-                - -ec
-                - "pgrep -x node || exit 1"
-            initialDelaySeconds: 60
+            # Node не отдаёт HTTP; порт 8267 слушает для связи с сервером
+            tcpSocket:
+              port: 8267
+            initialDelaySeconds: 90
             periodSeconds: 30
+            timeoutSeconds: 5
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -ec
-                - "pgrep -x node || exit 1"
-            initialDelaySeconds: 30
+            tcpSocket:
+              port: 8267
+            initialDelaySeconds: 45
             periodSeconds: 15
+            timeoutSeconds: 5
 
       volumes:
         - name: data

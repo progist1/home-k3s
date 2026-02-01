@@ -57,16 +57,18 @@ spec:
               memory: "512Mi"
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/v2/status
               port: 8265
             initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/v2/status
               port: 8265
             initialDelaySeconds: 20
             periodSeconds: 15
+            timeoutSeconds: 5
       volumes:
         - name: data
           persistentVolumeClaim:
