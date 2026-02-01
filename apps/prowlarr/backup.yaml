@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pvc-archiver-prowlarr
+  namespace: apps
+spec:
+  interval: 10m
+  chart:
+    spec:
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      chart: charts/pvc-archiver
+  values:
+    name: prowlarr
+    archiveName: prowlarr
+    sourcePVC: prowlarr-config-pvc
+    destPVC: backups-pvc
+    schedule: "30 5 * * *"
+    exclude: "**/logs/**;**/log/**;**/*.log;**/cache/**;**/.cache/**;**/tmp/**"
+    securityContext:
+      fsGroup: 568
+      supplementalGroups: [568]
