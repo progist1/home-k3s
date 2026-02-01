@@ -4,7 +4,7 @@ metadata:
   name: tdarr-node
   namespace: apps
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: tdarr-node
@@ -13,7 +13,7 @@ spec:
       labels:
         app: tdarr-node
     spec:
-      # Размещение ТОЛЬКО на GPU-ноде (Intel i915 / QSV)
+      # Размещение ТОЛЬКО на GPU-ноде (Intel i915 / QSV); несколько подов делят GPU через sharedDevNum
       nodeSelector:
         node.hardware.gpu: intel-igpu
         node.workload.class: gpu
@@ -22,6 +22,26 @@ spec:
           operator: Equal
           value: intel-igpu
           effect: NoSchedule
+
+      # Инициализация под-специфичных каталогов на общих PVC (configs, logs, temp)
+      initContainers:
+        - name: ensure-dirs
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /data/configs/$(POD_NAME) /data/logs/$(POD_NAME) /temp/$(POD_NAME)
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: temp
+              mountPath: /temp
 
       # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:
@@ -32,22 +52,30 @@ spec:
               value: Europe/Moscow
             - name: inContainer
               value: "true"
+            # Уникальное имя ноды на реплику (Tdarr Server различает ноды по имени)
             - name: nodeName
-              value: tdarr-node-gpu
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             # Подключение к Tdarr Server в кластере (порт 8266 — для нод)
             - name: serverURL
               value: "http://tdarr.apps.svc.cluster.local:8266"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           ports:
             - containerPort: 8267
           volumeMounts:
             - name: data
               mountPath: /app/configs
-              subPath: configs
+              subPathExpr: configs/$(POD_NAME)
             - name: data
               mountPath: /app/logs
-              subPath: logs
+              subPathExpr: logs/$(POD_NAME)
             - name: temp
               mountPath: /temp
+              subPathExpr: $(POD_NAME)
             - name: media
               mountPath: /media
           resources:
