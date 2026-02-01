@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tdarr-node
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tdarr-node
+  template:
+    metadata:
+      labels:
+        app: tdarr-node
+    spec:
+      # Размещение ТОЛЬКО на GPU-ноде (Intel i915 / QSV)
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+        node.workload.class: gpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
+
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        supplementalGroups:
+          - 44   # render (доступ к /dev/dri)
+          - 108
+
+      containers:
+        - name: tdarr-node
+          image: ghcr.io/haveagitgat/tdarr_node:2.58.02
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: inContainer
+              value: "true"
+            - name: nodeName
+              value: tdarr-node-gpu
+            # Подключение к Tdarr Server в кластере (порт 8266 — для нод)
+            - name: serverURL
+              value: "http://tdarr.apps.svc.cluster.local:8266"
+          ports:
+            - containerPort: 8267
+          volumeMounts:
+            - name: data
+              mountPath: /app/configs
+              subPath: configs
+            - name: data
+              mountPath: /app/logs
+              subPath: logs
+            - name: temp
+              mountPath: /temp
+            - name: media
+              mountPath: /media
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+              gpu.intel.com/i915: "1"
+            limits:
+              cpu: "4"
+              memory: "4Gi"
+              gpu.intel.com/i915: "1"
+          livenessProbe:
+            # Node не отдаёт HTTP; проверяем, что процесс жив
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - "pgrep -x node || exit 1"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - "pgrep -x node || exit 1"
+            initialDelaySeconds: 30
+            periodSeconds: 15
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tdarr-node-data-pvc
+        - name: temp
+          persistentVolumeClaim:
+            claimName: tdarr-node-temp-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: tdarr-server-media-pvc

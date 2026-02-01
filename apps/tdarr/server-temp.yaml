@@ -1,0 +1,29 @@
+# Tdarr Server: кэш транскодинга /temp — Main (много места, не бэкапим)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tdarr-server-temp-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Main/k3s-data/tdarr-server-temp
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tdarr-server-temp-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: tdarr-server-temp-pv

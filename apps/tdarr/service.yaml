@@ -1,10 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tdarr-proxy
+  name: tdarr
   namespace: apps
 spec:
+  selector:
+    app: tdarr-server
   ports:
-  - port: 80
-    targetPort: 80
-  clusterIP: None
+    - name: http
+      port: 80
+      targetPort: 8265
+    - name: nodes
+      port: 8266
+      targetPort: 8266
+  type: ClusterIP

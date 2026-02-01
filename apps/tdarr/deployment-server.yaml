@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tdarr-server
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tdarr-server
+  template:
+    metadata:
+      labels:
+        app: tdarr-server
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: tdarr-server
+          image: ghcr.io/haveagitgat/tdarr:2.58.02
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: serverIP
+              value: "0.0.0.0"
+            - name: serverPort
+              value: "8266"
+            - name: webUIPort
+              value: "8265"
+            # Отключить встроенную ноду в контейнере Server (нода отдельно — tdarr-node).
+            - name: internalNode
+              value: "false"
+          ports:
+            - containerPort: 8265
+              name: http
+            - containerPort: 8266
+              name: nodes
+          volumeMounts:
+            - name: data
+              mountPath: /app/server
+              subPath: server
+            - name: data
+              mountPath: /app/configs
+              subPath: configs
+            - name: data
+              mountPath: /app/logs
+              subPath: logs
+            - name: temp
+              mountPath: /temp
+            - name: media
+              mountPath: /media
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8265
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8265
+            initialDelaySeconds: 20
+            periodSeconds: 15
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tdarr-server-data-pvc
+        - name: temp
+          persistentVolumeClaim:
+            claimName: tdarr-server-temp-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: tdarr-server-media-pvc

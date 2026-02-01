@@ -1,0 +1,29 @@
+# Tdarr Node: кэш транскодинга /temp — Main (много места, I/O при транскоде)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tdarr-node-temp-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Main/k3s-data/tdarr-node-temp
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tdarr-node-temp-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Gi
+  volumeName: tdarr-node-temp-pv

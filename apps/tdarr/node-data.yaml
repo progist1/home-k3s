@@ -1,0 +1,33 @@
+# Tdarr Node: конфиги, логи — Fast
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tdarr-node-data-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/tdarr-node
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tdarr-node-data-pvc
+  namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: tdarr-node-data-pv

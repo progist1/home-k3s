@@ -1,0 +1,29 @@
+# Медиа-библиотека (тот же путь, что у Sonarr/Radarr/Jellyfin — для транскодинга)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tdarr-server-media-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 12Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Unsafe/Media
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tdarr-server-media-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 12Ti
+  volumeName: tdarr-server-media-pv

@@ -1,4 +1,10 @@
 resources:
+  - server-data.yaml
+  - server-temp.yaml
+  - server-media.yaml
+  - node-data.yaml
+  - node-temp.yaml
+  - deployment-server.yaml
+  - deployment.yaml
   - service.yaml
-  - endpoints.yaml
   - ingress-internal.yaml
