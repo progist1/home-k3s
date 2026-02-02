@@ -54,7 +54,7 @@ spec:
               memory: "128Mi"
             limits:
               cpu: "2"
-              memory: "512Mi"
+              memory: "2Gi"
           livenessProbe:
             httpGet:
               path: /api/v2/status
