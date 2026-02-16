@@ -90,7 +90,7 @@ alertmanager:
         # --- internal noise ---
         - matchers:
             - alertname="Watchdog"
-          receiver: null
+          receiver: "null"
 
     receivers:
 
