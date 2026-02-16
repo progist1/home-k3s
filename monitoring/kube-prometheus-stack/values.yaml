@@ -7,11 +7,28 @@ crds:
     activeDeadlineSeconds: 600
 
 prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: root-ca-issuer
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+      traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd,infra-authentik-forward-auth@kubernetescrd
+    hosts:
+      - prometheus.home
+    tls:
+      - hosts:
+          - prometheus.home
+        secretName: prometheus-internal-tls
+
   prometheusSpec:
+    externalUrl: https://prometheus.home
+    routePrefix: /
     query:
       lookbackDelta: 2h
     replicas: 1
-    enableAdminAPI: true
+    enableAdminAPI: false
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -111,9 +128,6 @@ alertmanager:
       {{- end }}
       {{- end }}
   config:
-    templates:
-    - /etc/alertmanager/config/*.tmpl
-
     global:
       resolve_timeout: 5m
     route:
@@ -185,6 +199,7 @@ alertmanager:
       - name: "null"
 
   alertmanagerSpec:
+    externalUrl: https://alerts.home
     replicas: 1
     storage:
       volumeClaimTemplate:
@@ -206,8 +221,6 @@ alertmanager:
       runAsUser: 1000
       runAsGroup: 1000
       fsGroup: 1000
-    configMaps:
-      - alertmanager-templates
 
   ingress:
     enabled: true
