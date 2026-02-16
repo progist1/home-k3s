@@ -60,28 +60,49 @@ alertmanager:
       resolve_timeout: 5m
     route:
       receiver: 'telegram'
-      group_by: ['alertname']
+      group_by: ['alertname', 'namespace']
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 2h
       routes:
-        # InfoInhibitor должен идти в null receiver, чтобы не шуметь
-        - match:
-            alertname: InfoInhibitor
-          receiver: 'null'
-    # Подавление info-алертов когда активен InfoInhibitor
-    inhibit_rules:
-      - source_match:
-          alertname: InfoInhibitor
-        target_match:
-          severity: info
-        equal: ['namespace']
+
+        # --- CRITICAL ---
+        - matchers:
+            - severity="critical"
+          receiver: critical
+          continue: false
+
+        # --- WARNING ---
+        - matchers:
+            - severity="warning"
+          receiver: telegram
+          continue: false
+
+        # --- INFO (silent) ---
+        - matchers:
+            - severity="info"
+          receiver: info
+          continue: false
+
+        # --- internal noise ---
+        - matchers:
+            - alertname="Watchdog"
+          receiver: null
+
     receivers:
-      - name: 'telegram'
+
+      # normal alerts
+      - name: telegram
         telegram_configs:
           - bot_token: 'redacted'
             chat_id: 'redacted'
-      - name: 'email'
+
+      # critical = telegram + email
+      - name: critical
+        telegram_configs:
+          - bot_token: 'redacted'
+            chat_id: 'redacted'
+
         email_configs:
           - to: progist11@gmail.com
             from: redacted
@@ -89,7 +110,15 @@ alertmanager:
             auth_username: redacted
             auth_password: redacted
             require_tls: true
-      - name: 'null'
+
+      # info alerts (silent telegram)
+      - name: info
+        telegram_configs:
+          - bot_token: 'redacted'
+            chat_id: 'redacted'
+            disable_notifications: true
+
+      - name: null
 
   alertmanagerSpec:
     replicas: 1

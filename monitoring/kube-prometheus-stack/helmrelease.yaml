@@ -17,22 +17,51 @@ spec:
     - kind: ConfigMap
       name: kps-values
       valuesKey: values.yaml
+
+    # telegram (warning/default)
     - kind: Secret
       name: kps-secrets
       valuesKey: telegram-bot-token
       targetPath: alertmanager.config.receivers[0].telegram_configs[0].bot_token
+
     - kind: Secret
       name: kps-secrets
       valuesKey: telegram-chat-id
       targetPath: alertmanager.config.receivers[0].telegram_configs[0].chat_id
+
+    # critical telegram uses same token
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: telegram-bot-token
+      targetPath: alertmanager.config.receivers[1].telegram_configs[0].bot_token
+
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: telegram-chat-id
+      targetPath: alertmanager.config.receivers[1].telegram_configs[0].chat_id
+
+    # info telegram (silent)
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: telegram-bot-token
+      targetPath: alertmanager.config.receivers[2].telegram_configs[0].bot_token
+
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: telegram-chat-id
+      targetPath: alertmanager.config.receivers[2].telegram_configs[0].chat_id
+
+    # email
     - kind: Secret
       name: kps-secrets
       valuesKey: smtp-sender
       targetPath: alertmanager.config.receivers[1].email_configs[0].from
+
     - kind: Secret
       name: kps-secrets
       valuesKey: smtp-username
       targetPath: alertmanager.config.receivers[1].email_configs[0].auth_username
+
     - kind: Secret
       name: kps-secrets
       valuesKey: smtp-password
