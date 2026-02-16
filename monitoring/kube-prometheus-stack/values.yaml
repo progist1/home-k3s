@@ -89,13 +89,13 @@ alertmanager:
 
       {{/* ---------------- MAIN MESSAGE ---------------- */}}
       {{ define "telegram.message" -}}
-      {{ template "tg.icon" . }} <b>{{ template "tg.escape" .CommonLabels.alertname }}</b>
-
       {{- if eq .Status "firing" }}
       🔥 <b>пу-пу-пу</b>
       {{- else }}
       ✅ <b>всё ок</b>
       {{- end }}
+
+      {{ template "tg.icon" . }} <b>{{ template "tg.escape" .CommonLabels.alertname }}</b>
 
       {{- range .Alerts }}
 
@@ -681,6 +681,7 @@ prometheusOperator:
 
 defaultRules:
   disabled:
+    InfoInhibitor: true
     KubeControllerManagerDown: true
     KubeSchedulerDown: true
     KubeProxyDown: true
