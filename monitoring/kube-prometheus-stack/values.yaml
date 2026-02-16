@@ -57,9 +57,9 @@ alertmanager:
   enabled: true
   templateFiles:
     telegram.tmpl: |
-      {{/* ---------------- ESCAPE ---------------- */}}
+      {{/* ---------------- ESCAPE (HTML) ---------------- */}}
       {{ define "tg.escape" -}}
-      {{- reReplaceAll "([_*`])" "\\\\$1" . -}}
+      {{- reReplaceAll "&" "&amp;" . | reReplaceAll "<" "&lt;" | reReplaceAll ">" "&gt;" -}}
       {{- end }}
 
       {{/* ---------------- SEVERITY ICON ---------------- */}}
@@ -72,12 +72,12 @@ alertmanager:
 
       {{/* ---------------- MAIN MESSAGE ---------------- */}}
       {{ define "telegram.message" -}}
-      {{ template "tg.icon" . }} *{{ template "tg.escape" .CommonLabels.alertname }}*
+      {{ template "tg.icon" . }} <b>{{ template "tg.escape" .CommonLabels.alertname }}</b>
 
       {{- if eq .Status "firing" }}
-      🔥 *пу-пу-пу*
+      🔥 <b>пу-пу-пу</b>
       {{- else }}
-      ✅ *всё ок*
+      ✅ <b>всё ок</b>
       {{- end }}
 
       {{- range .Alerts }}
@@ -91,24 +91,22 @@ alertmanager:
       {{- end }}
 
       {{- if .Labels.instance }}
-      🖥 Хост: `{{ template "tg.escape" .Labels.instance }}`
+      🖥 Хост: <code>{{ template "tg.escape" .Labels.instance }}</code>
       {{- end }}
 
       {{- if .Labels.namespace }}
-      📦 Namespace: `{{ template "tg.escape" .Labels.namespace }}`
+      📦 Namespace: <code>{{ template "tg.escape" .Labels.namespace }}</code>
       {{- end }}
 
       {{- if .Labels.pod }}
-      📦 Pod: `{{ template "tg.escape" .Labels.pod }}`
+      📦 Pod: <code>{{ template "tg.escape" .Labels.pod }}</code>
       {{- end }}
 
       {{- if .Annotations.runbook_url }}
-      📘 Runbook:
-      {{ .Annotations.runbook_url }}
+      📘 <a href="{{ .Annotations.runbook_url }}">Runbook</a>
       {{- end }}
 
-      🔎 Источник:
-      {{ .GeneratorURL }}
+      🔎 <a href="{{ .GeneratorURL }}">Источник</a>
 
       {{- end }}
       {{- end }}
@@ -156,7 +154,7 @@ alertmanager:
         telegram_configs:
           - bot_token: 'redacted'
             chat_id: 'redacted'
-            parse_mode: Markdown
+            parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
 
       # critical = telegram + email
@@ -164,7 +162,7 @@ alertmanager:
         telegram_configs:
           - bot_token: 'redacted'
             chat_id: 'redacted'
-            parse_mode: Markdown
+            parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
 
         email_configs:
@@ -181,7 +179,7 @@ alertmanager:
           - bot_token: 'redacted'
             chat_id: 'redacted'
             disable_notifications: true
-            parse_mode: Markdown
+            parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
 
       - name: "null"
