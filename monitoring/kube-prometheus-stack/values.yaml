@@ -37,8 +37,10 @@ prometheus:
           selector:
             matchLabels:
               app.kubernetes.io/name: prometheus
-    retention: "1y"
-    retentionSize: "48GB"
+    retention: "180d"
+    retentionSize: "35GB"
+    walCompression: true
+    enforcedSampleLimit: 75000
     resources:
       requests:
         cpu: "200m"
@@ -496,6 +498,9 @@ kube-state-metrics:
       - sourceLabels: ["__name__"]
         regex: 'kube_(pod_status_phase|pod_status_ready|deployment_status_replicas_available|node_status_ready|persistentvolumeclaim_status_phase)'
         action: keep
+      - action: labeldrop
+        regex: '(revision|chart_version|artifact|endpoint_id)'
+
   tolerations:
     - key: "node.hardware.gpu"
       operator: "Equal"
@@ -602,13 +607,26 @@ coreDns:
 kubelet:
   serviceMonitor:
     enabled: true
+    metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'kubelet_.*_bucket'
+        action: drop
+      - sourceLabels: ["__name__"]
+        regex: 'kubelet_runtime_.*'
+        action: drop
+      - sourceLabels: ["__name__"]
+        regex: 'container_.*'
+        action: drop
+      - sourceLabels: ["__name__"]
+        regex: 'storage_operation_.*'
+        action: drop
 
 kubeApiServer:
   serviceMonitor:
     enabled: true
     metricRelabelings:
       - sourceLabels: ["__name__"]
-        regex: '.*_bucket$|.*_sum$|.*_count$|.*_total$'
+        regex: '.*_bucket$|.*_sum$|.*_count$'
         action: drop
       - sourceLabels: ["__name__"]  
         regex: 'apiserver_storage_|etcd_|workqueue_'
