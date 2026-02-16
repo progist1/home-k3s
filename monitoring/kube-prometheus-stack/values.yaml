@@ -56,6 +56,9 @@ prometheus:
 alertmanager:
   enabled: true
   config:
+    templates:
+    - /etc/alertmanager/config/*.tmpl
+
     global:
       resolve_timeout: 5m
     route:
@@ -96,12 +99,16 @@ alertmanager:
         telegram_configs:
           - bot_token: 'redacted'
             chat_id: 'redacted'
+            parse_mode: MarkdownV2
+            message: '{{ template "telegram.message" . }}'
 
       # critical = telegram + email
       - name: critical
         telegram_configs:
           - bot_token: 'redacted'
             chat_id: 'redacted'
+            parse_mode: MarkdownV2
+            message: '{{ template "telegram.message" . }}'
 
         email_configs:
           - to: progist11@gmail.com
@@ -117,6 +124,8 @@ alertmanager:
           - bot_token: 'redacted'
             chat_id: 'redacted'
             disable_notifications: true
+            parse_mode: MarkdownV2
+            message: '{{ template "telegram.message" . }}'
 
       - name: null
 
@@ -142,6 +151,8 @@ alertmanager:
       runAsUser: 1000
       runAsGroup: 1000
       fsGroup: 1000
+    configMaps:
+      - alertmanager-templates
 
   ingress:
     enabled: true

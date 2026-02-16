@@ -15,3 +15,4 @@ resources:
   - rules
   - data.yaml
   - pushgateway
+  - am-telegram.yaml

@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-templates
+  namespace: monitoring
+data:
+  telegram.tmpl: |
+    {{/* ---------------- ESCAPE ---------------- */}}
+    {{ define "tg.escape" -}}
+    {{- reReplaceAll "([_\\*\\[\\]\\(\\)~`>#+\\-=|{}.!])" "\\\\$1" . -}}
+    {{- end }}
+
+    {{/* ---------------- SEVERITY ICON ---------------- */}}
+    {{ define "tg.icon" -}}
+    {{- if eq .CommonLabels.severity "critical" -}}🚨
+    {{- else if eq .CommonLabels.severity "warning" -}}⚠️
+    {{- else -}}ℹ️
+    {{- end -}}
+    {{- end }}
+
+    {{/* ---------------- MAIN MESSAGE ---------------- */}}
+    {{ define "telegram.message" }}
+
+    {{ template "tg.icon" . }}
+    *{{ template "tg.escape" .CommonLabels.alertname }}*
+
+    {{ if eq .Status "firing" }}
+    🔥 *пу-пу-пу*
+    {{ else }}
+    ✅ *всё ок*
+    {{ end }}
+
+    {{ range .Alerts }}
+
+    {{ if .Annotations.summary }}
+    📝 {{ template "tg.escape" .Annotations.summary }}
+    {{ end }}
+
+    {{ if .Annotations.description }}
+    {{ template "tg.escape" .Annotations.description }}
+    {{ end }}
+
+    {{ if .Labels.instance }}
+    🖥 Хост: `{{ template "tg.escape" .Labels.instance }}`
+    {{ end }}
+
+    {{ if .Labels.namespace }}
+    📦 Namespace: `{{ template "tg.escape" .Labels.namespace }}`
+    {{ end }}
+
+    {{ if .Labels.pod }}
+    📦 Pod: `{{ template "tg.escape" .Labels.pod }}`
+    {{ end }}
+
+    {{ if .Annotations.runbook_url }}
+    📘 Runbook:
+    {{ .Annotations.runbook_url }}
+    {{ end }}
+
+    🔎 Источник:
+    {{ .GeneratorURL }}
+
+    ---
+    {{ end }}
+
+    {{ end }}
