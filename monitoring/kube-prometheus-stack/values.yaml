@@ -131,6 +131,14 @@ alertmanager:
 
   alertmanagerSpec:
     replicas: 1
+    volumes:
+    - name: templates
+      configMap:
+        name: alertmanager-templates
+
+    volumeMounts:
+    - name: templates
+      mountPath: /etc/alertmanager/config
     storage:
       volumeClaimTemplate:
         metadata:
