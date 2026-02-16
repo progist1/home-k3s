@@ -99,7 +99,6 @@ alertmanager:
       {{ end }}
       🔎 Источник:
       {{ .GeneratorURL }}
-      ---
       {{ end }}
       {{ end }}
 
