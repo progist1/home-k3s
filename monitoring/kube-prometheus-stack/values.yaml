@@ -127,7 +127,7 @@ alertmanager:
             parse_mode: MarkdownV2
             message: '{{ template "telegram.message" . }}'
 
-      - name: null
+      - name: "null"
 
   alertmanagerSpec:
     replicas: 1
