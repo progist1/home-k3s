@@ -607,7 +607,15 @@ coreDns:
 kubelet:
   serviceMonitor:
     enabled: true
+    cAdvisor: false
     metricRelabelings:
+      - sourceLabels: ["__name__"]
+        regex: 'container_(cpu_usage_seconds_total|cpu_cfs_throttled_seconds_total|memory_working_set_bytes|memory_usage_bytes)'
+        action: keep
+      - sourceLabels: ["__name__"]
+        regex: 'container_.*'
+        action: drop
+
       - sourceLabels: ["__name__"]
         regex: 'kubelet_.*_bucket'
         action: drop
