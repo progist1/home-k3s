@@ -57,11 +57,16 @@ spec:
     - alert: BackupSizeAnomaly
       expr: |
         (
-          backup_size_bytes > 1e10
-          or
-          backup_size_bytes < 1000
+          (
+            backup_size_bytes > 1e10
+            or
+            backup_size_bytes < 1000
+          )
+          and backup_missing == 0
         )
-        and backup_missing == 0
+        and on(section, name)
+        backup_size_bytes{name!~"^(filebrowser|immich-hdd-upload|immich-library|mailu-admin|mailu-postfix|memos|mosquitto|outline|vikunja)$"}
+        # TODO: разобраться
       for: 5m
       labels:
         severity: warning
