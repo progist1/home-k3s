@@ -7,6 +7,19 @@ metadata:
     release: kube-prometheus-stack
 spec:
   groups:
+  - name: zfs.recording
+    interval: 30s
+    rules:
+
+      # ---- ZFS usage percent ----
+      - record: zfs_pool_usage_percent
+        expr: |
+          (
+            zfs_pool_allocated_bytes
+            /
+            zfs_pool_size_bytes
+          ) * 100
+
   - name: zfs-pool-state
     interval: 30s
     rules:
@@ -38,12 +51,7 @@ spec:
     # Высокая заполненность пула (>80%) для обычных пулов
     - alert: ZFSPoolCapacityHigh
       expr: |
-        (
-          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 80
-          and on(instance, pool) (zfs_pool_size_bytes{device!="Unsafe/Media"} > 0)
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes{device!="Unsafe/Media"}
+        zfs_pool_usage_percent{pool!="Unsafe"} > 80
       for: 15m
       labels:
         severity: warning
@@ -59,12 +67,7 @@ spec:
     # Высокая заполненность пула (>90%) для Unsafe/Media
     - alert: ZFSPoolCapacityHighUnsafeMedia
       expr: |
-        (
-          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 90
-          and on(instance, pool) (zfs_pool_size_bytes{device="Unsafe/Media"} > 0)
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes{device="Unsafe/Media"}
+        zfs_pool_usage_percent{pool="Unsafe"} > 90
       for: 15m
       labels:
         severity: warning
@@ -84,11 +87,7 @@ spec:
     # Критическая заполненность пула (>93%)
     - alert: ZFSPoolCapacityCritical
       expr: |
-        (
-          (zfs_pool_allocated_bytes / zfs_pool_size_bytes) * 100 > 93
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes
+        zfs_pool_usage_percent > 93
       for: 15m
       labels:
         severity: critical
@@ -107,11 +106,7 @@ spec:
     # Высокая фрагментация пула (>60%)
     - alert: ZFSPoolFragmentationHigh
       expr: |
-        (
-          zfs_pool_fragmentation_ratio * 100 > 60
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes
+        zfs_pool_fragmentation_ratio * 100 > 60
       for: 1h
       labels:
         severity: warning
@@ -126,11 +121,7 @@ spec:
     # Проблемы дедупликации (ratio < 1.0)
     - alert: ZFSDeduplicationIssue
       expr: |
-        (
-          zfs_pool_deduplication_ratio < 1.0
-        )
-        * on(instance, pool) group_left
-          zfs_pool_size_bytes
+        zfs_pool_deduplication_ratio < 1.0
       for: 5m
       labels:
         severity: warning
@@ -186,3 +177,20 @@ spec:
           **Host:** {{ $labels.hostname }}
           **Health codes:** 3=OFFLINE, 4=UNAVAIL, 5=REMOVED, 6=SUSPENDED
           **Action:** 🚨 Check `zpool status {{ $labels.pool }}` immediately!
+
+    - alert: ZFSPoolWillFillSoon
+      expr: |
+        predict_linear(
+          zfs_pool_used_bytes[7d],
+          7 * 24 * 3600
+        )
+        >
+        zfs_pool_size_bytes
+      for: 30m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ZFS pool {{ $labels.pool }} will be full within 7 days"
+        description: |
+          Based on last week growth trend,
+          pool is predicted to run out of space within 7 days.
