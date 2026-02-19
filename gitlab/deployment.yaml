@@ -32,7 +32,7 @@ spec:
       # TODO: InitContainer для secrets.json и trusted-certs
       containers:
         - name: gitlab
-          image: gitlab/gitlab-ce:18.8.4-ce.0
+          image: gitlab/gitlab-ce:18.9.0-ce.0
           env:
           - name: GITLAB_OMNIBUS_CONFIG
             valueFrom:
