@@ -90,41 +90,48 @@ alertmanager:
       {{/* ---------------- MAIN MESSAGE ---------------- */}}
       {{ define "telegram.message" -}}
       {{- if eq .Status "firing" }}
-      🔥 <b>пу-пу-пу</b>
+      🔥 <b>пу-пу-пу</b> ({{ .Alerts | len }})
       {{- else }}
-      ✅ <b>всё ок</b>
+      ✅ <b>всё ок</b> ({{ .Alerts | len }})
       {{- end }}
 
       {{ template "tg.icon" . }} <b>{{ template "tg.escape" .CommonLabels.alertname }}</b>
 
-      {{- range .Alerts }}
+      {{- $maxAlerts := 3 -}}
+      {{- range $i, $a := .Alerts }}
+      {{- if lt $i $maxAlerts }}
 
-      {{- if .Annotations.summary }}
-      📝 {{ template "tg.escape" .Annotations.summary }}
+      {{- if $a.Annotations.summary }}
+      📝 {{ template "tg.escape" $a.Annotations.summary }}
       {{- end }}
 
-      {{- if .Annotations.description }}
-      {{ template "tg.escape" .Annotations.description }}
+      {{- if $a.Annotations.description }}
+      {{ template "tg.escape" $a.Annotations.description }}
       {{- end }}
 
-      {{- if .Labels.instance }}
-      🖥 Хост: <code>{{ template "tg.escape" .Labels.instance }}</code>
+      {{- if $a.Labels.instance }}
+      🖥 Хост: <code>{{ template "tg.escape" $a.Labels.instance }}</code>
       {{- end }}
 
-      {{- if .Labels.namespace }}
-      📦 Namespace: <code>{{ template "tg.escape" .Labels.namespace }}</code>
+      {{- if $a.Labels.namespace }}
+      📦 Namespace: <code>{{ template "tg.escape" $a.Labels.namespace }}</code>
       {{- end }}
 
-      {{- if .Labels.pod }}
-      📦 Pod: <code>{{ template "tg.escape" .Labels.pod }}</code>
+      {{- if $a.Labels.pod }}
+      📦 Pod: <code>{{ template "tg.escape" $a.Labels.pod }}</code>
       {{- end }}
 
-      {{- if .Annotations.runbook_url }}
-      📘 <a href="{{ .Annotations.runbook_url }}">Runbook</a>
+      {{- if $a.Annotations.runbook_url }}
+      📘 <a href="{{ $a.Annotations.runbook_url }}">Runbook</a>
       {{- end }}
 
-      🔎 <a href="{{ .GeneratorURL }}">Источник</a>
+      🔎 <a href="{{ $a.GeneratorURL }}">Источник</a>
+      {{- end }}
+      {{- end }}
 
+      {{- if gt (len .Alerts) $maxAlerts }}
+
+      … показано 3 из {{ .Alerts | len }}
       {{- end }}
       {{- end }}
   config:
