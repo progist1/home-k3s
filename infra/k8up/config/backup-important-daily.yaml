@@ -39,7 +39,7 @@ spec:
       fsGroup: 1000
 
   prune:
-    schedule: "0 6 * * *"
+    schedule: "20 6 * * *"
     retention:
       keepLast: 12
       keepDaily: 7
