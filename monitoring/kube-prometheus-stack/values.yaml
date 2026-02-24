@@ -97,7 +97,7 @@ alertmanager:
 
       {{ template "tg.icon" . }} <b>{{ template "tg.escape" .CommonLabels.alertname }}</b>
 
-      {{- $maxAlerts := 3 -}}
+      {{- $maxAlerts := 5 -}}
       {{- range $i, $a := .Alerts }}
       {{- if lt $i $maxAlerts }}
 
@@ -122,16 +122,20 @@ alertmanager:
       {{- end }}
 
       {{- if $a.Annotations.runbook_url }}
+      {{- if match "^https?://" $a.Annotations.runbook_url }}
       📘 <a href="{{ $a.Annotations.runbook_url }}">Runbook</a>
+      {{- else }}
+      📘 Runbook: {{ template "tg.escape" $a.Annotations.runbook_url }}
+      {{- end }}
       {{- end }}
 
-      🔎 <a href="{{ $a.GeneratorURL }}">Источник</a>
+      🔎 <a href="https://alerts.home">Alertmanager</a>
       {{- end }}
       {{- end }}
 
       {{- if gt (len .Alerts) $maxAlerts }}
 
-      … показано 3 из {{ .Alerts | len }}
+      … показано {{ $maxAlerts }} из {{ .Alerts | len }}
       {{- end }}
       {{- end }}
   config:
