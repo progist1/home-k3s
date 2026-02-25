@@ -141,6 +141,13 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
+    time_intervals:
+      - name: backup-maintenance
+        time_intervals:
+          - times:
+              - start_time: "03:00"
+                end_time: "07:00"
+            location: Europe/Moscow
     route:
       receiver: 'telegram'
       group_by: ['alertname', 'namespace']
@@ -148,6 +155,26 @@ alertmanager:
       group_interval: 5m
       repeat_interval: 2h
       routes:
+
+        # --- Окно бэкапов 3–7 МСК: не слать алерты по бэкапам ---
+        - matchers:
+            - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
+          mute_time_intervals:
+            - backup-maintenance
+          routes:
+            - matchers:
+                - severity="critical"
+              receiver: critical
+              continue: false
+            - matchers:
+                - severity="warning"
+              receiver: telegram
+              continue: false
+            - matchers:
+                - severity="info"
+              receiver: info
+              continue: false
+          continue: false
 
         # --- CRITICAL ---
         - matchers:
