@@ -71,16 +71,6 @@
   },
   "packageRules": [
     {
-      "matchDatasources": ["helm"],
-      "matchPackageNames": ["metabase"],
-      "groupName": "Metabase Helm Chart"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["metabase/metabase"],
-      "groupName": "Metabase Docker Image"
-    },
-    {
       "matchUpdateTypes": ["patch"],
       "automerge": true
     },

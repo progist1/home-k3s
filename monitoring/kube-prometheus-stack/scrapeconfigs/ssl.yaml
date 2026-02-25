@@ -24,7 +24,6 @@ spec:
         - jellyseerr.home:443
         - mail.home:443
         - memos.home:443
-        - metabase.home:443
         - nc.home:443
         - outline.home:443
         - docs.home:443

@@ -1,6 +1,5 @@
 resources:
   - nfs-provisioner
-  - metabase
   - renovate
   - filebrowser
   - vikunja
