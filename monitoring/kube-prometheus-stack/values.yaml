@@ -148,6 +148,12 @@ alertmanager:
               - start_time: "03:00"
                 end_time: "07:00"
             location: Europe/Moscow
+      - name: tdarr-transcode
+        time_intervals:
+          - times:
+              - start_time: "00:00"
+                end_time: "12:00"
+            location: Europe/Moscow
     route:
       receiver: 'telegram'
       group_by: ['alertname', 'namespace']
@@ -161,6 +167,49 @@ alertmanager:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
           mute_time_intervals:
             - backup-maintenance
+          routes:
+            - matchers:
+                - severity="critical"
+              receiver: critical
+              continue: false
+            - matchers:
+                - severity="warning"
+              receiver: telegram
+              continue: false
+            - matchers:
+                - severity="info"
+              receiver: info
+              continue: false
+          continue: false
+
+        # --- Окно tdarr 0–12 МСК: нода только .3, под только tdarr ---
+        # Node CPU: только 10.0.0.3
+        - matchers:
+            - alertname=~"NodeCPUHighUsage|NodeCPUAnomaly|NodeHighCPU"
+            - instance=~"10\\.0\\.0\\.3.*"
+          mute_time_intervals:
+            - tdarr-transcode
+          routes:
+            - matchers:
+                - severity="critical"
+              receiver: critical
+              continue: false
+            - matchers:
+                - severity="warning"
+              receiver: telegram
+              continue: false
+            - matchers:
+                - severity="info"
+              receiver: info
+              continue: false
+          continue: false
+
+        # Pod CPU: только tdarr
+        - matchers:
+            - alertname="PodHighCPUUsage"
+            - pod=~"tdarr.*"
+          mute_time_intervals:
+            - tdarr-transcode
           routes:
             - matchers:
                 - severity="critical"
