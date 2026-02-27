@@ -142,17 +142,21 @@ alertmanager:
     global:
       resolve_timeout: 5m
     time_intervals:
-      - name: backup-maintenance
+      - name: tdarr-day-only
         time_intervals:
           - times:
-              - start_time: "03:00"
-                end_time: "07:00"
+              - start_time: "12:00"
+                end_time: "24:00"
             location: Europe/Moscow
-      - name: tdarr-transcode
+      - name: backup-day-only
         time_intervals:
           - times:
               - start_time: "00:00"
-                end_time: "12:00"
+                end_time: "03:00"
+            location: Europe/Moscow
+          - times:
+              - start_time: "07:00"
+                end_time: "24:00"
             location: Europe/Moscow
     route:
       receiver: 'telegram'
@@ -165,8 +169,8 @@ alertmanager:
         # --- Окно бэкапов 3–7 МСК: не слать алерты по бэкапам ---
         - matchers:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
-          mute_time_intervals:
-            - backup-maintenance
+          active_time_intervals:
+            - backup-day-only
           routes:
             - matchers:
                 - severity="critical"
@@ -187,8 +191,8 @@ alertmanager:
         - matchers:
             - alertname=~"NodeCPUHighUsage|NodeCPUAnomaly|NodeHighCPU"
             - instance=~"10\\.0\\.0\\.3.*"
-          mute_time_intervals:
-            - tdarr-transcode
+          active_time_intervals:
+            - tdarr-day-only
           routes:
             - matchers:
                 - severity="critical"
@@ -204,12 +208,12 @@ alertmanager:
               continue: false
           continue: false
 
-        # Pod CPU: только tdarr
+        # --- Pod CPU: только tdarr — доставка только 12:00–24:00 МСК ---
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~"tdarr.*"
-          mute_time_intervals:
-            - tdarr-transcode
+          active_time_intervals:
+            - tdarr-day-only
           routes:
             - matchers:
                 - severity="critical"
