@@ -79,7 +79,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: blocky
-          image: spx01/blocky:v0.28.2
+          image: spx01/blocky:v0.29.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 53
