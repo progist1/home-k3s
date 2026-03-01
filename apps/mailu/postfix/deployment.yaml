@@ -6,6 +6,8 @@ metadata:
     app-group: mailu
     app.kubernetes.io/part-of: mailu
     app.kubernetes.io/name: mailu-postfix
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: "enabled"
   name: mailu-postfix
   namespace: apps
 spec:
