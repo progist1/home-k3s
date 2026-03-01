@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: cloud-dbeaver
   namespace: apps
+  labels:
+    app.kubernetes.io/name: cloud-dbeaver
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: cloud-dbeaver
+        app.kubernetes.io/name: cloud-dbeaver
     spec:
       containers:
         - name: cloud-dbeaver
@@ -48,6 +51,16 @@ spec:
             - name: config
               mountPath: /opt/cloudbeaver/conf/keys
               subPath: keys
+          readinessProbe:
+            tcpSocket:
+              port: 8978
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8978
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

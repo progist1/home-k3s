@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: tdarr-server
   namespace: apps
+  labels:
+    app.kubernetes.io/name: tdarr-server
+    app.kubernetes.io/part-of: tdarr
 spec:
   replicas: 1
   selector:
@@ -12,6 +15,8 @@ spec:
     metadata:
       labels:
         app: tdarr-server
+        app.kubernetes.io/name: tdarr-server
+        app.kubernetes.io/part-of: tdarr
     spec:
       # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:

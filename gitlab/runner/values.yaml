@@ -23,7 +23,7 @@ runners:
       [runners.kubernetes]
         namespace = "gitlab-runner"
         privileged = true
-        image = "docker:20.10.16"
+        image = "docker:27.5.1"
         poll_timeout = 600
         
         [[runners.kubernetes.volumes.config_map]]
@@ -31,7 +31,7 @@ runners:
           mount_path = "/etc/docker/certs.d/registry.gitlab.home"
 
         [[runners.kubernetes.services]]
-          name = "docker:20.10.16-dind"
+          name = "docker:27.5.1-dind"
           alias = "docker"
           command = ["dockerd", "--host=tcp://0.0.0.0:2375", "--tls=false"]
 volumes:

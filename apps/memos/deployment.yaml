@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: memos
   namespace: apps
+  labels:
+    app.kubernetes.io/name: memos
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: memos
+        app.kubernetes.io/name: memos
     spec:
       affinity:
         nodeAffinity:
@@ -50,6 +53,18 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /var/opt/memos
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5230
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5230
+            initialDelaySeconds: 15
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

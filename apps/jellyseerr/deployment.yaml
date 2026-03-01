@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: jellyseerr
   namespace: apps
+  labels:
+    app.kubernetes.io/name: jellyseerr
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: jellyseerr
+        app.kubernetes.io/name: jellyseerr
     spec:
       containers:
         - name: jellyseerr
@@ -30,6 +33,16 @@ spec:
               mountPath: /app/config
             - name: cache
               mountPath: /app/config/cache
+          readinessProbe:
+            tcpSocket:
+              port: 5055
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 5055
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: portainer
   namespace: apps
+  labels:
+    app.kubernetes.io/name: portainer
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: portainer
+        app.kubernetes.io/name: portainer
     spec:
       serviceAccountName: portainer
       # hostNetwork: true
@@ -38,13 +41,25 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /data
+        readinessProbe:
+          httpGet:
+            path: /api/system/status
+            port: 9000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/system/status
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 30
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: "100m"
+            memory: "128Mi"
           limits:
-            cpu: 250m
-            memory: 256Mi
+            cpu: "250m"
+            memory: "256Mi"
       volumes:
         - name: data
           persistentVolumeClaim:

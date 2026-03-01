@@ -3,6 +3,9 @@ kind: StatefulSet
 metadata:
   name: tdarr-node
   namespace: apps
+  labels:
+    app.kubernetes.io/name: tdarr-node
+    app.kubernetes.io/part-of: tdarr
 spec:
   serviceName: tdarr-node
   replicas: 1
@@ -17,6 +20,8 @@ spec:
     metadata:
       labels:
         app: tdarr-node
+        app.kubernetes.io/name: tdarr-node
+        app.kubernetes.io/part-of: tdarr
     spec:
       # Одна iGPU — одна реплика; при 1 транскоде + 1 хелсчеке Video уже ~100%, добавлять ноды нет смысла
       nodeSelector:

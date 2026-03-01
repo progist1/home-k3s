@@ -5,6 +5,8 @@ metadata:
   namespace: apps
   labels:
     app: photoprism
+    app.kubernetes.io/part-of: photoprism
+    app.kubernetes.io/name: photoprism
 spec:
   replicas: 1
   selector:
@@ -14,6 +16,8 @@ spec:
     metadata:
       labels:
         app: photoprism
+        app.kubernetes.io/name: photoprism
+        app.kubernetes.io/part-of: photoprism
     spec:
       containers:
         - name: photoprism
@@ -69,6 +73,18 @@ spec:
               mountPath: /photoprism/storage
             - name: import
               mountPath: /photoprism/import
+          readinessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 20800
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/status
+              port: 20800
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "250m"

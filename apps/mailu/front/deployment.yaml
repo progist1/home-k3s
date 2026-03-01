@@ -4,6 +4,8 @@ metadata:
   labels:
     app: mailu-front
     app-group: mailu
+    app.kubernetes.io/part-of: mailu
+    app.kubernetes.io/name: mailu-front
   name: mailu-front
   namespace: apps
   annotations:
@@ -19,6 +21,8 @@ spec:
     metadata:
       labels:
         app: mailu-front
+        app.kubernetes.io/name: mailu-front
+        app.kubernetes.io/part-of: mailu
     spec:
       dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always

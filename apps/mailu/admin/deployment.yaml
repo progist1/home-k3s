@@ -4,6 +4,8 @@ metadata:
   labels:
     app: mailu-admin
     app-group: mailu
+    app.kubernetes.io/part-of: mailu
+    app.kubernetes.io/name: mailu-admin
   name: mailu-admin
   namespace: apps
 spec:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app: mailu-admin
+        app.kubernetes.io/name: mailu-admin
+        app.kubernetes.io/part-of: mailu
     spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -79,9 +83,6 @@ spec:
           requests:
             cpu: 25m
             memory: 100Mi
-          capabilities:
-            add:
-            - NET_BIND_SERVICE
         volumeMounts:
         - mountPath: /data
           name: data

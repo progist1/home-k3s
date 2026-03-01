@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: postgres
   namespace: apps
+  labels:
+    app.kubernetes.io/name: postgres
 spec:
   replicas: 1
   strategy:
@@ -14,6 +16,7 @@ spec:
     metadata:
       labels:
         app: postgres
+        app.kubernetes.io/name: postgres
       annotations:
         k8up.io/backupcommand: 'sh -c ''PGPASSWORD="$POSTGRES_PASSWORD" pg_dumpall -U "$POSTGRES_USER"'''
         k8up.io/file-extension: .sql

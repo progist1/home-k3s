@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: guacd
   namespace: apps
+  labels:
+    app.kubernetes.io/name: guacd
+    app.kubernetes.io/part-of: guacamole
 spec:
   replicas: 1
   selector:
@@ -12,12 +15,24 @@ spec:
     metadata:
       labels:
         app: guacd
+        app.kubernetes.io/name: guacd
+        app.kubernetes.io/part-of: guacamole
     spec:
       containers:
         - name: guacd
           image: guacamole/guacd:1.6.0
           ports:
             - containerPort: 4822
+          readinessProbe:
+            tcpSocket:
+              port: 4822
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 4822
+            initialDelaySeconds: 10
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

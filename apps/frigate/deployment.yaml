@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: frigate
   namespace: apps
+  labels:
+    app.kubernetes.io/name: frigate
 spec:
   replicas: 1
   strategy:
@@ -14,6 +16,7 @@ spec:
     metadata:
       labels:
         app: frigate
+        app.kubernetes.io/name: frigate
     spec:
       nodeSelector:
         node.role: edge

@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: filebrowser
   namespace: apps
+  labels:
+    app.kubernetes.io/name: filebrowser
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: filebrowser
+        app.kubernetes.io/name: filebrowser
     spec:
       containers:
         - name: filebrowser
@@ -25,6 +28,18 @@ spec:
               mountPath: /config
             - name: database
               mountPath: /database
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

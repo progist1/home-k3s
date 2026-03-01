@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: mysql
   namespace: apps
+  labels:
+    app.kubernetes.io/name: mysql
 spec:
   replicas: 1
   strategy:
@@ -14,6 +16,7 @@ spec:
     metadata:
       labels:
         app: mysql
+        app.kubernetes.io/name: mysql
       annotations:
         k8up.io/backupcommand: 'sh -c ''MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --user=root --host=localhost --single-transaction --quick --all-databases'''
         k8up.io/file-extension: .sql
@@ -46,6 +49,24 @@ spec:
             - name: config
               mountPath: /etc/mysql/conf.d/99-custom.cnf
               subPath: mysqld.cnf
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "100m"

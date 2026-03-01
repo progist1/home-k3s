@@ -4,6 +4,8 @@ metadata:
   labels:
     app: mailu-postfix
     app-group: mailu
+    app.kubernetes.io/part-of: mailu
+    app.kubernetes.io/name: mailu-postfix
   name: mailu-postfix
   namespace: apps
 spec:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app: mailu-postfix
+        app.kubernetes.io/name: mailu-postfix
+        app.kubernetes.io/part-of: mailu
     spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -89,5 +93,5 @@ spec:
           name: data
       volumes:
       - name: data
-        path: /var/lib/mailu/postfix
-        type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: mailu-postfix-pvc

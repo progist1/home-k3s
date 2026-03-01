@@ -4,6 +4,8 @@ metadata:
   labels:
     app: mailu-webmail
     app-group: mailu
+    app.kubernetes.io/part-of: mailu
+    app.kubernetes.io/name: mailu-webmail
   name: mailu-webmail
   namespace: apps
 spec:
@@ -17,6 +19,8 @@ spec:
     metadata:
       labels:
         app: mailu-webmail
+        app.kubernetes.io/name: mailu-webmail
+        app.kubernetes.io/part-of: mailu
     spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always

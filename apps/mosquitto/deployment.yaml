@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: mosquitto
   namespace: apps
+  labels:
+    app.kubernetes.io/name: mosquitto
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: mosquitto
+        app.kubernetes.io/name: mosquitto
     spec:
       affinity:
         nodeAffinity:

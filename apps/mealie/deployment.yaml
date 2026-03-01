@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: mealie
   namespace: apps
+  labels:
+    app.kubernetes.io/name: mealie
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: mealie
+        app.kubernetes.io/name: mealie
     spec:
       containers:
         - name: mealie

@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   labels:
     app: outline
+    app.kubernetes.io/name: outline
 spec:
   replicas: 1
   strategy:
@@ -16,6 +17,7 @@ spec:
     metadata:
       labels:
         app: outline
+        app.kubernetes.io/name: outline
     spec:
       securityContext:
         fsGroup: 1000

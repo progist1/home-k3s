@@ -3,6 +3,9 @@ kind: StatefulSet
 metadata:
   name: photoprism-mariadb
   namespace: apps
+  labels:
+    app.kubernetes.io/name: photoprism-mariadb
+    app.kubernetes.io/part-of: photoprism
 spec:
   serviceName: photoprism-mariadb
   replicas: 1
@@ -17,6 +20,8 @@ spec:
     metadata:
       labels:
         app: photoprism-mariadb
+        app.kubernetes.io/name: photoprism-mariadb
+        app.kubernetes.io/part-of: photoprism
       annotations:
         k8up.io/backupcommand: 'sh -c ''MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --user=root --host=localhost --single-transaction --quick --all-databases'''
         k8up.io/file-extension: .sql
@@ -44,6 +49,22 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
+          readinessProbe:
+            exec:
+              command:
+                - healthcheck.sh
+                - --connect
+                - --innodb_initialized
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - healthcheck.sh
+                - --connect
+                - --innodb_initialized
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "100m"

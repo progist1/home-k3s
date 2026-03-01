@@ -10,6 +10,5 @@ resources:
   - registry.yaml
   - service.yaml
   - service-ssh.yaml
-  - runner
   - backups-cronjob.yaml
   - backups-rbac.yaml

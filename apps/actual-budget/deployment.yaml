@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: actual-budget
   namespace: apps
+  labels:
+    app.kubernetes.io/name: actual-budget
 spec:
   replicas: 1
   selector:
@@ -12,10 +14,11 @@ spec:
     metadata:
       labels:
         app: actual-budget
+        app.kubernetes.io/name: actual-budget
     spec:
       containers:
         - name: actual-budget
-          image: actualbudget/actual-server:latest
+          image: ghcr.io/actualbudget/actual:26.2.1
           ports:
             - containerPort: 5006
           env:

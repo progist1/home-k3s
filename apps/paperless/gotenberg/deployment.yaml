@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: gotenberg
   namespace: apps
+  labels:
+    app.kubernetes.io/name: gotenberg
+    app.kubernetes.io/part-of: paperless
 spec:
   replicas: 1
   selector:
@@ -12,6 +15,8 @@ spec:
     metadata:
       labels:
         app: gotenberg
+        app.kubernetes.io/name: gotenberg
+        app.kubernetes.io/part-of: paperless
     spec:
       containers:
         - name: gotenberg

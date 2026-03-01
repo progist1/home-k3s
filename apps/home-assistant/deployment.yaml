@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: home-assistant
   namespace: apps
+  labels:
+    app.kubernetes.io/name: home-assistant
 spec:
   replicas: 1
   strategy:
@@ -18,6 +20,7 @@ spec:
     metadata:
       labels:
         app: home-assistant
+        app.kubernetes.io/name: home-assistant
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

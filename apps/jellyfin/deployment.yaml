@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: jellyfin
   namespace: apps
+  labels:
+    app.kubernetes.io/name: jellyfin
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: jellyfin
+        app.kubernetes.io/name: jellyfin
     spec:
       nodeSelector:
         node.hardware.gpu: intel-igpu

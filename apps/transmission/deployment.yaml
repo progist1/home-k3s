@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: transmission
   namespace: apps
+  labels:
+    app.kubernetes.io/name: transmission
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: transmission
+        app.kubernetes.io/name: transmission
     spec:
       securityContext:
         fsGroup: 568
@@ -37,6 +40,18 @@ spec:
               mountPath: /mnt/Download
             - name: media
               mountPath: /mnt/Media
+          readinessProbe:
+            httpGet:
+              path: /transmission/web/
+              port: 9091
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /transmission/web/
+              port: 9091
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "500m"

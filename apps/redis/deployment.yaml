@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: redis
   namespace: apps
+  labels:
+    app.kubernetes.io/name: redis
 spec:
   replicas: 1
   strategy:
@@ -14,6 +16,7 @@ spec:
     metadata:
       labels:
         app: redis
+        app.kubernetes.io/name: redis
     spec:
       affinity:
         nodeAffinity:

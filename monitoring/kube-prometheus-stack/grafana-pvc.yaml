@@ -7,7 +7,7 @@ metadata:
 spec:
   storageClassName: nfs-nvme-manual
   capacity:
-    storage: 5Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   nfs:
@@ -30,5 +30,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
   volumeName: grafana-data-pv

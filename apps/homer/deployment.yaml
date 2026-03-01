@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: homer
   namespace: apps
+  labels:
+    app.kubernetes.io/name: homer
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: homer
+        app.kubernetes.io/name: homer
     spec:
       affinity:
         nodeAffinity:
@@ -36,6 +39,18 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /www/assets
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

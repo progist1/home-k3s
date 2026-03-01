@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: wizarr
   namespace: apps
+  labels:
+    app.kubernetes.io/name: wizarr
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: wizarr
+        app.kubernetes.io/name: wizarr
     spec:
       affinity:
         nodeAffinity:
@@ -43,6 +46,18 @@ spec:
               mountPath: /data/database
             - name: wizard
               mountPath: /data/wizard_steps
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5690
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5690
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

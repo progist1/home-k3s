@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: paperless
   namespace: apps
+  labels:
+    app.kubernetes.io/name: paperless
+    app.kubernetes.io/part-of: paperless
 spec:
   replicas: 1
   selector:
@@ -12,6 +15,8 @@ spec:
     metadata:
       labels:
         app: paperless
+        app.kubernetes.io/name: paperless
+        app.kubernetes.io/part-of: paperless
     spec:
       containers:
         - name: paperless
@@ -95,6 +100,16 @@ spec:
               mountPath: /usr/src/paperless/export
             - name: consume
               mountPath: /usr/src/paperless/consume
+          readinessProbe:
+            tcpSocket:
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8001
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "250m"

@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   labels:
     app: blocky
+    app.kubernetes.io/name: blocky
 spec:
   replicas: 3
   strategy:
@@ -19,6 +20,7 @@ spec:
     metadata:
       labels:
         app: blocky
+        app.kubernetes.io/name: blocky
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "4000"

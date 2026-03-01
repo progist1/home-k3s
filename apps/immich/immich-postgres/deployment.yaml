@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: pgvecto
   namespace: apps
+  labels:
+    app.kubernetes.io/name: pgvecto
+    app.kubernetes.io/part-of: immich
 spec:
   replicas: 1
   strategy:
@@ -14,6 +17,8 @@ spec:
     metadata:
       labels:
         app: pgvecto
+        app.kubernetes.io/name: pgvecto
+        app.kubernetes.io/part-of: immich
       annotations:
         k8up.io/backupcommand: 'sh -c ''PGPASSWORD="$POSTGRES_PASSWORD" pg_dumpall -U "$POSTGRES_USER"'''
         k8up.io/file-extension: .sql
@@ -49,6 +54,22 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER"
+            initialDelaySeconds: 30
+            periodSeconds: 30
           resources:
             requests:
               cpu: "50m"

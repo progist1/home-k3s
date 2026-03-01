@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: nextcloud
   namespace: apps
+  labels:
+    app.kubernetes.io/name: nextcloud
 spec:
   replicas: 1
   selector:
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: nextcloud
+        app.kubernetes.io/name: nextcloud
     spec:
       containers:
         - name: nextcloud
