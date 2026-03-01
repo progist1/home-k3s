@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
   annotations:
     "fluxcd.io/ignore": "false"
+    kustomize.toolkit.fluxcd.io/force: "enabled"
 spec:
   ttlSecondsAfterFinished: 3600
   backoffLimit: 3
