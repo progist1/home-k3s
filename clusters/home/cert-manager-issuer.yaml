@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
+  retryInterval: 15s
   path: ./cluster-config/cert-manager/step2-issuer
   prune: true
   sourceRef:

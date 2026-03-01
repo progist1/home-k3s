@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
+  retryInterval: 15s
   path: ./apps
   prune: true
   sourceRef:
