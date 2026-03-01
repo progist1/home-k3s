@@ -142,22 +142,16 @@ alertmanager:
     global:
       resolve_timeout: 5m
     time_intervals:
-      - name: tdarr-day-only
-        time_intervals:
-          - times:
-              - start_time: "12:00"
-                end_time: "24:00"
-            location: Europe/Moscow
-      - name: backup-day-only
+      - name: backup-maintenance
         time_intervals:
           - times:
               - start_time: "00:00"
-                end_time: "03:00"
-            location: Europe/Moscow
+                end_time: "04:00"
+      - name: tdarr-transcode
+        time_intervals:
           - times:
-              - start_time: "07:00"
-                end_time: "24:00"
-            location: Europe/Moscow
+              - start_time: "21:00"
+                end_time: "09:00"
     route:
       receiver: 'telegram'
       group_by: ['alertname', 'namespace']
@@ -169,21 +163,9 @@ alertmanager:
         # --- Окно бэкапов 3–7 МСК: не слать алерты по бэкапам ---
         - matchers:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
-          active_time_intervals:
-            - backup-day-only
-          routes:
-            - matchers:
-                - severity="critical"
-              receiver: critical
-              continue: false
-            - matchers:
-                - severity="warning"
-              receiver: telegram
-              continue: false
-            - matchers:
-                - severity="info"
-              receiver: info
-              continue: false
+          mute_time_intervals:
+            - backup-maintenance
+          receiver: "null"
           continue: false
 
         # --- Окно tdarr 0–12 МСК: нода только .3, под только tdarr ---
@@ -191,42 +173,18 @@ alertmanager:
         - matchers:
             - alertname=~"NodeCPUHighUsage|NodeCPUAnomaly|NodeHighCPU"
             - instance=~"10\\.0\\.0\\.3.*"
-          active_time_intervals:
-            - tdarr-day-only
-          routes:
-            - matchers:
-                - severity="critical"
-              receiver: critical
-              continue: false
-            - matchers:
-                - severity="warning"
-              receiver: telegram
-              continue: false
-            - matchers:
-                - severity="info"
-              receiver: info
-              continue: false
+          mute_time_intervals:
+            - tdarr-transcode
+          receiver: "null"
           continue: false
 
-        # --- Pod CPU: только tdarr — доставка только 12:00–24:00 МСК ---
+        # Pod CPU: только tdarr
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~"tdarr.*"
-          active_time_intervals:
-            - tdarr-day-only
-          routes:
-            - matchers:
-                - severity="critical"
-              receiver: critical
-              continue: false
-            - matchers:
-                - severity="warning"
-              receiver: telegram
-              continue: false
-            - matchers:
-                - severity="info"
-              receiver: info
-              continue: false
+          mute_time_intervals:
+            - tdarr-transcode
+          receiver: "null"
           continue: false
 
         # --- CRITICAL ---
