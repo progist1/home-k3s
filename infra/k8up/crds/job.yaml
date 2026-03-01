@@ -15,7 +15,7 @@ spec:
       serviceAccountName: k8up-crd-installer
       containers:
         - name: kubectl
-          image: bitnami/kubectl:1.35.1
+          image: bitnami/kubectl:1.32
           command:
             - /bin/sh
             - -c

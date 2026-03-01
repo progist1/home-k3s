@@ -47,14 +47,12 @@ spec:
             - name: wizard
               mountPath: /data/wizard_steps
           readinessProbe:
-            httpGet:
-              path: /api/health
+            tcpSocket:
               port: 5690
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /api/health
+            tcpSocket:
               port: 5690
             initialDelaySeconds: 30
             periodSeconds: 30
