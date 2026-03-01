@@ -31,7 +31,7 @@ spec:
       # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:
         - name: tdarr-node
-          image: ghcr.io/haveagitgat/tdarr_node:2.58.02
+          image: ghcr.io/haveagitgat/tdarr_node:2.59.02
           env:
             - name: TZ
               value: Europe/Moscow
