@@ -171,6 +171,41 @@ alertmanager:
           receiver: "null"
           continue: false
 
+        # --- Окно бэкапов 3–7 МСК: высокая нагрузка на control-plane от бэкапов ---
+        - matchers:
+            - alertname="NodeSystemSaturation"
+            - instance=~"10\\.0\\.0\\.2.*"
+          mute_time_intervals:
+            - backup-maintenance
+          receiver: "null"
+          continue: false
+
+        # --- Окно бэкапов 3–7 МСК: нода bigb при бэкапах ---
+        - matchers:
+            - alertname=~"NodeCPUAnomaly|NodeHighCPU"
+            - instance=~"bigb\\.home.*"
+          mute_time_intervals:
+            - backup-maintenance
+          receiver: "null"
+          continue: false
+
+        # --- Окно бэкапов 3–7 МСК: CPU throttling и высокий CPU у backup-джобов ---
+        - matchers:
+            - alertname="CPUThrottlingHigh"
+            - pod=~".*backup.*"
+          mute_time_intervals:
+            - backup-maintenance
+          receiver: "null"
+          continue: false
+
+        - matchers:
+            - alertname="PodHighCPUUsage"
+            - pod=~".*backup.*"
+          mute_time_intervals:
+            - backup-maintenance
+          receiver: "null"
+          continue: false
+
         # --- Окно tdarr 0–12 МСК: нода только .3, под только tdarr ---
         # Node CPU: только 10.0.0.3
         - matchers:
