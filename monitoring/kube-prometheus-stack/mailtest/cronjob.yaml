@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mailtest
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: mailtest
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 180
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: mailtest
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: mailtest
+              image: python:3.12-alpine
+              command: ["python3", "/scripts/mailtest.py"]
+              env:
+                - name: MAIL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: mailtest-credentials
+                      key: MAIL_USER
+                - name: MAIL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mailtest-credentials
+                      key: MAIL_PASSWORD
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 64Mi
+          volumes:
+            - name: scripts
+              configMap:
+                name: mailtest-script
+                defaultMode: 0755

@@ -8,3 +8,4 @@ resources:
   - grafana-secrets-sealed.yaml
   - mysql-exporter-secrets-sealed.yaml
   - loki-secrets-sealed.yaml
+  - mailtest-secrets-sealed.yaml

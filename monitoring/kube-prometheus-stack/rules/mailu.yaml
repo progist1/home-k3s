@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mailu-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: mailu
+    rules:
+    - alert: MailRoundtripFailed
+      expr: mail_roundtrip_success{job="mailtest"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Mail delivery test failed"
+        description: "Test email was sent but not found in INBOX within 90s. Mail stack may be broken."
+
+    - alert: MailRoundtripStale
+      expr: absent(mail_roundtrip_success{job="mailtest"})
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Mail round-trip test not reporting"
+        description: "No mail_roundtrip_success metric for 15m — mailtest CronJob may be failing."

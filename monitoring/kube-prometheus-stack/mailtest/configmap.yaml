@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mailtest-script
+  namespace: monitoring
+data:
+  mailtest.py: |
+    #!/usr/bin/env python3
+    """Mail round-trip test: send via SMTP, verify via IMAP, push metrics to Pushgateway."""
+    import imaplib
+    import os
+    import smtplib
+    import ssl
+    import time
+    import uuid
+    import urllib.request
+    from email.mime.text import MIMEText
+
+    SMTP_HOST = os.environ.get('SMTP_HOST', 'mailu-front.apps.svc.cluster.local')
+    SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
+    IMAP_HOST = os.environ.get('IMAP_HOST', 'mailu-dovecot.apps.svc.cluster.local')
+    IMAP_PORT = int(os.environ.get('IMAP_PORT', '143'))
+    MAIL_USER = os.environ['MAIL_USER']
+    MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
+    PUSHGATEWAY = os.environ.get('PUSHGATEWAY', 'http://prometheus-pushgateway.monitoring.svc.cluster.local:9091')
+    TIMEOUT = int(os.environ.get('TIMEOUT', '90'))
+    POLL_INTERVAL = 10
+
+
+    def push(success, duration=None):
+        lines = [
+            '# HELP mail_roundtrip_success 1 if test email was delivered, 0 otherwise',
+            '# TYPE mail_roundtrip_success gauge',
+            f'mail_roundtrip_success {1 if success else 0}',
+        ]
+        if duration is not None:
+            lines += [
+                '# HELP mail_roundtrip_duration_seconds Seconds from send to delivery',
+                '# TYPE mail_roundtrip_duration_seconds gauge',
+                f'mail_roundtrip_duration_seconds {duration:.2f}',
+            ]
+        payload = '\n'.join(lines) + '\n'
+        url = f'{PUSHGATEWAY}/metrics/job/mailtest/instance/mailu'
+        req = urllib.request.Request(
+            url, data=payload.encode(), method='POST',
+            headers={'Content-Type': 'text/plain; version=0.0.4'},
+        )
+        try:
+            urllib.request.urlopen(req, timeout=10)
+            print(f'Pushed metrics: success={success}, duration={duration}')
+        except Exception as e:
+            print(f'Pushgateway error: {e}')
+
+
+    def run():
+        test_id = str(uuid.uuid4())[:12]
+        subject = f'[mailtest] {test_id}'
+        start = time.time()
+
+        print(f'Sending test email id={test_id}')
+        try:
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            msg = MIMEText(f'mail round-trip test {test_id}')
+            msg['Subject'] = subject
+            msg['From'] = MAIL_USER
+            msg['To'] = MAIL_USER
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as s:
+                s.ehlo()
+                s.starttls(context=ctx)
+                s.login(MAIL_USER, MAIL_PASSWORD)
+                s.send_message(msg)
+            print('Email sent successfully')
+        except Exception as e:
+            print(f'Send failed: {e}')
+            push(False)
+            return
+
+        deadline = start + TIMEOUT
+        while time.time() < deadline:
+            time.sleep(POLL_INTERVAL)
+            try:
+                m = imaplib.IMAP4(IMAP_HOST, IMAP_PORT)
+                m.login(MAIL_USER, MAIL_PASSWORD)
+                m.select('INBOX')
+                _, ids = m.search(None, f'SUBJECT "{subject}"')
+                if ids[0]:
+                    elapsed = time.time() - start
+                    print(f'Delivered in {elapsed:.1f}s')
+                    for uid in ids[0].split():
+                        m.store(uid, '+FLAGS', '\\Deleted')
+                    m.expunge()
+                    m.logout()
+                    push(True, elapsed)
+                    return
+                m.logout()
+            except Exception as e:
+                print(f'IMAP check error: {e}')
+
+        print(f'Email not delivered within {TIMEOUT}s')
+        push(False)
+
+
+    if __name__ == '__main__':
+        run()
