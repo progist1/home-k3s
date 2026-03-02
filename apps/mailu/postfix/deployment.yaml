@@ -82,5 +82,4 @@ spec:
           name: data
       volumes:
       - name: data
-        persistentVolumeClaim:
-          claimName: mailu-postfix-pvc
+        emptyDir: {}
