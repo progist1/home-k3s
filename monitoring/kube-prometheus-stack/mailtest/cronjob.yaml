@@ -21,7 +21,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: mailtest
-              image: python:3.12-alpine
+              image: python:3.14-alpine
               command: ["python3", "/scripts/mailtest.py"]
               env:
                 - name: MAIL_USER
