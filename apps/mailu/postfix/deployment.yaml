@@ -51,27 +51,25 @@ spec:
           name: smtp-auth
           protocol: TCP
         readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - '! /usr/libexec/postfix/master -t'
-          failureThreshold: 3
+          tcpSocket:
+            port: 10025
           initialDelaySeconds: 10
           periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
+          failureThreshold: 3
+          timeoutSeconds: 3
         livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - '! /usr/libexec/postfix/master -t'
+          tcpSocket:
+            port: 10025
+          initialDelaySeconds: 30
+          periodSeconds: 30
           failureThreshold: 3
-          initialDelaySeconds: 10
+          timeoutSeconds: 3
+        startupProbe:
+          tcpSocket:
+            port: 10025
+          failureThreshold: 30
           periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 3
         resources:
           limits:
             cpu: "500m"
@@ -79,17 +77,6 @@ spec:
           requests:
             cpu: 25m
             memory: 64Mi
-        startupProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - '! /usr/libexec/postfix/master -t'
-          failureThreshold: 50
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
         volumeMounts:
         - mountPath: /queue
           name: data
