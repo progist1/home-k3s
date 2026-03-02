@@ -85,3 +85,27 @@ spec:
       targetLabel: instance
     - targetLabel: __address__
       replacement: ssl-exporter.monitoring.svc.cluster.local:9219 # SSL exporter.
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: ssl-exporter-smtp
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: "ssl-smtp"
+  metricsPath: /probe
+  scrapeInterval: 1h
+  params:
+    module: ["smtp_starttls"]
+  staticConfigs:
+    - targets:
+        - mail.progist.ru:587
+  relabelings:
+    - sourceLabels: [__address__]
+      targetLabel: __param_target
+    - sourceLabels: [__param_target]
+      targetLabel: instance
+    - targetLabel: __address__
+      replacement: ssl-exporter.monitoring.svc.cluster.local:9219

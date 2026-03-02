@@ -21,3 +21,7 @@ data:
           insecure_skip_verify: false
       https:
         prober: https
+      smtp_starttls:
+        prober: tcp
+        tcp:
+          starttls: smtp
