@@ -10,7 +10,7 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    # Allow only from Traefik (ingress controller)
+    # Allow from Traefik (ingress controller)
     - from:
         - namespaceSelector:
             matchLabels:
@@ -18,6 +18,14 @@ spec:
           podSelector:
             matchLabels:
               app.kubernetes.io/name: traefik
+      ports:
+        - protocol: TCP
+          port: 80
+    # Allow from Gatus (status page health checks)
+    - from:
+        - podSelector:
+            matchLabels:
+              app: gatus
       ports:
         - protocol: TCP
           port: 80
