@@ -20,7 +20,7 @@ spec:
         - name: audiobookshelf
           image: advplyr/audiobookshelf:2.32.1
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           env:
             - name: TZ
               value: "Europe/Moscow"
@@ -34,13 +34,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthcheck
-              port: 3000
+              port: 80
             initialDelaySeconds: 10
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /healthcheck
-              port: 3000
+              port: 80
             initialDelaySeconds: 20
             periodSeconds: 30
           resources:
