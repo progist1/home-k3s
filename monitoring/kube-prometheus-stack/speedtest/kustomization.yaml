@@ -6,5 +6,7 @@ configMapGenerator:
       - speedtest.py
 
 resources:
-  - cronjob-prod.yaml
+  - deployment-prod.yaml
+  - service-prod.yaml
+  - podmonitor-prod.yaml
   - cronjob-yolki.yaml
