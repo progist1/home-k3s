@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""LibreSpeed test: download/upload/ping, push metrics to Pushgateway."""
+import os
+import time
+import urllib.request
+import urllib.error
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+SERVER   = os.environ['LIBRESPEED_SERVER']
+NODE     = os.environ['NODE_NAME']
+PUSHGATEWAY    = os.environ.get('PUSHGATEWAY', 'http://prometheus-pushgateway.monitoring.svc.cluster.local:9091')
+DOWNLOAD_MB    = int(os.environ.get('DOWNLOAD_SIZE_MB', '50'))
+UPLOAD_MB      = int(os.environ.get('UPLOAD_SIZE_MB',   '25'))
+PING_COUNT     = int(os.environ.get('PING_COUNT',       '20'))
+STREAMS        = int(os.environ.get('STREAMS',          '8'))
+
+
+def measure_ping():
+    latencies = []
+    for _ in range(PING_COUNT):
+        url = f'{SERVER}/backend/empty.php'
+        start = time.perf_counter()
+        try:
+            urllib.request.urlopen(url, timeout=5)
+        except urllib.error.HTTPError:
+            pass
+        latencies.append((time.perf_counter() - start) * 1000)
+        time.sleep(0.05)
+    latencies.sort()
+    trim    = max(1, len(latencies) // 10)
+    trimmed = latencies[trim:-trim] if len(latencies) > 2 * trim else latencies
+    avg     = sum(trimmed) / len(trimmed)
+    jitter  = sum(abs(v - avg) for v in trimmed) / len(trimmed)
+    return avg, jitter
+
+
+def measure_download():
+    chunk_mb = max(1, DOWNLOAD_MB // STREAMS)
+    total_bytes = chunk_mb * 1024 * 1024 * STREAMS
+
+    def fetch_chunk(_):
+        url = f'{SERVER}/backend/garbage.php?ckSize={chunk_mb}'
+        resp = urllib.request.urlopen(url, timeout=120)
+        return len(resp.read())
+
+    start = time.perf_counter()
+    with ThreadPoolExecutor(max_workers=STREAMS) as ex:
+        list(ex.map(lambda i: fetch_chunk(i), range(STREAMS)))
+    elapsed = time.perf_counter() - start
+    return total_bytes * 8 / elapsed
+
+
+def measure_upload():
+    chunk_mb = max(1, UPLOAD_MB // STREAMS)
+    chunk_bytes = chunk_mb * 1024 * 1024
+    total_bytes = chunk_bytes * STREAMS
+    payload = bytes(chunk_bytes)
+
+    def post_chunk(_):
+        url = f'{SERVER}/backend/empty.php'
+        req = urllib.request.Request(url, data=payload, method='POST')
+        req.add_header('Content-Type', 'application/octet-stream')
+        try:
+            urllib.request.urlopen(req, timeout=120)
+        except urllib.error.HTTPError:
+            pass
+
+    start = time.perf_counter()
+    with ThreadPoolExecutor(max_workers=STREAMS) as ex:
+        list(ex.map(post_chunk, range(STREAMS)))
+    elapsed = time.perf_counter() - start
+    return total_bytes * 8 / elapsed
+
+
+def push(dl_bps, ul_bps, ping_ms, jitter_ms, success):
+    lines = [
+        '# TYPE speedtest_download_bits_per_second gauge',
+        f'speedtest_download_bits_per_second {dl_bps:.0f}',
+        '# TYPE speedtest_upload_bits_per_second gauge',
+        f'speedtest_upload_bits_per_second {ul_bps:.0f}',
+        '# TYPE speedtest_ping_latency_milliseconds gauge',
+        f'speedtest_ping_latency_milliseconds {ping_ms:.2f}',
+        '# TYPE speedtest_ping_jitter_milliseconds gauge',
+        f'speedtest_ping_jitter_milliseconds {jitter_ms:.2f}',
+        '# TYPE speedtest_up gauge',
+        f'speedtest_up {1 if success else 0}',
+        '# TYPE speedtest_last_run_timestamp_seconds gauge',
+        f'speedtest_last_run_timestamp_seconds {time.time():.0f}',
+    ]
+    payload = '\n'.join(lines) + '\n'
+    url = f'{PUSHGATEWAY}/metrics/job/speedtest/node/{NODE}'
+    req = urllib.request.Request(
+        url, data=payload.encode(), method='POST',
+        headers={'Content-Type': 'text/plain; version=0.0.4'},
+    )
+    try:
+        urllib.request.urlopen(req, timeout=10)
+        print(f'Metrics pushed to {url}')
+    except Exception as e:
+        print(f'Pushgateway error: {e}')
+
+
+def run():
+    print(f'Starting speedtest  node={NODE}  server={SERVER}')
+    try:
+        print('Ping...')
+        ping_ms, jitter_ms = measure_ping()
+        print(f'  ping={ping_ms:.1f}ms  jitter={jitter_ms:.1f}ms')
+
+        print(f'Download ({DOWNLOAD_MB} MB)...')
+        dl_bps = measure_download()
+        print(f'  {dl_bps / 1e6:.1f} Mbit/s')
+
+        print(f'Upload ({UPLOAD_MB} MB)...')
+        ul_bps = measure_upload()
+        print(f'  {ul_bps / 1e6:.1f} Mbit/s')
+
+        push(dl_bps, ul_bps, ping_ms, jitter_ms, True)
+    except Exception as e:
+        print(f'Speedtest failed: {e}')
+        push(0, 0, 0, 0, False)
+
+
+if __name__ == '__main__':
+    run()

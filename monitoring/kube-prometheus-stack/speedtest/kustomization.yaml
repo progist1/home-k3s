@@ -1,4 +1,10 @@
+namespace: monitoring
+
+configMapGenerator:
+  - name: speedtest-script
+    files:
+      - speedtest.py
+
 resources:
-  - configmap.yaml
   - cronjob-prod.yaml
   - cronjob-yolki.yaml
