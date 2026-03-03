@@ -21,3 +21,7 @@ spec:
           targetLabel: node
         - sourceLabels: [__meta_kubernetes_pod_node_name]
           targetLabel: instance
+      metricRelabelings:
+        # Экспортер отдаёт instance=pod-name в теле метрик — перезаписываем на ноду
+        - sourceLabels: [node]
+          targetLabel: instance
