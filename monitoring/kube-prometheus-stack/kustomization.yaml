@@ -16,3 +16,4 @@ resources:
   - data.yaml
   - pushgateway
   - mailtest
+  - speedtest

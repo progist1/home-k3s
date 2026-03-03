@@ -7,31 +7,91 @@ metadata:
     release: kube-prometheus-stack
 spec:
   groups:
-  - name: speedtest
+  - name: speedtest.thresholds
     rules:
-    - alert: SpeedtestDownloadLow
-      expr: speedtest_bits_per_second{type="download"} < 200000000
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "Download speed is low"
-        description: "Download speed is {{ humanize $value }}bps (threshold: 200 Mbit/s). Check provider."
+    # Пороги по нодам — единственное место, которое меняется при добавлении ноды.
+    - record: speedtest:threshold:download_bps
+      expr: |
+        label_replace(vector(600e6), "node", "k3s-prod",  "", "")
+        or
+        label_replace(vector(100e6), "node", "k3s-yolki", "", "")
 
-    - alert: SpeedtestUploadLow
-      expr: speedtest_bits_per_second{type="upload"} < 50000000
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "Upload speed is low"
-        description: "Upload speed is {{ humanize $value }}bps (threshold: 50 Mbit/s)."
+    - record: speedtest:threshold:upload_bps
+      expr: |
+        label_replace(vector(150e6), "node", "k3s-prod",  "", "")
+        or
+        label_replace(vector(20e6),  "node", "k3s-yolki", "", "")
 
+  - name: speedtest.alerts
+    rules:
+
+    # ── Stale: последний успешный тест был давно ──────────────────────────────
     - alert: SpeedtestStale
-      expr: absent(speedtest_bits_per_second)
-      for: 3h
+      expr: |
+        (time() - speedtest_last_run_timestamp_seconds > 7200)
+        or
+        (sum by (node) (speedtest:threshold:download_bps)
+          unless sum by (node) (speedtest_last_run_timestamp_seconds))
+      for: 30m
       labels:
         severity: warning
       annotations:
-        summary: "Speedtest metrics are stale"
-        description: "No speedtest metrics for 3h — speedtest-tracker may be down."
+        summary: "No speedtest data from {{ $labels.node }}"
+        description: "Last speedtest on {{ $labels.node }} was {{ $value | humanizeDuration }} ago (or never ran)."
+
+    # ── Download ──────────────────────────────────────────────────────────────
+    - alert: SpeedtestDownloadLow
+      expr: |
+        (speedtest_download_bits_per_second / on(node) speedtest:threshold:download_bps < 0.5)
+        unless on(node) (speedtest_up == 0)
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low download on {{ $labels.node }}"
+        description: >-
+          {{ $labels.node }}: {{ $value | humanizePercentage }} of expected
+          ({{ with query (printf "speedtest:threshold:download_bps{node='%s'}" $labels.node) }}{{ . | first | value | humanize }}{{ end }}bps).
+
+    # ── Upload ────────────────────────────────────────────────────────────────
+    - alert: SpeedtestUploadLow
+      expr: |
+        (speedtest_upload_bits_per_second / on(node) speedtest:threshold:upload_bps < 0.5)
+        unless on(node) (speedtest_up == 0)
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low upload on {{ $labels.node }}"
+        description: >-
+          {{ $labels.node }}: {{ $value | humanizePercentage }} of expected
+          ({{ with query (printf "speedtest:threshold:upload_bps{node='%s'}" $labels.node) }}{{ . | first | value | humanize }}{{ end }}bps).
+
+    # ── Ping / Jitter ─────────────────────────────────────────────────────────
+    - alert: SpeedtestHighPing
+      expr: speedtest_ping_latency_milliseconds > 80
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High ping on {{ $labels.node }}"
+        description: "{{ $labels.node }}: {{ $value }}ms (threshold: 80ms)."
+
+    - alert: SpeedtestHighJitter
+      expr: speedtest_ping_jitter_milliseconds > 20
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High jitter on {{ $labels.node }}"
+        description: "{{ $labels.node }}: {{ $value }}ms (threshold: 20ms)."
+
+    # ── Test failed ───────────────────────────────────────────────────────────
+    - alert: SpeedtestFailed
+      expr: speedtest_up == 0
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Speedtest failed on {{ $labels.node }}"
+        description: "speedtest_up == 0 on {{ $labels.node }}."

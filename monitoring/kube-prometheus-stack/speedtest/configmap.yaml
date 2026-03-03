@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: speedtest-script
+  namespace: monitoring
+data:
+  speedtest.py: |
+    #!/usr/bin/env python3
+    """LibreSpeed test: download/upload/ping, push metrics to Pushgateway."""
+    import os
+    import time
+    import urllib.request
+    import urllib.error
+
+    SERVER   = os.environ['LIBRESPEED_SERVER']
+    NODE     = os.environ['NODE_NAME']
+    PUSHGATEWAY    = os.environ.get('PUSHGATEWAY', 'http://prometheus-pushgateway.monitoring.svc.cluster.local:9091')
+    DOWNLOAD_MB    = int(os.environ.get('DOWNLOAD_SIZE_MB', '25'))
+    UPLOAD_MB      = int(os.environ.get('UPLOAD_SIZE_MB',   '10'))
+    PING_COUNT     = int(os.environ.get('PING_COUNT',       '20'))
+
+
+    def measure_ping():
+        latencies = []
+        for _ in range(PING_COUNT):
+            url = f'{SERVER}/backend/empty'
+            start = time.perf_counter()
+            try:
+                urllib.request.urlopen(url, timeout=5)
+            except urllib.error.HTTPError:
+                pass
+            latencies.append((time.perf_counter() - start) * 1000)
+            time.sleep(0.05)
+        latencies.sort()
+        trim    = max(1, len(latencies) // 10)
+        trimmed = latencies[trim:-trim] if len(latencies) > 2 * trim else latencies
+        avg     = sum(trimmed) / len(trimmed)
+        jitter  = sum(abs(v - avg) for v in trimmed) / len(trimmed)
+        return avg, jitter
+
+
+    def measure_download():
+        url   = f'{SERVER}/backend/garbage?ckSize={DOWNLOAD_MB}'
+        start = time.perf_counter()
+        resp  = urllib.request.urlopen(url, timeout=120)
+        data  = resp.read()
+        return len(data) * 8 / (time.perf_counter() - start)
+
+
+    def measure_upload():
+        url     = f'{SERVER}/backend/empty'
+        payload = bytes(UPLOAD_MB * 1024 * 1024)
+        req     = urllib.request.Request(url, data=payload, method='POST')
+        req.add_header('Content-Type', 'application/octet-stream')
+        start   = time.perf_counter()
+        try:
+            urllib.request.urlopen(req, timeout=120)
+        except urllib.error.HTTPError:
+            pass
+        return len(payload) * 8 / (time.perf_counter() - start)
+
+
+    def push(dl_bps, ul_bps, ping_ms, jitter_ms, success):
+        lines = [
+            '# TYPE speedtest_download_bits_per_second gauge',
+            f'speedtest_download_bits_per_second {dl_bps:.0f}',
+            '# TYPE speedtest_upload_bits_per_second gauge',
+            f'speedtest_upload_bits_per_second {ul_bps:.0f}',
+            '# TYPE speedtest_ping_latency_milliseconds gauge',
+            f'speedtest_ping_latency_milliseconds {ping_ms:.2f}',
+            '# TYPE speedtest_ping_jitter_milliseconds gauge',
+            f'speedtest_ping_jitter_milliseconds {jitter_ms:.2f}',
+            '# TYPE speedtest_up gauge',
+            f'speedtest_up {1 if success else 0}',
+            '# TYPE speedtest_last_run_timestamp_seconds gauge',
+            f'speedtest_last_run_timestamp_seconds {time.time():.0f}',
+        ]
+        payload = '\n'.join(lines) + '\n'
+        url = f'{PUSHGATEWAY}/metrics/job/speedtest/node/{NODE}'
+        req = urllib.request.Request(
+            url, data=payload.encode(), method='POST',
+            headers={'Content-Type': 'text/plain; version=0.0.4'},
+        )
+        try:
+            urllib.request.urlopen(req, timeout=10)
+            print(f'Metrics pushed to {url}')
+        except Exception as e:
+            print(f'Pushgateway error: {e}')
+
+
+    def run():
+        print(f'Starting speedtest  node={NODE}  server={SERVER}')
+        try:
+            print('Ping...')
+            ping_ms, jitter_ms = measure_ping()
+            print(f'  ping={ping_ms:.1f}ms  jitter={jitter_ms:.1f}ms')
+
+            print(f'Download ({DOWNLOAD_MB} MB)...')
+            dl_bps = measure_download()
+            print(f'  {dl_bps / 1e6:.1f} Mbit/s')
+
+            print(f'Upload ({UPLOAD_MB} MB)...')
+            ul_bps = measure_upload()
+            print(f'  {ul_bps / 1e6:.1f} Mbit/s')
+
+            push(dl_bps, ul_bps, ping_ms, jitter_ms, True)
+        except Exception as e:
+            print(f'Speedtest failed: {e}')
+            push(0, 0, 0, 0, False)
+
+
+    if __name__ == '__main__':
+        run()

@@ -14,4 +14,3 @@ resources:
   - k8up.yaml
   - mailu.yaml
   - speedtest.yaml
-  - speedtest-exporter.yaml

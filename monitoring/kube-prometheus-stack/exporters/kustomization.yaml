@@ -4,4 +4,3 @@ resources:
   - adguard-exporter
   - ssl-exporter
   - mysql-exporter
-  - speedtest-exporter

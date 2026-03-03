@@ -15,5 +15,4 @@ resources:
   - cloud-dbeaver
   - nextcloud
   - frigate
-  - speedtest-tracker
   - gatus

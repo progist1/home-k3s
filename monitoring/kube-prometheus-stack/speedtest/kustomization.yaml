@@ -1,0 +1,4 @@
+resources:
+  - configmap.yaml
+  - cronjob-prod.yaml
+  - cronjob-yolki.yaml
