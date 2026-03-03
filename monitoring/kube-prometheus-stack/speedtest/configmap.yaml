@@ -16,10 +16,10 @@ data:
     SERVER   = os.environ['LIBRESPEED_SERVER']
     NODE     = os.environ['NODE_NAME']
     PUSHGATEWAY    = os.environ.get('PUSHGATEWAY', 'http://prometheus-pushgateway.monitoring.svc.cluster.local:9091')
-    DOWNLOAD_MB    = int(os.environ.get('DOWNLOAD_SIZE_MB', '25'))
-    UPLOAD_MB      = int(os.environ.get('UPLOAD_SIZE_MB',   '10'))
+    DOWNLOAD_MB    = int(os.environ.get('DOWNLOAD_SIZE_MB', '50'))
+    UPLOAD_MB      = int(os.environ.get('UPLOAD_SIZE_MB',   '25'))
     PING_COUNT     = int(os.environ.get('PING_COUNT',       '20'))
-    STREAMS        = int(os.environ.get('STREAMS',          '4'))
+    STREAMS        = int(os.environ.get('STREAMS',          '8'))
 
 
     def measure_ping():
