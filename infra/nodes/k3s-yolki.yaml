@@ -21,6 +21,9 @@ metadata:
     node.storage.backend: usb
     node.storage.mount.cctv: "true"
 
+    # Мониторинг
+    monitoring.speedtest/enabled: "true"
+
     # Спец-железо
     node.hardware.gpu: none
     node.hardware.video-accel: vaapi

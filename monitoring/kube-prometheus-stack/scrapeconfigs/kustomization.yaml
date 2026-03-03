@@ -15,3 +15,5 @@ resources:
   - ssl.yaml
   - k8up.yaml
   - speedtest-tracker.yaml
+  - speedtest-exporter.yaml
+

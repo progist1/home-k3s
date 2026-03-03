@@ -27,6 +27,9 @@ metadata:
     node.storage.mount.photoprism-mariadb: "true"
     node.storage.mount.redis: "true"
 
+    # Мониторинг
+    monitoring.speedtest/enabled: "true"
+
     # Спец-железо
     node.hardware.gpu: none
     node.hardware.video-accel: none
