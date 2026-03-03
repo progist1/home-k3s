@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatus-config
+  namespace: apps
+data:
+  config.yaml: |
+    web:
+      port: 8080
+
+    storage:
+      type: sqlite
+      path: /data/gatus.db
+
+    alerting:
+      telegram:
+        token: "${TELEGRAM_TOKEN}"
+        id: "${TELEGRAM_CHAT_ID}"
+        default-alert:
+          enabled: true
+          failure-threshold: 2
+          success-threshold: 2
+
+    defaults: &defaults
+      client:
+        insecure: true
+      interval: 1m
+      conditions:
+        - "[STATUS] == 200"
+      alerts:
+        - type: telegram
+
+    endpoints:
+      # ── Dashboard ──
+      - name: Homer
+        url: https://start.home
+        <<: *defaults
+
+      # ── Media ──
+      - name: Jellyfin
+        url: https://watch.home/health
+        <<: *defaults
+
+      - name: Sonarr
+        url: https://sonarr.home/ping
+        <<: *defaults
+
+      - name: Radarr
+        url: https://radarr.home/ping
+        <<: *defaults
+
+      - name: Bazarr
+        url: https://bazarr.home
+        <<: *defaults
+
+      - name: Prowlarr
+        url: https://prowlarr.home
+        <<: *defaults
+
+      # ── Productivity ──
+      - name: Nextcloud
+        url: https://nc.home/status.php
+        client:
+          insecure: true
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].installed == true"
+        alerts:
+          - type: telegram
+
+      - name: Paperless
+        url: https://docs.home
+        <<: *defaults
+
+      - name: Vaultwarden
+        url: http://vaultwarden.apps.svc.cluster.local/alive
+        interval: 2m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      # ── Home Automation ──
+      - name: Home Assistant
+        url: https://ha.home
+        <<: *defaults
+
+      # ── Mail ──
+      - name: Mailu Webmail
+        url: http://mailu-front.apps.svc.cluster.local
+        interval: 2m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      # ── Infra ──
+      - name: n8n
+        url: https://n8n.home/healthz
+        <<: *defaults
+
+      - name: Authentik
+        url: https://auth.home/-/health/ready/
+        <<: *defaults

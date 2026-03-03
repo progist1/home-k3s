@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatus
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: gatus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatus
+  template:
+    metadata:
+      labels:
+        app: gatus
+        app.kubernetes.io/name: gatus
+    spec:
+      containers:
+        - name: gatus
+          image: twinproduction/gatus:v5.35.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: gatus-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: gatus-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: gatus-data-pvc

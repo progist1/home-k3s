@@ -1,0 +1,37 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: speedtest-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: speedtest
+    rules:
+    - alert: SpeedtestDownloadLow
+      expr: speedtest_bits_per_second{type="download"} < 200000000
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Download speed is low"
+        description: "Download speed is {{ humanize $value }}bps (threshold: 200 Mbit/s). Check provider."
+
+    - alert: SpeedtestUploadLow
+      expr: speedtest_bits_per_second{type="upload"} < 50000000
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Upload speed is low"
+        description: "Upload speed is {{ humanize $value }}bps (threshold: 50 Mbit/s)."
+
+    - alert: SpeedtestStale
+      expr: absent(speedtest_bits_per_second)
+      for: 3h
+      labels:
+        severity: warning
+      annotations:
+        summary: "Speedtest metrics are stale"
+        description: "No speedtest metrics for 3h — speedtest-tracker may be down."

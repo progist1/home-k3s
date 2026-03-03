@@ -39,3 +39,10 @@ resources:
   - nextcloud
   - frigate
   - code-server
+  - bazarr
+  - flaresolverr
+  - it-tools
+  - gatus
+  - speedtest-tracker
+  - audiobookshelf
+  - n8n

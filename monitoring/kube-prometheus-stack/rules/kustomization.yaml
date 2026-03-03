@@ -13,3 +13,4 @@ resources:
   - kubernetes-resources.yaml
   - k8up.yaml
   - mailu.yaml
+  - speedtest.yaml

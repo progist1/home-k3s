@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-tools
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: it-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: it-tools
+  template:
+    metadata:
+      labels:
+        app: it-tools
+        app.kubernetes.io/name: it-tools
+    spec:
+      containers:
+        - name: it-tools
+          image: corentinth/it-tools:2024.10.22-7ca5933
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"

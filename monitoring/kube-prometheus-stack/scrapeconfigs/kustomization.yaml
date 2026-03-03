@@ -14,3 +14,4 @@ resources:
   - traefik.yaml
   - ssl.yaml
   - k8up.yaml
+  - speedtest-tracker.yaml

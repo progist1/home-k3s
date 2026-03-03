@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: audiobookshelf-audiobooks-pv
+spec:
+  storageClassName: nfs-hdd-manual
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.4
+    path: /mnt/Main/k3s-data/audiobooks
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: audiobookshelf-audiobooks-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-hdd-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: audiobookshelf-audiobooks-pv
