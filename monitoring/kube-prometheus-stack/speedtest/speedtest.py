@@ -73,22 +73,23 @@ def measure_upload():
 
 
 def push(dl_bps, ul_bps, ping_ms, jitter_ms, success):
-    # Same metric names as heathcliff26/speedtest-exporter for unified rules
+    # Same metric names as heathcliff26/speedtest-exporter; instance=node для стокового дашборда
     dl_mbps = dl_bps / 1e6
     ul_mbps = ul_bps / 1e6
+    i = f'instance="{NODE}"'
     lines = [
         '# TYPE speedtest_download_megabits_per_second gauge',
-        f'speedtest_download_megabits_per_second {dl_mbps:.2f}',
+        f'speedtest_download_megabits_per_second{{{i}}} {dl_mbps:.2f}',
         '# TYPE speedtest_upload_megabits_per_second gauge',
-        f'speedtest_upload_megabits_per_second {ul_mbps:.2f}',
+        f'speedtest_upload_megabits_per_second{{{i}}} {ul_mbps:.2f}',
         '# TYPE speedtest_ping_latency_milliseconds gauge',
-        f'speedtest_ping_latency_milliseconds {ping_ms:.2f}',
+        f'speedtest_ping_latency_milliseconds{{{i}}} {ping_ms:.2f}',
         '# TYPE speedtest_jitter_latency_milliseconds gauge',
-        f'speedtest_jitter_latency_milliseconds {jitter_ms:.2f}',
+        f'speedtest_jitter_latency_milliseconds{{{i}}} {jitter_ms:.2f}',
         '# TYPE speedtest_up gauge',
-        f'speedtest_up {1 if success else 0}',
+        f'speedtest_up{{{i}}} {1 if success else 0}',
         '# TYPE speedtest_last_run_timestamp_seconds gauge',
-        f'speedtest_last_run_timestamp_seconds {time.time():.0f}',
+        f'speedtest_last_run_timestamp_seconds{{{i}}} {time.time():.0f}',
     ]
     payload = '\n'.join(lines) + '\n'
     url = f'{PUSHGATEWAY}/metrics/job/speedtest/node/{NODE}'
