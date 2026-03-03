@@ -11,6 +11,7 @@ data:
     import time
     import urllib.request
     import urllib.error
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
     SERVER   = os.environ['LIBRESPEED_SERVER']
     NODE     = os.environ['NODE_NAME']
@@ -18,12 +19,13 @@ data:
     DOWNLOAD_MB    = int(os.environ.get('DOWNLOAD_SIZE_MB', '25'))
     UPLOAD_MB      = int(os.environ.get('UPLOAD_SIZE_MB',   '10'))
     PING_COUNT     = int(os.environ.get('PING_COUNT',       '20'))
+    STREAMS        = int(os.environ.get('STREAMS',          '4'))
 
 
     def measure_ping():
         latencies = []
         for _ in range(PING_COUNT):
-            url = f'{SERVER}/backend/empty'
+            url = f'{SERVER}/backend/empty.php'
             start = time.perf_counter()
             try:
                 urllib.request.urlopen(url, timeout=5)
@@ -40,24 +42,41 @@ data:
 
 
     def measure_download():
-        url   = f'{SERVER}/backend/garbage?ckSize={DOWNLOAD_MB}'
+        chunk_mb = max(1, DOWNLOAD_MB // STREAMS)
+        total_bytes = chunk_mb * 1024 * 1024 * STREAMS
+
+        def fetch_chunk(_):
+            url = f'{SERVER}/backend/garbage.php?ckSize={chunk_mb}'
+            resp = urllib.request.urlopen(url, timeout=120)
+            return len(resp.read())
+
         start = time.perf_counter()
-        resp  = urllib.request.urlopen(url, timeout=120)
-        data  = resp.read()
-        return len(data) * 8 / (time.perf_counter() - start)
+        with ThreadPoolExecutor(max_workers=STREAMS) as ex:
+            list(ex.map(lambda i: fetch_chunk(i), range(STREAMS)))
+        elapsed = time.perf_counter() - start
+        return total_bytes * 8 / elapsed
 
 
     def measure_upload():
-        url     = f'{SERVER}/backend/empty'
-        payload = bytes(UPLOAD_MB * 1024 * 1024)
-        req     = urllib.request.Request(url, data=payload, method='POST')
-        req.add_header('Content-Type', 'application/octet-stream')
-        start   = time.perf_counter()
-        try:
-            urllib.request.urlopen(req, timeout=120)
-        except urllib.error.HTTPError:
-            pass
-        return len(payload) * 8 / (time.perf_counter() - start)
+        chunk_mb = max(1, UPLOAD_MB // STREAMS)
+        chunk_bytes = chunk_mb * 1024 * 1024
+        total_bytes = chunk_bytes * STREAMS
+        payload = bytes(chunk_bytes)
+
+        def post_chunk(_):
+            url = f'{SERVER}/backend/empty.php'
+            req = urllib.request.Request(url, data=payload, method='POST')
+            req.add_header('Content-Type', 'application/octet-stream')
+            try:
+                urllib.request.urlopen(req, timeout=120)
+            except urllib.error.HTTPError:
+                pass
+
+        start = time.perf_counter()
+        with ThreadPoolExecutor(max_workers=STREAMS) as ex:
+            list(ex.map(post_chunk, range(STREAMS)))
+        elapsed = time.perf_counter() - start
+        return total_bytes * 8 / elapsed
 
 
     def push(dl_bps, ul_bps, ping_ms, jitter_ms, success):
