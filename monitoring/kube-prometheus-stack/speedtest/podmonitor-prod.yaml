@@ -14,7 +14,7 @@ spec:
       - monitoring
   podMetricsEndpoints:
     - port: metrics
-      interval: 1h
+      interval: 5m
       scrapeTimeout: 120s
       relabelings:
         - sourceLabels: [__meta_kubernetes_pod_node_name]
