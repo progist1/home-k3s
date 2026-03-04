@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: readmeabook-config-pv
+spec:
+  storageClassName: nfs-nvme-manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/readmeabook/config
+    server: 10.0.0.4
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: readmeabook-config-pvc
+  namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
+spec:
+  storageClassName: nfs-nvme-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: readmeabook-config-pv

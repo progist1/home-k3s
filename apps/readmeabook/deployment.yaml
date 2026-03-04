@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readmeabook
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: readmeabook
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: readmeabook
+  template:
+    metadata:
+      labels:
+        app: readmeabook
+        app.kubernetes.io/name: readmeabook
+    spec:
+      containers:
+        - name: readmeabook
+          image: ghcr.io/kikootwo/readmeabook:latest
+          ports:
+            - containerPort: 3030
+          env:
+            - name: PUID
+              value: "568"
+            - name: PGID
+              value: "568"
+            - name: TZ
+              value: "Europe/Moscow"
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+            - name: redis
+              mountPath: /var/lib/redis
+            - name: downloads
+              mountPath: /downloads
+            - name: audiobooks
+              mountPath: /media
+          readinessProbe:
+            exec:
+              command: ["curl", "-f", "http://localhost:3030/api/health"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          livenessProbe:
+            exec:
+              command: ["curl", "-f", "http://localhost:3030/api/health"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: readmeabook-config-pvc
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: readmeabook-pgdata-pvc
+        - name: redis
+          persistentVolumeClaim:
+            claimName: readmeabook-redis-pvc
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: transmission-download-pvc
+        - name: audiobooks
+          persistentVolumeClaim:
+            claimName: audiobookshelf-audiobooks-pvc
