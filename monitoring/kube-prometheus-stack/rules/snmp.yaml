@@ -1,0 +1,114 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: snmp-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: snmp.keenetic
+    interval: 60s
+    rules:
+
+    # Записи для удобства: входящий/исходящий трафик в бит/с
+    - record: snmp:ifHCInBitsPerSec:rate2m
+      expr: rate(ifHCInOctets{job="snmp_keenetic"}[2m]) * 8
+
+    - record: snmp:ifHCOutBitsPerSec:rate2m
+      expr: rate(ifHCOutOctets{job="snmp_keenetic"}[2m]) * 8
+
+    # WAN физический порт: GigabitEthernet1/0 (ifIndex=10, MAC 1c:1b:0d:08:a1:5d)
+    # Алерт: WAN поднят, но скорость линка < 1 Gbit (100M/10M = деградация линка)
+    - alert: KeeneticWANSpeedDegraded
+      expr: |
+        ifHighSpeed{job="snmp_keenetic", ifDescr="GigabitEthernet1/0"} < 1000
+        and on(ifIndex, instance)
+        ifOperStatus{job="snmp_keenetic", ifDescr="GigabitEthernet1/0"} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Keenetic WAN speed degraded ({{ $value }} Mbps)"
+        description: >
+          WAN interface GigabitEthernet1/0 on {{ $labels.instance }}
+          is up but negotiated at {{ $value }} Mbps instead of 1000 Mbps.
+          Possible cause: cable issue or ISP port degradation.
+
+    # Алерт: WAN-порт упал
+    - alert: KeeneticWANDown
+      expr: |
+        ifOperStatus{job="snmp_keenetic", ifDescr="GigabitEthernet1/0"} != 1
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Keenetic WAN port is down"
+        description: >
+          WAN interface GigabitEthernet1/0 on {{ $labels.instance }}
+          has been down for 3m.
+
+    # Алерт: SNMP недоступен (роутер не отвечает)
+    - alert: KeeneticSNMPUnreachable
+      expr: up{job="snmp_keenetic"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Keenetic SNMP unreachable"
+        description: "Cannot reach Keenetic router {{ $labels.instance }} via SNMP for 5m."
+
+    # CPU: считаем % использования из raw counters
+    - record: snmp:keenetic_cpu_usage:rate2m
+      expr: |
+        1 - rate(ssCpuRawIdle{job="snmp_keenetic"}[2m])
+          / (rate(ssCpuRawUser{job="snmp_keenetic"}[2m])
+           + rate(ssCpuRawSystem{job="snmp_keenetic"}[2m])
+           + rate(ssCpuRawIdle{job="snmp_keenetic"}[2m]))
+
+    - alert: KeeneticCPUHigh
+      expr: snmp:keenetic_cpu_usage:rate2m > 0.90
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Keenetic CPU high ({{ $value | humanizePercentage }})"
+        description: "Router {{ $labels.instance }} CPU usage above 90% for 5 minutes."
+
+    # Память: "реально занятая" = total - avail - buffers - cache
+    - record: snmp:keenetic_mem_used_ratio
+      expr: |
+        (memTotalReal{job="snmp_keenetic"}
+          - memAvailReal{job="snmp_keenetic"}
+          - memBuffer{job="snmp_keenetic"}
+          - memCached{job="snmp_keenetic"})
+        / memTotalReal{job="snmp_keenetic"}
+
+    - alert: KeeneticMemoryHigh
+      expr: snmp:keenetic_mem_used_ratio > 0.85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Keenetic memory high ({{ $value | humanizePercentage }})"
+        description: "Router {{ $labels.instance }} memory usage above 85% for 5 minutes."
+
+    # Load average 1m > 3 (для роутера с 1-2 ядрами это уже перегрузка)
+    - alert: KeeneticLoadHigh
+      expr: laLoadInt{job="snmp_keenetic", laNames="Load-1"} > 300
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Keenetic load average high ({{ $value | humanize }})"
+        description: "Router {{ $labels.instance }} 1m load avg above 3.0 for 5 minutes (value={{ $value }}/100)."
+
+    # Алерт: роутер перезагрузился (uptime < 5 минут)
+    - alert: KeeneticRebooted
+      expr: sysUpTime{job="snmp_keenetic"} < 30000
+      for: 0m
+      labels:
+        severity: info
+      annotations:
+        summary: "Keenetic router rebooted"
+        description: "Router {{ $labels.instance }} uptime is {{ $value | humanize }} ticks (< 5 min), likely just rebooted."

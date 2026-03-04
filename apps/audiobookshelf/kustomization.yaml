@@ -1,9 +1,0 @@
-resources:
-  - config.yaml
-  - metadata.yaml
-  - audiobooks.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress-internal.yaml
-  - ingress-external.yaml
-  - backup.yaml

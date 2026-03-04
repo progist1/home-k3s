@@ -1,7 +1,0 @@
-resources:
-  - data.yaml
-  - ebooks.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress-internal.yaml
-  - backup.yaml

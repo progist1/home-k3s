@@ -4,3 +4,4 @@ resources:
   - adguard-exporter
   - ssl-exporter
   - mysql-exporter
+  - snmp-exporter
