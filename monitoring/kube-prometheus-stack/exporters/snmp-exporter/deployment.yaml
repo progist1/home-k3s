@@ -22,13 +22,13 @@ spec:
             - containerPort: 9116
           readinessProbe:
             httpGet:
-              path: /health
+              path: /metrics
               port: 9116
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /health
+              path: /metrics
               port: 9116
             initialDelaySeconds: 10
             periodSeconds: 30
