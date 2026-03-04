@@ -11,7 +11,8 @@ spec:
   scrapeTimeout: 30s
   metricsPath: /snmp
   params:
-    module: [keenetic]
+    auth: [public_v2]
+    module: [if_mib]
   staticConfigs:
     - targets:
         - '10.0.0.1'

@@ -18,13 +18,8 @@ spec:
       containers:
         - name: snmp-exporter
           image: prom/snmp-exporter:v0.28.0
-          args:
-            - --config.file=/etc/snmp_exporter/snmp.yml
           ports:
             - containerPort: 9116
-          volumeMounts:
-            - name: config
-              mountPath: /etc/snmp_exporter
           readinessProbe:
             httpGet:
               path: /health
@@ -44,7 +39,3 @@ spec:
             limits:
               cpu: "100m"
               memory: "64Mi"
-      volumes:
-        - name: config
-          configMap:
-            name: snmp-exporter-config
