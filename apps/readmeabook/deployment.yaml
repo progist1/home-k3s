@@ -30,13 +30,16 @@ spec:
               value: "568"
             - name: TZ
               value: "Europe/Moscow"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: readmeabook-secrets
+                  key: database-url
+            - name: REDIS_URL
+              value: "redis://redis.apps.svc.cluster.local:6379/1"
           volumeMounts:
             - name: config
               mountPath: /app/config
-            - name: pgdata
-              mountPath: /var/lib/postgresql/data
-            - name: redis
-              mountPath: /var/lib/redis
             - name: downloads
               mountPath: /downloads
             - name: audiobooks
@@ -62,12 +65,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: readmeabook-config-pvc
-        - name: pgdata
-          persistentVolumeClaim:
-            claimName: readmeabook-pgdata-pvc
-        - name: redis
-          persistentVolumeClaim:
-            claimName: readmeabook-redis-pvc
         - name: downloads
           persistentVolumeClaim:
             claimName: transmission-download-pvc

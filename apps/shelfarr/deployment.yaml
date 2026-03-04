@@ -27,9 +27,9 @@ spec:
             - name: SOLID_QUEUE_IN_PUMA
               value: "1"
             - name: PUID
-              value: "568"
+              value: "1000"
             - name: PGID
-              value: "568"
+              value: "1000"
             - name: TZ
               value: "Europe/Moscow"
           volumeMounts:
