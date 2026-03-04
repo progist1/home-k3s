@@ -120,7 +120,3 @@ data:
             oid: 1.3.6.1.4.1.2021.11.53.0
             type: counter
             help: CPU ticks idle
-
-        version: 2
-        auth:
-          community: public
