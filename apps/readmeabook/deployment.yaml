@@ -25,9 +25,9 @@ spec:
             - containerPort: 3030
           env:
             - name: PUID
-              value: "568"
+              value: "1000"
             - name: PGID
-              value: "568"
+              value: "1000"
             - name: TZ
               value: "Europe/Moscow"
             - name: DATABASE_URL
