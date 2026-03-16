@@ -5,3 +5,4 @@ resources:
   - hdd-manual.yaml
   - zvol-local.yaml
   - hdd-manual-media.yaml
+  - hostpath-manual.yaml

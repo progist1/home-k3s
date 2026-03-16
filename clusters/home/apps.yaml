@@ -15,6 +15,7 @@ spec:
     - name: cert-manager-issuer
     - name: namespaces
     - name: sealed-secrets
+    - name: infra
   #   - name: metallb-config
   # healthChecks:
   #   - apiVersion: apps/v1
