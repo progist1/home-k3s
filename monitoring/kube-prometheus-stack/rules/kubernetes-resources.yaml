@@ -47,7 +47,7 @@ spec:
       expr: |
         (
           avg by(pod, container, namespace) (rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]))
-          / 
+          /
           on(pod, container, namespace) group_left
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""})
         ) * 100 > 80
@@ -59,4 +59,24 @@ spec:
       annotations:
         summary: "Pod {{ $labels.pod }} is using {{ $value | humanize }}% of CPU limit"
         description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is using {{ $value | humanize }}% of its CPU limit. Consider increasing limits or optimizing CPU usage."
+
+    # Критический алерт - Pod в состоянии CrashLoopBackOff
+    - alert: PodCrashLoopBackOff
+      expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod {{ $labels.pod }} is in CrashLoopBackOff"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) is crash-looping. Check pod logs."
+
+    # Критический алерт - Pod не может скачать образ
+    - alert: PodImagePullFailed
+      expr: kube_pod_container_status_waiting_reason{reason=~"ImagePullBackOff|ErrImagePull"} == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod {{ $labels.pod }} cannot pull image"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) cannot pull image. Check image name and registry credentials."
 

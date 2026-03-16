@@ -84,23 +84,18 @@ spec:
   - name: k8up.backup.health
     interval: 1m
     rules:
-    # Критический алерт - нет метрик для конкретного PVC длительное время
+    # Критический алерт - бэкап не запускался более 24 часов (по push_time_seconds из Pushgateway)
+    # timestamp() нельзя использовать — Prometheus обновляет его при каждом scrape,
+    # поэтому timestamp() всегда ~now даже если k8up не запускался.
     - alert: K8upBackupStale
-      expr: |
-        (
-          time() - timestamp(
-            max by (namespace, pvc) (
-              k8up_backup_restic_changed_files_during_backup
-            )
-          )
-        ) > 86400  # 24 hours
+      expr: (time() - push_time_seconds{job="restic_backup"}) > 86400
       for: 1h
       labels:
         severity: critical
       annotations:
-        summary: "K8up backup is stale ({{ $labels.namespace }}/{{ $labels.pvc }})"
+        summary: "K8up backup is stale (namespace {{ $labels.instance }})"
         description: |
-          No backup activity detected for PVC {{ $labels.pvc }} in namespace {{ $labels.namespace }} for more than 24 hours.
+          No backup activity detected for namespace {{ $labels.instance }} for more than 24 hours.
           Last backup was {{ $value | humanizeDuration }} ago.
           **Action:** 🚨 Check backup schedule and job status
 

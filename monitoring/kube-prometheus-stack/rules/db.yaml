@@ -40,18 +40,18 @@ spec:
     - alert: PostgreSQLHighConnections
       expr: |
         (
-          pg_stat_database_numbackends{datname="postgres"} > 10
+          sum without(datname) (pg_stat_database_numbackends{datname!~"template.*|postgres"})
         )
         * on(instance) group_left
           pg_static
+        > 50
       for: 10m
       labels:
         severity: warning
       annotations:
-        summary: "PostgreSQL high connection count"
+        summary: "PostgreSQL high connection count on {{ $labels.host }}"
         description: |
-          **Connections:** {{ $value }}
-          **Database:** {{ $labels.datname }}
+          **Total connections (user DBs):** {{ $value }}
           **Host:** {{ $labels.host }}
           **Action:** 🚦 Check connection pool
 
@@ -119,26 +119,6 @@ spec:
           **Host:** {{ $labels.hostname }}
           **Master:** {{ $labels.master_host }}
           **Action:** 🚨 Replica is falling behind!
-
-    - alert: MySQLReplicationStopped
-      expr: |
-        (
-          mysql_slave_status_replica_io_running == 0
-          or
-          mysql_slave_status_replica_sql_running == 0
-        )
-        * on(instance) group_left
-          mysql_version_info
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: "MySQL replication STOPPED on {{ $labels.host }}"
-        description: |
-          **IO Running:** {{ $labels.mysql_slave_status_replica_io_running }}
-          **SQL Running:** {{ $labels.mysql_slave_status_replica_sql_running }}
-          **Host:** {{ $labels.hostname }}
-          **Action:** 🔄 Restart replication threads
 
     - alert: MySQLReplicationLagWarning
       expr: |
