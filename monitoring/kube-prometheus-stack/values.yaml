@@ -163,66 +163,62 @@ alertmanager:
       repeat_interval: 2h
       routes:
 
-        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): не слать алерты по бэкапам ---
+        # --- Бэкап-алерты: слать в critical, но заглушать в окно 3–7 МСК (00:00–04:00 UTC) ---
         - matchers:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
-          active_time_intervals:
+          receiver: critical
+          mute_time_intervals:
             - backup-maintenance
-          receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): высокая нагрузка на control-plane от бэкапов ---
+        # --- Окно бэкапов 3–7 МСК: шум от нагрузки во время бэкапов ---
         - matchers:
             - alertname="NodeSystemSaturation"
             - instance=~"10\\.0\\.0\\.2.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - backup-maintenance
-          receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): нода bigb при бэкапах ---
         - matchers:
             - alertname=~"NodeCPUAnomaly|NodeHighCPU"
             - instance=~"bigb\\.home.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - backup-maintenance
-          receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): CPU throttling и высокий CPU у backup-джобов ---
         - matchers:
             - alertname="CPUThrottlingHigh"
             - pod=~".*backup.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - backup-maintenance
-          receiver: "null"
           continue: false
 
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~".*backup.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - backup-maintenance
-          receiver: "null"
           continue: false
 
-        # --- Окно tdarr 0–12 МСК (21:00–09:00 UTC): нода только .3, под только tdarr ---
-        # Node CPU: только 10.0.0.3
+        # --- Окно tdarr 0–12 МСК (21:00–09:00 UTC): шум от транскодирования ---
         - matchers:
             - alertname=~"NodeCPUHighUsage|NodeCPUAnomaly|NodeHighCPU"
             - instance=~"10\\.0\\.0\\.3.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - tdarr-transcode
-          receiver: "null"
           continue: false
 
-        # Pod CPU: только tdarr
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~"tdarr.*"
-          active_time_intervals:
+          receiver: telegram
+          mute_time_intervals:
             - tdarr-transcode
-          receiver: "null"
           continue: false
 
         # --- CRITICAL ---
