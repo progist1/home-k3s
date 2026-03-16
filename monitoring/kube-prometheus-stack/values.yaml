@@ -163,37 +163,37 @@ alertmanager:
       repeat_interval: 2h
       routes:
 
-        # --- Окно бэкапов 3–7 МСК: не слать алерты по бэкапам ---
+        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): не слать алерты по бэкапам ---
         - matchers:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
-          mute_time_intervals:
+          active_time_intervals:
             - backup-maintenance
           receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК: высокая нагрузка на control-plane от бэкапов ---
+        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): высокая нагрузка на control-plane от бэкапов ---
         - matchers:
             - alertname="NodeSystemSaturation"
             - instance=~"10\\.0\\.0\\.2.*"
-          mute_time_intervals:
+          active_time_intervals:
             - backup-maintenance
           receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК: нода bigb при бэкапах ---
+        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): нода bigb при бэкапах ---
         - matchers:
             - alertname=~"NodeCPUAnomaly|NodeHighCPU"
             - instance=~"bigb\\.home.*"
-          mute_time_intervals:
+          active_time_intervals:
             - backup-maintenance
           receiver: "null"
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК: CPU throttling и высокий CPU у backup-джобов ---
+        # --- Окно бэкапов 3–7 МСК (00:00–04:00 UTC): CPU throttling и высокий CPU у backup-джобов ---
         - matchers:
             - alertname="CPUThrottlingHigh"
             - pod=~".*backup.*"
-          mute_time_intervals:
+          active_time_intervals:
             - backup-maintenance
           receiver: "null"
           continue: false
@@ -201,17 +201,17 @@ alertmanager:
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~".*backup.*"
-          mute_time_intervals:
+          active_time_intervals:
             - backup-maintenance
           receiver: "null"
           continue: false
 
-        # --- Окно tdarr 0–12 МСК: нода только .3, под только tdarr ---
+        # --- Окно tdarr 0–12 МСК (21:00–09:00 UTC): нода только .3, под только tdarr ---
         # Node CPU: только 10.0.0.3
         - matchers:
             - alertname=~"NodeCPUHighUsage|NodeCPUAnomaly|NodeHighCPU"
             - instance=~"10\\.0\\.0\\.3.*"
-          mute_time_intervals:
+          active_time_intervals:
             - tdarr-transcode
           receiver: "null"
           continue: false
@@ -220,7 +220,7 @@ alertmanager:
         - matchers:
             - alertname="PodHighCPUUsage"
             - pod=~"tdarr.*"
-          mute_time_intervals:
+          active_time_intervals:
             - tdarr-transcode
           receiver: "null"
           continue: false
