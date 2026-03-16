@@ -4,7 +4,7 @@ metadata:
   name: backup-mysql
   namespace: apps
 spec:
-  schedule: "30 5 * * *"
+  schedule: "0 4 * * *"
   timeZone: "Europe/Moscow"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
@@ -12,7 +12,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           containers:
             - name: mysqldump
               image: mysql:8.4.8
@@ -22,15 +22,21 @@ spec:
                 - |
                   set -euo pipefail
                   TS=$(date +%Y_%m_%d_%H_%M_%S)
-                  FILE="/backups/mysql_${TS}.sql.gz"
-                  echo "[*] Dumping MySQL → $FILE"
-                  mysqldump --host=mysql.apps.svc.cluster.local \
-                            --user=root \
-                            --single-transaction \
-                            --quick \
-                            --all-databases \
-                            2>$FILE.log \
-                  | gzip > "$FILE"
+                  HOST=mysql.apps.svc.cluster.local
+
+                  DATABASES=$(mysql --host=$HOST --user=root --batch --skip-column-names \
+                    -e "SHOW DATABASES;" | grep -Ev "^(information_schema|performance_schema|sys|mysql)$")
+
+                  for DB in $DATABASES; do
+                    FILE="/backups/${DB}_${TS}.sql.gz"
+                    echo "[*] Dumping $DB → $FILE"
+                    mysqldump --host=$HOST \
+                              --user=root \
+                              --single-transaction \
+                              --quick \
+                              "$DB" \
+                    | gzip > "$FILE"
+                  done
               env:
                 - name: MYSQL_PWD
                   valueFrom:
