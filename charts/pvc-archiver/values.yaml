@@ -40,7 +40,7 @@ concurrencyPolicy: Forbid
 successfulJobsHistoryLimit: 0
 failedJobsHistoryLimit: 2
 backoffLimit: 0
-ttlSecondsAfterFinished: 5
+ttlSecondsAfterFinished: null  # null = не удалять автоматически, CronJob сам управляет историей через failedJobsHistoryLimit
 
 nodeSelector: {}
 tolerations: []
