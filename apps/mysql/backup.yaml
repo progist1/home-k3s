@@ -23,20 +23,24 @@ spec:
                   set -euo pipefail
                   TS=$(date +%Y_%m_%d_%H_%M_%S)
                   HOST=mysql.apps.svc.cluster.local
+                  WORKDIR=$(mktemp -d -p /backups)
 
                   DATABASES=$(mysql --host=$HOST --user=root --batch --skip-column-names \
                     -e "SHOW DATABASES;" | grep -Ev "^(information_schema|performance_schema|sys|mysql)$")
 
                   for DB in $DATABASES; do
-                    FILE="/backups/${DB}_${TS}.sql.gz"
-                    echo "[*] Dumping $DB → $FILE"
+                    echo "[*] Dumping $DB → $WORKDIR/${DB}.sql"
                     mysqldump --host=$HOST \
                               --user=root \
                               --single-transaction \
                               --quick \
-                              "$DB" \
-                    | gzip > "$FILE"
+                              "$DB" > "$WORKDIR/${DB}.sql"
                   done
+
+                  FILE="/backups/mysql_${TS}.tar.gz"
+                  echo "[*] Archiving → $FILE"
+                  tar -czf "$FILE" -C "$WORKDIR" .
+                  rm -rf "$WORKDIR"
               env:
                 - name: MYSQL_PWD
                   valueFrom:
