@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-notify
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: frigate-notify
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: frigate-notify
+  template:
+    metadata:
+      labels:
+        app: frigate-notify
+        app.kubernetes.io/name: frigate-notify
+    spec:
+      nodeSelector:
+        node.role: edge
+        node.workload.class: cctv
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+      containers:
+        - name: frigate-notify
+          image: ghcr.io/0x2142/frigate-notify:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: api
+              containerPort: 8000
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: FN_ALERTS__TELEGRAM__TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-notify-secrets
+                  key: telegram-token
+            - name: FN_ALERTS__TELEGRAM__CHATID
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-notify-secrets
+                  key: telegram-chatid
+            - name: FN_FRIGATE__USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: terassa-user
+            - name: FN_FRIGATE__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secrets
+                  key: terassa-pwd
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /api/v1/readyz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/v1/healthz
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: frigate-notify-config
+

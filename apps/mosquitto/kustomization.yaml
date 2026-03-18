@@ -1,6 +1,4 @@
 resources:
-  - data.yaml
   - configmap.yaml
   - deployment.yaml
   - service.yaml
-  - backup.yaml

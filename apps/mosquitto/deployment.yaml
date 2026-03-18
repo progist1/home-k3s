@@ -16,17 +16,26 @@ spec:
         app: mosquitto
         app.kubernetes.io/name: mosquitto
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - k3s-pi
+      nodeSelector:
+        node.role: edge
+        node.workload.class: cctv
       tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
         - key: node.hardware.arch
           operator: Equal
           value: "arm64"
@@ -64,5 +73,6 @@ spec:
           configMap:
             name: mosquitto-config
         - name: data
-          persistentVolumeClaim:
-            claimName: mosquitto-data-pvc
+          hostPath:
+            path: /opt/mosquitto/data
+            type: Directory

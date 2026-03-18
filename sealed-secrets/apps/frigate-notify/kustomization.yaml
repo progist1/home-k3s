@@ -1,0 +1,3 @@
+resources:
+  - frigate-notify-secrets-sealed.yaml
+

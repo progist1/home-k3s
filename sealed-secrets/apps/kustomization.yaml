@@ -15,4 +15,5 @@ resources:
   - cloud-dbeaver
   - nextcloud
   - frigate
+  - frigate-notify
   - gatus

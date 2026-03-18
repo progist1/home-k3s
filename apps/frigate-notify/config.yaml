@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frigate-notify-config
+  namespace: apps
+data:
+  config.yml: |
+    app:
+      # "reviews" sends notifications only for Frigate alerts (not raw detections).
+      mode: events
+      api:
+        enabled: true
+        port: 8000
+
+    frigate:
+      # Service name from inside cluster.
+      server: frigate:5000
+      # Used to build links that work from outside the cluster.
+      public_url: https://cctv.home
+
+      webapi:
+        enabled: false
+        interval: 30
+
+      mqtt:
+        enabled: true
+        server: mosquitto:1883
+        port: 1883
+        clientid: frigate-notify
+        topic_prefix: frigate
+
+    alerts:
+      general:
+        title: ГОСТИ!
+        snap_hires: true
+      telegram:
+        enabled: true
+        # token & chatid are injected via env vars (from SealedSecret)
+
