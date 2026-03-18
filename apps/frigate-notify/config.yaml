@@ -24,7 +24,7 @@ data:
 
       mqtt:
         enabled: true
-        server: mosquitto:1883
+        server: mosquitto
         port: 1883
         clientid: frigate-notify
         topic_prefix: frigate

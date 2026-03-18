@@ -48,6 +48,8 @@ spec:
           env:
             - name: TZ
               value: Europe/Moscow
+            - name: FN_CONFIGFILE
+              value: /app/config.yml
             - name: FN_ALERTS__TELEGRAM__TOKEN
               valueFrom:
                 secretKeyRef:
@@ -70,7 +72,8 @@ spec:
                   key: terassa-pwd
           volumeMounts:
             - name: config
-              mountPath: /app/config
+              mountPath: /app/config.yml
+              subPath: config.yml
               readOnly: true
           readinessProbe:
             httpGet:
