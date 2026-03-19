@@ -28,6 +28,10 @@ spec:
           operator: Equal
           value: low
           effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
       containers:
         - name: xray
           image: teddysun/xray:26.2.6
