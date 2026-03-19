@@ -48,6 +48,12 @@ spec:
           env:
             - name: TZ
               value: Europe/Moscow
+            - name: GODEBUG
+              value: http2client=0
+            - name: HTTPS_PROXY
+              value: http://xray-edge.infra.svc.cluster.local:10809
+            - name: NO_PROXY
+              value: "frigate,mosquitto,*.svc.cluster.local,*.cluster.local,10.0.0.0/8,192.168.0.0/16"
             - name: FN_CONFIGFILE
               value: /app/config.yml
             - name: FN_ALERTS__TELEGRAM__TOKEN

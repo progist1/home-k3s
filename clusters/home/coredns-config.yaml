@@ -50,3 +50,24 @@ spec:
         kind: Deployment
         name: coredns
         namespace: kube-system
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: coredns
+          namespace: kube-system
+        spec:
+          replicas: 4
+          template:
+            spec:
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      k8s-app: kube-dns
+      target:
+        kind: Deployment
+        name: coredns
+        namespace: kube-system

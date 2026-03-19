@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xray-edge
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xray-edge
+  template:
+    metadata:
+      labels:
+        app: xray-edge
+    spec:
+      nodeSelector:
+        node.role: edge
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+      containers:
+        - name: xray
+          image: teddysun/xray:26.2.6
+          volumeMounts:
+            - name: config
+              mountPath: /etc/xray
+              readOnly: true
+          ports:
+            - containerPort: 10808
+            - containerPort: 10809
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+      volumes:
+        - name: config
+          secret:
+            secretName: xray-config

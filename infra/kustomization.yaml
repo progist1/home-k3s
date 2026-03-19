@@ -3,6 +3,7 @@ resources:
   - renovate
   - traefik-middleware
   - xray
+  - xray-edge
   - proxy
   - reloader
   - intel-device-plugin
