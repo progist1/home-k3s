@@ -4,70 +4,14 @@ metadata:
   name: coredns-config
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 5m
+  # force: true enables --force-conflicts on server-side apply.
+  # This ensures Flux wins field ownership over k3s's addon controller,
+  # which resets replicas to 1 and removes tolerations on k3s restart.
+  force: true
   targetNamespace: kube-system
   sourceRef:
     kind: GitRepository
     name: flux-system
   path: ./cluster-addons
   prune: true
-  patches:
-    - patch: |
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: coredns
-          namespace: kube-system
-        spec:
-          template:
-            spec:
-              tolerations:
-              - key: "node.hardware.gpu"
-                operator: "Equal"
-                value: "intel-igpu"
-                effect: "NoSchedule"
-              - key: "node.hardware.arch"
-                operator: "Equal"
-                value: "arm64"
-                effect: "NoSchedule"
-              - key: "node.location.type"
-                operator: "Equal"
-                value: "remote"
-                effect: "NoSchedule"
-              - key: "node.role"
-                operator: "Equal"
-                value: "edge"
-                effect: "NoSchedule"
-              - key: "node.reliability"
-                operator: "Equal"
-                value: "low"
-                effect: "NoSchedule"
-              - key: "node.workload.class"
-                operator: "Equal"
-                value: "cctv"
-                effect: "NoSchedule"
-      target:
-        kind: Deployment
-        name: coredns
-        namespace: kube-system
-    - patch: |
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: coredns
-          namespace: kube-system
-        spec:
-          replicas: 4
-          template:
-            spec:
-              topologySpreadConstraints:
-                - maxSkew: 1
-                  topologyKey: kubernetes.io/hostname
-                  whenUnsatisfiable: DoNotSchedule
-                  labelSelector:
-                    matchLabels:
-                      k8s-app: kube-dns
-      target:
-        kind: Deployment
-        name: coredns
-        namespace: kube-system
