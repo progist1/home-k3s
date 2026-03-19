@@ -16,7 +16,6 @@ data:
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
-        import /etc/coredns/custom/*.server
         prometheus :9153
         forward . /etc/resolv.conf
         cache 30
@@ -24,6 +23,7 @@ data:
         reload
         loadbalance
     }
+    import /etc/coredns/custom/*.server
   NodeHosts: |
     10.0.0.3 k3s-gpu
     10.0.0.5 k3s-pi
