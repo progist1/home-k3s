@@ -253,6 +253,8 @@ alertmanager:
             chat_id: 'redacted'
             parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
+            http_config:
+              proxy_url: http://xray.infra.svc.cluster.local:10809
 
       # critical = telegram + email
       - name: critical
@@ -261,6 +263,8 @@ alertmanager:
             chat_id: 'redacted'
             parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
+            http_config:
+              proxy_url: http://xray.infra.svc.cluster.local:10809
 
         email_configs:
           - to: progist11@gmail.com
@@ -278,6 +282,8 @@ alertmanager:
             disable_notifications: true
             parse_mode: HTML
             message: '{{ template "telegram.message" . }}'
+            http_config:
+              proxy_url: http://xray.infra.svc.cluster.local:10809
 
       - name: "null"
 
