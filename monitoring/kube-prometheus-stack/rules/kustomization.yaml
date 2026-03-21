@@ -14,3 +14,4 @@ resources:
   - k8up.yaml
   - mailu.yaml
   - snmp.yaml
+  - pods.yaml

@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pod-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: pods
+    interval: 30s
+    rules:
+
+    # Под перезапустился 3+ раз за последний час — не в CrashLoopBackOff, но уже нехорошо.
+    # Исключаем Job/CronJob поды (они завершаются по-настоящему) и kube-system/monitoring шум.
+    - alert: PodHighRestartRate
+      expr: |
+        (
+          increase(kube_pod_container_status_restarts_total{
+            namespace=~"apps|infra"
+          }[1h]) >= 3
+        )
+        * on(namespace, pod) group_left(owner_kind)
+        kube_pod_owner{owner_kind!~"Job|CronJob"}
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod restarting frequently ({{ $labels.namespace }}/{{ $labels.pod }})"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} ({{ $labels.namespace }}) restarted {{ $value | printf \"%.0f\" }} times in the last hour."
+
+    # Под был эвиктирован — disk/memory pressure на ноде достигло порога kubelet.
+    # Не ловится никакими другими правилами (фаза Failed, reason Evicted).
+    - alert: PodEvicted
+      expr: |
+        kube_pod_status_reason{reason="Evicted", namespace=~"apps|infra|monitoring"} == 1
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod evicted ({{ $labels.namespace }}/{{ $labels.pod }})"
+        description: "Pod {{ $labels.pod }} in {{ $labels.namespace }} was evicted by kubelet, likely due to disk or memory pressure on the node."
+
+    # Readiness probe флапает — под входит и выходит из Ready-состояния.
+    # Такое поведение не ловится KubePodNotReady (он смотрит Pending/Unknown).
+    - alert: PodReadinessFlapping
+      expr: |
+        changes(kube_pod_container_status_ready{
+          namespace=~"apps|infra"
+        }[15m]) >= 4
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod readiness flapping ({{ $labels.namespace }}/{{ $labels.pod }})"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} ({{ $labels.namespace }}) changed readiness state {{ $value | printf \"%.0f\" }} times in the last 15 minutes."
