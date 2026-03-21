@@ -139,7 +139,7 @@ spec:
               mountPath: /dev/dri
           resources:
             requests:
-              cpu: "500m"
+              cpu: "2000m"
               memory: "2Gi"
             limits:
               cpu: "4000m"
