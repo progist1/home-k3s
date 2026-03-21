@@ -7,7 +7,7 @@ data:
   config.yml: |
     app:
       # "reviews" sends notifications only for Frigate alerts (not raw detections).
-      mode: events
+      mode: reviews
       api:
         enabled: true
         port: 8000
