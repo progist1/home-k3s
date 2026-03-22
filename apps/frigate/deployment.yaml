@@ -40,7 +40,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: frigate
-          image: ghcr.io/blakeblackshear/frigate:0.17.0
+          image: ghcr.io/blakeblackshear/frigate:0.17.1
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
