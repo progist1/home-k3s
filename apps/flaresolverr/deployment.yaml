@@ -16,6 +16,13 @@ spec:
         app: flaresolverr
         app.kubernetes.io/name: flaresolverr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: flaresolverr
           image: ghcr.io/flaresolverr/flaresolverr:v3.4.6

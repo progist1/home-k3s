@@ -16,6 +16,13 @@ spec:
         app: transmission
         app.kubernetes.io/name: transmission
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       securityContext:
         fsGroup: 568
       containers:

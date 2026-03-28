@@ -18,6 +18,13 @@ spec:
         app.kubernetes.io/name: tdarr-server
         app.kubernetes.io/part-of: tdarr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       # securityContext не задаём — образ использует s6-applyuidgid, иначе "unable to set supplementary group list: Operation not permitted"
       containers:
         - name: tdarr-server
