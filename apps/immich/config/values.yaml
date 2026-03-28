@@ -123,5 +123,5 @@ machine-learning:
       gpu.intel.com/i915: "1"
     limits:
       cpu: "2000m"
-      memory: "6Gi"
+      memory: "20Gi"
       gpu.intel.com/i915: "1"
