@@ -12,3 +12,4 @@ resources:
   - service-ssh.yaml
   - backups-cronjob.yaml
   - backups-rbac.yaml
+  - ci-rbac.yaml
