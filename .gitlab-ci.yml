@@ -9,7 +9,8 @@ validate-manifests:
     - set -eu
     - apk add --no-cache bash curl
     # kubeconform
-    - curl -fsSL -o /usr/local/bin/kubeconform https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64
+    - curl -fsSL -o /tmp/kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+    - tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
     - chmod +x /usr/local/bin/kubeconform
     # kubectl (includes `kubectl kustomize`)
     - curl -fsSL -o /usr/local/bin/kubectl https://dl.k8s.io/release/v1.33.6/bin/linux/amd64/kubectl
