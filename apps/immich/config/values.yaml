@@ -62,7 +62,7 @@ server:
       mountPath: /usr/src/app/upload/encoded-video
     library-dummy:
       enabled: true
-      existingClaim: immich-hdd-library-pvc
+      existingClaim: immich-originals-pvc
       mountPath: /usr/src/app/upload/library
     upload:
       enabled: true
@@ -94,9 +94,16 @@ server:
       effect: NoSchedule
 machine-learning:
   enabled: true
+  nodeSelector:
+    node.hardware.gpu: intel-igpu
+  tolerations:
+    - key: node.hardware.gpu
+      operator: Equal
+      value: intel-igpu
+      effect: NoSchedule
   image:
     repository: ghcr.io/immich-app/immich-machine-learning
-    tag: v2.6.3
+    tag: v2.6.3-openvino
     pullPolicy: IfNotPresent
   persistence:
     cache:
@@ -113,6 +120,8 @@ machine-learning:
     requests:
       cpu: "500m"
       memory: "1Gi"
+      gpu.intel.com/i915: "1"
     limits:
       cpu: "2000m"
-      memory: "2Gi"
+      memory: "6Gi"
+      gpu.intel.com/i915: "1"
