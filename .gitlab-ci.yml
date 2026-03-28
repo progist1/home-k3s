@@ -36,3 +36,4 @@ validate-manifests:
       validate "apps" "./apps"
       validate "monitoring" "./monitoring"
       validate "sealed-secrets" "./sealed-secrets"
+      validate "gitlab" "./gitlab"
