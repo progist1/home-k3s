@@ -1,9 +1,37 @@
-image: busybox
+image: alpine:3.20
 
 stages:
-  - dummy
+  - validate
 
-dummy:
-  stage: dummy
+validate-manifests:
+  stage: validate
   script:
-    - echo "dummy"
+    - set -eu
+    - apk add --no-cache bash curl
+    # kubeconform
+    - curl -fsSL -o /usr/local/bin/kubeconform https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64
+    - chmod +x /usr/local/bin/kubeconform
+    # kubectl (includes `kubectl kustomize`)
+    - curl -fsSL -o /usr/local/bin/kubectl https://dl.k8s.io/release/v1.33.6/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - kubectl version --client=true
+    - kubeconform -v
+    - |
+      validate() {
+        name="$1"
+        path="$2"
+        echo ""
+        echo "==> ${name}: ${path}"
+        kubectl kustomize "${path}" | kubeconform \
+          -strict \
+          -ignore-missing-schemas \
+          -summary \
+          -kubernetes-version 1.33.0
+      }
+      validate "clusters/home" "./clusters/home"
+      validate "namespaces" "./namespaces"
+      validate "helm" "./helm"
+      validate "infra" "./infra"
+      validate "apps" "./apps"
+      validate "monitoring" "./monitoring"
+      validate "sealed-secrets" "./sealed-secrets"
