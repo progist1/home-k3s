@@ -38,8 +38,6 @@ spec:
           operator: Equal
           value: low
           effect: NoSchedule
-      securityContext:
-        oomScoreAdj: 500
       containers:
         - name: frigate
           image: ghcr.io/blakeblackshear/frigate:0.17.1
