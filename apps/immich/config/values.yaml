@@ -38,7 +38,7 @@ immich:
     enabled: false
   persistence:
     library:
-      existingClaim: immich-upload-pvc
+      existingClaim: immich-pvc
 
 server:
   enabled: true
@@ -60,18 +60,14 @@ server:
       enabled: true
       existingClaim: immich-hdd-videos-pvc
       mountPath: /usr/src/app/upload/encoded-video
-    library-dummy:
+    profile:
       enabled: true
-      existingClaim: immich-originals-pvc
-      mountPath: /usr/src/app/upload/library
-    upload:
+      existingClaim: immich-profile-pvc
+      mountPath: /usr/src/app/upload/profile
+    thumbs:
       enabled: true
-      existingClaim: immich-memories-upload-pvc
-      mountPath: /usr/src/app/upload/upload
-    external:
-      enabled: true
-      existingClaim: immich-photos-pvc
-      mountPath: /mnt/photos
+      existingClaim: immich-thumbs-pvc
+      mountPath: /usr/src/app/upload/thumbs
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
