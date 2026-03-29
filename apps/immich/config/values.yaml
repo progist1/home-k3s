@@ -79,7 +79,7 @@ server:
       gpu.intel.com/i915: "1"
     limits:
       cpu: "8000m"
-      memory: "8Gi"
+      memory: "12Gi"
       gpu.intel.com/i915: "1"
   nodeSelector:
     node.hardware.gpu: intel-igpu
