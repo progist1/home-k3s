@@ -33,7 +33,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: wizarr
-          image: ghcr.io/wizarrrr/wizarr:v2026.2.1
+          image: ghcr.io/wizarrrr/wizarr:v2026.3.0
           ports:
             - containerPort: 5690
           env:
