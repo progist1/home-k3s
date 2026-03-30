@@ -97,13 +97,11 @@ machine-learning:
       pod:
         affinity:
           podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                podAffinityTerm:
-                  labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/name: machine-learning
-                  topologyKey: kubernetes.io/hostname
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: machine-learning
+                topologyKey: kubernetes.io/hostname
         tolerations:
           - key: node.hardware.gpu
             operator: Equal
