@@ -132,6 +132,15 @@ machine-learning:
             repository: ghcr.io/immich-app/immich-machine-learning
             tag: v2.6.3-openvino
             pullPolicy: IfNotPresent
+          probes:
+            liveness:
+              spec:
+                timeoutSeconds: 10
+                failureThreshold: 10
+            readiness:
+              spec:
+                timeoutSeconds: 10
+                failureThreshold: 10
           envFrom:
             - secretRef:
                 name: immich-secrets
