@@ -134,6 +134,7 @@ machine-learning:
           env:
             IMMICH_PORT: "3003"
             TRANSFORMERS_CACHE: /cache
+            MACHINE_LEARNING_HTTP_KEEPALIVE_TIMEOUT_S: "0"
           resources:
             requests:
               cpu: "500m"
