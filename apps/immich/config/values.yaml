@@ -39,7 +39,7 @@ server:
   enabled: true
   controllers:
     main:
-      strategy: Recreate
+      strategy: RollingUpdate
       pod:
         securityContext:
           runAsUser: 1000
@@ -140,7 +140,7 @@ machine-learning:
               memory: "1Gi"
               gpu.intel.com/i915: "1"
             limits:
-              cpu: "2000m"
+              cpu: "4000m"
               memory: "20Gi"
               gpu.intel.com/i915: "1"
   persistence:
