@@ -93,6 +93,7 @@ machine-learning:
   controllers:
     main:
       replicas: 2
+      strategy: Recreate
       pod:
         affinity:
           podAntiAffinity:
