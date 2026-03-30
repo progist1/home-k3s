@@ -93,7 +93,10 @@ machine-learning:
   controllers:
     main:
       replicas: 2
-      strategy: Recreate
+      strategy: RollingUpdate
+      rollingUpdate:
+        unavailable: 1
+        surge: 0
       pod:
         affinity:
           podAntiAffinity:
