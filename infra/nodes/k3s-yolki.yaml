@@ -22,7 +22,7 @@ metadata:
     node.storage.mount.cctv: "true"
 
     # Спец-железо
-    node.hardware.gpu: none
+    node.hardware.gpu: intel-igpu
     node.hardware.video-accel: vaapi
     node.hardware.usb: "true"
     node.hardware.arch: amd64
