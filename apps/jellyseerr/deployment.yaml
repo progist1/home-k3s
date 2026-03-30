@@ -16,6 +16,13 @@ spec:
         app: jellyseerr
         app.kubernetes.io/name: jellyseerr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: jellyseerr
           image: fallenbagel/jellyseerr:2.7.3

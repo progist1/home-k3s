@@ -16,6 +16,13 @@ spec:
         app: radarr
         app.kubernetes.io/name: radarr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: radarr
           image: linuxserver/radarr:6.0.4

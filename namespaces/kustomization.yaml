@@ -7,3 +7,5 @@ resources:
   - monitoring.yaml
   - gitlab.yaml
   - gitlab-runner.yaml
+  - homelab-bots.yaml
+  - jellycleaner.yaml

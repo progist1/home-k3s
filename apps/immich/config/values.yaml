@@ -1,118 +1,153 @@
-env:
-  - name: IMMICH_LOG_LEVEL
-    value: 'debug'
-  - name: REDIS_HOSTNAME
-    value: 'redis.apps.svc.cluster.local'
-  - name: TRANSFORMERS_CACHE
-    value: '/cache'
-  - name: REDIS_DBINDEX
-    value: "5"
-  - name: REDIS_PORT
-    value: "6379"
-  - name: IMMICH_PORT
-    value: "2283"
-  - name: DB_HOSTNAME
-    value: "pgvecto.apps.svc.cluster.local"
-  - name: DB_PORT
-    value: "5432"
-  - name: IMMICH_MACHINE_LEARNING_URL
-    value: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
-  - name: DB_DATABASE_NAME
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_DATABASE_NAME
-  - name: DB_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_PASSWORD
-  - name: DB_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: immich-secrets
-        key: DB_USERNAME
+controllers:
+  main:
+    containers:
+      main:
+        env:
+          IMMICH_LOG_LEVEL: debug
+          REDIS_HOSTNAME: redis.apps.svc.cluster.local
+          REDIS_DBINDEX: "5"
+          REDIS_PORT: "6379"
+          DB_HOSTNAME: pgvecto.apps.svc.cluster.local
+          DB_PORT: "5432"
+          DB_DATABASE_NAME:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_DATABASE_NAME
+          DB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_PASSWORD
+          DB_USERNAME:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_USERNAME
 
 immich:
   metrics:
     enabled: false
   persistence:
     library:
-      existingClaim: immich-upload-pvc
+      existingClaim: immich-pvc
+
+valkey:
+  enabled: false
 
 server:
   enabled: true
-  strategy:
-    type: Recreate
-  image:
-    repository: ghcr.io/immich-app/immich-server
-    tag: v2.6.3
-    pullPolicy: IfNotPresent
-  envFrom:
-    - secretRef:
-        name: immich-secrets
+  controllers:
+    main:
+      strategy: RollingUpdate
+      pod:
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+        nodeSelector:
+          node.hardware.gpu: intel-igpu
+        tolerations:
+          - key: node.hardware.gpu
+            operator: Equal
+            value: intel-igpu
+            effect: NoSchedule
+      containers:
+        main:
+          image:
+            repository: ghcr.io/immich-app/immich-server
+            tag: v2.6.3
+            pullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: immich-secrets
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2Gi"
+              gpu.intel.com/i915: "1"
+            limits:
+              cpu: "8000m"
+              memory: "12Gi"
+              gpu.intel.com/i915: "1"
   persistence:
     backups:
-      enabled: true
       existingClaim: immich-hdd-backups-pvc
-      mountPath: /usr/src/app/upload/backups
+      globalMounts:
+        - path: /data/backups
     encoded-video:
-      enabled: true
       existingClaim: immich-hdd-videos-pvc
-      mountPath: /usr/src/app/upload/encoded-video
-    library-dummy:
-      enabled: true
-      existingClaim: immich-hdd-library-pvc
-      mountPath: /usr/src/app/upload/library
-    upload:
-      enabled: true
-      existingClaim: immich-hdd-upload-pvc
-      mountPath: /usr/src/app/upload/upload
-    external:
-      enabled: true
-      existingClaim: immich-photos-pvc
-      mountPath: /mnt/photos
-  podSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "2Gi"
-      gpu.intel.com/i915: "1"
-    limits:
-      cpu: "2000m"
-      memory: "8Gi"
-      gpu.intel.com/i915: "1"
-  nodeSelector:
-    node.hardware.gpu: intel-igpu
-  tolerations:
-    - key: node.hardware.gpu
-      operator: Equal
-      value: intel-igpu
-      effect: NoSchedule
+      globalMounts:
+        - path: /data/encoded-video
+    profile:
+      existingClaim: immich-profile-pvc
+      globalMounts:
+        - path: /data/profile
+    thumbs:
+      existingClaim: immich-thumbs-pvc
+      globalMounts:
+        - path: /data/thumbs
+
 machine-learning:
   enabled: true
-  image:
-    repository: ghcr.io/immich-app/immich-machine-learning
-    tag: v2.6.3
-    pullPolicy: IfNotPresent
+  controllers:
+    main:
+      replicas: 2
+      pod:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: machine-learning
+                  topologyKey: kubernetes.io/hostname
+        tolerations:
+          - key: node.hardware.gpu
+            operator: Equal
+            value: intel-igpu
+            effect: NoSchedule
+          - key: node.location.type
+            operator: Equal
+            value: remote
+            effect: NoSchedule
+          - key: node.role
+            operator: Equal
+            value: edge
+            effect: NoSchedule
+          - key: node.reliability
+            operator: Equal
+            value: low
+            effect: NoSchedule
+          - key: node.workload.class
+            operator: Equal
+            value: cctv
+            effect: NoSchedule
+      containers:
+        main:
+          image:
+            repository: ghcr.io/immich-app/immich-machine-learning
+            tag: v2.6.3-openvino
+            pullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: immich-secrets
+          env:
+            IMMICH_PORT: "3003"
+            TRANSFORMERS_CACHE: /cache
+            MACHINE_LEARNING_HTTP_KEEPALIVE_TIMEOUT_S: "0"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+              gpu.intel.com/i915: "1"
+            limits:
+              cpu: "4000m"
+              memory: "20Gi"
+              gpu.intel.com/i915: "1"
   persistence:
     cache:
-      enabled: true
       existingClaim: immich-fast-ml-pvc
-      mountPath: "/cache"
-      type: pvc
-  envFrom:
-    - secretRef:
-        name: immich-secrets
-  env:
-    IMMICH_PORT: "3003"
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "1Gi"
-    limits:
-      cpu: "2000m"
-      memory: "2Gi"
+      globalMounts:
+        - path: /cache

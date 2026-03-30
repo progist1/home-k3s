@@ -16,6 +16,13 @@ spec:
         app: sonarr
         app.kubernetes.io/name: sonarr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: sonarr
           image: linuxserver/sonarr:4.0.17

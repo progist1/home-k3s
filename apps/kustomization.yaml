@@ -29,7 +29,6 @@ resources:
   - tautulli
   - tdarr
   - wg-easy
-  - pihole
   - blocky
   - mosquitto
   - backups-pvc.yaml

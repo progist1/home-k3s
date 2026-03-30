@@ -16,6 +16,13 @@ spec:
         app: prowlarr
         app.kubernetes.io/name: prowlarr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: prowlarr
           image: linuxserver/prowlarr:2.3.0

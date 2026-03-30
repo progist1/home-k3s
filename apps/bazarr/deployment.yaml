@@ -16,6 +16,13 @@ spec:
         app: bazarr
         app.kubernetes.io/name: bazarr
     spec:
+      nodeSelector:
+        node.hardware.gpu: intel-igpu
+      tolerations:
+        - key: node.hardware.gpu
+          operator: Equal
+          value: intel-igpu
+          effect: NoSchedule
       containers:
         - name: bazarr
           image: lscr.io/linuxserver/bazarr:1.5.6
