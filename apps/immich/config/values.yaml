@@ -148,15 +148,16 @@ machine-learning:
             IMMICH_PORT: "3003"
             TRANSFORMERS_CACHE: /cache
             MACHINE_LEARNING_HTTP_KEEPALIVE_TIMEOUT_S: "0"
+            MACHINE_LEARNING_WORKERS: "2"
           resources:
             requests:
               cpu: "500m"
               memory: "1Gi"
-              gpu.intel.com/i915: "1"
+              gpu.intel.com/i915: "2"
             limits:
               cpu: "4000m"
-              memory: "20Gi"
-              gpu.intel.com/i915: "1"
+              memory: "24Gi"
+              gpu.intel.com/i915: "2"
   persistence:
     cache:
       existingClaim: immich-fast-ml-pvc
