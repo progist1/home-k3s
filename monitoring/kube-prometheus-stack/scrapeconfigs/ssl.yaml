@@ -27,7 +27,6 @@ spec:
         - nc.home:443
         - outline.home:443
         - docs.home:443
-        - old.photos.home:443
         - portainer.home:443
         - radarr.home:443
         - gitlab.home:443
@@ -69,7 +68,6 @@ spec:
         - gua.progist.ru:443
         - immich.progist.ru:443
         - photos.progist.ru:443
-        - old.photos.progist.ru:443
         - films.progist.ru:443
         - r.films.progist.ru:443
         - m.progist.ru:443

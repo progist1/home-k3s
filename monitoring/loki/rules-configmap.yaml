@@ -86,48 +86,6 @@ data:
               description: "Authentik: {{ $value }} flow executions in last 5 minutes (threshold: 3)"
 
       # ============================================
-      # PhotoPrism Authentication
-      # ============================================
-      - name: photoprism_auth
-        interval: 1m
-        rules:
-          - alert: PhotoPrismSuccessfulLogins
-            expr: |
-              sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(200\\)" [5m])) > 0
-            for: 0s
-            labels:
-              severity: info
-              service: photoprism
-              alert_type: auth_success
-            annotations:
-              summary: "PhotoPrism: Successful authentication detected"
-              description: "PhotoPrism: {{ $value }} successful login(s) detected in last 5 minutes"
-
-          - alert: PhotoPrismFailedLoginAttempts
-            expr: |
-              sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m])) > 3
-            for: 2m
-            labels:
-              severity: warning
-              service: photoprism
-              alert_type: auth_failures
-            annotations:
-              summary: "PhotoPrism: Multiple failed login attempts detected"
-              description: "PhotoPrism: {{ $value }} failed login attempts in last 5 minutes (threshold: 3)"
-
-          - alert: PhotoPrismBruteForceAttack
-            expr: |
-              sum(count_over_time({namespace="apps",app="photoprism"} |~ "POST /api/v1/session \\(401\\)" [5m])) > 10
-            for: 5m
-            labels:
-              severity: critical
-              service: photoprism
-              alert_type: brute_force
-            annotations:
-              summary: "PhotoPrism: CRITICAL - Brute force attack detected"
-              description: "PhotoPrism: {{ $value }} failed login attempts in last 5 minutes (threshold: 10) - possible brute force attack"
-
-      # ============================================
       # Jellyfin Authentication
       # ============================================
       - name: jellyfin_auth

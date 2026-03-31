@@ -23,7 +23,6 @@ resources:
   - immich
   - portainer
   - guacamole
-#  - photoprism
   - mailu
   - home-assistant
   - tautulli

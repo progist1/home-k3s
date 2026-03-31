@@ -1,3 +1,0 @@
-resources:
-  - photoprism-secrets-sealed.yaml
-  - photoprism-mariadb-secrets-sealed.yaml

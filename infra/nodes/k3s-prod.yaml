@@ -24,8 +24,9 @@ metadata:
     node.storage.mount.postgres: "true"
     node.storage.mount.prometheus: "true"
     node.storage.mount.gitlab: "true"
-    node.storage.mount.photoprism-mariadb: "true"
     node.storage.mount.redis: "true"
+    node.storage.mount.immich-pgvecto: "true"
+    
 
     # Спец-железо
     node.hardware.gpu: none

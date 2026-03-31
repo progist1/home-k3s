@@ -23,6 +23,8 @@ spec:
         k8up.io/backupcommand: 'sh -c ''PGPASSWORD="$POSTGRES_PASSWORD" pg_dumpall -U "$POSTGRES_USER"'''
         k8up.io/file-extension: .sql
     spec:
+      nodeSelector:
+        node.storage.mount.immich-pgvecto: "true"
       containers:
         - name: pgvecto
           image: ghcr.io/immich-app/postgres:15-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0

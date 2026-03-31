@@ -7,7 +7,6 @@ resources:
   - authentik
   - vaultwarden
   - guacamole
-  - photoprism
   - mailu
   - immich
   - mysql
