@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: it-tools
-          image: ghcr.io/sharevb/it-tools:latest
+          image: ghcr.io/sharevb/it-tools:v2026.1.4
           ports:
             - containerPort: 8080
           readinessProbe:
