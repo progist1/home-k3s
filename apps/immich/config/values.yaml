@@ -156,7 +156,7 @@ machine-learning:
               gpu.intel.com/i915: "1"
             limits:
               cpu: "4000m"
-              memory: "8Gi"
+              memory: "12Gi"
               gpu.intel.com/i915: "1"
   persistence:
     cache:
