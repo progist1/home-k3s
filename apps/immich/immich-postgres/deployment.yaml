@@ -27,7 +27,7 @@ spec:
         node.storage.mount.immich-pgvecto: "true"
       containers:
         - name: pgvecto
-          image: ghcr.io/immich-app/postgres:15-vectorchord0.4.3-pgvector0.8.0-pgvectors0.2.0
+          image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3
           ports:
             - containerPort: 5432
           securityContext:
@@ -57,7 +57,7 @@ spec:
               value: "512MB"
           volumeMounts:
             - name: data
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql/18/docker
             - name: dshm
               mountPath: /dev/shm
           readinessProbe:
