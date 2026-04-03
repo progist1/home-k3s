@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jellyseerr-external
+  name: seerr-external
   namespace: apps
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -17,10 +17,10 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: jellyseerr
+                name: seerr
                 port:
                   number: 80
   tls:
     - hosts:
         - r.films.progist.ru
-      secretName: jellyseerr-external-tls
+      secretName: seerr-external-tls

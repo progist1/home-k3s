@@ -21,7 +21,7 @@ spec:
         - start.home:443
         - photos.home:443
         - watch.home:443
-        - jellyseerr.home:443
+        - seerr.home:443
         - mail.home:443
         - memos.home:443
         - nc.home:443

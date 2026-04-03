@@ -9,7 +9,7 @@ resources:
   - stirling-pdf
   - prowlarr
   - wizarr
-  - jellyseerr
+  - seerr
   - homer
   - radarr
   - sonarr

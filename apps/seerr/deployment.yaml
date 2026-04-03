@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jellyseerr
+  name: seerr
   namespace: apps
   labels:
-    app.kubernetes.io/name: jellyseerr
+    app.kubernetes.io/name: seerr
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: jellyseerr
+      app: seerr
   template:
     metadata:
       labels:
-        app: jellyseerr
-        app.kubernetes.io/name: jellyseerr
+        app: seerr
+        app.kubernetes.io/name: seerr
     spec:
       nodeSelector:
         node.hardware.gpu: intel-igpu
@@ -25,9 +25,12 @@ spec:
           operator: Equal
           value: intel-igpu
           effect: NoSchedule
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containers:
-        - name: jellyseerr
-          image: fallenbagel/jellyseerr:2.7.3
+        - name: seerr
+          image: seerr-team/seerr:3.1.0
           ports:
             - containerPort: 5055
           env:
@@ -42,6 +45,16 @@ spec:
               mountPath: /app/config
             - name: cache
               mountPath: /app/config/cache
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
           readinessProbe:
             tcpSocket:
               port: 5055
@@ -63,8 +76,8 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: jellyseerr-config-pvc
+            claimName: seerr-config-pvc
         - name: cache
           persistentVolumeClaim:
-            claimName: jellyseerr-cache-pvc
+            claimName: seerr-cache-pvc
             
