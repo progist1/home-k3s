@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: pgdump
-              image: postgres:17.9
+              image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3
               command:
                 - /bin/sh
                 - -c
