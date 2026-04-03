@@ -66,3 +66,9 @@ spec:
       name: kps-secrets
       valuesKey: smtp-password
       targetPath: alertmanager.config.receivers[1].email_configs[0].auth_password
+
+    # cronitor dead man's switch
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: cronitor-url
+      targetPath: alertmanager.config.receivers[4].webhook_configs[0].url

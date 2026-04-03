@@ -239,10 +239,13 @@ alertmanager:
           receiver: info
           continue: false
 
-        # --- internal noise ---
+        # --- dead man's switch (Cronitor heartbeat) ---
         - matchers:
             - alertname="Watchdog"
-          receiver: "null"
+          receiver: cronitor
+          group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 1m
 
     receivers:
 
@@ -286,6 +289,11 @@ alertmanager:
               proxy_url: http://xray.infra.svc.cluster.local:10809
 
       - name: "null"
+
+      - name: cronitor
+        webhook_configs:
+          - url: 'redacted'
+            send_resolved: false
 
   alertmanagerSpec:
     externalUrl: https://alerts.home
