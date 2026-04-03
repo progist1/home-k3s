@@ -30,7 +30,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: seerr
-          image: seerr-team/seerr:3.1.0
+          image: ghcr.io/seerr-team/seerr:v3.1.0
           ports:
             - containerPort: 5055
           env:
