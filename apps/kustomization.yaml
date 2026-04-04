@@ -25,7 +25,6 @@ resources:
   - guacamole
   - mailu
   - home-assistant
-  - tautulli
   - tdarr
   - wg-easy
   - blocky

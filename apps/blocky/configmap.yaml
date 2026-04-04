@@ -53,12 +53,7 @@ data:
       mapping:
         # Specific hosts (highest priority)
         bigb.home: 10.0.0.4
-        vps.home: 10.0.0.10
         direct.router.home: 10.0.0.1
-        pc.home: 10.0.0.100
-        wvps.home: 10.0.0.11
-        ha.home: 10.0.0.2
-        dns.home: 10.0.0.2
         # Wildcard for all other .home domains
         home: 10.0.0.2
         # External domain override

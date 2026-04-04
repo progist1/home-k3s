@@ -31,7 +31,6 @@ spec:
         - radarr.home:443
         - gitlab.home:443
         - sonarr.home:443
-        - tautulli.home:443
         - tdarr.home:443
         - transmission.home:443
         - vpn.home:443
