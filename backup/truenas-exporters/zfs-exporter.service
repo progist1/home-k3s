@@ -1,0 +1,15 @@
+[Unit]
+Description=ZFS Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/zfs_exporter
+Restart=on-failure
+RestartSec=10s
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target
