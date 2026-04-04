@@ -103,7 +103,7 @@ parse_smartctl_scsi_attributes() {
   [ -n "$power_on" ] && echo "power_on_hours_raw_value{${labels},smart_id=\"9\"} ${power_on}"
   [ -n "$temp_cel" ] && echo "temperature_celsius_raw_value{${labels},smart_id=\"194\"} ${temp_cel}"
   [ -n "$lbas_read" ] && echo "total_lbas_read_raw_value{${labels},smart_id=\"242\"} ${lbas_read}"
-  [ -n "$lbas_written" ] && echo "total_lbas_written_raw_value{${labels},smart_id=\"241\"} ${lbas_written}"
+  [ -n "$lbas_written" ] && echo "total_lbas_written_raw_value{${lhttps://alerts.home/#/alerts?silenced=false&inhibited=false&muted=false&active=true&filter=%7Balertname%3D%22ZFSPoolPossibleDeviceIssues%22%7Dabels},smart_id=\"241\"} ${lbas_written}"
   [ -n "$power_cycle" ] && echo "power_cycle_count_raw_value{${labels},smart_id=\"12\"} ${power_cycle}"
   [ -n "$grown_defects" ] && echo "grown_defects_count_raw_value{${labels},smart_id=\"-1\"} ${grown_defects}"
 }
@@ -112,6 +112,7 @@ parse_smartctl_info() {
   local -i smart_available=0 smart_enabled=0 smart_healthy=
   local disk="$1" disk_type="$2"
   local model_family='' device_model='' serial_number='' fw_version='' vendor='' product='' revision='' lun_id=''
+  local has_smart_section=0
   while read -r line; do
     info_type="$(echo "${line}" | cut -f1 -d: | tr ' ' '_')"
     info_value="$(echo "${line}" | cut -f2- -d: | sed 's/^ \+//g' | sed 's/"/\\"/')"
@@ -125,6 +126,15 @@ parse_smartctl_info() {
     Revision) revision="${info_value}" ;;
     Logical_Unit_id) lun_id="${info_value}" ;;
     esac
+    # Для NVMe дисков нет строки "SMART support is:", но есть секция SMART DATA
+    if [[ "${line}" =~ "START OF SMART DATA SECTION" ]]; then
+      has_smart_section=1
+      # Для NVMe, если есть секция SMART, считаем SMART доступным
+      if [[ "${disk_type}" == "nvme" ]]; then
+        smart_available=1
+        smart_enabled=1
+      fi
+    fi
     if [[ "${info_type}" == 'SMART_support_is' ]]; then
       case "${info_value:0:7}" in
       Enabled) smart_available=1; smart_enabled=1 ;;
@@ -195,7 +205,6 @@ format_output() {
 
 smartctl_version="$(/usr/sbin/smartctl -V | head -n1 | awk '$1 == "smartctl" {print $2}')"
 
-echo "smartctl_version{version=\"${smartctl_version}\"} 1" | format_output
 echo "smartctl_version{version=\"${smartctl_version}\"} 1" | format_output
 echo "# HELP smartmon_data_collection_timestamp Timestamp of last data collection"
 echo "# TYPE smartmon_data_collection_timestamp gauge"

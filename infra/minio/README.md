@@ -1,6 +1,9 @@
 # MinIO S3 Storage
 
-MinIO развернут в namespace `infra` и используется как S3-совместимое хранилище для k8up и других сервисов.
+MinIO развернут в namespace `infra` и используется как S3-совместимое хранилище для:
+- **k8up** - резервное копирование PVC
+- **Loki** - хранение логов
+- другие сервисы, требующие S3-совместимого storage
 
 ## Доступ
 
@@ -65,7 +68,9 @@ mc admin user add minio myuser mypassword
 mc admin policy attach minio readwrite --user myuser
 ```
 
-## Интеграция с k8up
+## Интеграция с сервисами
+
+### k8up (резервное копирование)
 
 Для использования MinIO как бэкенда для k8up нужно настроить S3 бэкенд в конфигурации k8up:
 
@@ -76,6 +81,24 @@ backend:
     bucket: k8up-backups
     accessKeyID: <access-key>
     secretAccessKey: <secret-key>
+```
+
+### Loki (логи)
+
+Централизованный `setup-job.yaml` автоматически создает:
+- Bucket `loki`
+- Пользователя `loki-user` с ограниченными правами
+- Политику доступа только к bucket `loki`
+
+Для этого требуется secret `loki-secrets` в namespace `infra` с ключом `minio-password`.
+
+Loki подключается к MinIO через:
+```yaml
+storage_config:
+  aws:
+    s3: http://loki-user:PASSWORD@minio.infra.svc.cluster.local:9000/loki
+    s3forcepathstyle: true
+    insecure: true
 ```
 
 ## Хранилище

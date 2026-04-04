@@ -53,7 +53,7 @@ K8up настроен на использование MinIO как S3 бэкен
 **Содержимое секрета:**
 - `access-key` - Access Key для MinIO S3
 - `secret-key` - Secret Key для MinIO S3
-- `repo-password` - **Пароль репозитория Restic для шифрования бэкапов** (обязательно!)
+- `password` - **Пароль репозитория Restic для шифрования бэкапов** (обязательно!)
 
 Для создания/обновления:
 1. Создайте template файл `k8up-secrets-template.yaml`:
@@ -67,7 +67,7 @@ K8up настроен на использование MinIO как S3 бэкен
    stringData:
      access-key: "your-minio-access-key"
      secret-key: "your-minio-secret-key"
-     repo-password: "your-strong-restic-password"  # ⚠️ КРИТИЧНО: сохраните этот пароль!
+     password: "your-strong-restic-password"  # ⚠️ КРИТИЧНО: сохраните этот пароль!
    ```
 2. Примените: `kubectl apply -f k8up-secrets-template.yaml`
 3. Зашифруйте: `kubeseal --cert cert.pem < k8up-secrets-template.yaml -o yaml > k8up-secrets-sealed.yaml`
@@ -75,19 +75,19 @@ K8up настроен на использование MinIO как S3 бэкен
 
 **Важно**: 
 - Пользователь k8up создается автоматически в MinIO через `infra/minio/setup-job.yaml` при первом запуске.
-- **Пароль репозитория (`repo-password`) критически важен** - без него невозможно расшифровать бэкапы! Сохраните его в безопасном месте (например, в менеджере паролей).
+- **Пароль репозитория (`password`) критически важен** - без него невозможно расшифровать бэкапы! Сохраните его в безопасном месте (например, в менеджере паролей).
 
 ### Шифрование бэкапов
 
 K8up использует **Restic** для шифрования бэкапов на стороне клиента. Все данные шифруются **перед** отправкой в S3/MinIO.
 
 **Как это работает:**
-1. Restic шифрует данные локально с помощью пароля репозитория (`repo-password`)
+1. Restic шифрует данные локально с помощью пароля репозитория (`password`)
 2. Зашифрованные данные отправляются в S3/MinIO
 3. Даже если кто-то получит доступ к S3, без пароля репозитория данные нельзя расшифровать
 
 **Где хранится ключ шифрования:**
-- Пароль репозитория хранится в Kubernetes Secret: `k8up-secrets` (ключ `repo-password`)
+- Пароль репозитория хранится в Kubernetes Secret: `k8up-secrets` (ключ `password`)
 - Secret зашифрован через SealedSecrets и хранится в Git: `sealed-secrets/infra/k8up/k8up-secrets-sealed.yaml`
 - Пароль передается в каждый Schedule через `repoPasswordSecretRef` в конфигурации backend
 
@@ -193,7 +193,7 @@ spec:
         name: k8up-secrets
         key: secret-key
   backup:
-    schedule: "0 2 * * *"  # Каждый день в 2:00
+    schedule: "0 4 * * *"  # Каждый день в 2:00
     timeZone: "Europe/Moscow"
     tags:
       - "my-app"
