@@ -1,237 +1,410 @@
-# 📦 Home GitOps Repository
+# Home GitOps Repository
 
-Это репозиторий декларативных манифестов для моего домашнего кластера k3s, развёрнутого на Proxmox.
-
-Все сервисы описаны строго декларативно и поддерживаются через Flux.
-
----
-
-## 🎯 Цели
-
-✅ Максимально читаемая и поддерживаемая структура.  
-✅ 100% развёртывание «из кода» на новом сервере.  
-✅ Чистый и воспроизводимый GitOps-флоу.  
-✅ Разделение ingress на internal/external с разными Issuer'ами.  
-✅ Управляемое хранение данных через NFS.  
-✅ Полная ротация и хранение секретов через SealedSecrets.
+Декларативные манифесты для домашнего кластера k3s.
+Всё управляется через **Flux CD** — GitOps, zero-touch reconciliation.
 
 ---
 
-## 🗂️ Структура репозитория
+## Кластер
 
-- `apps/` — все конечные приложения и сервисы.
-- `infra/` — системные компоненты (MetalLB, Traefik Middleware, StorageClasses, Xray, Proxy).
-- `sealed-secrets/` — SealedSecrets, разделённые на apps, infra, cluster.
-- `helm/` — HelmRepository и HelmRelease манифесты для Flux.
-- `cluster-config/` — cert-manager и ClusterIssuer.
-- `clusters/` — Flux bootstrap и точка входа.
-- `namespaces/` — описание всех Namespace кластера.
+| Узел | Роль | ОС | Особенности |
+|------|------|----|-------------|
+| k3s-prod | control-plane | Ubuntu 24.04 | zvol-local (БД, Prometheus, GitLab) |
+| k3s-gpu | worker | Ubuntu 24.04 | Intel IGP GPU, QSV transcoding |
+| k3s-yolki | worker | Ubuntu 24.04 | — |
+| k3s-pi | worker | Ubuntu 24.04 | arm64 (Raspberry Pi) |
 
----
+**Kubernetes:** v1.34 (k3s) | **Flux:** v2 (source-controller v1.8.1)
+**Внешний домен:** `progist.ru` | **Внутренний:** `*.home`
 
-## 🔐 Секреты и политика хранения
+```mermaid
+graph TB
+    subgraph home["🏠 Домашняя сеть  10.0.0.0/24"]
+        subgraph truenas["💾 TrueNAS  bigb.home · 10.0.0.4"]
+            kprod["k3s-prod
+● control-plane
+Ubuntu 24.04
+zvol-local · MySQL · PG · GitLab"]
+            kgpu["k3s-gpu
+● worker
+Intel IGP GPU · QSV
+Jellyfin · Frigate"]
+            nfs[("NFS
+/mnt/Fast
+/mnt/Main")]
+        end
+        kpi["k3s-pi
+● worker
+Raspberry Pi 4
+arm64"]
+        traefik(["Traefik
+10.0.0.2
+:80 / :443"])
+        wgeasy["wg-easy
+WireGuard VPN
+vpn.home"]
+    end
 
-Все секреты хранятся в виде SealedSecrets:
+    subgraph remote["☁️ Remote"]
+        kyolki["k3s-yolki
+● worker
+VPS · Ubuntu 24.04"]
+    end
 
-- `sealed-secrets/apps/` → сервисные ключи, DB, SMTP, API.
-- `sealed-secrets/infra/` → системные конфиги (например, xray).
-- `sealed-secrets/cluster/` → Root CA и LetsEncrypt account key.
+    internet(["🌐 Internet
+*.progist.ru"])
 
-✅ Все ключи зашифрованы и могут быть развёрнуты с нуля через Flux.
-✅ Все секреты разделены по scope.
-✅ Для ротации:
-  1. Расшифровать через kubeseal.
-  2. Обновить значение.
-  3. Перезапечатать.
-  4. PR → Merge → Flux-sync.
-
----
-
-## 🗝️ Root CA и LetsEncrypt
-
-- **Root CA** используется для всех *.home доменов через `root-ca-issuer`.
-- **LetsEncrypt** для публичных доменов через `letsencrypt-prod` ClusterIssuer.
-- Оба ClusterIssuer описаны декларативно в `cluster-config/`.
-- Ключи зашифрованы в SealedSecrets и могут быть восстановлены.
-
----
-
-## 🌐 Ingress Policy
-
-Ingress ресурсы строго делятся на:
-
-- **internal**:
-  - cert-manager.io/cluster-issuer: root-ca-issuer
-  - Для *.home доменов.
-  - TLS секреты с шаблоном: `{app}-internal-tls`.
-  - Middleware → redirect-to-https.
-
-- **external**:
-  - cert-manager.io/cluster-issuer: letsencrypt-prod
-  - Для публичных доменов.
-  - TLS секреты с шаблоном: `{app}-external-tls`.
-  - Middleware → redirect-to-https.
-
-✅ Это правило строго соблюдается во всём репозитории.
-
----
-
-## 🗂️ StorageClasses
-
-Описание всех StorageClass в папке `infra/storageclasses/`.
-
-- `nfs-nvme-manual` → для statically bound PVC.
-- `nfs-fast-manual` → быстрый NFS (NVMe).
-- `nfs-hdd-manual` → дешёвый, объёмный NFS.
-- `nfs-nvme-manual` → high-performance NFS.
-- `nfs-dynamic` → через nfs-subdir-external-provisioner для кэшей и ephemeral данных.
-
-✅ Политика PVC:
-- Критичные данные → manual, ReclaimPolicy: Retain.
-- Кэш и временные → dynamic.
+    kprod & kgpu & kpi <-->|k3s cluster| truenas
+    kprod & kgpu -.->|NFS mount| nfs
+    kpi -.->|NFS mount| nfs
+    traefik <-->|Ingress| internet
+    wgeasy <-->|WireGuard tunnel| kyolki
+    kyolki <-->|k3s cluster via WG| traefik
+```
 
 ---
 
-## 🗃️ PVC/PV Mapping
+## Структура репозитория
 
-Рекомендуется поддерживать таблицу маппинга для миграции:
-
-| Service     | PVC Name            | StorageClass         | NFS Path                   |
-|-------------|---------------------|----------------------|----------------------------|
-| filebrowser | filebrowser-data    | nfs-nvme-manual      | /mnt/NFS/Fast/...          |
-| radarr      | radarr-media        | nfs-hdd-manual       | /mnt/NFS/Big/...           |
-| ...         | ...                 | ...                  | ...                        |
-
-✅ Это сильно упростит disaster recovery.
-
----
-
-## 🗂️ Middleware Policy
-
-- Все *generic* middleware → в `infra/traefik-middleware/`.
-- Все *app-specific* middleware → внутри папки приложения.
-
-✅ Примеры:
-- redirect-to-https (global)
-- guacamole-rewrite (app-specific)
+```
+clusters/home/       — точка входа Flux, граф зависимостей Kustomization
+apps/                — 42 приложения
+infra/               — системные компоненты (Traefik, StorageClasses, MinIO, K8up, xray)
+monitoring/          — kube-prometheus-stack, Loki, Promtail, правила алертов, exporters
+helm/                — HelmRepository и HelmRelease манифесты
+sealed-secrets/      — зашифрованные секреты: apps/, infra/, cluster/, gitlab/
+namespaces/          — объявления Namespace
+charts/              — локальные Helm charts (только: pvc-archiver)
+cluster-addons/      — kube-system ресурсы под управлением Flux (CoreDNS DaemonSet)
+cluster-config/      — cert-manager ClusterIssuers
+gitlab/              — GitLab CE + runner
+docs/recovery/       — шаблоны recovery pod для MySQL и Postgres
+docs/                — truenas-exporters.md, k8up-restore.md
+backup/              — бинари и конфиги TrueNAS exporters
+```
 
 ---
 
-## 🔀 MetalLB Strategy
+## Зависимости Flux Kustomizations
 
-- Установка через HelmRelease в `infra/metallb`.
-- Конфигурация IPAddressPool и L2Advertisement в step2-config.
-- Политика:
-  - Статичные IP → для сервисов вроде AdGuard.
-  - Резерв пулов наперёд для масштабирования:
-    ```yaml
-    addresses:
-      - 10.0.0.2-10.0.0.10
-    ```
+```mermaid
+flowchart TD
+    ns([namespaces]) --> ss([sealed-secrets])
+    ss --> crds([k8up-crds])
+    crds --> infra([infra])
+    infra --> helm([helm])
+    helm --> cm(["cert-manager
+install"])
+    cm --> ci(["cert-manager
+issuer"])
+    ci --> apps([apps])
+    ns --> apps
+    ss --> apps
+    infra --> apps
+    apps --> mon([monitoring])
+    mon --> dns([coredns-config])
+    dns --> gl([gitlab])
+    gl --> glr([gitlab-runner])
+    glr --> nodes(["nodes
+prune: false"])
+
+    style apps fill:#4a90d9,color:#fff
+    style mon fill:#7b68ee,color:#fff
+    style nodes fill:#888,color:#fff
+```
 
 ---
 
-## 🛡️ Секреты и ротация
+## Секреты
 
-Все SealedSecrets управляются kubeseal.
+Все секреты — **SealedSecrets** (kubeseal, RSA-4096), хранятся в Git:
 
-### Политика:
+- `sealed-secrets/apps/` — сервисные ключи, DB пароли, API токены
+- `sealed-secrets/infra/` — системные конфиги (k8up, minio, xray)
+- `sealed-secrets/cluster/` — Root CA, LetsEncrypt аккаунт
+- `sealed-secrets/gitlab/` — GitLab + runner токены
 
-- **apps/**:
-  - сервисные ключи, токены, DB пароли
-- **infra/**:
-  - конфиги системных сервисов (xray и др.)
-- **cluster/**:
-  - Root CA
-  - LetsEncrypt аккаунт
-
-### Процедура ротации:
-
-1. Расшифровать старый секрет:
-
+**Ротация:**
 ```sh
+# Расшифровать
 kubeseal --cert cert.pem --recovery-unseal ...
-```
-
-2. Обновить данные.
-3. Перегенерировать SealedSecret:
-
-```sh
+# Перезапечатать
 kubeseal --cert cert.pem <secret.yaml> -o yaml > sealed.yaml
+# Commit → Flux reconciles
 ```
-
-4. PR → Merge → Flux-sync.
 
 ---
 
-## 🔄 Disaster Recovery
+## TLS и Ingress
 
-Рекомендуется периодически тестировать восстановление:
+Ingress строго делится на два типа:
 
-✅ Минимальный план восстановления:
+**Internal** (`*.home`) — самоподписанный Root CA:
+```yaml
+annotations:
+  cert-manager.io/cluster-issuer: root-ca-issuer
+  traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  tls:
+    - hosts: [app.home]
+      secretName: app-internal-tls
+```
 
-1. Развернуть новый кластер k3s.
-2. Flux bootstrap:
+**External** (`*.progist.ru`) — Let's Encrypt:
+```yaml
+annotations:
+  cert-manager.io/cluster-issuer: letsencrypt-prod
+  traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  tls:
+    - hosts: [app.progist.ru]
+      secretName: app-external-tls
+```
+
+---
+
+## StorageClasses
+
+Все PV на NFS (TrueNAS `10.0.0.4`), mount options: `nfsvers=4.1,hard,rsize=65536,wsize=65536`.
+
+| StorageClass | Назначение | Reclaim |
+|---|---|---|
+| `nfs-nvme-manual` / `nfs-nvme-db-manual` | БД, критичные конфиги | Retain |
+| `nfs-fast-manual` | Данные приложений | Retain |
+| `nfs-hdd-manual` / `nfs-hdd-manual-media` | Медиа, большие файлы | Retain |
+| `mailu` | Почтовый сервер | Retain |
+| `nfs-dynamic` | Кэш, ephemeral | Delete |
+| `hostpath-manual` | GPU/hardware temp | Retain |
+| `zvol-local` | Локальный ZFS (только k3s-prod) | Retain |
+
+Критичные данные — `manual` (Retain). Кэш — `dynamic` (Delete).
+
+---
+
+## Бэкапы
+
+### K8up (restic → MinIO / Backblaze B2)
+
+| Schedule | Частота | Бэкенд | Selector |
+|----------|---------|--------|---------|
+| `backup-critical-hourly` | `@hourly-random` | MinIO | `backup-level: critical` |
+| `backup-important-daily` | `0 4 * * *` | MinIO | `backup-level: important\|daily` |
+| `backup-important-daily-offsite` | `0 4 * * *` | Backblaze B2 | все + `backup-offsite: "true"` |
+| `backup-monitoring-daily` | `0 4 * * *` | MinIO | namespace monitoring |
+
+Retention: keepLast=12, keepDaily=7, keepWeekly=4, keepMonthly=1.
+
+```mermaid
+flowchart LR
+    subgraph workloads["Воркнагрузки"]
+        mysql["MySQL
+mysqldump ↩"]
+        pg["PostgreSQL
+pg_dumpall ↩"]
+        pvcs["~40 PVCs
+backup-level label"]
+        cfgpvcs["Config PVCs
+pvc-archiver"]
+    end
+
+    subgraph k8up["K8up Operator"]
+        hourly["@hourly-random
+critical"]
+        daily["0 4 * * *
+important"]
+        offsite["0 4 * * *
+offsite"]
+    end
+
+    subgraph storage["Хранилище"]
+        minio[("MinIO
+in-cluster S3")]
+        b2[("Backblaze B2
+offsite ☁️")]
+        bpvc[("backups-pvc
+NFS tar archives")]
+    end
+
+    mysql & pg --> hourly --> minio
+    pvcs --> daily --> minio
+    pvcs --> offsite --> b2
+    cfgpvcs --> bpvc
+
+    style b2 fill:#f39c12,color:#fff
+    style minio fill:#2ecc71,color:#fff
+```
+
+Пометить PVC для бэкапа:
+```yaml
+labels:
+  backup-level: critical   # или: important, daily
+  backup-offsite: "true"
+annotations:
+  k8up.io/backup: "true"
+```
+
+### SQL дампы
+
+MySQL и Postgres имеют аннотацию `k8up.io/backupcommand` — K8up запускает дамп перед snapshot'ом.
+Дополнительно отдельные CronJob (`backup-immich-postgres`, `backup-mysql`, `backup-postgres`) сохраняют дампы на `backups-pvc`.
+
+### pvc-archiver
+
+Локальный Helm chart (`charts/pvc-archiver/`) — tar-архивирует содержимое PVC в `backups-pvc`.
+Развёртывается как HelmRelease в `helm/` для каждого приложения (~37 штук).
+
+---
+
+## Мониторинг
+
+```mermaid
+flowchart TB
+    subgraph external["Внешние источники"]
+        bigb["bigb.home
+TrueNAS
+Promtail · host journal"]
+        beget["beget VPS
+Promtail · Docker logs"]
+        ext17["17 scrape targets
+frigate · ha · jellyfin
+mysql · postgres · ..."]
+    end
+
+    subgraph cluster["k3s кластер · namespace: monitoring"]
+        subgraph logs["Логи"]
+            ptds["Promtail DaemonSet
+pod logs + node journal
+warning+"]
+            loki[("Loki
+MinIO S3")]
+            rules["Loki Ruler
+kernel · ZFS · SMART
+auth events"]
+        end
+        subgraph metrics["Метрики"]
+            prom[("Prometheus
+18 alert rule files")]
+            am["Alertmanager"]
+        end
+        grafana["Grafana
+Loki + Prometheus"]
+    end
+
+    subgraph notify["Уведомления"]
+        tg["Telegram
+× 3 receivers"]
+        mail["Email
+via Mailu"]
+        cronitor["Cronitor
+dead man's switch 💀"]
+    end
+
+    bigb & beget -->|"http://loki.home"| loki
+    ptds --> loki
+    loki --> rules --> am
+    ext17 --> prom
+    prom --> am
+    am --> tg & mail & cronitor
+    loki & prom --> grafana
+
+    style loki fill:#f97316,color:#fff
+    style prom fill:#e74c3c,color:#fff
+    style cronitor fill:#8e44ad,color:#fff
+    style grafana fill:#1a1a2e,color:#fff
+```
+
+- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana; 18 файлов alert rules
+- **Loki + Promtail** — централизованные логи, backend на MinIO S3; DaemonSet собирает логи подов и host journal (warning+) со всех нод
+- **Loki ingress** (`loki.home`) — внешние Promtail-агенты пишут через HTTP; работают на bigb.home (TrueNAS, full journal warning+) и beget VPS (Docker container logs)
+- **Loki alert rules** — kernel soft lockup, OOM, hung task, ZFS errors, SMART errors, auth events (Immich, Authentik, Jellyfin)
+- **Dead man's switch** — Alertmanager Watchdog → Cronitor heartbeat (алерт если Prometheus/AM падает)
+- **Alertmanager** — 3 Telegram-ресивера + Email через Mailu
+- **Exporters** — mysql, postgres, redis, adguard, snmp, ssl
+- **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, adguard, bonchbot, k8up, ssl, snmp, gitlab, external-nodes
+
+---
+
+## Автоматические обновления (Renovate)
+
+- Patch/minor — automerge
+- Major — ручное согласование (assigned to `progist`)
+- Managers: `kubernetes`, `helm-values`, `flux`, `kustomize`
+- Исключения: `sealed-secrets/**`
+- Лимиты: 50 параллельных бранчей, 10 PR
+
+Специальные правила версий:
+- **Transmission:** `<2000` (legacy versioning)
+- **Home Assistant:** custom regex `year.month.patch`
+- **Immich:** major — только вручную
+
+---
+
+## Disaster Recovery
+
+### Bootstrap кластера
+
 ```sh
 flux bootstrap git \
   --url=git@your-repo \
   --branch=main \
   --path=clusters/home
 ```
-3. Подождать reconcile всех Kustomization.
-4. Проверить:
-* ingress
-* PV/PVC (NFS mount)
-* SealedSecrets
-* cert-manager issuers
-* MetalLB IP assignment
 
-## 🗂️ Requests и Limits
+### Чеклист после bootstrap
 
-Обязательное правило:
+1. CoreDNS: `kubectl get ds coredns -n kube-system` — 1 pod на узел
+2. DNS: `kubectl run -it --rm dns-test --image=busybox --restart=Never -- nslookup kubernetes.default.svc.cluster.local`
+3. Ingress — Traefik running, cert-manager issuers ready
+4. PV/PVC — NFS mounts доступны (NFS: 10.0.0.4)
+5. SealedSecrets — контроллер работает, секреты расшифровываются
+6. Flux: `flux get kustomizations` — все Ready
+7. GPU: `kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.gpu\\.intel\\.com/i915`
 
-Все Deployment должны иметь resources.requests и resources.limits.
+### Recovery pods
 
-Пример:
-
-```yaml
-resources:
-  requests:
-    cpu: "100m"
-    memory: "128Mi"
-  limits:
-    cpu: "500m"
-    memory: "512Mi"
+```sh
+kubectl apply -f docs/recovery/mysql-recovery-pod.yaml    # mysql-data-pvc, user 999
+kubectl apply -f docs/recovery/postgres-recovery-pod.yaml # postgres-data-pvc, user 999
+# exec in, inspect/repair, then:
+kubectl delete -f docs/recovery/<file>.yaml
 ```
 
-## 🏷️ Labels и Annotations
-Рекомендуется использовать лейблы для удобства фильтрации:
+Восстановление из K8up бэкапов — [`docs/k8up-restore.md`](docs/k8up-restore.md).
 
-```yaml
-metadata:
-  labels:
-    managed-by: flux
-    app.kubernetes.io/part-of: home-cluster
-    environment: production
-```
+### TrueNAS exporters
+
+После переустановки TrueNAS — см. [`docs/truenas-exporters.md`](docs/truenas-exporters.md).
+Бинари: `backup/truenas-exporters/`.
+Важно: patched `smartmon.sh` (NVMe support), MD5: `f84f7d773f4c0912ef20f97497b86d97`.
+
 ---
 
-## ⚙️ Прокси через Headless Services
+## CoreDNS (важная деталь)
 
-✅ Pattern:
+CoreDNS управляется как **DaemonSet** через Flux (`cluster-addons/`), а не k3s Deployment.
 
-- Для non-K8s сервисов:
-  - Headless Service (clusterIP: None)
-  - Статичные Endpoints
-  - Traefik ingress для TCP/HTTP прокси
+`/etc/rancher/k3s/config.yaml` на **k3s-prod** обязательно должен содержать:
+```yaml
+disable:
+  - coredns
+kubelet-arg:
+  - "max-pods=250"
+```
 
-✅ Пример:
+Без `disable: [coredns]` — k3s пересоздаёт свой CoreDNS Deployment при рестарте, конфликт с DaemonSet, временный DNS outage.
+
+---
+
+## Non-K8s сервисы
+
+Сервисы вне кластера проксируются через headless Service + Endpoints + Traefik ingress.
 
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: my-proxy
+  namespace: apps
 spec:
   clusterIP: None
   ports:
@@ -242,74 +415,27 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: my-proxy
+  namespace: apps
 subsets:
   - addresses:
-      - ip: 10.0.0.123
+      - ip: 10.0.0.X
     ports:
       - port: 8080
 ```
 
-## 🌐 HostPath vs PVC
-✅ Правило:
+Примеры: `tautulli` (10.0.0.10:8181), роутер (10.0.0.1), принтер, WLED контроллеры.
 
-* Все данные → PVC на NFS.
-* HostPath → только для специальных случаев (GPU, low-level access).
+---
 
-## 📌 PostUp/PostDown для VPN
-Для сервисов вроде wg-easy → обязательно документировать iptables правила.
+## GPU workloads
 
-Пример:
+```yaml
+nodeSelector:
+  node.hardware.gpu: intel-igpu
+tolerations:
+  - key: node.hardware.gpu
+    value: intel-igpu
+    effect: NoSchedule
+```
 
-В apps/wg-easy/readme.md уже описано.
-
-✅ Рекомендуется для всех сетевых сервисов.
-
-## 🗂️ Примеры полезных Readme
-apps/wg-easy/readme.md → документирует хостовую настройку.
-
-Рекомендуется также для:
-
-* Paperless
-* Authentik
-* Transmission
-* Xray
-
-✅ Документируй:
-
-ingress-internal/external
-
-PVC paths
-
-специальные порты и capabilities
-
-Secrets
-
-## 🤖 Renovate
-
-✅ Поддерживается через renovate.json.
-
-### Политика:
-
-* Разбить на packageRules по:
-    * docker images
-    * helm charts
-    * helm repositories
-
-* managerFilePatterns → включить apps/*/helm-release.yaml
-
-✅ Поддерживать Automerge для минорных обновлений.
-
-## 💾 Backup ключей
-
-✅ Все SealedSecrets зашифрованы.
-✅ Рекомендуется хранить отдельно:
-
-* sealed-secrets private key
-* Root CA ключ
-* LetsEncrypt аккаунт ключ
-
-✅ Можно использовать:
-
-* офлайн-диск
-* безопасный password manager
-
+Применяется к: jellyfin, frigate.
