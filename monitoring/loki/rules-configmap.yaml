@@ -86,6 +86,56 @@ data:
               description: "Authentik: {{ $value }} flow executions in last 5 minutes (threshold: 3)"
 
       # ============================================
+      # TrueNAS Kernel Events (bigb.home)
+      # ============================================
+      - name: truenas_kernel
+        interval: 1m
+        rules:
+          - alert: KernelSoftLockup
+            expr: |
+              count_over_time({hostname="bigb.home", job="kernel"} |~ "(?i)soft lockup" [5m]) > 0
+            for: 0s
+            labels:
+              severity: critical
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: kernel soft lockup detected"
+              description: "bigb.home kernel reported soft lockup in last 5 minutes — reboot may be required"
+
+          - alert: KernelOOMKill
+            expr: |
+              count_over_time({hostname="bigb.home", job="kernel"} |~ "Out of memory|oom_kill_process|Killed process" [5m]) > 0
+            for: 0s
+            labels:
+              severity: warning
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: OOM kill detected"
+              description: "bigb.home kernel OOM killer fired in last 5 minutes"
+
+          - alert: KernelHungTask
+            expr: |
+              count_over_time({hostname="bigb.home", job="kernel"} |~ "hung_task|INFO: task .* blocked" [5m]) > 0
+            for: 0s
+            labels:
+              severity: warning
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: kernel hung task detected"
+              description: "bigb.home has a hung task (possible I/O or lock stall)"
+
+          - alert: KernelCallTrace
+            expr: |
+              count_over_time({hostname="bigb.home", job="kernel"} |~ "Call Trace:" [5m]) > 0
+            for: 0s
+            labels:
+              severity: critical
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: kernel call trace (crash/BUG)"
+              description: "bigb.home kernel produced a call trace — possible kernel BUG or panic"
+
+      # ============================================
       # Jellyfin Authentication
       # ============================================
       - name: jellyfin_auth

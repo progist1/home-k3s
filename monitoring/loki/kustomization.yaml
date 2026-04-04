@@ -9,4 +9,5 @@ resources:
   - helmrelease.yaml
   - rules-configmap.yaml
   - storage.yaml
+  - ingress-internal.yaml
 
