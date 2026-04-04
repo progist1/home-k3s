@@ -93,7 +93,7 @@ data:
         rules:
           - alert: KernelSoftLockup
             expr: |
-              count_over_time({hostname="bigb.home", job="kernel"} |~ "(?i)soft lockup" [5m]) > 0
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "(?i)soft lockup" [5m]) > 0
             for: 0s
             labels:
               severity: critical
@@ -104,7 +104,7 @@ data:
 
           - alert: KernelOOMKill
             expr: |
-              count_over_time({hostname="bigb.home", job="kernel"} |~ "Out of memory|oom_kill_process|Killed process" [5m]) > 0
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "Out of memory|oom_kill_process|Killed process" [5m]) > 0
             for: 0s
             labels:
               severity: warning
@@ -115,7 +115,7 @@ data:
 
           - alert: KernelHungTask
             expr: |
-              count_over_time({hostname="bigb.home", job="kernel"} |~ "hung_task|INFO: task .* blocked" [5m]) > 0
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "hung_task|INFO: task .* blocked" [5m]) > 0
             for: 0s
             labels:
               severity: warning
@@ -126,7 +126,7 @@ data:
 
           - alert: KernelCallTrace
             expr: |
-              count_over_time({hostname="bigb.home", job="kernel"} |~ "Call Trace:" [5m]) > 0
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "Call Trace:" [5m]) > 0
             for: 0s
             labels:
               severity: critical
@@ -134,6 +134,28 @@ data:
             annotations:
               summary: "TrueNAS: kernel call trace (crash/BUG)"
               description: "bigb.home kernel produced a call trace — possible kernel BUG or panic"
+
+          - alert: TrueNASZFSPoolError
+            expr: |
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "(?i)zfs.*error|pool.*degraded|pool.*faulted|checksum error" [5m]) > 0
+            for: 0s
+            labels:
+              severity: critical
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: ZFS pool error"
+              description: "bigb.home ZFS reported pool error or degraded state"
+
+          - alert: TrueNASSMARTError
+            expr: |
+              count_over_time({hostname="bigb.home", job="host-journal"} |~ "(?i)smartd.*error|device error|read failure|reallocated sector" [5m]) > 0
+            for: 0s
+            labels:
+              severity: warning
+              host: bigb.home
+            annotations:
+              summary: "TrueNAS: SMART disk error"
+              description: "bigb.home smartd reported disk error"
 
       # ============================================
       # Jellyfin Authentication
