@@ -11,6 +11,9 @@ data:
             lameduck 5s
         }
         ready
+        hosts /etc/coredns/CustomHosts {
+            fallthrough
+        }
         kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
             fallthrough in-addr.arpa ip6.arpa
@@ -29,3 +32,8 @@ data:
     10.0.0.5 k3s-pi
     10.0.0.2 k3s-prod
     10.3.0.2 k3s-yolki
+  CustomHosts: |
+    10.0.0.4 bigb.home
+    10.3.0.2 vps.yolki
+    10.8.0.2 vps.spb
+    10.8.0.3 vps.amsterdam

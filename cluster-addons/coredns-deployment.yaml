@@ -119,6 +119,8 @@ spec:
                 path: Corefile
               - key: NodeHosts
                 path: NodeHosts
+              - key: CustomHosts
+                path: CustomHosts
         - name: custom-config-volume
           configMap:
             name: coredns-custom

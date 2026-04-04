@@ -29,7 +29,7 @@ spec:
     - 'vps.yolki:9100'
     labels:
       group: 'external-nodes'
-      host: 'pi'
+      host: 'k3s-yolki'
       location: 'yolki'
   - targets:
     - 'vps.amsterdam:9100'
