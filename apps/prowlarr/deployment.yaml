@@ -27,7 +27,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: prowlarr
-          image: linuxserver/prowlarr:2.3.0
+          image: linuxserver/prowlarr:2.3.5
           ports:
             - containerPort: 9696
           env:
