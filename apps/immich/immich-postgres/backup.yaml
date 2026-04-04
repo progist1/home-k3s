@@ -15,42 +15,41 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: pgdump
-              image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3
+              image: busybox:1.37
               command:
                 - /bin/sh
                 - -c
                 - |
-                  set -euo pipefail
+                  set -eu
+                  TODAY=$(date +%Y%m%d)
+                  FILE=$(ls /immich-backups/immich-db-backup-${TODAY}T*.sql.gz 2>/dev/null | head -1)
+                  if [ -z "$FILE" ]; then
+                    echo "[!] No Immich DB backup found for today (${TODAY}). Immich backup job may have failed."
+                    exit 1
+                  fi
                   TS=$(date +%Y_%m_%d_%H_%M_%S)
-                  FILE="/backups/immich-postgres_${TS}.sql.gz"
-                  echo "[*] Dumping Immich Postgres → $FILE"
-                  pg_dumpall -h pgvecto.apps.svc.cluster.local \
-                             -U $POSTGRES_USER \
-                             --no-password \
-                  | gzip > "$FILE"
-              env:
-                - name: POSTGRES_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: immich-secrets
-                      key: DB_USERNAME
-                - name: PGPASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: immich-secrets
-                      key: DB_PASSWORD
+                  DEST="/backups/immich-postgres_${TS}.sql.gz"
+                  echo "[*] Copying $FILE → $DEST"
+                  cp "$FILE" "$DEST"
+                  echo "[*] Done."
               volumeMounts:
+                - name: immich-backups
+                  mountPath: /immich-backups
+                  readOnly: true
                 - name: backup
                   mountPath: /backups
               resources:
                 requests:
-                  cpu: "100m"
-                  memory: "64Mi"
+                  cpu: "50m"
+                  memory: "32Mi"
                 limits:
-                  cpu: "1"
-                  memory: "1Gi"
+                  cpu: "200m"
+                  memory: "128Mi"
           volumes:
+            - name: immich-backups
+              persistentVolumeClaim:
+                claimName: immich-hdd-backups-pvc
+                readOnly: true
             - name: backup
               persistentVolumeClaim:
                 claimName: backups-pvc
-
