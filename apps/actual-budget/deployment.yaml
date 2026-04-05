@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: actual-budget
-          image: ghcr.io/actualbudget/actual:26.3.0
+          image: ghcr.io/actualbudget/actual:26.4.0
           ports:
             - containerPort: 5006
           env:
