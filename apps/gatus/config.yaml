@@ -3,6 +3,10 @@ kind: ConfigMap
 metadata:
   name: gatus-config
   namespace: apps
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
 data:
   config.yaml: |
     web:
@@ -31,34 +35,102 @@ data:
         - type: telegram
 
     endpoints:
-      # ── Dashboard ──
-      - name: Homer
-        url: https://start.home
-        <<: *defaults
 
-      # ── Media ──
+      # ── Media ──────────────────────────────────────────────────────────────
+
       - name: Jellyfin
+        group: Media
         url: https://watch.home/health
         <<: *defaults
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == Healthy"
 
       - name: Sonarr
+        group: Media
         url: https://sonarr.home/ping
         <<: *defaults
 
       - name: Radarr
+        group: Media
         url: https://radarr.home/ping
         <<: *defaults
 
+      - name: Prowlarr
+        group: Media
+        url: https://prowlarr.home/ping
+        <<: *defaults
+
       - name: Bazarr
+        group: Media
         url: https://bazarr.home
         <<: *defaults
 
-      - name: Prowlarr
-        url: https://prowlarr.home
+      - name: Seerr
+        group: Media
+        url: https://seerr.home
         <<: *defaults
 
-      # ── Productivity ──
+      - name: Transmission
+        group: Media
+        url: https://transmission.home
+        <<: *defaults
+
+      - name: Tdarr
+        group: Media
+        url: https://tdarr.home
+        <<: *defaults
+
+      - name: Flaresolverr
+        group: Media
+        url: https://flaresolverr.home
+        <<: *defaults
+
+      # ── Photos & Files ─────────────────────────────────────────────────────
+
+      - name: Immich
+        group: Photos & Files
+        url: https://photos.home/api/server/ping
+        <<: *defaults
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].res == pong"
+
+      - name: Filebrowser
+        group: Photos & Files
+        url: https://share.home
+        <<: *defaults
+
+      # ── Home Automation ────────────────────────────────────────────────────
+
+      - name: Home Assistant
+        group: Home Automation
+        url: https://ha.home
+        <<: *defaults
+
+      - name: Frigate
+        group: Home Automation
+        url: https://cctv.home
+        <<: *defaults
+
+      - name: Blocky
+        group: Home Automation
+        url: https://dns.home
+        <<: *defaults
+
+      - name: Mosquitto
+        group: Home Automation
+        url: tcp://mosquitto.apps.svc.cluster.local:1883
+        interval: 1m
+        conditions:
+          - "[CONNECTED] == true"
+        alerts:
+          - type: telegram
+
+      # ── Productivity ───────────────────────────────────────────────────────
+
       - name: Nextcloud
+        group: Productivity
         url: https://nc.home/status.php
         client:
           insecure: true
@@ -70,36 +142,158 @@ data:
           - type: telegram
 
       - name: Paperless
+        group: Productivity
         url: https://docs.home
         <<: *defaults
 
-      - name: Vaultwarden
-        url: http://vaultwarden.apps.svc.cluster.local/alive
-        interval: 2m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
-
-      # ── Home Automation ──
-      - name: Home Assistant
-        url: https://ha.home
+      - name: Outline
+        group: Productivity
+        url: https://outline.home
         <<: *defaults
 
-      # ── Mail ──
-      - name: Mailu Webmail
-        url: http://mailu-front.apps.svc.cluster.local
-        interval: 2m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
+      - name: Stirling PDF
+        group: Productivity
+        url: https://pdf.home
+        <<: *defaults
 
-      # ── Infra ──
+      - name: Mealie
+        group: Productivity
+        url: https://eda.home
+        <<: *defaults
+
+      - name: Memos
+        group: Productivity
+        url: https://memos.home
+        <<: *defaults
+
+      - name: Vikunja
+        group: Productivity
+        url: https://v.home
+        <<: *defaults
+
+      - name: Actual Budget
+        group: Productivity
+        url: https://money.home
+        <<: *defaults
+
       - name: n8n
+        group: Productivity
         url: https://n8n.home/healthz
         <<: *defaults
 
+      - name: Code Server
+        group: Productivity
+        url: https://code.home
+        <<: *defaults
+
+      - name: Cloud DBeaver
+        group: Productivity
+        url: https://db.home
+        <<: *defaults
+
+      - name: IT Tools
+        group: Productivity
+        url: https://tools.home
+        <<: *defaults
+
+      # ── Auth & Access ──────────────────────────────────────────────────────
+
       - name: Authentik
+        group: Auth & Access
         url: https://auth.home/-/health/ready/
+        <<: *defaults
+
+      - name: Vaultwarden
+        group: Auth & Access
+        url: http://vaultwarden.apps.svc.cluster.local/alive
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      - name: Guacamole
+        group: Auth & Access
+        url: https://gua.home
+        <<: *defaults
+
+      - name: Portainer
+        group: Auth & Access
+        url: https://portainer.home
+        <<: *defaults
+
+      - name: WG-Easy
+        group: Auth & Access
+        url: https://vpn.home
+        <<: *defaults
+
+      - name: Wizarr
+        group: Auth & Access
+        url: https://wizarr.home
+        <<: *defaults
+
+      # ── Infrastructure ─────────────────────────────────────────────────────
+
+      - name: Homer
+        group: Infrastructure
+        url: https://start.home
+        <<: *defaults
+
+      - name: MinIO
+        group: Infrastructure
+        # Cluster-internal URL — health endpoint не требует авторизации
+        url: http://minio.infra.svc.cluster.local:9000/minio/health/live
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      # ── Mail ───────────────────────────────────────────────────────────────
+
+      - name: Mailu
+        group: Mail
+        # Cluster-internal URL — ingress требует авторизации
+        url: http://mailu-front.apps.svc.cluster.local
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      # ── Monitoring ─────────────────────────────────────────────────────────
+
+      - name: Grafana
+        group: Monitoring
+        url: https://grafana.home/api/health
+        <<: *defaults
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].database == ok"
+
+      - name: Prometheus
+        group: Monitoring
+        # Cluster-internal URL — ingress закрыт authentik forward-auth
+        url: http://prometheus-operated.monitoring.svc.cluster.local:9090/-/healthy
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
+      - name: Alertmanager
+        group: Monitoring
+        url: https://alerts.home/-/healthy
+        <<: *defaults
+
+      - name: Loki
+        group: Monitoring
+        url: https://loki.home/ready
+        <<: *defaults
+
+      # ── GitLab ─────────────────────────────────────────────────────────────
+
+      - name: GitLab
+        group: GitLab
+        url: https://gitlab.home
         <<: *defaults
