@@ -292,10 +292,11 @@ data:
 
       - name: Loki
         group: Monitoring
-        url: http://loki.home/ready
+        url: http://loki.monitoring.svc.cluster.local:3100/ready
         interval: 1m
         conditions:
           - "[STATUS] == 200"
+          - "[BODY] == ready"
         alerts:
           - type: telegram
 
