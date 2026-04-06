@@ -83,8 +83,12 @@ data:
 
       - name: Flaresolverr
         group: Media
-        url: https://flaresolverr.home
-        <<: *defaults
+        url: http://flaresolverr.apps.svc.cluster.local:8191
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
 
       # ── Photos & Files ─────────────────────────────────────────────────────
 
@@ -153,7 +157,7 @@ data:
 
       - name: Stirling PDF
         group: Productivity
-        url: https://pdf.home
+        url: https://pdf.home/api/v1/info/status
         <<: *defaults
 
       - name: Mealie
@@ -168,7 +172,7 @@ data:
 
       - name: Vikunja
         group: Productivity
-        url: https://v.home
+        url: https://v.progist.ru
         <<: *defaults
 
       - name: Actual Budget
@@ -183,7 +187,7 @@ data:
 
       - name: Code Server
         group: Productivity
-        url: https://code.home
+        url: https://code.progist.ru
         <<: *defaults
 
       - name: Cloud DBeaver
@@ -214,7 +218,7 @@ data:
 
       - name: Guacamole
         group: Auth & Access
-        url: https://gua.home
+        url: https://gua.progist.ru
         <<: *defaults
 
       - name: Portainer
@@ -229,7 +233,7 @@ data:
 
       - name: Wizarr
         group: Auth & Access
-        url: https://wizarr.home
+        url: https://invite.progist.ru
         <<: *defaults
 
       # ── Infrastructure ─────────────────────────────────────────────────────
@@ -288,8 +292,12 @@ data:
 
       - name: Loki
         group: Monitoring
-        url: https://loki.home/ready
-        <<: *defaults
+        url: http://loki.home/ready
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
 
       # ── GitLab ─────────────────────────────────────────────────────────────
 

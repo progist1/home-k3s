@@ -25,6 +25,13 @@ spec:
           image: twinproduction/gatus:v5.35.0
           ports:
             - containerPort: 8080
+          env:
+            - name: HTTPS_PROXY
+              value: "socks5://xray.infra.svc.cluster.local:10808"
+            - name: HTTP_PROXY
+              value: "socks5://xray.infra.svc.cluster.local:10808"
+            - name: NO_PROXY
+              value: ".home,.cluster.local,.progist.ru,10.0.0.0/8,127.0.0.1,localhost"
           envFrom:
             - secretRef:
                 name: gatus-secrets
