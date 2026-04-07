@@ -1,0 +1,2 @@
+resources:
+  - databasus-minio-secrets-sealed.yaml

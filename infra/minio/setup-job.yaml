@@ -95,6 +95,31 @@ spec:
                 mc admin policy attach minio "${LOKI_POLICY_NAME}" --user "${LOKI_ACCESS_KEY}"
               fi
               
+              # ============================================
+              # 5. Создание бакета и пользователя для Databasus
+              # ============================================
+              if [ -n "${DATABASUS_ACCESS_KEY}" ] && [ -n "${DATABASUS_SECRET_KEY}" ]; then
+                DATABASUS_BUCKET="${DATABASUS_BUCKET:-databasus}"
+                echo "Creating bucket ${DATABASUS_BUCKET}..."
+                mc mb minio/${DATABASUS_BUCKET} --ignore-existing
+
+                echo "Creating user ${DATABASUS_ACCESS_KEY}..."
+                mc admin user remove minio "${DATABASUS_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "${DATABASUS_ACCESS_KEY}" "${DATABASUS_SECRET_KEY}"
+
+                echo "Creating policy for bucket ${DATABASUS_BUCKET}..."
+                DATABASUS_POLICY_NAME="databasus-${DATABASUS_BUCKET}-policy"
+                DATABASUS_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${DATABASUS_BUCKET}"'/*","arn:aws:s3:::'"${DATABASUS_BUCKET}"'"]}]}'
+                echo "$DATABASUS_POLICY_JSON" > /tmp/databasus-policy.json
+
+                mc admin policy remove minio "${DATABASUS_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "${DATABASUS_POLICY_NAME}" /tmp/databasus-policy.json
+
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "${DATABASUS_POLICY_NAME}" --user "${DATABASUS_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "${DATABASUS_POLICY_NAME}" --user "${DATABASUS_ACCESS_KEY}"
+              fi
+
               # Проверка что бакеты созданы
               echo "Listing buckets:"
               mc ls minio/
@@ -140,6 +165,20 @@ spec:
                   optional: true
             - name: LOKI_BUCKET
               value: loki
+            - name: DATABASUS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: databasus-minio-secrets
+                  key: access-key
+                  optional: true
+            - name: DATABASUS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: databasus-minio-secrets
+                  key: secret-key
+                  optional: true
+            - name: DATABASUS_BUCKET
+              value: databasus
           resources:
             requests:
               cpu: "50m"
