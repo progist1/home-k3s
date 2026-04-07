@@ -23,8 +23,6 @@ spec:
         app: uptime-kuma
         app.kubernetes.io/name: uptime-kuma
     spec:
-      securityContext:
-        fsGroup: 1000
       containers:
         - name: uptime-kuma
           image: louislam/uptime-kuma:1.23.16
@@ -49,9 +47,6 @@ spec:
                 secretKeyRef:
                   name: uptime-kuma-secrets
                   key: db-password
-          volumeMounts:
-            - name: data
-              mountPath: /app/data
           readinessProbe:
             httpGet:
               path: /
@@ -71,7 +66,3 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: uptime-kuma-data-pvc
