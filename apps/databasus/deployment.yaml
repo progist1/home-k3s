@@ -21,6 +21,8 @@ spec:
         app: databasus
         app.kubernetes.io/name: databasus
     spec:
+      securityContext:
+        fsGroup: 999
       containers:
         - name: databasus
           image: databasus/databasus:v3.32.0
