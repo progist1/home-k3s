@@ -306,3 +306,15 @@ data:
         group: GitLab
         url: https://gitlab.home
         <<: *defaults
+
+      # ── Status & Backups ───────────────────────────────────────────────────
+
+      - name: Uptime Kuma
+        group: Status & Backups
+        url: https://kuma.home
+        <<: *defaults
+
+      - name: Databasus
+        group: Status & Backups
+        url: https://databasus.home
+        <<: *defaults

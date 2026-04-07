@@ -42,3 +42,5 @@ resources:
   - it-tools
   - gatus
   - n8n
+  - uptime-kuma
+  - databasus

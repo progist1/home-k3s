@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: databasus
+  namespace: apps
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+    app.kubernetes.io/name: databasus
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: databasus
+  template:
+    metadata:
+      labels:
+        app: databasus
+        app.kubernetes.io/name: databasus
+    spec:
+      containers:
+        - name: databasus
+          image: databasus/databasus:v3.32.0
+          ports:
+            - containerPort: 4005
+          volumeMounts:
+            - name: data
+              mountPath: /databasus-data
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4005
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4005
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: databasus-data-pvc

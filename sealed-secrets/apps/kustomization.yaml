@@ -16,3 +16,4 @@ resources:
   - frigate
   - frigate-notify
   - gatus
+  - uptime-kuma
