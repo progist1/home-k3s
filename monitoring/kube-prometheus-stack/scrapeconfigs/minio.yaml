@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: minio
+  scrapeInterval: 60s
+  metricsPath: '/minio/v2/metrics/cluster'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'minio-internal.infra.svc.cluster.local:9000'
+    labels:
+      group: 'minio'
