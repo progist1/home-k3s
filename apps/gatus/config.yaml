@@ -316,5 +316,5 @@ data:
 
       - name: Databasus
         group: Status & Backups
-        url: https://databasus.home
+        url: https://databasus.home/api/v1/system/health
         <<: *defaults
