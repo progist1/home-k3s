@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: code-server
-          image: codercom/code-server:4.114.1
+          image: codercom/code-server:4.115.0
           args:
             - --bind-addr
             - 0.0.0.0:8080
