@@ -18,7 +18,7 @@ spec:
       key: password
 
   backup:
-    schedule: "0 4 * * *"
+    schedule: "0 5 * * *"
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 0
     promURL: "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091"
