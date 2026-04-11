@@ -44,4 +44,4 @@ spec:
             name: ssl-exporter-config
         - name: ca-cert
           configMap:
-            name: ssl-exporter-ca
+            name: home-root-ca

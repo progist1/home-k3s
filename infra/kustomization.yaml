@@ -1,6 +1,5 @@
 resources:
   - storageclasses
-  - renovate
   - traefik-middleware
   - xray
   - xray-edge
@@ -9,6 +8,7 @@ resources:
   - intel-device-plugin
   - minio
   - reflector
+  - home-root-ca.yaml
 
   # - traefik до лучших времён, когда потребуется 2+ нод
   # - metallb до лучших времён, когда потребуется 2+ нод

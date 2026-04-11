@@ -1,10 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: renovate-root-ca
-  namespace: renovate
+  name: home-root-ca
+  namespace: infra
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+    reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "gitlab-runner,renovate,monitoring,apps"
+    reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+    reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "gitlab-runner,renovate,monitoring,apps"
 data:
-  root-ca.crt: |
+  ca.crt: |
     -----BEGIN CERTIFICATE-----
     MIIGNDCCBBygAwIBAgIDenCTMA0GCSqGSIb3DQEBCwUAMIGaMSUwIwYDVQQDDBxQ
     cm9naXN0IEhvbWUgUHJpdmF0ZSBOZXR3b3JrMQswCQYDVQQGEwJSVTEZMBcGA1UE

@@ -1,3 +1,0 @@
-namespace: renovate
-resources:
-  - renovate-root-ca.yaml

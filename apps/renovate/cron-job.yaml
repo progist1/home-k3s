@@ -25,9 +25,9 @@ spec:
                 - name: DEBUG
                   value: renovate:* renovate
                 - name: NODE_EXTRA_CA_CERTS
-                  value: "/usr/local/share/ca-certificates/root-ca.crt"
+                  value: "/usr/local/share/ca-certificates/ca.crt"
                 - name: GIT_SSL_CAINFO
-                  value: "/usr/local/share/ca-certificates/root-ca.crt"
+                  value: "/usr/local/share/ca-certificates/ca.crt"
                 - name: RENOVATE_PLATFORM
                   value: gitlab
                 - name: RENOVATE_ENDPOINT
@@ -46,9 +46,9 @@ spec:
                       key: RENOVATE_GITHUB_COM_TOKEN
 
               volumeMounts:
-                - name: root-ca
-                  mountPath: /usr/local/share/ca-certificates/root-ca.crt
-                  subPath: root-ca.crt
+                - name: home-root-ca
+                  mountPath: /usr/local/share/ca-certificates/ca.crt
+                  subPath: ca.crt
 
               resources:
                 requests:
@@ -58,7 +58,7 @@ spec:
                   cpu: "500m"
                   memory: "1Gi"
           volumes:
-            - name: root-ca
+            - name: home-root-ca
               configMap:
-                name: renovate-root-ca
+                name: home-root-ca
       ttlSecondsAfterFinished: 5
