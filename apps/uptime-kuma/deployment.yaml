@@ -29,6 +29,8 @@ spec:
           ports:
             - containerPort: 3001
           env:
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/usr/local/share/ca-certificates/ca.crt"
             - name: UPTIME_KUMA_DB_TYPE
               value: "mariadb"
             - name: UPTIME_KUMA_DB_HOSTNAME
@@ -47,6 +49,10 @@ spec:
                 secretKeyRef:
                   name: uptime-kuma-secrets
                   key: db-password
+          volumeMounts:
+            - name: home-root-ca
+              mountPath: /usr/local/share/ca-certificates/ca.crt
+              subPath: ca.crt
           readinessProbe:
             httpGet:
               path: /
@@ -66,3 +72,7 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+      volumes:
+        - name: home-root-ca
+          configMap:
+            name: home-root-ca
