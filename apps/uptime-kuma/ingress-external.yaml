@@ -20,7 +20,18 @@ spec:
                 name: uptime-kuma
                 port:
                   number: 80
+    - host: status.bonchbot.ru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uptime-kuma
+                port:
+                  number: 80
   tls:
     - hosts:
         - status.progist.ru
+        - status.bonchbot.ru
       secretName: uptime-kuma-external-tls
