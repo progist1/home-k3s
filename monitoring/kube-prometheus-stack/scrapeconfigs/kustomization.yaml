@@ -7,7 +7,6 @@ resources:
   - home-assistant.yaml
   - redis.yaml
   - authentik.yaml
-  - adguard.yaml
   - blocky.yaml
   - jellyfin.yaml
   - bonchbot.yaml

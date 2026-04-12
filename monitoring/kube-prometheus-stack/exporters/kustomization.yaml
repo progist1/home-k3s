@@ -1,7 +1,6 @@
 resources:
   - postgres-exporter
   - redis-exporter
-  - adguard-exporter
   - ssl-exporter
   - mysql-exporter
   - snmp-exporter
