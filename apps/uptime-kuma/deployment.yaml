@@ -53,6 +53,8 @@ spec:
             - name: home-root-ca
               mountPath: /usr/local/share/ca-certificates/ca.crt
               subPath: ca.crt
+            - name: data
+              mountPath: /app/data
           readinessProbe:
             httpGet:
               path: /
@@ -72,7 +74,13 @@ spec:
             limits:
               cpu: "1000m"
               memory: "600Mi"
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
       volumes:
         - name: home-root-ca
           configMap:
             name: home-root-ca
+        - name: data
+          hostPath:
+            path: /var/lib/uptime-kuma/data
+            type: DirectoryOrCreate
