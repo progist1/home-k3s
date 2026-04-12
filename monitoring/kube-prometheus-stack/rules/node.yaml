@@ -72,7 +72,7 @@ spec:
         severity: warning
       annotations:
         summary: "High context switches rate on {{ $labels.host }}"
-        description: "Context switches rate is {{ $value | humanize }}/s on {{ $labels.host }} ({{ $labels.instance }}). Normal: 20-30k/s. High values indicate excessive process switching, possibly due to NFS operations or system calls."
+        description: "Context switches rate is {{ $value | humanize }}/s on {{ $labels.host }} ({{ $labels.instance }}). Baseline for this cluster: 35-45k/s (WireGuard + Loki/MinIO/NFS + k3s). High values indicate excessive process switching, possibly due to heavy backup jobs (mysqldump) or NFS storms."
         
     - alert: NodeHighMemory
       expr: (1 - (node_memory_MemAvailable_bytes{host!="home-truenas"} / node_memory_MemTotal_bytes)) * 100 > 85

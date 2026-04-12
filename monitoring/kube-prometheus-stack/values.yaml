@@ -239,10 +239,10 @@ alertmanager:
           receiver: info
           continue: false
 
-        # --- dead man's switch (Cronitor heartbeat) ---
+        # --- dead man's switch (external heartbeats) ---
         - matchers:
             - alertname="Watchdog"
-          receiver: cronitor
+          receiver: heartbeat
           group_wait: 0s
           group_interval: 1m
           repeat_interval: 1m
@@ -290,9 +290,11 @@ alertmanager:
 
       - name: "null"
 
-      - name: cronitor
+      - name: heartbeat
         webhook_configs:
-          - url: 'redacted'
+          - url: 'redacted'  # Cronitor
+            send_resolved: false
+          - url: 'redacted'  # Uptime Kuma push
             send_resolved: false
 
   alertmanagerSpec:
