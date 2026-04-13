@@ -30,8 +30,19 @@ spec:
                 name: uptime-kuma
                 port:
                   number: 80
+    - host: jellycleaner.progist.ru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: uptime-kuma
+                port:
+                  number: 80
   tls:
     - hosts:
         - status.progist.ru
         - status.bonchbot.ru
+        - jellycleaner.progist.ru
       secretName: uptime-kuma-external-tls
