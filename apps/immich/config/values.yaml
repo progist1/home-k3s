@@ -130,7 +130,7 @@ machine-learning:
         main:
           image:
             repository: ghcr.io/immich-app/immich-machine-learning
-            tag: v2.7.4-openvino
+            tag: v2.7.5-openvino
             pullPolicy: IfNotPresent
           probes:
             liveness:
