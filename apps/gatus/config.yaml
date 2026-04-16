@@ -34,250 +34,79 @@ data:
       alerts:
         - type: telegram
 
+    tcp: &tcp
+      interval: 1m
+      conditions:
+        - "[CONNECTED] == true"
+      alerts:
+        - type: telegram
+
     endpoints:
 
-      # ── Media ──────────────────────────────────────────────────────────────
+      # ── Uptime Kuma ────────────────────────────────────────────────────────
+      # Основная цель Gatus: алертить когда UK недоступна
 
-      - name: Jellyfin
-        group: Media
-        url: https://watch.home/health
-        <<: *defaults
-        conditions:
-          - "[STATUS] == 200"
-          - "[BODY] == Healthy"
-
-      - name: Sonarr
-        group: Media
-        url: https://sonarr.home/ping
+      - name: Uptime Kuma
+        group: Uptime Kuma
+        url: https://kuma.home
         <<: *defaults
 
-      - name: Radarr
-        group: Media
-        url: https://radarr.home/ping
+      - name: Uptime Kuma (external)
+        group: Uptime Kuma
+        url: https://status.progist.ru
         <<: *defaults
 
-      - name: Prowlarr
-        group: Media
-        url: https://prowlarr.home/ping
-        <<: *defaults
+      # ── Databases ──────────────────────────────────────────────────────────
+      # Если БД упала — UK тоже умерла, только Gatus напишет
 
-      - name: Bazarr
-        group: Media
-        url: https://bazarr.home
-        <<: *defaults
+      - name: MySQL
+        group: Databases
+        url: tcp://mysql.apps.svc.cluster.local:3306
+        <<: *tcp
 
-      - name: Seerr
-        group: Media
-        url: https://seerr.home
-        <<: *defaults
+      - name: PostgreSQL
+        group: Databases
+        url: tcp://postgres.apps.svc.cluster.local:5432
+        <<: *tcp
 
-      - name: Transmission
-        group: Media
-        url: https://transmission.home
-        <<: *defaults
+      - name: PostgreSQL (pgvecto)
+        group: Databases
+        url: tcp://pgvecto.apps.svc.cluster.local:5432
+        <<: *tcp
 
-      - name: Tdarr
-        group: Media
-        url: https://tdarr.home
-        <<: *defaults
-
-      - name: Flaresolverr
-        group: Media
-        url: http://flaresolverr.apps.svc.cluster.local:8191
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
-
-      # ── Photos & Files ─────────────────────────────────────────────────────
-
-      - name: Immich
-        group: Photos & Files
-        url: https://photos.home/api/server/ping
-        <<: *defaults
-        conditions:
-          - "[STATUS] == 200"
-          - "[BODY].res == pong"
-
-      - name: Filebrowser
-        group: Photos & Files
-        url: https://share.home
-        <<: *defaults
-
-      # ── Home Automation ────────────────────────────────────────────────────
-
-      - name: Home Assistant
-        group: Home Automation
-        url: https://ha.home
-        <<: *defaults
-
-      - name: Frigate
-        group: Home Automation
-        url: https://cctv.home
-        <<: *defaults
-
-      - name: Blocky
-        group: Home Automation
-        url: https://dns.home
-        <<: *defaults
-
-      - name: Mosquitto
-        group: Home Automation
-        url: tcp://mosquitto.apps.svc.cluster.local:1883
-        interval: 1m
-        conditions:
-          - "[CONNECTED] == true"
-        alerts:
-          - type: telegram
-
-      # ── Productivity ───────────────────────────────────────────────────────
-
-      - name: Nextcloud
-        group: Productivity
-        url: https://nc.home/status.php
-        client:
-          insecure: true
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-          - "[BODY].installed == true"
-        alerts:
-          - type: telegram
-
-      - name: Paperless
-        group: Productivity
-        url: https://docs.home
-        <<: *defaults
-
-      - name: Outline
-        group: Productivity
-        url: https://outline.home
-        <<: *defaults
-
-      - name: Stirling PDF
-        group: Productivity
-        url: https://pdf.home/api/v1/info/status
-        <<: *defaults
-
-      - name: Mealie
-        group: Productivity
-        url: https://eda.home
-        <<: *defaults
-
-      - name: Memos
-        group: Productivity
-        url: https://memos.home
-        <<: *defaults
-
-      - name: Vikunja
-        group: Productivity
-        url: https://v.progist.ru
-        <<: *defaults
-
-      - name: Actual Budget
-        group: Productivity
-        url: https://money.home
-        <<: *defaults
-
-      - name: n8n
-        group: Productivity
-        url: https://n8n.home/healthz
-        <<: *defaults
-
-      - name: Code Server
-        group: Productivity
-        url: https://code.progist.ru
-        <<: *defaults
-
-      - name: Cloud DBeaver
-        group: Productivity
-        url: https://db.home
-        <<: *defaults
-
-      - name: IT Tools
-        group: Productivity
-        url: https://tools.home
-        <<: *defaults
-
-      # ── Auth & Access ──────────────────────────────────────────────────────
-
-      - name: Authentik
-        group: Auth & Access
-        url: https://auth.home/-/health/ready/
-        <<: *defaults
-
-      - name: Vaultwarden
-        group: Auth & Access
-        url: http://vaultwarden.apps.svc.cluster.local/alive
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
-
-      - name: Guacamole
-        group: Auth & Access
-        url: https://gua.progist.ru
-        <<: *defaults
-
-      - name: Portainer
-        group: Auth & Access
-        url: https://portainer.home
-        <<: *defaults
-
-      - name: WG-Easy
-        group: Auth & Access
-        url: https://vpn.home
-        <<: *defaults
-
-      - name: Wizarr
-        group: Auth & Access
-        url: https://invite.progist.ru
-        <<: *defaults
+      - name: Redis
+        group: Databases
+        url: tcp://redis.apps.svc.cluster.local:6379
+        <<: *tcp
 
       # ── Infrastructure ─────────────────────────────────────────────────────
+      # Без NFS и DNS всё падает, UK включая
 
-      - name: Homer
+      - name: Blocky
         group: Infrastructure
-        url: https://start.home
+        url: https://dns.home/
         <<: *defaults
 
-      - name: MinIO
+      - name: TrueNAS
         group: Infrastructure
-        # Cluster-internal URL — health endpoint не требует авторизации
-        url: http://minio.infra.svc.cluster.local:9000/minio/health/live
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
-
-      # ── Mail ───────────────────────────────────────────────────────────────
-
-      - name: Mailu
-        group: Mail
-        # Cluster-internal URL — ingress требует авторизации
-        url: http://mailu-front.apps.svc.cluster.local
-        interval: 1m
-        conditions:
-          - "[STATUS] == 200"
-        alerts:
-          - type: telegram
-
-      # ── Monitoring ─────────────────────────────────────────────────────────
-
-      - name: Grafana
-        group: Monitoring
-        url: https://grafana.home/api/health
+        url: https://bigb.home
         <<: *defaults
-        conditions:
-          - "[STATUS] == 200"
-          - "[BODY].database == ok"
+
+      - name: TrueNAS SSH
+        group: Infrastructure
+        url: tcp://bigb.home:22
+        <<: *tcp
+
+      - name: TrueNAS NFS
+        group: Infrastructure
+        url: tcp://bigb.home:2049
+        <<: *tcp
+
+      # ── Monitoring stack ───────────────────────────────────────────────────
+      # Если Alertmanager мёртв — Gatus единственный кто напишет в Telegram
 
       - name: Prometheus
         group: Monitoring
-        # Cluster-internal URL — ingress закрыт authentik forward-auth
         url: http://prometheus-operated.monitoring.svc.cluster.local:9090/-/healthy
         interval: 1m
         conditions:
@@ -300,21 +129,25 @@ data:
         alerts:
           - type: telegram
 
-      # ── GitLab ─────────────────────────────────────────────────────────────
+      # ── VMs & Hosts ────────────────────────────────────────────────────────
+      # Здоровье кластера
 
-      - name: GitLab
-        group: GitLab
-        url: https://gitlab.home
-        <<: *defaults
+      - name: k3s-prod
+        group: VMs & Hosts
+        url: tcp://k3s.home:22
+        <<: *tcp
 
-      # ── Status & Backups ───────────────────────────────────────────────────
+      - name: k3s-gpu
+        group: VMs & Hosts
+        url: tcp://10.0.0.3:22
+        <<: *tcp
 
-      - name: Uptime Kuma
-        group: Status & Backups
-        url: https://kuma.home
-        <<: *defaults
+      - name: k3s-pi
+        group: VMs & Hosts
+        url: tcp://10.0.0.5:22
+        <<: *tcp
 
-      - name: Databasus
-        group: Status & Backups
-        url: https://databasus.home/api/v1/system/health
-        <<: *defaults
+      - name: k3s-yolki
+        group: VMs & Hosts
+        url: tcp://10.3.0.2:22
+        <<: *tcp
