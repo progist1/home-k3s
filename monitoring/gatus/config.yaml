@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gatus-config
-  namespace: apps
+  namespace: monitoring
   labels:
     managed-by: flux
     app.kubernetes.io/part-of: home-cluster

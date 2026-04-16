@@ -8,3 +8,5 @@ resources:
   - mysql-exporter-secrets-sealed.yaml
   - loki-secrets-sealed.yaml
   - mailtest-secrets-sealed.yaml
+  - gatus-secrets-sealed.yaml
+  - uptime-kuma-secrets-sealed.yaml

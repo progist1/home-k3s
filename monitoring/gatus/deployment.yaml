@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gatus
-  namespace: apps
+  namespace: monitoring
   labels:
     app.kubernetes.io/name: gatus
   annotations:

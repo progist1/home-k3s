@@ -15,5 +15,3 @@ resources:
   - nextcloud
   - frigate
   - frigate-notify
-  - gatus
-  - uptime-kuma

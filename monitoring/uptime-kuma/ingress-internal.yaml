@@ -1,16 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: uptime-kuma-external
-  namespace: apps
+  name: uptime-kuma-internal
+  namespace: monitoring
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: root-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-    - host: status.progist.ru
+    - host: kuma.home
       http:
         paths:
           - path: /
@@ -20,17 +20,7 @@ spec:
                 name: uptime-kuma
                 port:
                   number: 80
-    - host: status.bonchbot.ru
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: uptime-kuma
-                port:
-                  number: 80
-    - host: jellycleaner.progist.ru
+    - host: status.jellycleaner.home
       http:
         paths:
           - path: /
@@ -42,7 +32,6 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - status.progist.ru
-        - status.bonchbot.ru
-        - jellycleaner.progist.ru
-      secretName: uptime-kuma-external-tls
+        - kuma.home
+        - status.jellycleaner.home
+      secretName: uptime-kuma-internal-tls

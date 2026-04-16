@@ -40,7 +40,5 @@ resources:
   - bazarr
   - flaresolverr
   - it-tools
-  - gatus
   - n8n
-  - uptime-kuma
   - databasus

@@ -2,3 +2,5 @@ resources:
   - kube-prometheus-stack
   - loki
   - promtail
+  - gatus
+  - uptime-kuma
