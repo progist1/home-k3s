@@ -11,9 +11,12 @@ spec:
   metricsPath: '/metrics'
   scheme: HTTP
   basicAuth:
+    username:
+      name: uptime-kuma-metrics-token
+      key: username
     password:
       name: uptime-kuma-metrics-token
-      key: api-key
+      key: password
   staticConfigs:
   - targets:
     - 'uptime-kuma.monitoring.svc.cluster.local:80'
