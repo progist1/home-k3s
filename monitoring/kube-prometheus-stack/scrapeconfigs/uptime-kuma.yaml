@@ -10,8 +10,8 @@ spec:
   scrapeInterval: 30s
   metricsPath: '/metrics'
   scheme: HTTP
-  authorization:
-    credentials:
+  basicAuth:
+    password:
       name: uptime-kuma-metrics-token
       key: api-key
   staticConfigs:
