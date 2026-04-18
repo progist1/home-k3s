@@ -10,3 +10,4 @@ resources:
   - mailtest-secrets-sealed.yaml
   - gatus-secrets-sealed.yaml
   - uptime-kuma-secrets-sealed.yaml
+  - uptime-kuma-metrics-token-sealed.yaml

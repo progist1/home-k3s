@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: uptime-kuma-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: uptime-kuma-exporter
+  scrapeInterval: 30s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  authorization:
+    credentials:
+      name: uptime-kuma-metrics-token
+      key: api-key
+  staticConfigs:
+  - targets:
+    - 'uptime-kuma.monitoring.svc.cluster.local:80'
+    labels:
+      group: 'uptime-kuma-exporter'
+      host: 'k3s'
+      location: 'home'
+  metricRelabelings:
+    - sourceLabels: ["__name__"]
+      regex: '.*_bucket$'
+      action: drop
+    - sourceLabels: ["__name__"]
+      regex: '.*_created$'
+      action: drop
