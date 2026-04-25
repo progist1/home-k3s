@@ -25,7 +25,7 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: configs
-              mountPath: /configs
+              mountPath: /app/configs
           resources:
             requests:
               cpu: "100m"
