@@ -28,7 +28,7 @@ spec:
               effect: NoSchedule
           containers:
             - name: nextcloud-cron
-              image: curlimages/curl:latest
+              image: curlimages/curl:8.19.0
               command:
                 - sh
                 - -c
