@@ -15,3 +15,4 @@ resources:
   - mailu.yaml
   - snmp.yaml
   - pods.yaml
+  - minio.yaml

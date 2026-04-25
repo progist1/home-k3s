@@ -1,0 +1,83 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: minio-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: minio.health
+    interval: 30s
+    rules:
+    # Критический алерт - кластер нездоров
+    - alert: MinIOUnhealthy
+      expr: minio_cluster_health_status == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MinIO cluster is unhealthy"
+        description: |
+          MinIO cluster health status is 0 (unhealthy).
+          **Action:** 🚨 Check MinIO pod logs and storage backend
+
+    # Критический алерт - диск оффлайн
+    - alert: MinioDriveOffline
+      expr: minio_cluster_drive_offline_total > 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MinIO drive offline ({{ $value }} drives)"
+        description: |
+          {{ $value }} drive(s) are offline in MinIO.
+          **Action:** 🚨 Check MinIO storage volume and PVC status
+
+    # Критический алерт - нет метрик MinIO (MinIO недоступен или не скрейпится)
+    - alert: MinIOMetricsMissing
+      expr: absent(minio_cluster_health_status)
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MinIO metrics are missing"
+        description: |
+          No MinIO metrics collected for 10 minutes — MinIO is likely down.
+          **Impact:** All k8up local backups and Loki logs storage are unavailable.
+          **Action:** 🚨 Check MinIO pod and PVC
+
+  - name: minio.storage
+    interval: 5m
+    rules:
+    # Предупреждение - диск заполнен на 80%
+    - alert: MinIODiskUsageHigh
+      expr: |
+        (
+          minio_cluster_capacity_usable_total_bytes - minio_cluster_capacity_usable_free_bytes
+        ) / minio_cluster_capacity_usable_total_bytes > 0.80
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "MinIO disk usage above 80%"
+        description: |
+          MinIO usable disk usage is {{ $value | humanizePercentage }}.
+          **Free:** {{ with query "minio_cluster_capacity_usable_free_bytes" }}{{ . | first | value | humanize1024 }}B{{ end }}
+          **Action:** ⚠️ Clean up old snapshots or expand storage
+
+    # Критический алерт - диск заполнен на 90%
+    - alert: MinIODiskUsageCritical
+      expr: |
+        (
+          minio_cluster_capacity_usable_total_bytes - minio_cluster_capacity_usable_free_bytes
+        ) / minio_cluster_capacity_usable_total_bytes > 0.90
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "MinIO disk usage above 90%"
+        description: |
+          MinIO usable disk usage is {{ $value | humanizePercentage }}.
+          **Free:** {{ with query "minio_cluster_capacity_usable_free_bytes" }}{{ . | first | value | humanize1024 }}B{{ end }}
+          **Action:** 🚨 Immediately free space or expand storage — backups will fail when full
