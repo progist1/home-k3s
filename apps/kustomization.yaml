@@ -6,7 +6,6 @@ resources:
   - memos
   - mealie
   - actual-budget
-  - stirling-pdf
   - prowlarr
   - wizarr
   - seerr
