@@ -15,16 +15,16 @@
   "kubernetes": {
     "managerFilePatterns": [
       "apps/**/*.yaml",
-      "helm-repositories/**/*.yaml",
       "helm/*.yaml",
       "monitoring/**/*.yaml",
       "gitlab/**/*.yaml",
       "infra/**/*.yaml",
-      "cluster-config/**/*.yaml"
+      "cluster-config/**/*.yaml",
+      "cluster-addons/**/*.yaml"
     ]
   },
   "helm-values": {
-    "fileMatch": [
+    "managerFilePatterns": [
       ".*\\/values\\.ya?ml$"
     ]
   },
@@ -97,7 +97,7 @@
       "matchPackageNames": ["homeassistant/home-assistant"],
       "versioning": "regex:^?(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d+)$",
       "groupName": "Home Assistant Docker Image",
-      "automerge": false
+      "automerge": true
     },
     {
       "matchFileNames": ["apps/immich/helm-release.yaml"],

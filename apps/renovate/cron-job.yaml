@@ -21,9 +21,7 @@ spec:
               image: renovate/renovate:43.130.0
               env:
                 - name: LOG_LEVEL
-                  value: debug
-                - name: DEBUG
-                  value: renovate:* renovate
+                  value: info
                 - name: NODE_EXTRA_CA_CERTS
                   value: "/usr/local/share/ca-certificates/ca.crt"
                 - name: GIT_SSL_CAINFO
