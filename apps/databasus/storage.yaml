@@ -23,6 +23,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: databasus-data-pvc
   namespace: apps
+  labels:
+    backup-level: important
+    backup-user: root
 spec:
   storageClassName: nfs-fast-manual
   accessModes:

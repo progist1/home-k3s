@@ -18,6 +18,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: gitlab-backup-pvc
   namespace: gitlab
+  labels:
+    backup-level: important
+    backup-offsite: "true"
 spec:
   accessModes:
     - ReadWriteMany
