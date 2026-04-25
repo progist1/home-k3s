@@ -102,6 +102,15 @@ data:
         url: tcp://bigb.home:2049
         <<: *tcp
 
+      - name: MinIO
+        group: Infrastructure
+        url: http://minio.infra.svc.cluster.local:9000/minio/health/live
+        interval: 1m
+        conditions:
+          - "[STATUS] == 200"
+        alerts:
+          - type: telegram
+
       # ── Monitoring stack ───────────────────────────────────────────────────
       # Если Alertmanager мёртв — Gatus единственный кто напишет в Telegram
 
