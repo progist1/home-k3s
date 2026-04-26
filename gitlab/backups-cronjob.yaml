@@ -35,16 +35,16 @@ spec:
                 
                 gitlab-ctl backup-etc
                 
-                mkdir -p /mnt/backups/gitlab
+                mkdir -p /mnt/backups
                 cd /etc/gitlab/config_backup
                 
                 LATEST_CONFIG=\$(ls -t | head -n1)
                 echo 'Copying config: '\$LATEST_CONFIG
-                rm -rf /mnt/backups/gitlab/*
-                cp \$LATEST_CONFIG /mnt/backups/gitlab/
+                rm -rf /mnt/backups/*
+                cp \$LATEST_CONFIG /mnt/backups/
                 
-                chgrp -R 1000 /mnt/backups/gitlab
-                chmod -R 770 /mnt/backups/gitlab
+                chgrp -R 1000 /mnt/backups
+                chmod -R 770 /mnt/backups
                 
                 gitlab-backup create SKIP=registry CRON=1
                 
