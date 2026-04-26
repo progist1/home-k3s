@@ -15,7 +15,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: mysqldump
-              image: mysql:8.4.9
+              image: mysql:9.7.0
               command:
                 - /bin/sh
                 - -c
