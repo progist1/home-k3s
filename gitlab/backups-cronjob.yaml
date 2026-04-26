@@ -47,7 +47,10 @@ spec:
                 chmod -R 770 /mnt/backups
                 
                 gitlab-backup create SKIP=registry CRON=1
-                
+
+                chgrp -R 1000 /mnt/backups
+                chmod -R 770 /mnt/backups
+
                 rm -rf /var/opt/gitlab/backups/*
                 
                 echo '=== Backup completed at \$(date) ==='
