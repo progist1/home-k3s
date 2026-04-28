@@ -259,7 +259,7 @@ alertmanager:
             http_config:
               proxy_url: http://xray.infra.svc.cluster.local:10809
 
-      # critical = telegram + email
+      # critical = telegram (+ email disabled)
       - name: critical
         telegram_configs:
           - bot_token: 'redacted'
@@ -269,13 +269,13 @@ alertmanager:
             http_config:
               proxy_url: http://xray.infra.svc.cluster.local:10809
 
-        email_configs:
-          - to: progist11@gmail.com
-            from: redacted
-            smarthost: mail.progist.ru:587
-            auth_username: redacted
-            auth_password: redacted
-            require_tls: true
+        # email_configs:
+        #   - to: progist11@gmail.com
+        #     from: redacted
+        #     smarthost: mail.progist.ru:587
+        #     auth_username: redacted
+        #     auth_password: redacted
+        #     require_tls: true
 
       # info alerts (silent telegram)
       - name: info
