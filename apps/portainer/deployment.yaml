@@ -37,7 +37,7 @@ spec:
           effect: NoSchedule
       containers:
       - name: portainer
-        image: portainer/portainer-ce:2.40.0
+        image: portainer/portainer-ce:2.41.0
         ports:
           - containerPort: 9000
         volumeMounts:
