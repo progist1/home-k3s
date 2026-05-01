@@ -24,7 +24,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: outline
-          image: ghcr.io/flameshikari/outline-ru:1.6.1
+          image: ghcr.io/flameshikari/outline-ru:1.7.0
           imagePullPolicy: IfNotPresent
           command: ["node", "build/server/index.js"]
           ports:
