@@ -18,7 +18,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: renovate
-              image: renovate/renovate:43.160.5
+              image: renovate/renovate:43.160.6
               env:
                 - name: LOG_LEVEL
                   value: info
