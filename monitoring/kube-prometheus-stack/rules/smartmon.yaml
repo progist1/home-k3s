@@ -299,11 +299,11 @@ spec:
           **Host:** {{ $labels.hostname }}
           **Action:** 🔥 Throttling imminent, improve cooling!
 
-    # Предупреждение температуры (>60°C)
+    # Предупреждение температуры (>65°C)
     - alert: NVMeHighTemperature
       expr: |
         (
-          smartmon_temperature_celsius_raw_value > 60
+          smartmon_temperature_celsius_raw_value > 65
         )
         * on(disk) group_left
           smartmon_device_info

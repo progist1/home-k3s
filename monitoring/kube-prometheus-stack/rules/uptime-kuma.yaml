@@ -1,0 +1,44 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: uptime-kuma-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: uptime-kuma
+    interval: 60s
+    rules:
+    - alert: UptimeKumaScraperDown
+      expr: up{job="uptime-kuma-exporter"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Uptime Kuma метрики недоступны"
+        description: "Prometheus не может собрать метрики с Uptime Kuma. Статус мониторов неизвестен."
+
+    - alert: UptimeKumaMonitorDown
+      expr: |
+        monitor_status{monitor_type!="group", monitor_type!="push", monitor_name!~"VPS.*"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Monitor DOWN: {{ $labels.monitor_name }}"
+        description: |
+          Uptime Kuma: **{{ $labels.monitor_name }}** недоступен.
+          URL: {{ $labels.monitor_url }}{{ $labels.monitor_hostname }}
+
+    - alert: UptimeKumaCertExpiringSoon
+      expr: |
+        monitor_cert_days_remaining{monitor_url=~"https://.+"} < 14
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Сертификат истекает: {{ $labels.monitor_name }}"
+        description: |
+          Сертификат **{{ $labels.monitor_name }}** истекает через {{ $value }} дней.
+          URL: {{ $labels.monitor_url }}

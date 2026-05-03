@@ -146,7 +146,12 @@ alertmanager:
         time_intervals:
           - times:
               - start_time: "00:00"
-                end_time: "04:00"
+                end_time: "05:00"
+      - name: backup-load
+        time_intervals:
+          - times:
+              - start_time: "03:30"
+                end_time: "06:00"
       - name: tdarr-transcode
         time_intervals:
           - times:
@@ -163,7 +168,7 @@ alertmanager:
       repeat_interval: 2h
       routes:
 
-        # --- Бэкап-алерты: слать в critical, но заглушать в окно 3–7 МСК (00:00–04:00 UTC) ---
+        # --- Бэкап-алерты: слать в critical, но заглушать в окно 3–8 МСК (00:00–05:00 UTC) ---
         - matchers:
             - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
           receiver: critical
@@ -171,7 +176,7 @@ alertmanager:
             - backup-maintenance
           continue: false
 
-        # --- Окно бэкапов 3–7 МСК: шум от нагрузки во время бэкапов ---
+        # --- Окно бэкапов 3–9 МСК: шум от нагрузки во время бэкапов ---
         - matchers:
             - alertname="NodeSystemSaturation"
             - instance=~"10\\.0\\.0\\.2.*"
@@ -181,7 +186,15 @@ alertmanager:
           continue: false
 
         - matchers:
-            - alertname=~"NodeCPUAnomaly|NodeHighCPU"
+            - alertname=~"NodeHighCPU|NodeHighContextSwitches"
+            - instance=~"10\\.0\\.0\\.2.*"
+          receiver: telegram
+          mute_time_intervals:
+            - backup-load
+          continue: false
+
+        - matchers:
+            - alertname=~"NodeCPUAnomaly|NodeHighCPU|NodeSystemCPUAnomaly"
             - instance=~"bigb\\.home.*"
           receiver: telegram
           mute_time_intervals:

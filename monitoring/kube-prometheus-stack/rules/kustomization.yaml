@@ -16,3 +16,4 @@ resources:
   - snmp.yaml
   - pods.yaml
   - minio.yaml
+  - uptime-kuma.yaml

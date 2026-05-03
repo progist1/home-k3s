@@ -45,9 +45,13 @@ spec:
     # Такое поведение не ловится KubePodNotReady (он смотрит Pending/Unknown).
     - alert: PodReadinessFlapping
       expr: |
-        changes(kube_pod_container_status_ready{
-          namespace=~"apps|infra"
-        }[15m]) >= 4
+        (
+          changes(kube_pod_container_status_ready{
+            namespace=~"apps|infra"
+          }[15m]) >= 4
+        )
+        * on(namespace, pod) group_left(owner_kind)
+        kube_pod_owner{owner_kind!~"Job|CronJob"}
       for: 5m
       labels:
         severity: warning
