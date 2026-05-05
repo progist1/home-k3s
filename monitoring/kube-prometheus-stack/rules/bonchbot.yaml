@@ -83,7 +83,7 @@ spec:
       annotations:
         summary: "BonchBot Timetable expired ({{ $labels.environment }})"
         description: |
-          **Last successful sync:** {{ value }}
+          **Last successful sync:** {{ $value }}
 
     - alert: BonchBotArchiving
       expr: |
