@@ -14,32 +14,30 @@ spec:
       expr: up{job="bonchbot-exporter-production"} == 0
       for: 1m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "BonchBot scrapper DOWN on {{ $labels.host }}"
-        description: "Cannot scrape BonchBot metrics for 1 minute."
+        summary: "Бонч Бот: метрики недоступны"
+        description: "Экспортер Бонч Бота не отвечает уже 1 минуту. Хост: {{ $labels.host }}"
 
     - alert: BonchBotNotResponding
       expr: |
         bonchbot_last_answer_seconds > 10
       for: 10s
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "BonchBot not responding ({{ $labels.environment }})"
-        description: |
-          **Last answer was:** {{ $value }} seconds ago
+        summary: "Бонч Бот не отвечает. Среда: {{ $labels.environment }}"
+        description: "Последний ответ был {{ $value | humanizeDuration }} назад."
 
     - alert: BonchBotNotSendingNotifications
       expr: |
         bonchbot_dispatches_seconds_ago > 1m
       for: 10m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "BonchBot not sending notifications ({{ $labels.environment }})"
-        description: |
-          **Last notification was sent:** {{ $value }} seconds ago
+        summary: "Бонч Бот не рассылает уведомления. Среда: {{ $labels.environment }}"
+        description: "Последняя рассылка была {{ $value | humanizeDuration }} назад."
 
     - alert: BonchBotHighLKErrorRate
       expr: |

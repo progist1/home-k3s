@@ -14,10 +14,10 @@ spec:
       expr: up{job="postgres-exporter"} == 0
       for: 3m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "PostgreSQL DOWN on {{ $labels.host }}"
-        description: "Cannot scrape PostgreSQL metrics for 3 minutes."
+        summary: "База данных PostgreSQL недоступна"
+        description: "Метрики PostgreSQL не поступают уже 3 минуты. Хост: {{ $labels.host }}"
 
     - alert: PostgreSQLReplicationLag
       expr: |
@@ -97,10 +97,10 @@ spec:
       expr: up{job="mysql-exporter"} == 0
       for: 3m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "MySQL DOWN on {{ $labels.host }}"
-        description: "Cannot reach MySQL at {{ $labels.instance }}."
+        summary: "База данных MySQL недоступна"
+        description: "Метрики MySQL не поступают уже 3 минуты. Хост: {{ $labels.instance }}"
 
     - alert: MySQLReplicationLagCritical
       expr: |

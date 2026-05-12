@@ -20,18 +20,10 @@ spec:
           smartmon_device_info
       for: 0m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "SMART health FAILED: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}{{ $labels.type }}{{ end }}"
-        description: |
-          **Device:** {{ $labels.disk }}
-          **Type:** {{ $labels.type }}
-          **Model:** {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}N/A{{ end }}
-          **Family:** {{ if $labels.model_family }}{{ $labels.model_family }}{{ else }}N/A{{ end }}
-          **Serial:** {{ $labels.serial_number }}
-          **Firmware:** {{ $labels.firmware_version }}
-          **Host:** {{ $labels.hostname }}
-          **Action:** 🚨 Replace drive immediately!
+        summary: "Диск неисправен: {{ $labels.disk }} на {{ $labels.hostname }}"
+        description: "SMART-тест провален. Диск: {{ $labels.disk }}, модель: {{ if $labels.device_model }}{{ $labels.device_model }}{{ else }}неизвестна{{ end }}, серийный: {{ $labels.serial_number }}. Срочно замените накопитель!"
         
     # Внимание: перераспределенные сектора (критичный показатель)
     - alert: SmartmonReallocatedSectors

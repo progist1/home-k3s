@@ -14,10 +14,10 @@ spec:
       expr: up{job="external-nodes",unstable!="true"} == 0
       for: 5m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "Node {{ $labels.host }} is down"
-        description: "Node {{ $labels.host }} ({{ $labels.instance }}) has been unreachable for 5m."
+        summary: "Сервер недоступен: {{ $labels.host }}"
+        description: "Сервер {{ $labels.host }} ({{ $labels.instance }}) не отвечает более 5 минут."
         
     - alert: NodeHighCPU
       expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85

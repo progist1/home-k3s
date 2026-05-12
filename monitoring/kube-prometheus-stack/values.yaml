@@ -234,6 +234,12 @@ alertmanager:
             - tdarr-transcode
           continue: false
 
+        # --- FATAL (звонок через alerter) ---
+        - matchers:
+            - severity="fatal"
+          receiver: alerter
+          continue: false
+
         # --- CRITICAL ---
         - matchers:
             - severity="critical"
@@ -309,6 +315,15 @@ alertmanager:
             send_resolved: false
           - url: 'redacted'  # Uptime Kuma push
             send_resolved: false
+
+      # fatal = alerter (ACK + zvonok.com)
+      - name: alerter
+        webhook_configs:
+          - url: 'https://fire.progist.ru/webhook'
+            send_resolved: true
+            http_config:
+              headers:
+                X-Webhook-Secret: 'redacted'
 
   alertmanagerSpec:
     externalUrl: https://alerts.home

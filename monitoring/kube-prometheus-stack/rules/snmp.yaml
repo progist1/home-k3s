@@ -41,12 +41,10 @@ spec:
         ifOperStatus{job="snmp_keenetic", ifDescr="GigabitEthernet1/0"} != 1
       for: 3m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "Keenetic WAN port is down"
-        description: >
-          WAN interface GigabitEthernet1/0 on {{ $labels.instance }}
-          has been down for 3m.
+        summary: "Интернет отключён на роутере"
+        description: "WAN-порт GigabitEthernet1/0 не работает более 3 минут. Роутер: {{ $labels.instance }}"
 
     # Алерт: SNMP недоступен (роутер не отвечает)
     - alert: KeeneticSNMPUnreachable

@@ -78,3 +78,9 @@ spec:
       name: kps-secrets
       valuesKey: uptime-kuma-push-url
       targetPath: alertmanager.config.receivers[4].webhook_configs[1].url
+
+    # fatal alerter — webhook secret header
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: alerter-webhook-secret
+      targetPath: alertmanager.config.receivers[5].webhook_configs[0].http_config.headers.X-Webhook-Secret

@@ -155,28 +155,19 @@ spec:
       expr: zfs_pool_health == 2
       for: 1m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "ZFS pool {{ $labels.pool }} is FAULTED (health=2) on {{ $labels.hostname }}"
-        description: |
-          **Pool:** {{ $labels.pool }}
-          **Health:** FAULTED (value: 2)
-          **Host:** {{ $labels.hostname }}
-          **Action:** 🚨 IMMEDIATE ACTION REQUIRED! Pool is completely unavailable. Check `zpool status {{ $labels.pool }}`
+        summary: "Хранилище повреждено. Пул {{ $labels.pool }} на {{ $labels.hostname }}"
+        description: "ZFS пул {{ $labels.pool }} в состоянии FAULTED. Данные могут быть потеряны. Проверьте: zpool status {{ $labels.pool }}"
 
     - alert: ZFSPoolHealthUnavailable
       expr: zfs_pool_health >= 3
       for: 1m
       labels:
-        severity: critical
+        severity: fatal
       annotations:
-        summary: "ZFS pool {{ $labels.pool }} health is {{ $value }} (OFFLINE/UNAVAIL/REMOVED/SUSPENDED) on {{ $labels.hostname }}"
-        description: |
-          **Pool:** {{ $labels.pool }}
-          **Health value:** {{ $value }}
-          **Host:** {{ $labels.hostname }}
-          **Health codes:** 3=OFFLINE, 4=UNAVAIL, 5=REMOVED, 6=SUSPENDED
-          **Action:** 🚨 Check `zpool status {{ $labels.pool }}` immediately!
+        summary: "Хранилище недоступно. Пул {{ $labels.pool }} на {{ $labels.hostname }}"
+        description: "ZFS пул {{ $labels.pool }} недоступен (код {{ $value }}: 3=OFFLINE, 4=UNAVAIL, 5=REMOVED, 6=SUSPENDED). Проверьте: zpool status {{ $labels.pool }}"
 
     - alert: ZFSPoolWillFillSoon
       expr: |
