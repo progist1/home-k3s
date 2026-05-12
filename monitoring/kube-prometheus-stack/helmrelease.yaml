@@ -83,4 +83,4 @@ spec:
     - kind: Secret
       name: kps-secrets
       valuesKey: alerter-webhook-secret
-      targetPath: alertmanager.config.receivers[5].webhook_configs[0].http_config.headers.X-Webhook-Secret
+      targetPath: alertmanager.config.receivers[5].webhook_configs[0].http_config.bearer_token

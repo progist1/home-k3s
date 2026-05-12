@@ -322,8 +322,7 @@ alertmanager:
           - url: 'https://fire.progist.ru/webhook'
             send_resolved: true
             http_config:
-              headers:
-                X-Webhook-Secret: 'redacted'
+              bearer_token: 'redacted'
 
   alertmanagerSpec:
     externalUrl: https://alerts.home
