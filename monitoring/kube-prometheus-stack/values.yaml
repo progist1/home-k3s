@@ -238,6 +238,9 @@ alertmanager:
         - matchers:
             - severity="fatal"
           receiver: alerter
+          group_wait: 0s
+          group_interval: 30s
+          repeat_interval: 15m
           continue: false
 
         # --- CRITICAL ---
