@@ -71,6 +71,16 @@
   },
   "packageRules": [
     {
+      "matchDatasources": ["docker"],
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["postgres", "mysql", "mariadb", "redis"],
+      "automerge": false,
+      "assignees": ["progist"]
+    },
+    {
       "matchUpdateTypes": ["patch"],
       "automerge": true
     },
