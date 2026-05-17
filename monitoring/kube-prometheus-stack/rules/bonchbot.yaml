@@ -11,7 +11,7 @@ spec:
     interval: 5s
     rules:
     - alert: BonchBotExporterDown
-      expr: up{job="bonchbot-exporter-production"} == 0
+      expr: up{job="bonchbot-exporter"} == 0
       for: 1m
       labels:
         severity: fatal
