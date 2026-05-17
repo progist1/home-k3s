@@ -54,6 +54,16 @@ data:
         # Specific hosts (highest priority)
         bigb.home: 10.0.0.4
         direct.router.home: 10.0.0.1
+        # K3s nodes
+        k3s.home: 10.0.0.2
+        k3s-prod.home: 10.0.0.2
+        prod.k3s.home: 10.0.0.2
+        k3s-gpu.home: 10.0.0.3
+        gpu.k3s.home: 10.0.0.3
+        k3s-pi.home: 10.0.0.5
+        pi.k3s.home: 10.0.0.5
+        k3s-yolki.home: 10.3.0.2
+        yolki.k3s.home: 10.3.0.2
         # Wildcard for all other .home domains → MetalLB Traefik VIP
         home: 10.0.0.10
         # External domain override
