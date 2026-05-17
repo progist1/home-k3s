@@ -6,6 +6,8 @@ metadata:
 spec:
   interval: 10m
   prune: true
+  dependsOn:
+    - name: namespaces
   path: ./infra/metallb/step1-install
   sourceRef:
     kind: GitRepository

@@ -3,7 +3,7 @@ resources:
   - renovate.yaml
   - apps.yaml
   - infra.yaml
-  # - metallb.yaml до лучших времён, когда потребуется 2+ нод
+  - metallb.yaml
   - monitoring.yaml
   - gitlab.yaml
   - gitlab-runner.yaml
