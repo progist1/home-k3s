@@ -3,7 +3,7 @@ resources:
   - nfs-subdir-external-provisioner.yaml
   - authentik.yaml
   - reloader.yaml
-  # - metallb.yaml
+  - metallb.yaml
   - immich.yaml
   - prometheus.yaml
   - outline.yaml

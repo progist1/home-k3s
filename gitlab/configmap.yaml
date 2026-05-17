@@ -58,7 +58,7 @@ data:
     prometheus['enable'] = false
     prometheus_monitoring['enable'] = true
     letsencrypt['enable'] = false
-    gitlab_rails['gitlab_shell_ssh_port'] = 32222
+    gitlab_rails['gitlab_shell_ssh_port'] = 22
     gitlab_rails['gitlab_shell_ssh_host'] = 'gitlab.home'
     nginx['listen_https'] = false
     nginx['listen_port'] = 80

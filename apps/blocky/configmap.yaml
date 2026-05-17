@@ -54,10 +54,10 @@ data:
         # Specific hosts (highest priority)
         bigb.home: 10.0.0.4
         direct.router.home: 10.0.0.1
-        # Wildcard for all other .home domains
-        home: 10.0.0.2
+        # Wildcard for all other .home domains → MetalLB Traefik VIP
+        home: 10.0.0.10
         # External domain override
-        films.progist.ru: 10.0.0.2
+        films.progist.ru: 10.0.0.10
         # VPN networks
         vps.spb: 10.8.0.2
         vps.amsterdam: 10.8.0.3

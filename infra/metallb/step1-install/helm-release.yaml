@@ -17,3 +17,8 @@ spec:
     speaker:
       frr:
         enabled: false
+      tolerations:
+        - key: node.hardware.arch
+          operator: Equal
+          value: arm64
+          effect: NoSchedule

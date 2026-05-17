@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-kube-system
   annotations:
-    metallb.universe.tf/address-pool: traefik-pool
+    metallb.io/address-pool: traefik-pool
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
@@ -20,6 +20,10 @@ spec:
       port: 443
       protocol: TCP
       targetPort: websecure
+    - name: ssh
+      port: 22
+      protocol: TCP
+      targetPort: 22
   selector:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-kube-system

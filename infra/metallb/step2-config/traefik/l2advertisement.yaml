@@ -6,3 +6,8 @@ metadata:
 spec:
   ipAddressPools:
     - traefik-pool
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: k3s-prod
+    - matchLabels:
+        kubernetes.io/hostname: k3s-pi

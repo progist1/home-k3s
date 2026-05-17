@@ -10,6 +10,7 @@ resources:
   - registry.yaml
   - service.yaml
   - service-ssh.yaml
+  - ingress-ssh.yaml
   - backups-cronjob.yaml
   - backups-rbac.yaml
   - ci-rbac.yaml
