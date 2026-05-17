@@ -37,9 +37,12 @@ Jellyfin · Frigate"]
 ● worker
 Raspberry Pi 4
 arm64"]
+        metallb(["MetalLB L2
+VIP 10.0.0.10
+k3s-prod · k3s-pi"])
         traefik(["Traefik
-10.0.0.2
-:80 / :443"])
+10.0.0.10 (MetalLB VIP)
+:80 / :443 / :22"])
         wgeasy["wg-easy
 WireGuard VPN
 vpn.home"]
@@ -57,6 +60,7 @@ VPS · Ubuntu 24.04"]
     kprod & kgpu & kpi <-->|k3s cluster| truenas
     kprod & kgpu -.->|NFS mount| nfs
     kpi -.->|NFS mount| nfs
+    metallb -->|ARP announce| traefik
     traefik <-->|Ingress| internet
     wgeasy <-->|WireGuard tunnel| kyolki
     kyolki <-->|k3s cluster via WG| traefik
@@ -68,7 +72,7 @@ VPS · Ubuntu 24.04"]
 
 ```
 clusters/home/       — точка входа Flux, граф зависимостей Kustomization
-apps/                — 42 приложения
+apps/                — пользовательские приложения, nfs-provisioner, renovate (CronJob)
 infra/               — системные компоненты (Traefik, StorageClasses, MinIO, K8up, xray)
 monitoring/          — kube-prometheus-stack, Loki, Promtail, правила алертов, exporters
 helm/                — HelmRepository и HelmRelease манифесты
@@ -170,14 +174,14 @@ spec:
 | StorageClass | Назначение | Reclaim |
 |---|---|---|
 | `nfs-nvme-manual` / `nfs-nvme-db-manual` | БД, критичные конфиги | Retain |
-| `nfs-fast-manual` | Данные приложений | Retain |
 | `nfs-hdd-manual` / `nfs-hdd-manual-media` | Медиа, большие файлы | Retain |
 | `mailu` | Почтовый сервер | Retain |
-| `nfs-dynamic` | Кэш, ephemeral | Delete |
+| `nfs-nvme-dynamic` | Кэш/ephemeral на NVMe (provisioner) | Retain |
+| `nfs-hdd-dynamic` | Кэш/ephemeral на HDD (provisioner) | Retain |
 | `hostpath-manual` | GPU/hardware temp | Retain |
 | `zvol-local` | Локальный ZFS (только k3s-prod) | Retain |
 
-Критичные данные — `manual` (Retain). Кэш — `dynamic` (Delete).
+Динамические классы обслуживаются `nfs-subdir-external-provisioner` (`apps/nfs-provisioner/`).
 
 ---
 
@@ -187,12 +191,13 @@ spec:
 
 | Schedule | Частота | Бэкенд | Selector |
 |----------|---------|--------|---------|
-| `backup-critical-hourly` | `@hourly-random` | MinIO | `backup-level: critical` |
+| `backup-critical-hourly` | `@hourly-random` | MinIO | `backup-level: critical\|hourly` |
 | `backup-important-daily` | `0 4 * * *` | MinIO | `backup-level: important\|daily` |
 | `backup-important-daily-offsite` | `0 4 * * *` | Backblaze B2 | все + `backup-offsite: "true"` |
 | `backup-monitoring-daily` | `0 4 * * *` | MinIO | namespace monitoring |
 
-Retention: keepLast=12, keepDaily=7, keepWeekly=4, keepMonthly=1.
+Retention critical-hourly: keepLast=12, keepHourly=10, keepDaily=7, keepWeekly=1.
+Retention important-daily: keepLast=12, keepDaily=7, keepWeekly=4, keepMonthly=1.
 
 ```mermaid
 flowchart LR
@@ -267,7 +272,7 @@ Promtail · host journal"]
 Promtail · Docker logs"]
         ext17["17 scrape targets
 frigate · ha · jellyfin
-mysql · postgres · ..."]
+minio · uptime-kuma · ..."]
     end
 
     subgraph cluster["k3s кластер · namespace: monitoring"]
@@ -313,18 +318,21 @@ dead man's switch 💀"]
     style grafana fill:#1a1a2e,color:#fff
 ```
 
-- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana; 18 файлов alert rules
+- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana; 18 файлов alert rules (backups, db, flux, k8up, kubernetes-*, node, smartmon, snmp, ssl, temperatures, traefik, zfs, bonchbot, mailu, minio, pods, uptime-kuma)
+- **Uptime Kuma** — status monitoring, MariaDB backend, экспортирует метрики в Prometheus; хосты: kuma.home, status.progist.ru, status.bonchbot.ru, jellycleaner.progist.ru
 - **Loki + Promtail** — централизованные логи, backend на MinIO S3; DaemonSet собирает логи подов и host journal (warning+) со всех нод
 - **Loki ingress** (`loki.home`) — внешние Promtail-агенты пишут через HTTP; работают на bigb.home (TrueNAS, full journal warning+) и beget VPS (Docker container logs)
 - **Loki alert rules** — kernel soft lockup, OOM, hung task, ZFS errors, SMART errors, auth events (Immich, Authentik, Jellyfin)
 - **Dead man's switch** — Alertmanager Watchdog → Cronitor heartbeat (алерт если Prometheus/AM падает)
 - **Alertmanager** — 3 Telegram-ресивера + Email через Mailu
-- **Exporters** — mysql, postgres, redis, adguard, snmp, ssl
-- **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, adguard, bonchbot, k8up, ssl, snmp, gitlab, external-nodes
+- **Exporters** — mysql, postgres, redis, snmp, ssl
+- **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, bonchbot, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma
 
 ---
 
 ## Автоматические обновления (Renovate)
+
+**Self-hosted** — CronJob в namespace `renovate`, каждые 6 часов, образ `renovate/renovate`, платформа GitLab. Конфиг: `apps/renovate/`.
 
 - Patch/minor — automerge
 - Major — ручное согласование (assigned to `progist`)
@@ -387,9 +395,12 @@ CoreDNS управляется как **DaemonSet** через Flux (`cluster-ad
 ```yaml
 disable:
   - coredns
+  - servicelb
 kubelet-arg:
   - "max-pods=250"
 ```
+
+`- servicelb` отключает встроенный klipper-lb (k3s ServiceLB), поскольку LoadBalancer-сервисы теперь обслуживает MetalLB.
 
 Без `disable: [coredns]` — k3s пересоздаёт свой CoreDNS Deployment при рестарте, конфликт с DaemonSet, временный DNS outage.
 
