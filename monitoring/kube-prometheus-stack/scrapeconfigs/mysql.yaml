@@ -26,6 +26,9 @@ spec:
       environment: 'production'
       host: 'beget-vps'
       location: 'spb-beget'
+  relabelings:
+    - sourceLabels: [host]
+      targetLabel: instance
   metricRelabelings:
     - sourceLabels: ["__name__"]
       regex: 'mysql_global_status_bytes_.*|mysql_global_status_innodb_data_written'
