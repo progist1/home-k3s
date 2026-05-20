@@ -5,6 +5,8 @@ metadata:
   namespace: apps
   labels:
     app.kubernetes.io/name: mysql
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:

@@ -5,6 +5,8 @@ metadata:
   namespace: apps
   labels:
     app.kubernetes.io/name: vaultwarden
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   selector:

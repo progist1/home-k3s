@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/name: mailu-postfix
   annotations:
     kustomize.toolkit.fluxcd.io/force: "enabled"
+    reloader.stakater.com/auto: "true"
   name: mailu-postfix
   namespace: apps
 spec:
