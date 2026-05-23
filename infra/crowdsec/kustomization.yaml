@@ -1,0 +1,5 @@
+resources:
+  - helmrelease.yaml
+  - middleware.yaml
+  - metrics-service.yaml
+  - config-pv.yaml

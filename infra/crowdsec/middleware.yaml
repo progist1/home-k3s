@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: crowdsec-bouncer
+  namespace: crowdsec
+  labels:
+    managed-by: flux
+    environment: production
+    app.kubernetes.io/part-of: home-cluster
+spec:
+  plugin:
+    crowdsec-bouncer-traefik-plugin:
+      enabled: true
+      crowdsecMode: stream
+      crowdsecLapiScheme: http
+      crowdsecLapiHost: crowdsec-service.crowdsec.svc.cluster.local:8080
+      crowdsecLapiKey: "ba502b69f01dc65e62305d7efaebf76b81b091a159f3c6708a992a9fa3d9c5f5"

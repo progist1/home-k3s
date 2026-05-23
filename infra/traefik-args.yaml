@@ -10,6 +10,12 @@ spec:
       spec:
         externalTrafficPolicy: Local
 
+    experimental:
+      plugins:
+        crowdsec-bouncer-traefik-plugin:
+          moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+          version: "v1.6.0"
+
     logs:
       access:
         enabled: true
@@ -33,3 +39,4 @@ spec:
       - "--metrics.prometheus.addEntryPointsLabels=true"
       - "--metrics.prometheus.addServicesLabels=true"
       - "--entrypoints.ssh.address=:22/tcp"
+      - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd"

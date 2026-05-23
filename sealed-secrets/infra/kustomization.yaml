@@ -3,3 +3,4 @@ resources:
   - minio
   - k8up
   - databasus
+  - crowdsec

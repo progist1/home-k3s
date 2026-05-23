@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: crowdsec
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: crowdsec
+  scrapeInterval: 30s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+    - targets:
+        - 'crowdsec-metrics.crowdsec.svc.cluster.local:6060'
+      labels:
+        group: crowdsec

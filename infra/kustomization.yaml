@@ -1,4 +1,5 @@
 resources:
+  - crowdsec
   - storageclasses
   - traefik-middleware
   - xray

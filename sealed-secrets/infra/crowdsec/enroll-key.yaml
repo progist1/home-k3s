@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: crowdsec-enroll-secret
+  namespace: crowdsec
+spec:
+  encryptedData:
+    enroll-key: AgCNVYr4BN95mhTQrpf6v++MHjk7iZBg1XpyGDdVyJq7fdU2xfTK6E93qvGeuF7LVoHt/PhbaULaVD0lkAnb48wdSTqb3nRRbPIJirATCLkZfyvs2m+5TLZWM2HzBv3qjIKJuzJ893//B3MOolQ2gZdYlwlw2rxnL6Y5pDL00Cd1ADb95k9Tw5Kl0VnAGqW9/ADuLyl15bsI/9Ep9b3QhvvsrBIDe/3it+H17Zvf2Lvg7LZcy6HWXGxiJSRu9aoo4ueoGE2w3TDo+6MZkJxwrpzTE19b6qcvrGEUmKPu0NjfM9A8+Wm2Oew65wOE5ZtVVB9t6Ho6msLZ34/hwhqmnRAaKoX6EqIv69ataD/WqKX835wT8Jxl/ikWCPma0cy7PxnfD8+/m6+CHR1mtLKFSDpRE56v8KdyZE34CQN+XGhegtP0vtOo3MsfvBYHbsOkujQbDZQFJOcL1VHJhV0BZ6RQ8Sv0EAWouTG7UlUqiINSvwwkXLOkYduYcu0ElqPI1oJrPe0c2rAdf+cH6RywFqMkDBRF5R3VeW60pUvJGNY+R1lZfGi5N19JjeK+5av07gXiP/c4T6SHVQ1JCFOenOVtFsP/xzhZaBFGeJbTZWmjzaueKgNeT8z/p/zsmj+Wj54MO4E4Qp1fVAGxSJqMIeJtjlnhMQSEKv6CpoR8RffuhIEuA8pNYJQpwAPuGKTZ0p4KONDnZSEi4GBGb/OjfskvVwlVS0le+GK2
+  template:
+    metadata:
+      name: crowdsec-enroll-secret
+      namespace: crowdsec

@@ -1,4 +1,5 @@
 resources:
+  - crowdsec.yaml
   - cert-manager.yaml
   - renovate.yaml
   - apps.yaml

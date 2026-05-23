@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec-metrics
+  namespace: crowdsec
+  labels:
+    managed-by: flux
+    environment: production
+    app.kubernetes.io/part-of: home-cluster
+spec:
+  selector:
+    k8s-app: crowdsec
+    type: lapi
+  ports:
+    - name: metrics
+      port: 6060
+      targetPort: 6060

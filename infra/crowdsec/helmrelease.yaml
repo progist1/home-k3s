@@ -1,0 +1,85 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crowdsec
+  namespace: crowdsec
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: crowdsec
+      version: "0.9.x"
+      sourceRef:
+        kind: HelmRepository
+        name: crowdsec
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    container_runtime: containerd
+
+    lapi:
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"
+      persistentVolume:
+        data:
+          enabled: true
+          storageClassName: nfs-nvme-dynamic
+          accessModes:
+            - ReadWriteOnce
+          size: 1Gi
+        config:
+          enabled: true
+          existingClaim: "crowdsec-config-pvc"
+      env:
+        - name: BOUNCER_KEY_traefik-bouncer
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-bouncer-secret
+              key: bouncer-api-key
+        - name: ENROLL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-enroll-secret
+              key: enroll-key
+        - name: ENROLL_INSTANCE_NAME
+          value: "k3s-home"
+        - name: ENROLL_TAGS
+          value: "k8s linux home"
+
+    agent:
+      # Pin to k3s-prod — Traefik runs only there
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"
+      # Collections to install on startup
+      env:
+        - name: COLLECTIONS
+          value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/wordpress crowdsecurity/nextcloud crowdsecurity/home-assistant crowdsecurity/whitelist-good-actors crowdsecurity/wireguard gauth-fr/immich firix/authentik Dominic-Wagner/vaultwarden andreasbrett/paperless-ngx"
+      acquisition:
+        - namespace: kube-system
+          podName: traefik-*
+          program: traefik
+        - namespace: apps
+          podName: mailu-postfix-*
+          program: postfix
+        - namespace: apps
+          podName: mailu-dovecot-*
+          program: dovecot

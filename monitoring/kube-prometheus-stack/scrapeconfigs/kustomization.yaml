@@ -16,3 +16,4 @@ resources:
   - snmp.yaml
   - minio.yaml
   - uptime-kuma.yaml
+  - crowdsec.yaml
