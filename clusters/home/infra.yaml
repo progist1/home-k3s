@@ -11,6 +11,10 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: crowdsec-vars
   dependsOn:
     - name: cert-manager-issuer
     - name: namespaces

@@ -1,0 +1,18 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: crowdsec-vars
+  namespace: crowdsec
+spec:
+  encryptedData:
+    crowdsec_bouncer_api_key: AgByK5rTT3WqvqTSrYfZYyyxIu1v2DyGKK5DJEft7fcqkUoEgldrPY8zG2OeiollgJbhEvukpNWDvhoJ4WRfdTAEE4ok6KdVZEwX5ajKkn0Bfvr0qwUp8d6nuZBDzu0fkzdjzQP66wzT0x/8Id9FdnujPr+s65uBeGLELo8dUsgA3BVqFkvaoTUe8ao0ETdj9qIHg3m0uFj86K1GP2/rRJQNf87OdiD/15GJBwBUPoBXYBY0ZDJlPF7QtY3ck52GTvXoGH+UiWSu0Nr7E/g51YFKyONA/wl2JmL2asqZV0EgkYoGKM2+w8dlxbgtbmteFRJ0//BpIYvZvECWTf/M8qgy+dpIqWJucBEV0ua/MIhb7xPMJ87d2y90wax7gezaEc0l+lBzXBRY4iP1sSgcKGLMul+Zda1f/hJD+noiFF/3nI7TrEJI827qOuCkQ/1e6NyVqzgyOIuXT2ja58v/OLxujXJ//sdB7E+eBebAZ521rjKz/PMtMG1SafFgPpFPfMLjtD3DdBIfP5r6PI+CgwjI9hHDEKYPz8DEjQ8GS6nKM3/zdwX1Ccglz4O7JzAudkD8f09CpCVgFD8Gq7xnG1tlHCpA6OIs5c/i5yAgZ4pyiCMqUbpjILA71hivRuZNooaRG58CJlhh2RB6lqLd2MMiXmmyeOICp3l0QWRcmQnWdMKzBJ8krCMFQa6nER3EcTTUr0MrgS9S+O7S40vmS/h2C/78UGSY4u8XDEA7d+OB8qmHFW2kXJCzhQl7Hsem6g4F6k70Ktsug9L0AWk+p7L1
+  template:
+    metadata:
+      name: crowdsec-vars
+      namespace: crowdsec
+      annotations:
+        reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+        reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "flux-system"
+        reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "flux-system"

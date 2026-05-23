@@ -1,3 +1,3 @@
 resources:
-  - bouncer-api-key.yaml
   - enroll-key.yaml
+  - crowdsec-vars.yaml

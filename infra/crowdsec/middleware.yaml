@@ -14,4 +14,5 @@ spec:
       crowdsecMode: stream
       crowdsecLapiScheme: http
       crowdsecLapiHost: crowdsec-service.crowdsec.svc.cluster.local:8080
-      crowdsecLapiKey: "ba502b69f01dc65e62305d7efaebf76b81b091a159f3c6708a992a9fa3d9c5f5"
+      crowdsecLapiKey: "${crowdsec_bouncer_api_key}"
+      crowdsecTrustIPs: "10.0.0.0/8,10.42.0.0/16,10.43.0.0/16"
