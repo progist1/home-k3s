@@ -12,6 +12,18 @@ config:
               level:
               app:
               component:
+          - match:
+              selector: '{namespace="kube-system", container="traefik"}'
+              stages:
+                - json:
+                    expressions:
+                      client_ip: ClientHost
+                      method: RequestMethod
+                      status: DownstreamStatus
+                      service: ServiceName
+                - labels:
+                    status:
+                    method:
         relabel_configs:
           - source_labels:
               - __meta_kubernetes_pod_label_app
