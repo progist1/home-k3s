@@ -20,6 +20,8 @@ spec:
     remediation:
       retries: 3
   values:
+    image:
+      tag: "v1.7.8"
     container_runtime: containerd
 
     lapi:

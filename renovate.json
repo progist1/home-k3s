@@ -69,6 +69,15 @@
   "registryAliases": {
     "pmint93": "https://pmint93.github.io/helm-charts"
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["infra/crowdsec/helmrelease.yaml"],
+      "matchStrings": ["tag: \"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "crowdsecurity/crowdsec",
+      "datasourceTemplate": "docker"
+    }
+  ],
   "packageRules": [
     {
       "matchDatasources": ["docker"],
