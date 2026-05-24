@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: crowdsec
-      version: "0.9.x"
+      version: "0.24.x"
       sourceRef:
         kind: HelmRepository
         name: crowdsec
@@ -103,8 +103,6 @@ spec:
           cpu: "500m"
           memory: "256Mi"
       env:
-        - name: CROWDSEC_BYPASS_DB_VOLUME_CHECK
-          value: "true"
         - name: COLLECTIONS
           value: *collections
       acquisition:
