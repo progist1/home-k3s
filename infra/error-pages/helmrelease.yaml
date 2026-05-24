@@ -26,7 +26,8 @@ spec:
       sendSameHttpCode: true
       showDetails: true
       addLink:
-        - "Статус сервисов=https://status.progist.ru"
+        - label: "Статус сервисов"
+          url: "https://status.progist.ru"
 
     traefikMiddleware:
       enabled: true
