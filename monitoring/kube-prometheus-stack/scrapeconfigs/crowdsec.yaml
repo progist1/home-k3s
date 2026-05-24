@@ -1,12 +1,12 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-  name: crowdsec
+  name: crowdsec-lapi
   namespace: monitoring
   labels:
     release: kube-prometheus-stack
 spec:
-  jobName: crowdsec
+  jobName: crowdsec-lapi
   scrapeInterval: 30s
   metricsPath: '/metrics'
   scheme: HTTP
@@ -15,3 +15,34 @@ spec:
         - 'crowdsec-metrics.crowdsec.svc.cluster.local:6060'
       labels:
         group: crowdsec
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: crowdsec-agent
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: crowdsec-agent
+  scrapeInterval: 30s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  kubernetesSDConfigs:
+    - role: pod
+      namespaces:
+        names:
+          - crowdsec
+  relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_label_type]
+      regex: agent
+      action: keep
+    - sourceLabels: [__meta_kubernetes_pod_ip]
+      replacement: '$1:6060'
+      targetLabel: __address__
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      targetLabel: pod
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      targetLabel: node
+    - targetLabel: group
+      replacement: crowdsec
