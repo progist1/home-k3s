@@ -10,7 +10,7 @@ spec:
       name: letsencrypt-prod-account-key
     solvers:
       - dns01:
-          acmeDns:
+          acmeDNS:
             host: https://auth.acme-dns.io
             accountSecretRef:
               name: acmedns-credentials
