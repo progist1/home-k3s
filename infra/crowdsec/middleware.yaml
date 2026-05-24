@@ -16,3 +16,25 @@ spec:
       crowdsecLapiHost: crowdsec-service.crowdsec.svc.cluster.local:8080
       crowdsecLapiKey: "${crowdsec_bouncer_api_key}"
       crowdsecTrustIPs: "10.0.0.0/8,10.42.0.0/16,10.43.0.0/16,188.134.87.62"
+      customResponseBody: |
+        <!DOCTYPE html>
+        <html lang="ru">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>403 — Доступ заблокирован</title>
+          <style>
+            body { font-family: sans-serif; max-width: 480px; margin: 80px auto; padding: 0 20px; color: #333; }
+            h1 { font-size: 2rem; margin-bottom: 0.25em; }
+            p { line-height: 1.6; color: #555; }
+            a { color: #0070f3; }
+          </style>
+        </head>
+        <body>
+          <h1>403</h1>
+          <h2>Доступ заблокирован</h2>
+          <p>Ваш IP-адрес был заблокирован системой защиты от вторжений.</p>
+          <p>Если вы считаете, что это ошибка — проверьте <a href="https://status.progist.ru">статус сервисов</a> или свяжитесь с администратором.</p>
+        </body>
+        </html>
+      customResponseContentType: "text/html; charset=utf-8"
