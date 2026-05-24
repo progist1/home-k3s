@@ -105,6 +105,14 @@ spec:
         s01-parse:
           mailu-postfix-program.yaml: |
             name: custom/mailu-postfix-program
+        s02-enrich:
+          home-whitelist.yaml: |
+            name: custom/home-whitelist
+            description: "Whitelist static home IP"
+            whitelist:
+              reason: "Static home IP"
+              ip:
+                - "188.134.87.62"
             description: "Fix postfix program+message for Mailu container logs (syslog header in CRI)"
             filter: 'evt.Parsed.program == "postfix"'
             nodes:
