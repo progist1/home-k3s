@@ -35,7 +35,6 @@ resources:
   - nextcloud
   - frigate
   - frigate-notify
-  - code-server
   - bazarr
   - flaresolverr
   - it-tools
