@@ -24,7 +24,8 @@ spec:
       htmlTemplate:
         name: lost-in-space
       sendSameHttpCode: true
-      showRequestDetails: true
+      showDetails: true
+      addLink: "Статус сервисов=https://status.progist.ru"
 
     traefikMiddleware:
       enabled: true
