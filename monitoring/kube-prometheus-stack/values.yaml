@@ -14,7 +14,7 @@ prometheus:
       cert-manager.io/cluster-issuer: root-ca-issuer
       traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       traefik.ingress.kubernetes.io/redirect-entry-point: websecure
-      traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd,infra-authentik-forward-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
     hosts:
       - prometheus.home
     tls:
