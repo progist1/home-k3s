@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-ban-page
+  namespace: kube-system
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+data:
+  ban.html: |
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>403 — Доступ заблокирован</title>
+      <style>
+        body { font-family: sans-serif; max-width: 480px; margin: 80px auto; padding: 0 20px; color: #333; }
+        h1 { font-size: 3rem; margin-bottom: 0; }
+        h2 { margin-top: 0.25em; color: #555; }
+        p { line-height: 1.6; color: #666; }
+        a { color: #0070f3; }
+      </style>
+    </head>
+    <body>
+      <h1>403</h1>
+      <h2>Доступ заблокирован</h2>
+      <p>Ваш IP-адрес заблокирован системой защиты от вторжений.</p>
+      <p>Если вы считаете, что это ошибка — проверьте
+        <a href="https://status.progist.ru">статус сервисов</a>
+        или свяжитесь с администратором.
+      </p>
+    </body>
+    </html>

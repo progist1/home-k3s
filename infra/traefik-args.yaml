@@ -30,6 +30,11 @@ spec:
               X-Forwarded-For: keep
               X-Real-Ip: keep
 
+    volumes:
+      - name: crowdsec-ban-page
+        mountPath: "/ban"
+        type: configMap
+
     additionalArguments:
       - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=0s"
       - "--entrypoints.web.transport.respondingTimeouts.readTimeout=0s"

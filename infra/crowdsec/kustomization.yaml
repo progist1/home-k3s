@@ -3,3 +3,4 @@ resources:
   - middleware.yaml
   - metrics-service.yaml
   - config-pv.yaml
+  - ban-page-configmap.yaml
