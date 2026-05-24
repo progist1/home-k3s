@@ -1,0 +1,4 @@
+resources:
+  - helmrelease.yaml
+  - certificate.yaml
+  - catch-all.yaml

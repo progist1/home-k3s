@@ -13,3 +13,4 @@ resources:
   - k8up.yaml
   - reflector.yaml
   - loki.yaml
+  - error-pages.yaml

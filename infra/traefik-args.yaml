@@ -39,4 +39,4 @@ spec:
       - "--metrics.prometheus.addEntryPointsLabels=true"
       - "--metrics.prometheus.addServicesLabels=true"
       - "--entrypoints.ssh.address=:22/tcp"
-      - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd"
+      - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd,infra-error-pages@kubernetescrd"

@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: error-pages-catch-all
+  namespace: infra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: HostRegexp(`.+`)
+      kind: Rule
+      priority: 1
+      services:
+        - name: error-pages
+          port: 8080
+          namespace: infra
+  tls:
+    secretName: wildcard-progist-ru-tls
