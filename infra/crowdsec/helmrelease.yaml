@@ -59,6 +59,8 @@ spec:
           value: "k3s-home"
         - name: ENROLL_TAGS
           value: "k8s linux home"
+        - name: COLLECTIONS
+          value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/postfix crowdsecurity/dovecot crowdsecurity/wordpress crowdsecurity/nextcloud crowdsecurity/home-assistant crowdsecurity/whitelist-good-actors crowdsecurity/wireguard gauth-fr/immich firix/authentik Dominic-Wagner/vaultwarden andreasbrett/paperless-ngx"
 
     agent:
       # Pin to k3s-prod — Traefik runs only there
