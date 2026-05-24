@@ -101,16 +101,16 @@ spec:
 
     config:
       parsers:
-        s00-raw:
+        s00-raw: {}
+        s01-parse:
           mailu-postfix-program.yaml: |
             name: custom/mailu-postfix-program
-            description: "Extract postfix/<daemon> from Mailu container syslog-formatted logs"
+            description: "Fix postfix program+message for Mailu container logs (syslog header in CRI)"
             filter: 'evt.Parsed.program == "postfix"'
-            onsuccess: next_stage
             nodes:
               - grok:
                   apply_on: message
-                  pattern: '%{SYSLOGTIMESTAMP} %{NOTSPACE} postfix/%{WORD:postfix_daemon}\[%{INT}\]:'
+                  pattern: '%{SYSLOGTIMESTAMP} %{NOTSPACE} postfix/%{WORD:postfix_daemon}\[%{INT}\]: %{GREEDYDATA:message}'
                 statics:
                   - parsed: program
                     expression: '"postfix/" + evt.Parsed.postfix_daemon'

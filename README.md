@@ -139,6 +139,42 @@ kubeseal --cert cert.pem <secret.yaml> -o yaml > sealed.yaml
 
 ---
 
+## Безопасность
+
+**CrowdSec IDS/IPS** — активная защита от brute-force и сканирования:
+
+```mermaid
+flowchart LR
+    subgraph cluster["k3s кластер"]
+        agent["CrowdSec Agent\nDaemonSet · все ноды\nчитает /var/log/containers/"]
+        lapi["CrowdSec LAPI\nk3s-prod\nхранит решения"]
+        bouncer["Traefik Bouncer\nплагин v1.6.0\nglobal entrypoint MW"]
+    end
+    subgraph sources["Источники логов"]
+        traefik2["Traefik"]
+        apps2["Authentik · HA · Nextcloud\nVaultwarden · Immich · Jellyfin\nMailu · Mealie · Guacamole\n+ ещё 6 сервисов"]
+    end
+    subgraph blocklists["Блок-листы"]
+        bl["TOR · Free Proxies\nOTX Scanners\nCommunity · ~13.3k IP"]
+    end
+
+    traefik2 & apps2 -->|логи| agent
+    agent -->|события| lapi
+    bl -->|pull| lapi
+    lapi -->|решения stream| bouncer
+    bouncer -->|403 ban| internet(["🌐 Internet"])
+
+    style lapi fill:#e74c3c,color:#fff
+    style bouncer fill:#e74c3c,color:#fff
+```
+
+- **75 сценариев**: brute-force (authentik, HA, immich, jellyfin, vaultwarden и др.), CVE probing, HTTP scanning
+- **21 коллекция**: охватывает все публичные сервисы кластера
+- **Bouncer применён глобально** через `--entrypoints.websecure.http.middlewares` — не нужно добавлять в каждый ingress
+- **Enrolled** в CrowdSec Console для централизованного мониторинга
+
+---
+
 ## TLS и Ingress
 
 Ingress строго делится на два типа:
