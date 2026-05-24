@@ -29,7 +29,7 @@ spec:
   metricsPath: '/metrics'
   scheme: HTTP
   kubernetesSDConfigs:
-    - role: pod
+    - role: Pod
       namespaces:
         names:
           - crowdsec
