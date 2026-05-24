@@ -36,6 +36,12 @@ spec:
       firix/authentik
       Dominic-Wagner/vaultwarden
       andreasbrett/paperless-ngx
+      LePresidente/jellyfin
+      LePresidente/jellyseerr
+      Jgigantino31/mealie
+      corvese/apache-guacamole
+      MrShippeR/filebrowser
+      timokoessler/uptime-kuma
 
     image:
       tag: "v1.7.8"
@@ -93,9 +99,23 @@ spec:
         - name: ENROLL_TAGS
           value: "k8s linux home"
 
+    config:
+      parsers:
+        s00-raw:
+          mailu-postfix-program.yaml: |
+            name: custom/mailu-postfix-program
+            description: "Extract postfix/<daemon> from Mailu container syslog-formatted logs"
+            filter: 'evt.Parsed.program == "postfix"'
+            onsuccess: next_stage
+            nodes:
+              - grok:
+                  apply_on: message
+                  pattern: '%{SYSLOGTIMESTAMP} %{NOTSPACE} postfix/%{WORD:postfix_daemon}\[%{INT}\]:'
+                statics:
+                  - parsed: program
+                    expression: '"postfix/" + evt.Parsed.postfix_daemon'
+
     agent:
-      nodeSelector:
-        kubernetes.io/hostname: k3s-prod
       resources:
         requests:
           cpu: "50m"
@@ -103,16 +123,62 @@ spec:
         limits:
           cpu: "500m"
           memory: "256Mi"
+      tolerations:
+        - key: node.hardware.gpu
+          value: intel-igpu
+          effect: NoSchedule
       env:
         - name: COLLECTIONS
           value: *collections
       acquisition:
+        # ── Ingress (k3s-prod) ──────────────────────────────────────────
         - namespace: kube-system
           podName: traefik-*
           program: traefik
+        # ── Mail (k3s-prod) ─────────────────────────────────────────────
         - namespace: apps
           podName: mailu-postfix-*
           program: postfix
         - namespace: apps
           podName: mailu-dovecot-*
           program: dovecot
+        # ── Auth & access (k3s-prod) ─────────────────────────────────────
+        - namespace: apps
+          podName: authentik-server-*
+          program: authentik
+        # ── Apps on k3s-prod ─────────────────────────────────────────────
+        - namespace: apps
+          podName: home-assistant-*
+          program: home-assistant
+        - namespace: apps
+          podName: nextcloud-*
+          program: nextcloud
+        - namespace: apps
+          podName: vaultwarden-*
+          program: vaultwarden
+        - namespace: apps
+          podName: paperless-*
+          program: paperless-ngx
+        - namespace: apps
+          podName: mealie-*
+          program: mealie
+        - namespace: apps
+          podName: filebrowser-*
+          program: filebrowser
+        - namespace: apps
+          podName: guacamole-*
+          program: apache-guacamole
+        # ── Media (k3s-gpu — agent covers once toleration applied) ────────
+        - namespace: apps
+          podName: immich-server-*
+          program: immich
+        - namespace: apps
+          podName: jellyfin-*
+          program: jellyfin
+        - namespace: apps
+          podName: seerr-*
+          program: jellyseerr
+        # ── Monitoring (k3s-prod) ─────────────────────────────────────────
+        - namespace: monitoring
+          podName: uptime-kuma-*
+          program: uptime-kuma
