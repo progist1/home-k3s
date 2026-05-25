@@ -31,7 +31,7 @@ spec:
 
     traefikMiddleware:
       enabled: true
-      statusCodes: ["400-408", "410-599"]
+      statusCodes: ["400", "402-408", "410-599"]
 
     resources:
       requests:
