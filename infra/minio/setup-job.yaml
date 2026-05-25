@@ -6,8 +6,7 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/force: "enabled"
 spec:
-  ttlSecondsAfterFinished: 3600  # Удалить через 1 час после завершения (для отладки)
-  backoffLimit: 5  # Увеличиваем количество попыток
+  backoffLimit: 5
   template:
     spec:
       restartPolicy: OnFailure
@@ -37,87 +36,87 @@ spec:
               # 1. Настройка MinIO клиента
               # ============================================
               echo "Configuring MinIO client..."
-              mc alias set minio ${MINIO_HOST} "${MINIO_ACCESS_KEY}" "${MINIO_SECRET_KEY}"
+              mc alias set minio $${MINIO_HOST} "$${MINIO_ACCESS_KEY}" "$${MINIO_SECRET_KEY}"
               
               # ============================================
               # 2. Создание бакета
               # ============================================
-              K8UP_BUCKET="${K8UP_BUCKET:-k8up-backups}"
-              echo "Creating bucket ${K8UP_BUCKET}..."
-              mc mb minio/${K8UP_BUCKET} --ignore-existing
-              
+              K8UP_BUCKET="$${K8UP_BUCKET:-k8up-backups}"
+              echo "Creating bucket $${K8UP_BUCKET}..."
+              mc mb minio/$${K8UP_BUCKET} --ignore-existing
+
               # ============================================
               # 3. Создание пользователя и политики (если credentials заданы)
               # ============================================
-              if [ -n "${K8UP_ACCESS_KEY}" ] && [ -n "${K8UP_SECRET_KEY}" ]; then
+              if [ -n "$${K8UP_ACCESS_KEY}" ] && [ -n "$${K8UP_SECRET_KEY}" ]; then
                 # 3.1. Создание/обновление пользователя
-                echo "Creating user ${K8UP_ACCESS_KEY}..."
-                mc admin user remove minio "${K8UP_ACCESS_KEY}" 2>&1 || true
-                mc admin user add minio "${K8UP_ACCESS_KEY}" "${K8UP_SECRET_KEY}"
-                
+                echo "Creating user $${K8UP_ACCESS_KEY}..."
+                mc admin user remove minio "$${K8UP_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${K8UP_ACCESS_KEY}" "$${K8UP_SECRET_KEY}"
+
                 # 3.2. Создание политики для бакета
-                echo "Creating policy for bucket ${K8UP_BUCKET}..."
-                POLICY_NAME="k8up-${K8UP_BUCKET}-policy"
-                POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${K8UP_BUCKET}"'/*","arn:aws:s3:::'"${K8UP_BUCKET}"'"]}]}'
+                echo "Creating policy for bucket $${K8UP_BUCKET}..."
+                POLICY_NAME="k8up-$${K8UP_BUCKET}-policy"
+                POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${K8UP_BUCKET}"'/*","arn:aws:s3:::'"$${K8UP_BUCKET}"'"]}]}'
                 echo "$POLICY_JSON" > /tmp/k8up-policy.json
-                
-                mc admin policy remove minio "${POLICY_NAME}" 2>&1 || true
-                mc admin policy create minio "${POLICY_NAME}" /tmp/k8up-policy.json
-                
+
+                mc admin policy remove minio "$${POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${POLICY_NAME}" /tmp/k8up-policy.json
+
                 # 3.3. Прикрепление политики к пользователю
                 echo "Attaching policy to user..."
-                mc admin policy detach minio "${POLICY_NAME}" --user "${K8UP_ACCESS_KEY}" 2>&1 || true
-                mc admin policy attach minio "${POLICY_NAME}" --user "${K8UP_ACCESS_KEY}"
+                mc admin policy detach minio "$${POLICY_NAME}" --user "$${K8UP_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${POLICY_NAME}" --user "$${K8UP_ACCESS_KEY}"
               fi
-              
+
               # ============================================
               # 4. Создание бакета и пользователя для Loki
               # ============================================
-              if [ -n "${LOKI_ACCESS_KEY}" ] && [ -n "${LOKI_SECRET_KEY}" ]; then
-                LOKI_BUCKET="${LOKI_BUCKET:-loki}"
-                echo "Creating bucket ${LOKI_BUCKET}..."
-                mc mb minio/${LOKI_BUCKET} --ignore-existing
-                
-                echo "Creating user ${LOKI_ACCESS_KEY}..."
-                mc admin user remove minio "${LOKI_ACCESS_KEY}" 2>&1 || true
-                mc admin user add minio "${LOKI_ACCESS_KEY}" "${LOKI_SECRET_KEY}"
-                
-                echo "Creating policy for bucket ${LOKI_BUCKET}..."
-                LOKI_POLICY_NAME="loki-${LOKI_BUCKET}-policy"
-                LOKI_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${LOKI_BUCKET}"'/*","arn:aws:s3:::'"${LOKI_BUCKET}"'"]}]}'
+              if [ -n "$${LOKI_ACCESS_KEY}" ] && [ -n "$${LOKI_SECRET_KEY}" ]; then
+                LOKI_BUCKET="$${LOKI_BUCKET:-loki}"
+                echo "Creating bucket $${LOKI_BUCKET}..."
+                mc mb minio/$${LOKI_BUCKET} --ignore-existing
+
+                echo "Creating user $${LOKI_ACCESS_KEY}..."
+                mc admin user remove minio "$${LOKI_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${LOKI_ACCESS_KEY}" "$${LOKI_SECRET_KEY}"
+
+                echo "Creating policy for bucket $${LOKI_BUCKET}..."
+                LOKI_POLICY_NAME="loki-$${LOKI_BUCKET}-policy"
+                LOKI_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${LOKI_BUCKET}"'/*","arn:aws:s3:::'"$${LOKI_BUCKET}"'"]}]}'
                 echo "$LOKI_POLICY_JSON" > /tmp/loki-policy.json
-                
-                mc admin policy remove minio "${LOKI_POLICY_NAME}" 2>&1 || true
-                mc admin policy create minio "${LOKI_POLICY_NAME}" /tmp/loki-policy.json
-                
+
+                mc admin policy remove minio "$${LOKI_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${LOKI_POLICY_NAME}" /tmp/loki-policy.json
+
                 echo "Attaching policy to user..."
-                mc admin policy detach minio "${LOKI_POLICY_NAME}" --user "${LOKI_ACCESS_KEY}" 2>&1 || true
-                mc admin policy attach minio "${LOKI_POLICY_NAME}" --user "${LOKI_ACCESS_KEY}"
+                mc admin policy detach minio "$${LOKI_POLICY_NAME}" --user "$${LOKI_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${LOKI_POLICY_NAME}" --user "$${LOKI_ACCESS_KEY}"
               fi
-              
+
               # ============================================
               # 5. Создание бакета и пользователя для Databasus
               # ============================================
-              if [ -n "${DATABASUS_ACCESS_KEY}" ] && [ -n "${DATABASUS_SECRET_KEY}" ]; then
-                DATABASUS_BUCKET="${DATABASUS_BUCKET:-databasus}"
-                echo "Creating bucket ${DATABASUS_BUCKET}..."
-                mc mb minio/${DATABASUS_BUCKET} --ignore-existing
+              if [ -n "$${DATABASUS_ACCESS_KEY}" ] && [ -n "$${DATABASUS_SECRET_KEY}" ]; then
+                DATABASUS_BUCKET="$${DATABASUS_BUCKET:-databasus}"
+                echo "Creating bucket $${DATABASUS_BUCKET}..."
+                mc mb minio/$${DATABASUS_BUCKET} --ignore-existing
 
-                echo "Creating user ${DATABASUS_ACCESS_KEY}..."
-                mc admin user remove minio "${DATABASUS_ACCESS_KEY}" 2>&1 || true
-                mc admin user add minio "${DATABASUS_ACCESS_KEY}" "${DATABASUS_SECRET_KEY}"
+                echo "Creating user $${DATABASUS_ACCESS_KEY}..."
+                mc admin user remove minio "$${DATABASUS_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${DATABASUS_ACCESS_KEY}" "$${DATABASUS_SECRET_KEY}"
 
-                echo "Creating policy for bucket ${DATABASUS_BUCKET}..."
-                DATABASUS_POLICY_NAME="databasus-${DATABASUS_BUCKET}-policy"
-                DATABASUS_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"${DATABASUS_BUCKET}"'/*","arn:aws:s3:::'"${DATABASUS_BUCKET}"'"]}]}'
+                echo "Creating policy for bucket $${DATABASUS_BUCKET}..."
+                DATABASUS_POLICY_NAME="databasus-$${DATABASUS_BUCKET}-policy"
+                DATABASUS_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${DATABASUS_BUCKET}"'/*","arn:aws:s3:::'"$${DATABASUS_BUCKET}"'"]}]}'
                 echo "$DATABASUS_POLICY_JSON" > /tmp/databasus-policy.json
 
-                mc admin policy remove minio "${DATABASUS_POLICY_NAME}" 2>&1 || true
-                mc admin policy create minio "${DATABASUS_POLICY_NAME}" /tmp/databasus-policy.json
+                mc admin policy remove minio "$${DATABASUS_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${DATABASUS_POLICY_NAME}" /tmp/databasus-policy.json
 
                 echo "Attaching policy to user..."
-                mc admin policy detach minio "${DATABASUS_POLICY_NAME}" --user "${DATABASUS_ACCESS_KEY}" 2>&1 || true
-                mc admin policy attach minio "${DATABASUS_POLICY_NAME}" --user "${DATABASUS_ACCESS_KEY}"
+                mc admin policy detach minio "$${DATABASUS_POLICY_NAME}" --user "$${DATABASUS_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${DATABASUS_POLICY_NAME}" --user "$${DATABASUS_ACCESS_KEY}"
               fi
 
               # Проверка что бакеты созданы
