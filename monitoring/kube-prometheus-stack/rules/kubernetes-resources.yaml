@@ -12,7 +12,10 @@ spec:
     rules:
     # Контейнер был убит OOM-killer — memory limit превышен.
     - alert: PodOOMKilled
-      expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
+      expr: |
+        kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
+        and on(namespace, pod, container)
+        (time() - kube_pod_container_status_last_terminated_timestamp) < 600
       for: 0m
       labels:
         severity: critical
