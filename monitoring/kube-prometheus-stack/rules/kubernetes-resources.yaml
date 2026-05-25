@@ -10,16 +10,15 @@ spec:
   - name: resources
     interval: 30s
     rules:
-    # Критический алерт - Pod был убит из-за OOM
+    # Контейнер был убит OOM-killer — memory limit превышен.
     - alert: PodOOMKilled
-      expr: |
-        increase(container_oom_events_total[5m]) > 0
+      expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
       for: 0m
       labels:
         severity: critical
       annotations:
-        summary: "🚨 Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} was OOMKilled"
-        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} (namespace {{ $labels.namespace }}) was killed due to OOM. Increase memory limits or investigate memory leaks."
+        summary: "Pod OOMKilled ({{ $labels.namespace }}/{{ $labels.pod }})"
+        description: "Container {{ $labels.container }} in pod {{ $labels.pod }} ({{ $labels.namespace }}) was OOMKilled. Check memory limits and usage."
 
     # Предупреждение - высокое использование памяти (>80% от limit)
     # Используем container_memory_working_set_bytes (реальная память без кеша)
@@ -28,7 +27,7 @@ spec:
     - alert: PodHighMemoryUsage
       expr: |
         (
-          max_over_time(container_memory_working_set_bytes{container!="POD",container!="",namespace=~"apps|infra",container!="transmission"}[5m])
+          max_over_time(container_memory_working_set_bytes{container!="POD",container!="",namespace!~"kube-system",container!="transmission"}[5m])
           / 
           on(pod, container, namespace) group_left
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="memory",container!="POD",container!=""})
@@ -46,7 +45,7 @@ spec:
     - alert: PodHighCPUUsage
       expr: |
         (
-          avg by(pod, container, namespace) (rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace=~"apps|infra"}[5m]))
+          avg by(pod, container, namespace) (rate(container_cpu_usage_seconds_total{container!="POD",container!="",namespace!~"kube-system"}[5m]))
           /
           on(pod, container, namespace) group_left
           max by(pod, container, namespace) (kube_pod_container_resource_limits{resource="cpu",container!="POD",container!=""})

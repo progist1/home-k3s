@@ -12,12 +12,12 @@ spec:
     rules:
 
     # Под перезапустился 3+ раз за последний час — не в CrashLoopBackOff, но уже нехорошо.
-    # Исключаем Job/CronJob поды (они завершаются по-настоящему) и kube-system/monitoring шум.
+    # Исключаем Job/CronJob поды (они завершаются по-настоящему) и kube-system шум.
     - alert: PodHighRestartRate
       expr: |
         (
           increase(kube_pod_container_status_restarts_total{
-            namespace=~"apps|infra"
+            namespace!~"kube-system"
           }[1h]) >= 3
         )
         * on(namespace, pod) group_left(owner_kind)
@@ -33,7 +33,7 @@ spec:
     # Не ловится никакими другими правилами (фаза Failed, reason Evicted).
     - alert: PodEvicted
       expr: |
-        kube_pod_status_reason{reason="Evicted", namespace=~"apps|infra|monitoring"} == 1
+        kube_pod_status_reason{reason="Evicted"} == 1
       for: 1m
       labels:
         severity: critical
@@ -47,7 +47,7 @@ spec:
       expr: |
         (
           changes(kube_pod_container_status_ready{
-            namespace=~"apps|infra"
+            namespace!~"kube-system"
           }[15m]) >= 4
         )
         * on(namespace, pod) group_left(owner_kind)
