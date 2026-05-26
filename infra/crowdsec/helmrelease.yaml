@@ -79,10 +79,13 @@ spec:
             - |
               ln -sf /etc/crowdsec_data /etc/crowdsec && \
               cscli hub update && \
-              cscli collections install $COLLECTIONS
+              cscli collections install $COLLECTIONS && \
+              cscli hub upgrade --force
           volumeMounts:
             - name: crowdsec-config
               mountPath: /etc/crowdsec_data
+            - name: crowdsec-db
+              mountPath: /var/lib/crowdsec/data
       env:
         - name: BOUNCER_KEY_traefik_bouncer
           valueFrom:
@@ -134,6 +137,9 @@ spec:
       tolerations:
         - key: node.hardware.gpu
           value: intel-igpu
+          effect: NoSchedule
+        - key: node.hardware.arch
+          value: arm64
           effect: NoSchedule
       env:
         - name: COLLECTIONS
@@ -190,3 +196,17 @@ spec:
         - namespace: monitoring
           podName: uptime-kuma-*
           program: uptime-kuma
+        # ── Apps on k3s-pi ───────────────────────────────────────────────
+        - namespace: apps
+          podName: memos-*
+          program: memos
+        - namespace: apps
+          podName: vikunja-*
+          program: vikunja
+        - namespace: apps
+          podName: wizarr-*
+          program: wizarr
+        # ── Apps without node pinning ─────────────────────────────────────
+        - namespace: apps
+          podName: actual-budget-*
+          program: actual-budget
