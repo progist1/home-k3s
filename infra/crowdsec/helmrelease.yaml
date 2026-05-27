@@ -103,6 +103,12 @@ spec:
           value: "k8s linux home"
 
     config:
+      console.yaml: |
+        share_manual_decisions: true
+        share_tainted: true
+        share_custom: true
+        console_management: true
+        share_context: true
       parsers:
         s00-raw: {}
         s01-parse:
