@@ -259,6 +259,7 @@ alertmanager:
         - matchers:
             - severity="info"
           receiver: info
+          group_wait: 5s
           continue: false
 
         # --- dead man's switch (external heartbeats) ---
