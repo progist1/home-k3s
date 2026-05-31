@@ -2,6 +2,7 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
+    forceConflicts: true
     backoffLimit: 5
     timeout: 300
     activeDeadlineSeconds: 600
