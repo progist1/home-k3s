@@ -35,7 +35,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: memos
-          image: neosmemo/memos:0.29.0
+          image: neosmemo/memos:0.29.1
           ports:
             - containerPort: 5230
           env:
