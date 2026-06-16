@@ -11,21 +11,8 @@ spec:
     spec:
       template:
         spec:
-          affinity:
-            nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 100
-                  preference:
-                    matchExpressions:
-                      - key: kubernetes.io/hostname
-                        operator: In
-                        values:
-                          - k3s-pi
-          tolerations:
-            - key: node.hardware.arch
-              operator: Equal
-              value: "arm64"
-              effect: NoSchedule
+          nodeSelector:
+            kubernetes.io/hostname: k3s-prod
           containers:
             - name: nextcloud-cron
               image: curlimages/curl:8.20.0
