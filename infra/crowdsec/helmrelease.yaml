@@ -103,19 +103,6 @@ spec:
           value: "k8s linux home"
 
     config:
-      config.yaml.local: |
-        api:
-          server:
-            auto_registration:
-              enabled: true
-              token: "${REGISTRATION_TOKEN}"
-              allowed_ranges:
-                - "127.0.0.1/32"
-                - "192.168.0.0/16"
-                - "10.0.0.0/8"
-                - "172.16.0.0/12"
-        db_config:
-          use_wal: true
       console.yaml: |
         share_manual_decisions: true
         share_tainted: true
