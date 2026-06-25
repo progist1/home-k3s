@@ -24,6 +24,34 @@ spec:
       port: 22
       protocol: TCP
       targetPort: 22
+    - name: smtp
+      port: 25
+      protocol: TCP
+      targetPort: 25
+    - name: smtps
+      port: 465
+      protocol: TCP
+      targetPort: 465
+    - name: submission
+      port: 587
+      protocol: TCP
+      targetPort: 587
+    - name: imap
+      port: 143
+      protocol: TCP
+      targetPort: 143
+    - name: imaps
+      port: 993
+      protocol: TCP
+      targetPort: 993
+    - name: pop3
+      port: 110
+      protocol: TCP
+      targetPort: 110
+    - name: pop3s
+      port: 995
+      protocol: TCP
+      targetPort: 995
   selector:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-kube-system
