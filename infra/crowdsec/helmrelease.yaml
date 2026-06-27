@@ -156,10 +156,12 @@ spec:
                 - "188.134.87.62"
       scenarios:
         mailu-smtp-bf.yaml: |
-          type: trigger
+          type: leaky
           name: custom/mailu-smtp-bf
-          description: "Brute force on Mailu SMTP (port 25/587 auth probing) — ban on first event"
+          description: "Brute force on Mailu SMTP (port 25/587 auth probing) — 3 failures in leaky window"
           filter: "evt.Meta.log_type == 'smtp_auth_fail'"
+          leakspeed: "5m"
+          capacity: 3
           groupby: "evt.Meta.source_ip"
           labels:
             service: smtp
@@ -172,7 +174,7 @@ spec:
           description: "Brute force on Mailu IMAP/submission (dovecot auth failed)"
           filter: "evt.Meta.log_type == 'imap_auth_fail'"
           leakspeed: "5m"
-          capacity: 4
+          capacity: 3
           groupby: "evt.Meta.source_ip"
           labels:
             service: imap
