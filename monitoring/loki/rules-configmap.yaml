@@ -146,6 +146,36 @@ data:
               description: "bigb.home smartd reported disk error"
 
       # ============================================
+      # Mailu Postfix — Compromised Account / Spam Flood
+      # ============================================
+      - name: mailu_smtp
+        interval: 1m
+        rules:
+          - alert: MailuOutgoingFlood
+            expr: |
+              count_over_time({namespace="apps", app="mailu-postfix"} |= "status=sent" [5m]) > 5
+            for: 2m
+            labels:
+              severity: warning
+              service: mailu
+              alert_type: spam_flood
+            annotations:
+              summary: "Mailu: unusually high outgoing mail volume"
+              description: "Mailu postfix sent {{ $value }} messages in last 5 minutes (threshold: 5) — possible compromised account"
+
+          - alert: MailuOutgoingFloodCritical
+            expr: |
+              count_over_time({namespace="apps", app="mailu-postfix"} |= "status=sent" [5m]) > 30
+            for: 0s
+            labels:
+              severity: critical
+              service: mailu
+              alert_type: spam_flood
+            annotations:
+              summary: "Mailu: CRITICAL spam flood detected"
+              description: "Mailu postfix sent {{ $value }} messages in last 5 minutes (threshold: 30) — account likely compromised, investigate immediately"
+
+      # ============================================
       # Jellyfin Authentication
       # ============================================
       - name: jellyfin_auth
