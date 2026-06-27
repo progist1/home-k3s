@@ -124,27 +124,6 @@ spec:
                 statics:
                   - parsed: program
                     expression: '"postfix/" + evt.Parsed.postfix_daemon'
-          mailu-postfix-relay.yaml: |
-            name: custom/mailu-postfix-relay
-            description: "Parse Postfix Relay access denied (open-relay probing) from mailu-postfix smtpd"
-            filter: 'evt.Parsed.program == "postfix/smtpd" && evt.Parsed.message contains "Relay access denied"'
-            nodes:
-              - grok:
-                  apply_on: message
-                  pattern: '.* from unknown\[%{IP:source_ip}\].*Relay access denied'
-                statics:
-                  - meta: log_type
-                    value: postfix_relay_denied
-                  - meta: source_ip
-                    expression: evt.Parsed.source_ip
-              - grok:
-                  apply_on: message
-                  pattern: '.* from %{HOSTNAME:host}\[%{IP:source_ip}\].*Relay access denied'
-                statics:
-                  - meta: log_type
-                    value: postfix_relay_denied
-                  - meta: source_ip
-                    expression: evt.Parsed.source_ip
           mailu-front-auth.yaml: |
             name: custom/mailu-front-auth
             description: "Parse Mailu nginx SMTP stream and dovecot IMAP auth failures from mailu-front pod"
@@ -200,19 +179,6 @@ spec:
           labels:
             service: imap
             type: brute_force
-            remediation: true
-          blackhole: 4h
-        mailu-postfix-relay-denied.yaml: |
-          type: leaky
-          name: custom/mailu-postfix-relay-denied
-          description: "Open relay probing on Postfix — 3x Relay access denied in leaky window"
-          filter: "evt.Meta.log_type == 'postfix_relay_denied'"
-          leakspeed: "5m"
-          capacity: 3
-          groupby: "evt.Meta.source_ip"
-          labels:
-            service: smtp
-            type: relay_spam
             remediation: true
           blackhole: 4h
 
