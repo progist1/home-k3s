@@ -26,6 +26,7 @@ metadata:
 spec:
   jobName: crowdsec-agent
   scrapeInterval: 30s
+  sampleLimit: 100000
   metricsPath: '/metrics'
   scheme: HTTP
   kubernetesSDConfigs:
