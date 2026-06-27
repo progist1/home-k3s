@@ -123,6 +123,28 @@ spec:
                 statics:
                   - parsed: program
                     expression: '"postfix/" + evt.Parsed.postfix_daemon'
+          mailu-front-auth.yaml: |
+            name: custom/mailu-front-auth
+            description: "Parse Mailu nginx SMTP stream and dovecot IMAP auth failures from mailu-front pod"
+            filter: 'evt.Parsed.program == "mailu-front"'
+            onsuccess: next_stage
+            nodes:
+              - grok:
+                  apply_on: message
+                  pattern: '.+client login failed: .+client: %{IP:source_ip},.+:%{NUMBER:smtp_port},'
+                statics:
+                  - meta: log_type
+                    value: smtp_auth_fail
+                  - target: evt.StrVal["SourceIp"]
+                    expression: evt.Parsed.source_ip
+              - grok:
+                  apply_on: message
+                  pattern: '.+login: .+auth failed.+rip=%{IP:source_ip},'
+                statics:
+                  - meta: log_type
+                    value: imap_auth_fail
+                  - target: evt.StrVal["SourceIp"]
+                    expression: evt.Parsed.source_ip
         s02-enrich:
           home-whitelist.yaml: |
             name: custom/home-whitelist
@@ -131,6 +153,35 @@ spec:
               reason: "Static home IP (progist)"
               ip:
                 - "188.134.87.62"
+      scenarios:
+        mailu-smtp-bf.yaml: |
+          type: counter
+          name: custom/mailu-smtp-bf
+          description: "Brute force on Mailu SMTP (port 25/587 auth probing)"
+          filter: "evt.Meta.log_type == 'smtp_auth_fail'"
+          groupby:
+            expression: evt.StrVal["SourceIp"]
+          duration: 10m
+          count: 1
+          labels:
+            service: smtp
+            type: brute_force
+            remediation: true
+          blackhole: 4h
+        mailu-imap-bf.yaml: |
+          type: leaky
+          name: custom/mailu-imap-bf
+          description: "Brute force on Mailu IMAP/submission (dovecot auth failed)"
+          filter: "evt.Meta.log_type == 'imap_auth_fail'"
+          leakspeed: "10s"
+          capacity: 5
+          groupby:
+            expression: evt.StrVal["SourceIp"]
+          labels:
+            service: imap
+            type: brute_force
+            remediation: true
+          blackhole: 4h
 
     agent:
       resources:
@@ -162,6 +213,9 @@ spec:
         - namespace: apps
           podName: mailu-dovecot-*
           program: dovecot
+        - namespace: apps
+          podName: mailu-front-*
+          program: mailu-front
         # ── Auth & access (k3s-prod) ─────────────────────────────────────
         - namespace: apps
           podName: authentik-server-*
