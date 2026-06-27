@@ -5,7 +5,6 @@ resources:
   - nextcloud.yaml
   
   # Rate limiting middleware
-  - ratelimit-mail.yaml
   - ratelimit-strict.yaml
   - ratelimit-media.yaml
   
