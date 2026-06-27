@@ -11,6 +11,8 @@ spec:
       services:
         - name: mailu-front
           port: 25
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -25,6 +27,8 @@ spec:
       services:
         - name: mailu-front
           port: 465
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -39,6 +43,8 @@ spec:
       services:
         - name: mailu-front
           port: 587
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -53,6 +59,8 @@ spec:
       services:
         - name: mailu-front
           port: 143
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -67,6 +75,8 @@ spec:
       services:
         - name: mailu-front
           port: 993
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -81,6 +91,8 @@ spec:
       services:
         - name: mailu-front
           port: 110
+          proxyProtocol:
+            version: 2
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
@@ -95,3 +107,5 @@ spec:
       services:
         - name: mailu-front
           port: 995
+          proxyProtocol:
+            version: 2

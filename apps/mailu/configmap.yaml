@@ -66,7 +66,7 @@ data:
   PROXY_AUTH_CREATE: "false"
   PROXY_AUTH_HEADER: X-Auth-Email
   PROXY_AUTH_WHITELIST: ""
-  PROXY_PROTOCOL: ""
+  PROXY_PROTOCOL: "25 465 587 143 993 110 995"
   RATELIMIT_STORAGE_URL: redis://redis.apps.svc.cluster.local:6379/3
   REAL_IP_FROM: 10.42.0.0/16
   REAL_IP_HEADER: X-Forwarded-For
