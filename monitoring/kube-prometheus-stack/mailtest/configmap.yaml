@@ -16,7 +16,7 @@ data:
     import urllib.request
     from email.mime.text import MIMEText
 
-    SMTP_HOST = os.environ.get('SMTP_HOST', 'mailu-front.apps.svc.cluster.local')
+    SMTP_HOST = os.environ.get('SMTP_HOST', 'mail.progist.ru')
     SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
     IMAP_HOST = os.environ.get('IMAP_HOST', 'mailu-dovecot.apps.svc.cluster.local')
     IMAP_PORT = int(os.environ.get('IMAP_PORT', '143'))
