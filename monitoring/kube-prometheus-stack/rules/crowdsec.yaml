@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: crowdsec-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: crowdsec
+    interval: 30s
+    rules:
+    - alert: CrowdSecLAPIDown
+      expr: up{job="crowdsec-lapi"} == 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CrowdSec LAPI metrics недоступны"
+        description: "Prometheus не скрейпит crowdsec-lapi — decisions и bouncers могут быть не синхронизированы."
+
+    - alert: CrowdSecAgentDown
+      expr: up{job="crowdsec-agent"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CrowdSec agent не отвечает: {{ $labels.pod }}"
+        description: "Agent {{ $labels.pod }} на {{ $labels.node }} недоступен — логи с ноды не анализируются."
+
+    - alert: CrowdSecFirewallBouncerNotPolling
+      expr: |
+        rate(cs_lapi_bouncer_requests_total{bouncer=~"fw-bouncer.*", route="/v1/decisions/stream"}[10m]) == 0
+        and cs_lapi_bouncer_requests_total{bouncer=~"fw-bouncer.*", route="/v1/decisions/stream"} > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CrowdSec firewall bouncer не опрашивает LAPI: {{ $labels.bouncer }}"
+        description: "Bouncer {{ $labels.bouncer }} не poll'ит /v1/decisions/stream 5+ мин — iptables/nftables bans могут не применяться."
+
+    - alert: CrowdSecTraefikBouncerNotPolling
+      expr: |
+        sum(rate(cs_lapi_bouncer_requests_total{bouncer=~"traefik_bouncer.*", route="/v1/decisions/stream"}[10m])) == 0
+        and sum(cs_lapi_bouncer_requests_total{bouncer=~"traefik_bouncer.*", route="/v1/decisions/stream"}) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CrowdSec Traefik bouncer не опрашивает LAPI"
+        description: "Ни один traefik_bouncer не poll'ит LAPI 5+ мин — HTTPS-маршруты не защищены."

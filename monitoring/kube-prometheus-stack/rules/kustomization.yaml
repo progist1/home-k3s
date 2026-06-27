@@ -17,3 +17,4 @@ resources:
   - pods.yaml
   - minio.yaml
   - uptime-kuma.yaml
+  - crowdsec.yaml
