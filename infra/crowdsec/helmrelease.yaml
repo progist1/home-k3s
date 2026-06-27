@@ -135,7 +135,7 @@ spec:
                 statics:
                   - meta: log_type
                     value: smtp_auth_fail
-                  - target: evt.StrVal["SourceIp"]
+                  - meta: source_ip
                     expression: evt.Parsed.source_ip
               - grok:
                   apply_on: message
@@ -143,7 +143,7 @@ spec:
                 statics:
                   - meta: log_type
                     value: imap_auth_fail
-                  - target: evt.StrVal["SourceIp"]
+                  - meta: source_ip
                     expression: evt.Parsed.source_ip
         s02-enrich:
           home-whitelist.yaml: |
@@ -155,14 +155,11 @@ spec:
                 - "188.134.87.62"
       scenarios:
         mailu-smtp-bf.yaml: |
-          type: counter
+          type: trigger
           name: custom/mailu-smtp-bf
-          description: "Brute force on Mailu SMTP (port 25/587 auth probing)"
+          description: "Brute force on Mailu SMTP (port 25/587 auth probing) — ban on first event"
           filter: "evt.Meta.log_type == 'smtp_auth_fail'"
-          groupby:
-            expression: evt.StrVal["SourceIp"]
-          duration: 10m
-          count: 1
+          groupby: "evt.Meta.source_ip"
           labels:
             service: smtp
             type: brute_force
@@ -173,10 +170,9 @@ spec:
           name: custom/mailu-imap-bf
           description: "Brute force on Mailu IMAP/submission (dovecot auth failed)"
           filter: "evt.Meta.log_type == 'imap_auth_fail'"
-          leakspeed: "10s"
-          capacity: 5
-          groupby:
-            expression: evt.StrVal["SourceIp"]
+          leakspeed: "5m"
+          capacity: 4
+          groupby: "evt.Meta.source_ip"
           labels:
             service: imap
             type: brute_force
