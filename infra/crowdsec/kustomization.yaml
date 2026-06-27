@@ -4,3 +4,4 @@ resources:
   - metrics-service.yaml
   - config-pv.yaml
   - ban-page-configmap.yaml
+  - lapi-nodeport.yaml

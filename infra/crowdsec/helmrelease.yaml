@@ -50,6 +50,7 @@ spec:
     lapi:
       nodeSelector:
         kubernetes.io/hostname: k3s-prod
+
       resources:
         requests:
           cpu: "50m"
