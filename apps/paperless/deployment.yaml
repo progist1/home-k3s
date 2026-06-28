@@ -101,7 +101,7 @@ spec:
             - name: PAPERLESS_AI_LLM_BACKEND
               value: "ollama"
             - name: PAPERLESS_AI_LLM_MODEL
-              value: "qwen3.5:9b"
+              value: "qwen3:4b"
             - name: PAPERLESS_AI_LLM_ENDPOINT
               value: "http://ollama-home-proxy.infra.svc.cluster.local:11434"
             - name: PAPERLESS_AI_LLM_ALLOW_INTERNAL_ENDPOINTS
@@ -109,7 +109,7 @@ spec:
             - name: PAPERLESS_AI_LLM_EMBEDDING_BACKEND
               value: "ollama"
             - name: PAPERLESS_AI_LLM_EMBEDDING_MODEL
-              value: "nomic-embed-text"
+              value: "bge-m3"
             - name: PAPERLESS_AI_LLM_REQUEST_TIMEOUT
               value: "300"
             - name: PAPERLESS_AI_LLM_OUTPUT_LANGUAGE
