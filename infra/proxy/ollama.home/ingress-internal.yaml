@@ -1,13 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ollama-internal
-  namespace: apps
-  labels:
-    app.kubernetes.io/name: ollama
-    app.kubernetes.io/part-of: home-cluster
-    managed-by: flux
-    environment: production
+  name: ollama-home-internal
+  namespace: infra
   annotations:
     cert-manager.io/cluster-issuer: root-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
@@ -22,10 +17,10 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ollama
+                name: ollama-home-proxy
                 port:
                   number: 11434
   tls:
     - hosts:
         - ollama.home
-      secretName: ollama-internal-tls
+      secretName: ollama-home-internal-tls
