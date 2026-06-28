@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: open-webui
+    app.kubernetes.io/part-of: home-cluster
+    managed-by: flux
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+        app.kubernetes.io/name: open-webui
+        app.kubernetes.io/part-of: home-cluster
+        managed-by: flux
+        environment: production
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: open-webui
+          image: ghcr.io/open-webui/open-webui:0.8.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: ENV
+              value: prod
+            - name: PORT
+              value: "8080"
+            - name: TZ
+              value: Europe/Moscow
+            - name: WEBUI_URL
+              value: https://chat.home
+            - name: ENABLE_OLLAMA_API
+              value: "true"
+            - name: ENABLE_OPENAI_API
+              value: "false"
+            - name: OLLAMA_BASE_URL
+              value: http://ollama-home-proxy.infra.svc.cluster.local:11434
+            - name: ENABLE_SIGNUP
+              value: "false"
+            - name: WEBUI_ADMIN_NAME
+              value: Admin
+            - name: WEBUI_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-secrets
+                  key: admin-email
+            - name: WEBUI_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-secrets
+                  key: admin-password
+            - name: WEBUI_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-secrets
+                  key: secret-key
+          volumeMounts:
+            - name: data
+              mountPath: /app/backend/data
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: open-webui-data-pvc
