@@ -22,10 +22,15 @@ spec:
     spec:
       containers:
         - name: paperless
-          image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
+          image: ghcr.io/paperless-ngx/paperless-ngx:beta
           env:
             - name: PAPERLESS_PORT
               value: "8001"
+            - name: PAPERLESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: secret-key
             - name: PAPERLESS_OCR_LANGUAGES
               value: "rus eng"
             - name: PAPERLESS_OCR_LANGUAGE
@@ -91,6 +96,24 @@ spec:
                   key: social-account-providers
             - name: PAPERLESS_APPS
               value: "allauth.socialaccount.providers.openid_connect"
+            - name: PAPERLESS_AI_ENABLED
+              value: "true"
+            - name: PAPERLESS_AI_LLM_BACKEND
+              value: "ollama"
+            - name: PAPERLESS_AI_LLM_MODEL
+              value: "qwen3:8b"
+            - name: PAPERLESS_AI_LLM_ENDPOINT
+              value: "http://ollama.apps.svc.cluster.local:11434"
+            - name: PAPERLESS_AI_LLM_ALLOW_INTERNAL_ENDPOINTS
+              value: "true"
+            - name: PAPERLESS_AI_LLM_EMBEDDING_BACKEND
+              value: "ollama"
+            - name: PAPERLESS_AI_LLM_EMBEDDING_MODEL
+              value: "nomic-embed-text"
+            - name: PAPERLESS_AI_LLM_REQUEST_TIMEOUT
+              value: "300"
+            - name: PAPERLESS_AI_LLM_OUTPUT_LANGUAGE
+              value: "Russian"
           ports:
             - containerPort: 8001
           volumeMounts:
@@ -105,20 +128,22 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 8001
-            initialDelaySeconds: 15
+            initialDelaySeconds: 60
             periodSeconds: 10
+            failureThreshold: 12
           livenessProbe:
             tcpSocket:
               port: 8001
-            initialDelaySeconds: 30
+            initialDelaySeconds: 180
             periodSeconds: 30
+            failureThreshold: 6
           resources:
             requests:
               cpu: "250m"
               memory: "512Mi"
             limits:
-              cpu: "1"
-              memory: "4Gi"
+              cpu: "2"
+              memory: "6Gi"
       volumes:
         - name: data
           persistentVolumeClaim:
