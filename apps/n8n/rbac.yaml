@@ -1,0 +1,168 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: n8n-k8s
+  namespace: apps
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+    app.kubernetes.io/name: n8n
+  annotations:
+    # Prevent legacy long-lived Secret-based SA tokens.
+    kubernetes.io/enforce-mountable-secrets: "true"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: n8n-diagnostics-reader
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+    app.kubernetes.io/name: n8n
+rules:
+  # Core workload visibility. Secrets intentionally excluded — LLM must not see credentials.
+  - apiGroups: [""]
+    resources:
+      - pods
+      - pods/log
+      - services
+      - endpoints
+      - events
+      - namespaces
+      - nodes
+      - configmaps
+      - persistentvolumeclaims
+      - persistentvolumes
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - statefulsets
+      - daemonsets
+      - replicasets
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies", "ingressclasses"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses", "volumeattachments"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
+
+  # kubectl top pods/nodes
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch"]
+
+  # Flux GitOps reconciliation status
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources:
+      - gitrepositories
+      - helmrepositories
+      - helmcharts
+      - buckets
+      - ocirepositories
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["notification.toolkit.fluxcd.io"]
+    resources: ["alerts", "providers", "receivers"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["cert-manager.io"]
+    resources:
+      - certificates
+      - certificaterequests
+      - issuers
+      - clusterissuers
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["traefik.io", "traefik.containo.us"]
+    resources:
+      - ingressroutes
+      - middlewares
+      - ingressroutetcps
+      - ingressrouteudps
+      - tlsstores
+      - tlsoptions
+      - serverstransports
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["monitoring.coreos.com"]
+    resources:
+      - servicemonitors
+      - podmonitors
+      - prometheusrules
+      - prometheuses
+      - alertmanagers
+    verbs: ["get", "list", "watch"]
+
+  # Encrypted at rest — safe for LLM context unlike plain Secrets.
+  - apiGroups: ["bitnami.com"]
+    resources: ["sealedsecrets"]
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["metallb.io"]
+    resources:
+      - ipaddresspools
+      - l2advertisements
+      - bgpadvertisements
+      - bgppeers
+      - communities
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["k8up.io"]
+    resources:
+      - schedules
+      - backups
+      - restores
+      - snapshots
+      - prebackuppods
+      - archives
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: n8n-diagnostics-reader
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+    app.kubernetes.io/name: n8n
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: n8n-diagnostics-reader
+subjects:
+  - kind: ServiceAccount
+    name: n8n-k8s
+    namespace: apps

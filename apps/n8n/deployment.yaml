@@ -4,6 +4,9 @@ metadata:
   name: n8n
   namespace: apps
   labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
     app.kubernetes.io/name: n8n
 spec:
   replicas: 1
@@ -18,14 +21,37 @@ spec:
         app: n8n
         app.kubernetes.io/name: n8n
     spec:
+      serviceAccountName: n8n-k8s
       securityContext:
         fsGroup: 1000
+      initContainers:
+        - name: install-kubectl
+          image: bitnami/kubectl:latest@sha256:9c362260ef11ec664c36f34e0cb263b5cacd5b2f64e4c9b93aa3c3dc95549315
+          command:
+            - /bin/cp
+            - /opt/bitnami/kubectl/bin/kubectl
+            - /tools/kubectl
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
       containers:
         - name: n8n
           image: n8nio/n8n:2.28.2
           ports:
             - containerPort: 5678
           env:
+            - name: PATH
+              value: "/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            # Enable Execute Command node; keep LocalFileTrigger disabled (security).
+            - name: NODES_EXCLUDE
+              value: "[n8n-nodes-base.localFileTrigger]"
             - name: N8N_HOST
               value: "n8n.home"
             - name: N8N_PORT
@@ -47,6 +73,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /home/node/.n8n
+            - name: tools
+              mountPath: /tools
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /healthz
@@ -67,6 +96,8 @@ spec:
               cpu: "500m"
               memory: "1Gi"
       volumes:
+        - name: tools
+          emptyDir: {}
         - name: config
           persistentVolumeClaim:
             claimName: n8n-config-pvc
