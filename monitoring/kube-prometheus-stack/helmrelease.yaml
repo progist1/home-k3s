@@ -40,6 +40,17 @@ spec:
       valuesKey: telegram-chat-id
       targetPath: alertmanager.config.receivers[1].telegram_configs[0].chat_id
 
+    # n8n AM alert summarization
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: n8n-am-webhook-url
+      targetPath: alertmanager.config.receivers[0].webhook_configs[0].url
+
+    - kind: Secret
+      name: kps-secrets
+      valuesKey: n8n-am-webhook-url
+      targetPath: alertmanager.config.receivers[1].webhook_configs[0].url
+
     # info telegram (silent)
     - kind: Secret
       name: kps-secrets

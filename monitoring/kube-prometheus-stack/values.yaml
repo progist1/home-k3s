@@ -163,7 +163,7 @@ alertmanager:
                 end_time: "09:00"
     route:
       receiver: 'telegram'
-      group_by: ['alertname', 'namespace']
+      group_by: ['alertname', 'namespace', 'instance']
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 2h
@@ -282,6 +282,9 @@ alertmanager:
             message: '{{ template "telegram.message" . }}'
             http_config:
               proxy_url: http://xray.infra.svc.cluster.local:10809
+        webhook_configs:
+          - url: 'redacted'
+            send_resolved: false
 
       # critical = telegram (+ email disabled)
       - name: critical
@@ -292,6 +295,9 @@ alertmanager:
             message: '{{ template "telegram.message" . }}'
             http_config:
               proxy_url: http://xray.infra.svc.cluster.local:10809
+        webhook_configs:
+          - url: 'redacted'
+            send_resolved: false
 
         # email_configs:
         #   - to: progist11@gmail.com
