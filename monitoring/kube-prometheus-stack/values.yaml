@@ -331,6 +331,8 @@ alertmanager:
 
   alertmanagerSpec:
     externalUrl: https://alerts.home
+    logLevel: debug
+    logFormat: json
     replicas: 1
     storage:
       volumeClaimTemplate:
