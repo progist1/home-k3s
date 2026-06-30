@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: xray
-          image: teddysun/xray:26.6.22
+          image: teddysun/xray:26.6.27
           volumeMounts:
             - name: config
               mountPath: /etc/xray
