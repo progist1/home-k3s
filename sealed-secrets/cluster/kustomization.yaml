@@ -1,4 +1,4 @@
 resources:
   - root-ca-keypair-sealed.yaml
-  - letsencrypt-prod-account-key.yaml
-  - acmedns-credentials.yaml
+  - letsencrypt-prod-account-sealed.yaml
+  - acmedns-credentials-sealed.yaml

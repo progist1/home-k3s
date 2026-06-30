@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-novozhenin-ru
+  namespace: infra
+spec:
+  secretName: wildcard-novozhenin-ru-tls
+  issuerRef:
+    name: letsencrypt-prod-dns
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.novozhenin.ru"
+    - "novozhenin.ru"

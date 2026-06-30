@@ -8,4 +8,5 @@ resources:
   - webmail
   - ingress-internal.yaml
   - ingress-external.yaml
+  - ingress-external-novozhenin.yaml
   - ingress-mail-tcp.yaml

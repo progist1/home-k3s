@@ -2,3 +2,5 @@ resources:
   - helmrelease.yaml
   - certificate.yaml
   - catch-all.yaml
+  - certificate-novozhenin.yaml
+  - catch-all-novozhenin.yaml

@@ -3,3 +3,4 @@ resources:
   - service.yaml
   - ingress-internal.yaml
   - ingress-external.yaml
+  - ingress-external-novozhenin.yaml
