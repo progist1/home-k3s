@@ -18,7 +18,7 @@ spec:
           serviceAccountName: gitlab-backup-sa
           containers:
           - name: kubectl
-            image: bitnami/kubectl:latest@sha256:9c362260ef11ec664c36f34e0cb263b5cacd5b2f64e4c9b93aa3c3dc95549315
+            image: bitnami/kubectl:latest@sha256:cd9daa0cc6968665402654b887bdc59aba0f774d0d0a36808eb9259fb642aa5c
             command:
             - /bin/bash
             - -c
