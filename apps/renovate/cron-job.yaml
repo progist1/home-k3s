@@ -44,12 +44,12 @@ spec:
                     secretKeyRef:
                       name: renovate-github-token
                       key: RENOVATE_GITHUB_COM_TOKEN
-                - name: DOCKER_USERNAME
+                - name: RENOVATE_DOCKER_DOCKER_IO_USERNAME
                   valueFrom:
                     secretKeyRef:
                       name: renovate-docker-hub
                       key: DOCKER_USERNAME
-                - name: DOCKER_PASSWORD
+                - name: RENOVATE_DOCKER_DOCKER_IO_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: renovate-docker-hub
