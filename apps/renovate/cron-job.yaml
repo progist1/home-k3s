@@ -32,6 +32,8 @@ spec:
                   value: https://gitlab.home/api/v4
                 - name: RENOVATE_AUTODISCOVER
                   value: "true"
+                - name: RENOVATE_DETECT_HOST_RULES_FROM_ENV
+                  value: "true"
                 - name: RENOVATE_TOKEN
                   valueFrom:
                     secretKeyRef:
@@ -42,6 +44,16 @@ spec:
                     secretKeyRef:
                       name: renovate-github-token
                       key: RENOVATE_GITHUB_COM_TOKEN
+                - name: DOCKER_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-docker-hub
+                      key: DOCKER_USERNAME
+                - name: DOCKER_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-docker-hub
+                      key: DOCKER_PASSWORD
 
               volumeMounts:
                 - name: home-root-ca
