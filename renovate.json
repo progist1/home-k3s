@@ -1,8 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "branchConcurrentLimit": 50,
-  "prConcurrentLimit": 10,
+  "prConcurrentLimit": 20,
+  "prHourlyLimit": 20,
   "pruneBranchAfterAutomerge": true,
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+  "osvVulnerabilityAlerts": true,
+  "rollbackPrs": true,
   "ignorePaths": [
     "sealed-secrets/**"
   ],
@@ -79,6 +84,19 @@
     }
   ],
   "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/^ghcr\\.io\\/mailu\\//"],
+      "groupName": "mailu docker images"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/haveagitgat/tdarr",
+        "ghcr.io/haveagitgat/tdarr_node"
+      ],
+      "groupName": "tdarr docker images"
+    },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["postgres", "mysql", "mariadb", "redis"],
