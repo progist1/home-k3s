@@ -31,7 +31,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: open-webui
-          image: ghcr.io/open-webui/open-webui:v0.8.7
+          image: ghcr.io/open-webui/open-webui:v0.10.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
