@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: error-pages
-      version: "4.2.0"
+      version: "4.2.2"
       sourceRef:
         kind: HelmRepository
         name: error-pages
