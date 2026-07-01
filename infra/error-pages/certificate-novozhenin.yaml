@@ -10,4 +10,3 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "*.novozhenin.ru"
-    - "novozhenin.ru"

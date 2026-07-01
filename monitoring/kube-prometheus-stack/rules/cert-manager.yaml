@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cert-manager-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: cert-manager
+      interval: 60s
+      rules:
+        - alert: CertManagerCertificateNotReady
+          expr: |
+            max by (namespace, name) (
+              certmanager_certificate_ready_status{condition="False"} == 1
+            )
+          for: 30m
+          labels:
+            severity: critical
+          annotations:
+            summary: Certificate {{ $labels.namespace }}/{{ $labels.name }} not ready
+            description: >-
+              cert-manager Certificate {{ $labels.name }} in namespace {{ $labels.namespace }}
+              has been not ready for 30+ minutes. Check challenges/orders and issuer configuration.
+
+        - alert: CertManagerCertificateExpiringSoon
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds > 0
+            and (certmanager_certificate_expiration_timestamp_seconds - time()) < 21 * 24 * 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Certificate {{ $labels.namespace }}/{{ $labels.name }} expiring soon
+            description: >-
+              Certificate {{ $labels.name }} in namespace {{ $labels.namespace }}
+              expires in less than 21 days.
+
+        - alert: CertManagerCertificateExpiringCritical
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds > 0
+            and (certmanager_certificate_expiration_timestamp_seconds - time()) < 7 * 24 * 3600
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: Certificate {{ $labels.namespace }}/{{ $labels.name }} expiring in <7 days
+            description: >-
+              Certificate {{ $labels.name }} in namespace {{ $labels.namespace }}
+              expires in less than 7 days.

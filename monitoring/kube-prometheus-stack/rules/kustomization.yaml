@@ -8,6 +8,7 @@ resources:
   - temperatures.yaml
   - traefik.yaml
   - ssl.yaml
+  - cert-manager.yaml
   - flux.yaml
   - kubernetes-storage.yaml
   - kubernetes-resources.yaml

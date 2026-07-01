@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`novozhenin.ru`) || HostRegexp(`^[a-zA-Z0-9-]+\.novozhenin\.ru$`)
+    - match: HostRegexp(`^[a-zA-Z0-9-]+\.novozhenin\.ru$`)
       kind: Rule
       priority: 1
       services:

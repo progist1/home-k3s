@@ -3,5 +3,6 @@ resources:
   - certificate.yaml
   - catch-all.yaml
   - certificate-novozhenin.yaml
+  - ingress-novozhenin-apex.yaml
   - catch-all-novozhenin.yaml
   - catch-all-novozhenin-http.yaml
