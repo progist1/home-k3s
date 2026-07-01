@@ -4,3 +4,4 @@ resources:
   - catch-all.yaml
   - certificate-novozhenin.yaml
   - catch-all-novozhenin.yaml
+  - catch-all-novozhenin-http.yaml
