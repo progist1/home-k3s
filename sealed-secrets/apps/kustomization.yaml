@@ -12,6 +12,7 @@ resources:
   - mysql
   - outline
   - cloud-dbeaver
+  - code-server
   - nextcloud
   - frigate
   - frigate-notify
