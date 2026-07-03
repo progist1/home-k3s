@@ -75,6 +75,7 @@ spec:
         - vw.progist.ru:443
         - v.progist.ru:443
         - invite.progist.ru:443
+        - grafana.progist.ru:443
   relabelings:
     - sourceLabels: [__address__]
       targetLabel: __param_target

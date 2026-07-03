@@ -413,7 +413,7 @@ grafana:
 
   grafana.ini:
     server:
-      root_url: https://grafana.home/
+      root_url: https://grafana.progist.ru/
     users:
       allow_sign_up: false
       auto_assign_org: true
