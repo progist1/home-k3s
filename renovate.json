@@ -99,6 +99,14 @@
     },
     {
       "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning"
+      ],
+      "groupName": "immich docker images"
+    },
+    {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["postgres", "mysql", "mariadb", "redis"],
       "automerge": false,
       "assignees": ["progist"]
