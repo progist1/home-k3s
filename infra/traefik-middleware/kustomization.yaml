@@ -12,6 +12,8 @@ resources:
   - mail-chain.yaml
   - strict-chain.yaml
   - media-chain.yaml
+  - error-pages-chain.yaml
+  - error-pages-optin.yaml
   
   # TODO: блокировка метрик
   # - block-metrics.yaml

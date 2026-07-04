@@ -51,4 +51,4 @@ spec:
       - "--entrypoints.imaps.address=:993/tcp"
       - "--entrypoints.pop3.address=:110/tcp"
       - "--entrypoints.pop3s.address=:995/tcp"
-      - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd,infra-error-pages@kubernetescrd"
+      - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd"

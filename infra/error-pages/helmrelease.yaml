@@ -31,6 +31,7 @@ spec:
 
     traefikMiddleware:
       enabled: true
+      # Wildcard catch-all routes only (infra-error-pages@kubernetescrd). Apps: infra-error-pages-optin@kubernetescrd
       statusCodes: ["402", "404-408", "410-599"]
 
     resources:

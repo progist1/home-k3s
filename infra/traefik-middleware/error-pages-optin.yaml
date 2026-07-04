@@ -1,0 +1,16 @@
+# Opt-in: pretty 5xx only — не ломает API с легитимными 404 (Grafana и др.).
+# Usage: infra-error-pages-optin@kubernetescrd or infra-error-pages-chain@kubernetescrd
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: error-pages-optin
+  namespace: infra
+spec:
+  errors:
+    status:
+      - "500-599"
+    service:
+      name: error-pages
+      port: 8080
+      namespace: infra
+    query: "/{status}"

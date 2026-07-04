@@ -13,6 +13,8 @@ spec:
       middlewares:
         - name: redirect-to-https
           namespace: infra
+        - name: error-pages
+          namespace: infra
       services:
         - name: error-pages
           port: 8080

@@ -7,9 +7,12 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: HostRegexp(`.+`)
+    - match: HostRegexp(`^[a-zA-Z0-9-]+\.progist\.ru$`)
       kind: Rule
       priority: 1
+      middlewares:
+        - name: error-pages
+          namespace: infra
       services:
         - name: error-pages
           port: 8080
