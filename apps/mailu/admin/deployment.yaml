@@ -28,7 +28,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 2
       containers:
-      - image: ghcr.io/mailu/admin:2024.06.53
+      - image: ghcr.io/mailu/admin:2024.06.54
         env:
         - name: LOG_LEVEL
           value: DEBUG
