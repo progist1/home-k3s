@@ -74,7 +74,7 @@ spec:
               memory: "320Mi"
             limits:
               cpu: "1000m"
-              memory: "600Mi"
+              memory: "1.5Gi"
       nodeSelector:
         kubernetes.io/hostname: k3s-prod
       volumes:
