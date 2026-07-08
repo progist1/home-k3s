@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres-exporter
-          image: quay.io/prometheuscommunity/postgres-exporter:v0.20.0
+          image: quay.io/prometheuscommunity/postgres-exporter:v0.20.1
           ports:
             - containerPort: 9187
           env:
