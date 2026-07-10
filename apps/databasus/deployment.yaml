@@ -25,7 +25,7 @@ spec:
         fsGroup: 999
       containers:
         - name: databasus
-          image: databasus/databasus:v3.47.1
+          image: databasus/databasus:v3.48.0
           ports:
             - containerPort: 4005
           volumeMounts:
