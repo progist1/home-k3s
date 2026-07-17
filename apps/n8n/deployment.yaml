@@ -43,7 +43,7 @@ spec:
               memory: "64Mi"
       containers:
         - name: n8n
-          image: n8nio/n8n:2.31.2
+          image: n8nio/n8n:2.31.3
           ports:
             - containerPort: 5678
           env:
