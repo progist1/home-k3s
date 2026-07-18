@@ -10,3 +10,4 @@ resources:
   - gitlab-runner.yaml
   - homelab-bots.yaml
   - jellycleaner.yaml
+  - lab-staging.yaml
