@@ -33,7 +33,7 @@ runners:
         [[runners.kubernetes.services]]
           name = "docker:27.5.1-dind"
           alias = "docker"
-          command = ["dockerd", "--host=tcp://0.0.0.0:2375", "--tls=false"]
+          command = ["dockerd", "--host=tcp://0.0.0.0:2375", "--host=unix:///var/run/docker.sock", "--tls=false"]
 volumes:
   - name: docker-storage
     emptyDir:
