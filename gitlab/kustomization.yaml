@@ -14,3 +14,4 @@ resources:
   - backups-cronjob.yaml
   - backups-rbac.yaml
   - ci-rbac.yaml
+  - lab-staging-ci-rbac.yaml
