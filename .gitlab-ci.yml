@@ -1,5 +1,9 @@
 image: alpine:3.20
 
+default:
+  tags:
+    - k8s
+
 stages:
   - validate
 
