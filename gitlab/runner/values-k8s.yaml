@@ -1,0 +1,51 @@
+# Plain k8s runner: build/unit/deploy/rootless BuildKit — без DinD.
+# concurrent/limit = 4 — параллельно с одним DinD-job'ом.
+#
+# Rootless BuildKit (moby/buildkit:*-rootless) нужен Unconfined seccomp+AppArmor
+# на build-контейнере: иначе user namespaces / mount /proc падают с
+# "fork/exec /proc/self/exe: operation not permitted" (Ubuntu 24.04+).
+# privileged = false — намеренно; это не DinD.
+gitlabUrl: http://gitlab.gitlab.svc.cluster.local
+
+concurrent: 4
+
+rbac:
+  create: true
+
+runners:
+  secret: gitlab-runner-k8s-secrets
+  config: |
+    [[runners]]
+      name = "k3s-k8s"
+      limit = 4
+
+      executor = "kubernetes"
+      tls-ca-file = "/etc/docker/certs.d/registry.gitlab.home/ca.crt"
+
+      environment = [
+        "GIT_SSL_CAINFO=/etc/docker/certs.d/registry.gitlab.home/ca.crt"
+      ]
+
+      [runners.kubernetes]
+        namespace = "gitlab-runner"
+        privileged = false
+        image = "alpine:3.20"
+        poll_timeout = 600
+
+        [[runners.kubernetes.volumes.config_map]]
+          name = "home-root-ca"
+          mount_path = "/etc/docker/certs.d/registry.gitlab.home"
+
+        [runners.kubernetes.build_container_security_context]
+          [runners.kubernetes.build_container_security_context.seccomp_profile]
+            type = "Unconfined"
+          [runners.kubernetes.build_container_security_context.app_armor_profile]
+            type = "Unconfined"
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"

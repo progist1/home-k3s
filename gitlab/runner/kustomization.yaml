@@ -3,7 +3,12 @@ configMapGenerator:
     namespace: gitlab-runner
     files:
       - values.yaml
+  - name: gitlab-runner-k8s-values
+    namespace: gitlab-runner
+    files:
+      - values.yaml=values-k8s.yaml
 generatorOptions:
   disableNameSuffixHash: true
 resources:
   - helmrelease.yaml
+  - helmrelease-k8s.yaml
