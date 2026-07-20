@@ -12,6 +12,9 @@ concurrent: 4
 rbac:
   create: true
 
+serviceAccount:
+  create: true
+
 runners:
   secret: gitlab-runner-k8s-secrets
   config: |
