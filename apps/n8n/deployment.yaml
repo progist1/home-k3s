@@ -26,7 +26,7 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: install-kubectl
-          image: bitnami/kubectl:latest@sha256:e21d3b5ca1f600677376b5468416e6d025a1380aaec77f981345cccec5916066
+          image: bitnami/kubectl:latest@sha256:95de17e6eb92da83a58c90a9df0c4cede634f898d2e6b92ea04f4a6ee6ace08d
           command:
             - /bin/cp
             - /opt/bitnami/kubectl/bin/kubectl
