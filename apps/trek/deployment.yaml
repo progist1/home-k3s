@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trek
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: trek
+    app.kubernetes.io/part-of: home-cluster
+    managed-by: flux
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: trek
+  template:
+    metadata:
+      labels:
+        app: trek
+        app.kubernetes.io/name: trek
+        app.kubernetes.io/part-of: home-cluster
+        managed-by: flux
+        environment: production
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: trek
+          image: mauriceboe/trek:3.4.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3000"
+            - name: TZ
+              value: Europe/Moscow
+            - name: APP_URL
+              value: https://travel.progist.ru
+            - name: ALLOWED_ORIGINS
+              value: https://travel.home,https://travel.progist.ru
+            - name: FORCE_HTTPS
+              value: "true"
+            - name: TRUST_PROXY
+              value: "1"
+            - name: ALLOW_INTERNAL_NETWORK
+              value: "true"
+            - name: DEFAULT_LANGUAGE
+              value: ru
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: trek-secrets
+                  key: ENCRYPTION_KEY
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: uploads
+              mountPath: /app/uploads
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: trek-data-pvc
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: trek-uploads-pvc

@@ -17,3 +17,4 @@ resources:
   - frigate
   - frigate-notify
   - open-webui
+  - trek

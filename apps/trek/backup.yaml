@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pvc-archiver-trek-data
+  namespace: apps
+spec:
+  interval: 10m
+  chart:
+    spec:
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      chart: charts/pvc-archiver
+  values:
+    name: trek-data
+    archiveName: trek-data
+    sourcePVC: trek-data-pvc
+    destPVC: backups-pvc
+    schedule: "35 5 * * *"
+    exclude: "**/logs/**;**/*.log"
+    securityContext:
+      fsGroup: 1000
+      supplementalGroups: [1000]
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pvc-archiver-trek-uploads
+  namespace: apps
+spec:
+  interval: 10m
+  chart:
+    spec:
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      chart: charts/pvc-archiver
+  values:
+    name: trek-uploads
+    archiveName: trek-uploads
+    sourcePVC: trek-uploads-pvc
+    destPVC: backups-pvc
+    schedule: "40 5 * * *"
+    securityContext:
+      fsGroup: 1000
+      supplementalGroups: [1000]
