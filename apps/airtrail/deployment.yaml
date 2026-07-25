@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airtrail
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: airtrail
+    app.kubernetes.io/part-of: home-cluster
+    managed-by: flux
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: airtrail
+  template:
+    metadata:
+      labels:
+        app: airtrail
+        app.kubernetes.io/name: airtrail
+        app.kubernetes.io/part-of: home-cluster
+        managed-by: flux
+        environment: production
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: airtrail
+          image: johly/airtrail:v3.11.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: ORIGIN
+              value: https://flights.progist.ru
+            - name: UPLOAD_LOCATION
+              value: /app/uploads
+            - name: BODY_SIZE_LIMIT
+              value: 20M
+            - name: TZ
+              value: Europe/Moscow
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: airtrail-secrets
+                  key: DB_URL
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+          startupProbe:
+            httpGet:
+              path: /api/ping
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: airtrail-uploads-pvc

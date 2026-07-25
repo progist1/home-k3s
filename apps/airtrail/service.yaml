@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: airtrail
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: airtrail
+    managed-by: flux
+spec:
+  selector:
+    app: airtrail
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  type: ClusterIP

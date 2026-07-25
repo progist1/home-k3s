@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airtrail-uploads-pv
+spec:
+  storageClassName: nfs-nvme-manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /mnt/Fast/k3s-data/airtrail/uploads
+    server: 10.0.0.4
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - rsize=65536
+    - wsize=65536
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airtrail-uploads-pvc
+  namespace: apps
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    backup-level: important
+    backup-offsite: "true"
+spec:
+  storageClassName: nfs-nvme-manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: airtrail-uploads-pv
