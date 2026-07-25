@@ -38,8 +38,9 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
+            # Comma-separated: SvelteKit CSRF trusts each origin (see AirTrail .env.example).
             - name: ORIGIN
-              value: https://flights.progist.ru
+              value: https://flights.progist.ru,https://flights.home
             - name: UPLOAD_LOCATION
               value: /app/uploads
             - name: BODY_SIZE_LIMIT
@@ -54,23 +55,23 @@ spec:
           volumeMounts:
             - name: uploads
               mountPath: /app/uploads
+          # First boot runs migrations + airport seed (~25s) + airline icon sync.
           startupProbe:
             httpGet:
               path: /api/ping
               port: http
-            failureThreshold: 30
+            initialDelaySeconds: 40
+            failureThreshold: 60
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /api/ping
               port: http
-            initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /api/ping
               port: http
-            initialDelaySeconds: 30
             periodSeconds: 30
           resources:
             requests:
