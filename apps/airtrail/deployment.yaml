@@ -39,7 +39,7 @@ spec:
               protocol: TCP
           env:
             - name: ORIGIN
-              value: https://flights.home
+              value: https://flights.progist.ru
             - name: UPLOAD_LOCATION
               value: /app/uploads
             - name: BODY_SIZE_LIMIT

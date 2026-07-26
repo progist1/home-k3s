@@ -3,4 +3,4 @@ resources:
   - backup.yaml
   - deployment.yaml
   - service.yaml
-  - ingress-internal.yaml
+  - ingress-external.yaml
