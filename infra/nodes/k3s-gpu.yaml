@@ -24,6 +24,9 @@ metadata:
     node.hardware.gpu: intel-igpu
     node.hardware.video-accel: qsv
     node.hardware.arch: amd64
+
+    # GitLab CI job pods (node_selector ci-runner=true)
+    ci-runner: "true"
 spec:
   taints:
     - key: node.hardware.gpu

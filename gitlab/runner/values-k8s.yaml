@@ -1,5 +1,9 @@
 # Plain k8s runner: build/unit/deploy/rootless BuildKit — без DinD.
-# concurrent/limit = 4 — параллельно с одним DinD-job'ом.
+# concurrent/limit = 5 — вместе с DinD (limit 1) = 6 слотов → ~2 на prod/gpu/yolki.
+#
+# /builds — tmpfs (sizeLimit 8Gi). Usage в memory cgroup build-контейнера:
+# (process RSS + /builds) > memory_limit → OOMKilled; sizeLimit сам по себе не спасает ноду.
+# Ноды только с label ci-runner=true (prod/gpu/yolki). Topology spread суммарно по ci-job.
 #
 # Rootless BuildKit (moby/buildkit:*-rootless) нужен Unconfined seccomp+AppArmor
 # на build-контейнере: иначе user namespaces / mount /proc падают с
@@ -7,7 +11,7 @@
 # privileged = false — намеренно; это не DinD.
 gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
-concurrent: 4
+concurrent: 5
 
 rbac:
   create: true
@@ -20,12 +24,14 @@ runners:
   config: |
     [[runners]]
       name = "k3s-k8s"
-      limit = 4
+      limit = 5
 
       executor = "kubernetes"
+      builds_dir = "/builds"
       tls-ca-file = "/etc/docker/certs.d/registry.gitlab.home/ca.crt"
 
       environment = [
+        "FF_USE_ADVANCED_POD_SPEC_CONFIGURATION=true",
         "GIT_SSL_CAINFO=/etc/docker/certs.d/registry.gitlab.home/ca.crt"
       ]
 
@@ -35,9 +41,48 @@ runners:
         image = "alpine:3.20"
         poll_timeout = 600
 
+        memory_request = "3Gi"
+        memory_limit = "14Gi"
+        helper_memory_request = "128Mi"
+        helper_memory_limit = "512Mi"
+
+        [runners.kubernetes.pod_labels]
+          "ci-job" = "true"
+          "ci-runner" = "k8s"
+
+        [runners.kubernetes.node_selector]
+          "ci-runner" = "true"
+          "kubernetes.io/arch" = "amd64"
+
+        [runners.kubernetes.node_tolerations]
+          "node.hardware.gpu=intel-igpu" = "NoSchedule"
+          "node.location.type=remote" = "NoSchedule"
+          "node.role=edge" = "NoSchedule"
+          "node.reliability=low" = "NoSchedule"
+          "node.workload.class=cctv" = "NoSchedule"
+
+        [[runners.kubernetes.pod_spec]]
+          name = "topology-spread"
+          patch_type = "strategic"
+          patch = """
+            topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  ci-job: "true"
+            """
+
         [[runners.kubernetes.volumes.config_map]]
           name = "home-root-ca"
           mount_path = "/etc/docker/certs.d/registry.gitlab.home"
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "builds"
+          mount_path = "/builds"
+          medium = "Memory"
+          size_limit = "8Gi"
 
         [runners.kubernetes.build_container_security_context]
           [runners.kubernetes.build_container_security_context.seccomp_profile]

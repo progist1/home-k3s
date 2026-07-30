@@ -1,5 +1,9 @@
 # DinD runner: только джобы с tags: [docker] или [dind].
-# limit/concurrent = 1 — не больше одного dockerd одновременно (TBW на Fast NVMe).
+# limit/concurrent = 1 — один dockerd; вместе с k8s-runner (5) = 6 слотов.
+#
+# /builds и /var/lib/docker — tmpfs (sizeLimit 8Gi каждый). Usage считается в memory
+# cgroup контейнера-писателя → при (process + tmpfs) > memory_limit будет OOMKilled,
+# а не только Evicted по sizeLimit. Лимиты build/service раздельные.
 gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
 concurrent: 1
@@ -15,9 +19,11 @@ runners:
       limit = 1
 
       executor = "kubernetes"
+      builds_dir = "/builds"
       tls-ca-file = "/etc/docker/certs.d/registry.gitlab.home/ca.crt"
 
       environment = [
+        "FF_USE_ADVANCED_POD_SPEC_CONFIGURATION=true",
         "DOCKER_TLS_CERTDIR=",
         "DOCKER_HOST=tcp://docker:2375",
         "GIT_SSL_CAINFO=/etc/docker/certs.d/registry.gitlab.home/ca.crt"
@@ -29,9 +35,56 @@ runners:
         image = "docker:27.5.1"
         poll_timeout = 600
 
+        memory_request = "2Gi"
+        memory_limit = "12Gi"
+        service_memory_request = "2Gi"
+        service_memory_limit = "12Gi"
+        helper_memory_request = "128Mi"
+        helper_memory_limit = "512Mi"
+
+        [runners.kubernetes.pod_labels]
+          "ci-job" = "true"
+          "ci-runner" = "dind"
+
+        [runners.kubernetes.node_selector]
+          "ci-runner" = "true"
+          "kubernetes.io/arch" = "amd64"
+
+        [runners.kubernetes.node_tolerations]
+          "node.hardware.gpu=intel-igpu" = "NoSchedule"
+          "node.location.type=remote" = "NoSchedule"
+          "node.role=edge" = "NoSchedule"
+          "node.reliability=low" = "NoSchedule"
+          "node.workload.class=cctv" = "NoSchedule"
+
+        [[runners.kubernetes.pod_spec]]
+          name = "topology-spread"
+          patch_type = "strategic"
+          patch = """
+            topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  ci-job: "true"
+            """
+
         [[runners.kubernetes.volumes.config_map]]
           name = "home-root-ca"
           mount_path = "/etc/docker/certs.d/registry.gitlab.home"
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "builds"
+          mount_path = "/builds"
+          medium = "Memory"
+          size_limit = "8Gi"
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "docker"
+          mount_path = "/var/lib/docker"
+          medium = "Memory"
+          size_limit = "8Gi"
 
         [[runners.kubernetes.services]]
           name = "docker:27.5.1-dind"

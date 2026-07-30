@@ -32,5 +32,8 @@ metadata:
     node.hardware.gpu: none
     node.hardware.video-accel: none
     node.hardware.arch: amd64
+
+    # GitLab CI job pods (node_selector ci-runner=true)
+    ci-runner: "true"
 spec:
   taints: []
