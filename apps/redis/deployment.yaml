@@ -29,7 +29,7 @@ spec:
                       - "true"
       containers:
         - name: redis
-          image: redis:8.8.1
+          image: redis:8.10.0
           ports:
             - containerPort: 6379
           volumeMounts:
