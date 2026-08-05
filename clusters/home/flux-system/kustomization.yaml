@@ -3,3 +3,6 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+patches:
+  # EmptyDir → tmpfs: меньше TBW на NVMe Fast (zd112 / VM root)
+  - path: patches/emptydir-tmpfs.yaml

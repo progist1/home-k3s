@@ -1,0 +1,71 @@
+# Переносим Flux EmptyDir с диска ноды (zd112/vda) на tmpfs.
+# medium: Memory считается в memory limit контейнера → limits подняты.
+# sizeLimit — защита от раздувания artifact/cache.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: source-controller
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      containers:
+        - name: manager
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 256Mi
+      volumes:
+        # git artifacts / storage-path=/data — основной write churn
+        - name: data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kustomize-controller
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      containers:
+        - name: manager
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 256Mi
+      volumes:
+        - name: temp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-controller
+  namespace: flux-system
+spec:
+  template:
+    spec:
+      containers:
+        - name: manager
+          resources:
+            limits:
+              memory: 1500Mi
+            requests:
+              memory: 128Mi
+      volumes:
+        - name: temp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
