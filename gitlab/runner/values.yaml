@@ -36,6 +36,10 @@ runners:
         privileged = true
         image = "docker:27.5.1"
         poll_timeout = 600
+        # Джоб может дописать селектор, напр.:
+        #   KUBERNETES_NODE_SELECTOR_LOC=node.location.type=local  → prod+gpu
+        #   KUBERNETES_NODE_SELECTOR_NODE=kubernetes.io/hostname=k3s-gpu
+        node_selector_overwrite_allowed = "(kubernetes\\.io/hostname|node\\.location\\.type)=.*"
 
         memory_request = "2Gi"
         memory_limit = "12Gi"

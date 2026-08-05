@@ -40,6 +40,10 @@ runners:
         privileged = false
         image = "alpine:3.20"
         poll_timeout = 600
+        # Джоб может дописать селектор, напр.:
+        #   KUBERNETES_NODE_SELECTOR_LOC=node.location.type=local  → prod+gpu
+        #   KUBERNETES_NODE_SELECTOR_NODE=kubernetes.io/hostname=k3s-prod
+        node_selector_overwrite_allowed = "(kubernetes\\.io/hostname|node\\.location\\.type)=.*"
 
         memory_request = "3Gi"
         memory_limit = "14Gi"
