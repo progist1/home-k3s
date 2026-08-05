@@ -1,5 +1,5 @@
 # Plain k8s runner: build/unit/deploy/rootless BuildKit — без DinD.
-# concurrent/limit = 5 — вместе с DinD (limit 1) = 6 слотов → ~2 на prod/gpu/yolki.
+# concurrent/limit = 5 — вместе с DinD (limit 3) = 8 слотов → ~2–3 на prod/gpu/yolki.
 #
 # /builds — tmpfs (sizeLimit 8Gi). Usage в memory cgroup build-контейнера:
 # (process RSS + /builds) > memory_limit → OOMKilled; sizeLimit сам по себе не спасает ноду.

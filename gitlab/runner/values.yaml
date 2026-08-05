@@ -1,12 +1,14 @@
 # DinD runner: только джобы с tags: [docker] или [dind].
-# limit/concurrent = 1 — один dockerd; вместе с k8s-runner (5) = 6 слотов.
+# limit/concurrent = 3 — до одного dockerd на prod/gpu/yolki; вместе с k8s-runner (5) = 8 слотов.
+# Topology spread (ci-job) раскидывает по hostname; тяжёлый джоб упрётся в memory_limit
+# контейнера (OOMKilled), а не в kernel OOM ноды — при условии, что лимиты соблюдены.
 #
 # /builds и /var/lib/docker — tmpfs (sizeLimit 8Gi каждый). Usage считается в memory
 # cgroup контейнера-писателя → при (process + tmpfs) > memory_limit будет OOMKilled,
 # а не только Evicted по sizeLimit. Лимиты build/service раздельные.
 gitlabUrl: http://gitlab.gitlab.svc.cluster.local
 
-concurrent: 1
+concurrent: 3
 
 rbac:
   create: true
@@ -16,7 +18,7 @@ runners:
   config: |
     [[runners]]
       name = "k3s-dind"
-      limit = 1
+      limit = 3
 
       executor = "kubernetes"
       builds_dir = "/builds"
@@ -68,6 +70,13 @@ runners:
               labelSelector:
                 matchLabels:
                   ci-job: "true"
+            affinity:
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      ci-runner: dind
+                  topologyKey: kubernetes.io/hostname
             """
 
         [[runners.kubernetes.volumes.config_map]]
