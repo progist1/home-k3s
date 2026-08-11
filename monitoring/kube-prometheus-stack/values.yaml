@@ -58,7 +58,7 @@ prometheus:
     retention: "180d"
     retentionSize: "35GB"
     walCompression: true
-    enforcedSampleLimit: 75000
+    enforcedSampleLimit: 80000
     resources:
       requests:
         cpu: "200m"
@@ -856,6 +856,11 @@ kubelet:
   serviceMonitor:
     enabled: true
     metricRelabelings:
+      # k3s control-plane embeds apiserver/etcd/scheduler into kubelet /metrics;
+      # those families are scraped via job=apiserver — drop duplicates here to stay under sample_limit.
+      - sourceLabels: ["__name__"]
+        regex: 'apiserver_.*|etcd_.*|scheduler_.*|workqueue_.*'
+        action: drop
       - sourceLabels: ["__name__"]
         regex: 'kubelet_.*_bucket'
         action: drop
