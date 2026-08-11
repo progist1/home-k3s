@@ -21,8 +21,8 @@ spec:
 
     - alert: BonchBotNotResponding
       expr: |
-        bonchbot_last_answer_seconds > 10
-      for: 10s
+        bonchbot_last_answer_seconds > 30
+      for: 1m
       labels:
         severity: fatal
       annotations:
