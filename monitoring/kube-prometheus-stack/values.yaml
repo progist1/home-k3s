@@ -414,6 +414,14 @@ grafana:
   grafana.ini:
     server:
       root_url: https://grafana.progist.ru/
+    smtp:
+      enabled: true
+      host: mail.progist.ru:587
+      user: grafana@progist.ru
+      password: ${GF_SMTP_PASSWORD}
+      from_address: grafana@progist.ru
+      from_name: Grafana
+      startTLS_policy: MandatoryStartTLS
     users:
       allow_sign_up: false
       auto_assign_org: true
