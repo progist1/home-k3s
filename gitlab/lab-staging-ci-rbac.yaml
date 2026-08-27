@@ -31,3 +31,29 @@ subjects:
   - kind: ServiceAccount
     name: lab-staging-ci
     namespace: lab-staging
+---
+# Namespace objects are cluster-scoped; RoleBinding admin cannot delete them.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: lab-staging-ci-namespaces
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    resourceNames:
+      - lab-staging
+      - lab-load
+    verbs: ["get", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: lab-staging-ci-namespaces
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: lab-staging-ci-namespaces
+subjects:
+  - kind: ServiceAccount
+    name: lab-staging-ci
+    namespace: lab-staging
