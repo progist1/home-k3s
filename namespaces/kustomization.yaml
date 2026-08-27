@@ -11,3 +11,4 @@ resources:
   - homelab-bots.yaml
   - jellycleaner.yaml
   - lab-staging.yaml
+  - lab-load.yaml
