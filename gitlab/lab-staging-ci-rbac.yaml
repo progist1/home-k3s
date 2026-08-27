@@ -38,6 +38,10 @@ kind: ClusterRole
 metadata:
   name: lab-staging-ci-namespaces
 rules:
+  # Informers use list/watch at cluster scope; resourceNames does not apply to list/watch.
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["list", "watch"]
   - apiGroups: [""]
     resources: ["namespaces"]
     resourceNames:
