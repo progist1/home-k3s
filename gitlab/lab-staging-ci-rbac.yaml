@@ -42,12 +42,21 @@ rules:
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["list", "watch"]
+  # create cannot be limited by resourceNames.
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["create"]
   - apiGroups: [""]
     resources: ["namespaces"]
     resourceNames:
       - lab-staging
       - lab-load
     verbs: ["get", "update", "patch", "delete"]
+  # admin RoleBinding does not allow write to quotas; RoleBindings also vanish
+  # when CI recreates the NS in the same apply, so these must be cluster-scoped.
+  - apiGroups: [""]
+    resources: ["resourcequotas", "limitranges"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
