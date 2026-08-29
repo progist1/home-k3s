@@ -1,0 +1,29 @@
+# S3 API (port 9000) for external clients that can't reach the NodePort — e.g. the
+# production CNPG cluster archiving WAL over WireGuard. minio.home stays the console
+# (9001); this is a separate host for the S3 API.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-s3-api
+  namespace: infra
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: s3.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-internal
+                port:
+                  number: 9000
+  tls:
+    - hosts: [s3.home]
+      secretName: minio-s3-api-tls

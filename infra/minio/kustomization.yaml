@@ -4,5 +4,6 @@ resources:
   - service.yaml
   - service-internal.yaml
   - ingress-internal.yaml
+  - ingress-s3-api.yaml
   - setup-job.yaml
 
