@@ -119,6 +119,31 @@ spec:
                 mc admin policy attach minio "$${DATABASUS_POLICY_NAME}" --user "$${DATABASUS_ACCESS_KEY}"
               fi
 
+              # ============================================
+              # 6. Создание бакета и пользователя для Parapar (prod PG)
+              # ============================================
+              if [ -n "$${PARAPAR_PROD_PG_ACCESS_KEY}" ] && [ -n "$${PARAPAR_PROD_PG_SECRET_KEY}" ]; then
+                PARAPAR_PROD_PG_BUCKET="$${PARAPAR_PROD_PG_BUCKET:-parapar-prod-pg}"
+                echo "Creating bucket $${PARAPAR_PROD_PG_BUCKET}..."
+                mc mb minio/$${PARAPAR_PROD_PG_BUCKET} --ignore-existing
+
+                echo "Creating user $${PARAPAR_PROD_PG_ACCESS_KEY}..."
+                mc admin user remove minio "$${PARAPAR_PROD_PG_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${PARAPAR_PROD_PG_ACCESS_KEY}" "$${PARAPAR_PROD_PG_SECRET_KEY}"
+
+                echo "Creating policy for bucket $${PARAPAR_PROD_PG_BUCKET}..."
+                PARAPAR_PROD_PG_POLICY_NAME="parapar-$${PARAPAR_PROD_PG_BUCKET}-policy"
+                PARAPAR_PROD_PG_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${PARAPAR_PROD_PG_BUCKET}"'/*","arn:aws:s3:::'"$${PARAPAR_PROD_PG_BUCKET}"'"]}]}'
+                echo "$PARAPAR_PROD_PG_POLICY_JSON" > /tmp/parapar-prod-pg-policy.json
+
+                mc admin policy remove minio "$${PARAPAR_PROD_PG_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${PARAPAR_PROD_PG_POLICY_NAME}" /tmp/parapar-prod-pg-policy.json
+
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "$${PARAPAR_PROD_PG_POLICY_NAME}" --user "$${PARAPAR_PROD_PG_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${PARAPAR_PROD_PG_POLICY_NAME}" --user "$${PARAPAR_PROD_PG_ACCESS_KEY}"
+              fi
+
               # Проверка что бакеты созданы
               echo "Listing buckets:"
               mc ls minio/
@@ -178,6 +203,20 @@ spec:
                   optional: true
             - name: DATABASUS_BUCKET
               value: databasus
+            - name: PARAPAR_PROD_PG_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: parapar-minio-secrets
+                  key: access-key
+                  optional: true
+            - name: PARAPAR_PROD_PG_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: parapar-minio-secrets
+                  key: secret-key
+                  optional: true
+            - name: PARAPAR_PROD_PG_BUCKET
+              value: parapar-prod-pg
           resources:
             requests:
               cpu: "50m"
