@@ -5,3 +5,4 @@ resources:
   - monitoring
   - gitlab
   - gitlab-runner
+  - parapar-dr

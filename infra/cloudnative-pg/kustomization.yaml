@@ -1,0 +1,3 @@
+resources:
+  - operator.yaml
+  - plugin-barman-cloud.yaml

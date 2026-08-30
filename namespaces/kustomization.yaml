@@ -12,3 +12,5 @@ resources:
   - jellycleaner.yaml
   - lab-staging.yaml
   - lab-load.yaml
+  - cnpg-system.yaml
+  - parapar-dr.yaml

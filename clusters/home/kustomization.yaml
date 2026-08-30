@@ -4,6 +4,7 @@ resources:
   - sealed-secrets.yaml
   - k8up-crds.yaml
   - infra.yaml
+  - cloudnative-pg.yaml
   - ../../helm
   - cert-manager-install.yaml
   - cert-manager-issuer.yaml
@@ -13,3 +14,4 @@ resources:
   - gitlab.yaml
   - gitlab-runner.yaml
   - nodes.yaml
+  - parapar-dr.yaml

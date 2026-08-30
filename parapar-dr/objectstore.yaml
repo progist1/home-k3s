@@ -1,0 +1,23 @@
+# Read-side view of the SAME bucket the production cluster archives to.
+# In-cluster MinIO S3 API — plain HTTP, no CA, no ingress.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: parapar-pg-source
+  namespace: parapar-dr
+spec:
+  # no retentionPolicy here — production owns the store lifecycle
+  configuration:
+    destinationPath: "s3://parapar-prod-pg/"
+    endpointURL: "http://minio-internal.infra.svc.cluster.local:9000"
+    s3Credentials:
+      accessKeyId:
+        name: parapar-minio-creds
+        key: access-key
+      secretAccessKey:
+        name: parapar-minio-creds
+        key: secret-key
+    wal:
+      compression: gzip
+    data:
+      compression: gzip

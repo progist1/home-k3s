@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+  namespace: cnpg-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: cloudnative-pg
+      version: "0.29.0"          # operator v1.30.0 — совпадает с prod
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: flux-system
+  releaseName: cloudnative-pg
+  install: { remediation: { retries: 3 } }
+  upgrade: { remediation: { retries: 3 } }
+  values:
+    resources:
+      requests: { cpu: 25m, memory: 100Mi }
+      limits:   { cpu: 200m, memory: 200Mi }
+    monitoring:
+      podMonitorEnabled: false

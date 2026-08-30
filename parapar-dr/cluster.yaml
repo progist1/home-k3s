@@ -1,0 +1,44 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: parapar-pg-replica
+  namespace: parapar-dr
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.11   # match prod exactly
+
+  storage:
+    size: 30Gi
+    storageClass: zvol-local
+
+  affinity:
+    nodeSelector:
+      node.storage.mount.postgres: "true"
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "768Mi"
+  postgresql:
+    parameters:
+      shared_buffers: "128MB"
+      effective_cache_size: "512MB"
+
+  # bootstrap from the object store, then stay in continuous recovery
+  bootstrap:
+    recovery:
+      source: parapar-prod
+  replica:
+    enabled: true
+    source: parapar-prod
+
+  externalClusters:
+    - name: parapar-prod
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: parapar-pg-source
+          serverName: parapar-pg
