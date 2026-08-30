@@ -1,3 +1,7 @@
+# Static local PV on a ZFS zvol (block-backed FS on the node). CloudNativePG
+# creates the PVC itself (it must own it — a pre-created PVC makes the operator
+# log "no orphan PVCs found" and never start the instance). We only reserve the
+# PV for the exact PVC name CNPG will use: <cluster>-1.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -12,18 +16,8 @@ spec:
     path: /mnt/zvols/postgres/parapar-dr
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
----
-# CNPG names the first instance PVC <cluster>-1
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: parapar-pg-replica-1
-  namespace: parapar-dr
-spec:
-  storageClassName: zvol-local
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 30Gi
-  volumeName: parapar-pg-replica-pv
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    namespace: parapar-dr
+    name: parapar-pg-replica-1
