@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: parapar-production
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: parapar-production-node
+  scrapeInterval: 30s
+  metricsPath: /metrics
+  scheme: HTTP
+  staticConfigs:
+    - targets:
+        - '10.8.0.21:9100'
+      labels:
+        group: parapar-production
+        environment: production
+        cluster: parapar-prod

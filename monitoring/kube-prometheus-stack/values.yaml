@@ -30,6 +30,7 @@ prometheus:
       lookbackDelta: 2h
     replicas: 1
     enableAdminAPI: false
+    enableRemoteWriteReceiver: true
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

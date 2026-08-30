@@ -3,6 +3,7 @@ resources:
   - gitlab.yaml
   - frigate.yaml
   - mysql.yaml
+  - parapar-production.yaml
   - postgres.yaml
   - home-assistant.yaml
   - redis.yaml

@@ -18,3 +18,4 @@ resources:
   - pushgateway
   - mailtest
   - rbac-aggregate.yaml
+  - rbac-external-rules.yaml

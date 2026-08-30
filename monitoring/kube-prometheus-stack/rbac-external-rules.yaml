@@ -1,0 +1,42 @@
+# Узкий доступ для CI внешнего кластера parapar: он применяет свои PrometheusRule СЮДА
+# (у него нет своего Prometheus Operator). Только prometheusrules в ns monitoring, ничего больше.
+# Токен из Secret ниже → kubeconfig → GitLab CI переменная HOME_KUBE_CONFIG (File, protected).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: parapar-prod-rules
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: parapar-prod-rules
+  namespace: monitoring
+rules:
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["prometheusrules"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: parapar-prod-rules
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: parapar-prod-rules
+subjects:
+  - kind: ServiceAccount
+    name: parapar-prod-rules
+    namespace: monitoring
+---
+# k8s 1.24+ не создаёт токен-Secret для SA автоматически — заводим долгоживущий явно.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: parapar-prod-rules-token
+  namespace: monitoring
+  annotations:
+    kubernetes.io/service-account.name: parapar-prod-rules
+type: kubernetes.io/service-account-token
