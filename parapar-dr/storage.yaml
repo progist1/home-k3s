@@ -1,7 +1,8 @@
-# Static local PV on a ZFS zvol (block-backed FS on the node). CloudNativePG
+# Static local PV on the ZFS zvol that carries /mnt/zvols/postgres. CloudNativePG
 # creates the PVC itself (it must own it — a pre-created PVC makes the operator
-# log "no orphan PVCs found" and never start the instance). We only reserve the
-# PV for the exact PVC name CNPG will use: <cluster>-1.
+# log "no orphan PVCs found" and never start the instance). We only:
+#   - reserve the PV for the exact PVC name CNPG uses: <cluster>-1
+#   - pin it to the node with the postgres zvol mount (label, not hostname)
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -12,10 +13,17 @@ spec:
     storage: 30Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: /mnt/zvols/postgres/parapar-dr
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
+  local:
+    path: /mnt/zvols/postgres/parapar-dr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node.storage.mount.postgres
+              operator: In
+              values: ["true"]
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
