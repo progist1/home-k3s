@@ -31,7 +31,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: trek
-          image: mauriceboe/trek:4.0.0
+          image: mauriceboe/trek:4.1.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
