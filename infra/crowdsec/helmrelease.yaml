@@ -70,7 +70,7 @@ spec:
           existingClaim: "crowdsec-config-pvc"
       extraInitContainers:
         - name: hub-setup
-          image: crowdsecurity/crowdsec:v1.7.8
+          image: crowdsecurity/crowdsec:v1.8.0
           env:
             - name: COLLECTIONS
               value: *collections
