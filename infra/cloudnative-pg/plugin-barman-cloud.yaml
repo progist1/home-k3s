@@ -11,7 +11,7 @@ spec:
   chart:
     spec:
       chart: plugin-barman-cloud
-      version: "0.7.1"          # plugin v0.14.0
+      version: "0.8.0"          # plugin v0.14.0
       sourceRef:
         kind: HelmRepository
         name: cnpg
