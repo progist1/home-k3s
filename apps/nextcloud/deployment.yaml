@@ -75,7 +75,7 @@ spec:
               command:
                 - sh
                 - -c
-                - 'curl -f http://localhost/ || exit 1'
+                - 'curl -f http://localhost/status.php || exit 1'
             initialDelaySeconds: 60
             periodSeconds: 30
             timeoutSeconds: 5

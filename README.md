@@ -15,7 +15,7 @@
 | k3s-pi | worker | Ubuntu 24.04 | arm64 (Raspberry Pi) |
 
 **Kubernetes:** v1.34 (k3s) | **Flux:** v2 (source-controller v1.8.1)
-**Внешний домен:** `progist.ru` | **Внутренний:** `*.home`
+**Внешние домены:** `progist.ru`, `novozhenin.ru` | **Внутренний:** `*.home`
 
 ```mermaid
 graph TB
@@ -73,7 +73,7 @@ VPS · Ubuntu 24.04"]
 ```
 clusters/home/       — точка входа Flux, граф зависимостей Kustomization
 apps/                — пользовательские приложения, nfs-provisioner, renovate (CronJob)
-infra/               — системные компоненты (Traefik, StorageClasses, MinIO, K8up, xray)
+infra/               — системные компоненты (Traefik, StorageClasses, MinIO, K8up, xray, proxy/)
 monitoring/          — kube-prometheus-stack, Loki, Promtail, правила алертов, exporters
 helm/                — HelmRepository и HelmRelease манифесты
 sealed-secrets/      — зашифрованные секреты: apps/, infra/, cluster/, gitlab/
@@ -306,9 +306,9 @@ TrueNAS
 Promtail · host journal"]
         beget["beget VPS
 Promtail · Docker logs"]
-        ext17["17 scrape targets
+        ext17["18 scrape targets
 frigate · ha · jellyfin
-minio · uptime-kuma · ..."]
+minio · uptime-kuma · crowdsec · ..."]
     end
 
     subgraph cluster["k3s кластер · namespace: monitoring"]
@@ -328,7 +328,8 @@ auth events"]
             am["Alertmanager"]
         end
         grafana["Grafana
-Loki + Prometheus"]
+Loki + Prometheus
+grafana.progist.ru"]
     end
 
     subgraph notify["Уведомления"]
@@ -354,7 +355,7 @@ dead man's switch 💀"]
     style grafana fill:#1a1a2e,color:#fff
 ```
 
-- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana; 18 файлов alert rules (backups, db, flux, k8up, kubernetes-*, node, smartmon, snmp, ssl, temperatures, traefik, zfs, bonchbot, mailu, minio, pods, uptime-kuma)
+- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana (external `grafana.progist.ru`); 20 файлов alert rules (backups, db, flux, k8up, kubernetes-*, node, smartmon, snmp, ssl, temperatures, traefik, zfs, bonchbot, mailu, minio, pods, uptime-kuma, crowdsec, cert-manager)
 - **Uptime Kuma** — status monitoring, MariaDB backend, экспортирует метрики в Prometheus; хосты: kuma.home, status.progist.ru, status.bonchbot.ru, jellycleaner.progist.ru
 - **Loki + Promtail** — централизованные логи, backend на MinIO S3; DaemonSet собирает логи подов и host journal (warning+) со всех нод
 - **Loki ingress** (`loki.home`) — внешние Promtail-агенты пишут через HTTP; работают на bigb.home (TrueNAS, full journal warning+) и beget VPS (Docker container logs)
@@ -362,7 +363,7 @@ dead man's switch 💀"]
 - **Dead man's switch** — Alertmanager Watchdog → Cronitor heartbeat (алерт если Prometheus/AM падает)
 - **Alertmanager** — 3 Telegram-ресивера + Email через Mailu
 - **Exporters** — mysql, postgres, redis, snmp, ssl
-- **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, bonchbot, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma
+- **18 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, bonchbot, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma, crowdsec
 
 ---
 
@@ -445,13 +446,14 @@ kubelet-arg:
 ## Non-K8s сервисы
 
 Сервисы вне кластера проксируются через headless Service + Endpoints + Traefik ingress.
+Манифесты живут в `infra/proxy/` (namespace `infra`).
 
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: my-proxy
-  namespace: apps
+  namespace: infra
 spec:
   clusterIP: None
   ports:
@@ -462,7 +464,7 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: my-proxy
-  namespace: apps
+  namespace: infra
 subsets:
   - addresses:
       - ip: 10.0.0.X
@@ -470,7 +472,7 @@ subsets:
       - port: 8080
 ```
 
-Примеры: роутер (10.0.0.1), принтер, WLED контроллеры.
+Примеры: ollama (10.0.0.105:11434 — LLM для open-webui и immich-ML), роутер (10.0.0.1), принтер, 6× WLED контроллеры.
 
 ---
 
