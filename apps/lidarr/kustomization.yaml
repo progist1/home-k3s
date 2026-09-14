@@ -1,0 +1,7 @@
+resources:
+  - config.yaml
+  - media.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress-internal.yaml
+  - backup.yaml

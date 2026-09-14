@@ -12,6 +12,7 @@ resources:
   - homer
   - radarr
   - sonarr
+  - lidarr
   - transmission
   - postgres
   - redis
