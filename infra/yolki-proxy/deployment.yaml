@@ -42,6 +42,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 65532
         runAsGroup: 65532
+        fsGroup: 65532
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -93,4 +94,4 @@ spec:
         - name: auth
           secret:
             secretName: yolki-proxy-auth
-            defaultMode: 0400
+            defaultMode: 0440
