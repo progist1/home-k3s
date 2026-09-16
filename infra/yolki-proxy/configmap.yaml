@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: yolki-proxy-config
+  namespace: infra
+data:
+  gost.yaml: |
+    services:
+      - name: http
+        addr: ":8080"
+        handler:
+          type: http
+          auther: proxy-users
+        listener:
+          type: tcp
+      - name: socks5
+        addr: ":1080"
+        handler:
+          type: socks5
+          auther: proxy-users
+          # Do not expose SOCKS BIND or UDP relay on the remote node.
+          metadata:
+            bind: false
+            udp: false
+        listener:
+          type: tcp
+    authers:
+      - name: proxy-users
+        file:
+          path: /etc/gost/auth

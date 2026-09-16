@@ -1,5 +1,6 @@
 resources:
   - xray-config-sealed.yaml
+  - yolki-proxy-auth-sealed.yaml
   - minio
   - k8up
   - databasus

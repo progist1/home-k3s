@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: yolki-proxy-auth
+  namespace: infra
+spec:
+  encryptedData:
+    auth: AgAFRLWK28JpbluWhfnIBboQBILwLqT4PyQK8S2bCipTDf3H/eIO6SuhXm0WcUZ9GvtqS5GK3MjG1V7grz4MHC2bLVd3+LIzUtoD09OPWmNzDB0gunbutqUAK3ovdubx6GQ/fNLTTCqftAfh5LYQpsSyJ6zaBIW65WHonTXQq4i2TxTmSNJRK7thaqh+8NnkvsJVgFiE6eHviZy5hiiq1hnnScJl3sFI7r5S4AdV13Wgtyj+zuM6RxSeId7bmh28Xr1eO4xiaA+6nzmdZT6DWN30MurDDBYo2M6B+masMyvQcwYh+ckTPrncb5qQ7LJHd5t/t8jtxyp+2Pv30BbSa5hoIOYlakK0prmJJhD+5Y0DGNmQgMT44cpHjrBEEkzV6yZuqsb2ZPe4dVTAHs6+xSY7nok4zDGCMmW6DwIkPIlhLMJGXAC9723kp4Uy8TZwbNXlJnX0b7Q8rqbeuINGn7tnWS4Xdt6+VGYc7WkPckfg6RnCTwJLDoxtjQL1JrTD0ZYYXQNAUeKXlG3AtnH9CN9vVCeKyDcVi12hj6knjplp908KpHMDu2N9FNLFQIkpmIplW3+42etMf2oeZLjlADgCRSqdT9p+XltRIE/tFpCrsX+qwDG3Z5Jq7X9tZDi6AgRO5lZ6UQh03DfeKshj3zyFenkYH92acrJuNq+RAFggyvUS2Wm2KeCfvFvdAuxCoDPM08Gl9iWO15/y29GAQPiEalCGpcO3EPFHrnApBW4wounB69RXU3itozf7tka/
+  template:
+    metadata:
+      name: yolki-proxy-auth
+      namespace: infra

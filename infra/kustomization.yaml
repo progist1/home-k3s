@@ -4,6 +4,7 @@ resources:
   - traefik-middleware
   - xray
   - xray-edge
+  - yolki-proxy
   - proxy
   - reloader
   - intel-device-plugin
