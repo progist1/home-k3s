@@ -17,11 +17,12 @@ spec:
       expr: |
         (
           increase(kube_pod_container_status_restarts_total{
+            cluster="",
             namespace!~"kube-system"
           }[1h]) >= 3
         )
         * on(namespace, pod) group_left(owner_kind)
-        kube_pod_owner{owner_kind!~"Job|CronJob"}
+        kube_pod_owner{cluster="", owner_kind!~"Job|CronJob"}
       for: 5m
       labels:
         severity: warning
@@ -47,11 +48,12 @@ spec:
       expr: |
         (
           changes(kube_pod_container_status_ready{
+            cluster="",
             namespace!~"kube-system"
           }[15m]) >= 4
         )
         * on(namespace, pod) group_left(owner_kind)
-        kube_pod_owner{owner_kind!~"Job|CronJob"}
+        kube_pod_owner{cluster="", owner_kind!~"Job|CronJob"}
       for: 5m
       labels:
         severity: warning
