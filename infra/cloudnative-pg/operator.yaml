@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: cloudnative-pg
-      version: "0.29.0"          # operator v1.30.0 — совпадает с prod
+      version: "0.29.1"          # operator v1.30.0 — совпадает с prod
       sourceRef:
         kind: HelmRepository
         name: cnpg
