@@ -87,6 +87,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: lab-staging-pg-creds }
+      - name: vikunja
+        ensure: present
+        login: true
+        passwordSecret: { name: vikunja-pg-creds }
       - name: progist
         ensure: present
         login: true

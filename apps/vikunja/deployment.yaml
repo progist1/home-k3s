@@ -18,6 +18,7 @@ spec:
         app: vikunja
         app.kubernetes.io/name: vikunja
     spec:
+      enableServiceLinks: false
       containers:
         - name: vikunja
           image: vikunja/vikunja:2.6.0
@@ -49,13 +50,15 @@ spec:
             - name: VIKUNJA_AUTH_LOCAL_ENABLED
               value: "false"
             - name: VIKUNJA_DATABASE_TYPE
-              value: "mysql"
+              value: "postgres"
             - name: VIKUNJA_DATABASE_USER
               value: "vikunja"
             - name: VIKUNJA_DATABASE_HOST
-              value: "mysql.apps.svc.cluster.local:3306"
+              value: "apps-pg-rw.apps.svc.cluster.local:5432"
             - name: VIKUNJA_DATABASE_DATABASE
               value: "vikunja"
+            - name: VIKUNJA_DATABASE_SSLMODE
+              value: "disable"
           envFrom:
             - secretRef:
                 name: vikunja-secrets

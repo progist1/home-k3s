@@ -17,3 +17,4 @@ resources:
   - guacamole-pg-creds-sealed.yaml
   - vaultwarden-pg-creds-sealed.yaml
   - lab-staging-pg-creds-sealed.yaml
+  - vikunja-pg-creds-sealed.yaml
