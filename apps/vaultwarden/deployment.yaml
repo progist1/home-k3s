@@ -18,6 +18,7 @@ spec:
         app: vaultwarden
         app.kubernetes.io/name: vaultwarden
     spec:
+      enableServiceLinks: false
       containers:
         - name: vaultwarden
           image: vaultwarden/server:1.37.3

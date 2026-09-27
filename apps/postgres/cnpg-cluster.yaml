@@ -79,6 +79,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: guacamole-pg-creds }
+      - name: vaultwarden
+        ensure: present
+        login: true
+        passwordSecret: { name: vaultwarden-pg-creds }
       - name: progist
         ensure: present
         login: true

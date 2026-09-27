@@ -129,3 +129,14 @@ spec:
   owner: guacamole
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: vaultwarden-db
+  namespace: apps
+spec:
+  name: vaultwarden
+  owner: vaultwarden
+  cluster:
+    name: apps-pg
