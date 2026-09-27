@@ -71,3 +71,16 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: home-assistant-pg-creds }
+      - name: progist
+        ensure: present
+        login: true
+        passwordSecret: { name: progist-pg-creds }
+        inRoles:
+          - pg_read_all_data
+          - pg_write_all_data
+      - name: chemistart
+        ensure: present
+        login: true
+        passwordSecret: { name: chemistart-pg-creds }
+        inRoles:
+          - jellycleaner

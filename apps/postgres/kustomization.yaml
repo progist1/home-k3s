@@ -9,3 +9,4 @@ resources:
   - cnpg-databases.yaml
   - cnpg-podmonitor.yaml
   - cnpg-scheduled-backup.yaml
+  - cnpg-nodeport.yaml

@@ -11,3 +11,5 @@ resources:
   - outline-pg-creds-sealed.yaml
   - jellycleaner-pg-creds-sealed.yaml
   - home-assistant-pg-creds-sealed.yaml
+  - progist-pg-creds-sealed.yaml
+  - chemistart-pg-creds-sealed.yaml
