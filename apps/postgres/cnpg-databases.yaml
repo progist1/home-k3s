@@ -140,3 +140,14 @@ spec:
   owner: vaultwarden
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: lab-staging-db
+  namespace: apps
+spec:
+  name: lab_staging
+  owner: lab_staging
+  cluster:
+    name: apps-pg

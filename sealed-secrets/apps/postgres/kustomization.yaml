@@ -16,3 +16,4 @@ resources:
   - memos-pg-creds-sealed.yaml
   - guacamole-pg-creds-sealed.yaml
   - vaultwarden-pg-creds-sealed.yaml
+  - lab-staging-pg-creds-sealed.yaml
