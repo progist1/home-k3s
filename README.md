@@ -355,7 +355,7 @@ dead man's switch 💀"]
     style grafana fill:#1a1a2e,color:#fff
 ```
 
-- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana (external `grafana.progist.ru`); 20 файлов alert rules (backups, db, flux, k8up, kubernetes-*, node, smartmon, snmp, ssl, temperatures, traefik, zfs, bonchbot, mailu, minio, pods, uptime-kuma, crowdsec, cert-manager)
+- **kube-prometheus-stack** — Prometheus, Alertmanager, Grafana (external `grafana.progist.ru`); 20 файлов alert rules (backups, db, cnpg, flux, k8up, kubernetes-*, node, smartmon, snmp, ssl, temperatures, traefik, zfs, mailu, minio, pods, uptime-kuma, crowdsec, cert-manager)
 - **Uptime Kuma** — status monitoring, MariaDB backend, экспортирует метрики в Prometheus; хосты: kuma.home, status.progist.ru, status.bonchbot.ru, jellycleaner.progist.ru
 - **Loki + Promtail** — централизованные логи, backend на MinIO S3; DaemonSet собирает логи подов и host journal (warning+) со всех нод
 - **Loki ingress** (`loki.home`) — внешние Promtail-агенты пишут через HTTP; работают на bigb.home (TrueNAS, full journal warning+) и beget VPS (Docker container logs)
@@ -363,7 +363,7 @@ dead man's switch 💀"]
 - **Dead man's switch** — Alertmanager Watchdog → Cronitor heartbeat (алерт если Prometheus/AM падает)
 - **Alertmanager** — 3 Telegram-ресивера + Email через Mailu
 - **Exporters** — mysql, postgres, redis, snmp, ssl
-- **18 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, bonchbot, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma, crowdsec
+- **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma, crowdsec
 
 ---
 

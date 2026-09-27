@@ -10,7 +10,6 @@ resources:
   - authentik.yaml
   - blocky.yaml
   - jellyfin.yaml
-  - bonchbot.yaml
   - traefik.yaml
   - ssl.yaml
   - k8up.yaml
