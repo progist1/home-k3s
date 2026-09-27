@@ -10,3 +10,4 @@ resources:
   - cloud-dbeaver-pg-creds-sealed.yaml
   - outline-pg-creds-sealed.yaml
   - jellycleaner-pg-creds-sealed.yaml
+  - home-assistant-pg-creds-sealed.yaml

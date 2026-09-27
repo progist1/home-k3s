@@ -67,3 +67,7 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: jellycleaner-pg-creds }
+      - name: homeassistant
+        ensure: present
+        login: true
+        passwordSecret: { name: home-assistant-pg-creds }
