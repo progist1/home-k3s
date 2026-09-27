@@ -31,6 +31,9 @@ spec:
   bootstrap:
     recovery:
       source: parapar-prod
+      # the exporter connects to this db; default "app" does not exist in a copy of prod
+      database: parapar
+      owner: parapar
   replica:
     enabled: true
     source: parapar-prod
