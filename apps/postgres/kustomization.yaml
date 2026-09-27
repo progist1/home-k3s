@@ -8,3 +8,4 @@ resources:
   - cnpg-cluster.yaml
   - cnpg-databases.yaml
   - cnpg-podmonitor.yaml
+  - cnpg-scheduled-backup.yaml
