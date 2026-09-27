@@ -1,0 +1,53 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: apps-pg
+  namespace: apps
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.6
+
+  storage:
+    storageClass: zvol-local
+    size: 15Gi
+
+  affinity:
+    nodeSelector:
+      node.storage.mount.postgres: "true"
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: apps-pg-backup
+
+  managed:
+    roles:
+      - name: nextcloud
+        ensure: present
+        login: true
+        passwordSecret: { name: nextcloud-pg-creds }
+      - name: authentik
+        ensure: present
+        login: true
+        passwordSecret: { name: authentik-pg-creds }
+      - name: paperless
+        ensure: present
+        login: true
+        passwordSecret: { name: paperless-pg-creds }
+      - name: mailu
+        ensure: present
+        login: true
+        passwordSecret: { name: mailu-pg-creds }
+      - name: roundcube
+        ensure: present
+        login: true
+        passwordSecret: { name: roundcube-pg-creds }

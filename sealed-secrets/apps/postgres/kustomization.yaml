@@ -1,2 +1,8 @@
 resources:
   - postgres-secret-sealed.yaml
+  - apps-pg-minio-secret-sealed.yaml
+  - nextcloud-pg-creds-sealed.yaml
+  - authentik-pg-creds-sealed.yaml
+  - paperless-pg-creds-sealed.yaml
+  - mailu-pg-creds-sealed.yaml
+  - roundcube-pg-creds-sealed.yaml

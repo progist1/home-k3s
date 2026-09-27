@@ -144,6 +144,31 @@ spec:
                 mc admin policy attach minio "$${PARAPAR_PROD_PG_POLICY_NAME}" --user "$${PARAPAR_PROD_PG_ACCESS_KEY}"
               fi
 
+              # ============================================
+              # 7. Создание бакета и пользователя для CNPG apps-pg
+              # ============================================
+              if [ -n "$${APPS_PG_ACCESS_KEY}" ] && [ -n "$${APPS_PG_SECRET_KEY}" ]; then
+                APPS_PG_BUCKET="$${APPS_PG_BUCKET:-cnpg-apps-pg}"
+                echo "Creating bucket $${APPS_PG_BUCKET}..."
+                mc mb minio/$${APPS_PG_BUCKET} --ignore-existing
+
+                echo "Creating user $${APPS_PG_ACCESS_KEY}..."
+                mc admin user remove minio "$${APPS_PG_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${APPS_PG_ACCESS_KEY}" "$${APPS_PG_SECRET_KEY}"
+
+                echo "Creating policy for bucket $${APPS_PG_BUCKET}..."
+                APPS_PG_POLICY_NAME="cnpg-$${APPS_PG_BUCKET}-policy"
+                APPS_PG_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${APPS_PG_BUCKET}"'/*","arn:aws:s3:::'"$${APPS_PG_BUCKET}"'"]}]}'
+                echo "$APPS_PG_POLICY_JSON" > /tmp/apps-pg-policy.json
+
+                mc admin policy remove minio "$${APPS_PG_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${APPS_PG_POLICY_NAME}" /tmp/apps-pg-policy.json
+
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "$${APPS_PG_POLICY_NAME}" --user "$${APPS_PG_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${APPS_PG_POLICY_NAME}" --user "$${APPS_PG_ACCESS_KEY}"
+              fi
+
               # Проверка что бакеты созданы
               echo "Listing buckets:"
               mc ls minio/
@@ -217,6 +242,20 @@ spec:
                   optional: true
             - name: PARAPAR_PROD_PG_BUCKET
               value: parapar-prod-pg
+            - name: APPS_PG_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: apps-pg-minio-secrets
+                  key: access-key
+                  optional: true
+            - name: APPS_PG_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: apps-pg-minio-secrets
+                  key: secret-key
+                  optional: true
+            - name: APPS_PG_BUCKET
+              value: cnpg-apps-pg
           resources:
             requests:
               cpu: "50m"

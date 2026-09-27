@@ -1,0 +1,21 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: apps-pg-backup
+  namespace: apps
+spec:
+  retentionPolicy: "30d"
+  configuration:
+    destinationPath: "s3://cnpg-apps-pg/"
+    endpointURL: "http://minio.infra.svc.cluster.local:9000"
+    s3Credentials:
+      accessKeyId:
+        name: apps-pg-minio-secrets
+        key: access-key
+      secretAccessKey:
+        name: apps-pg-minio-secrets
+        key: secret-key
+    wal:
+      compression: gzip
+    data:
+      compression: gzip

@@ -1,0 +1,54 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: nextcloud-db
+  namespace: apps
+spec:
+  name: nextcloud
+  owner: nextcloud
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: authentik-db
+  namespace: apps
+spec:
+  name: authentik
+  owner: authentik
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: paperless-db
+  namespace: apps
+spec:
+  name: paperless
+  owner: paperless
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: mailu-db
+  namespace: apps
+spec:
+  name: mailu
+  owner: mailu
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: mailu-roundcube-db
+  namespace: apps
+spec:
+  name: mailu_roundcube
+  owner: roundcube
+  cluster:
+    name: apps-pg
