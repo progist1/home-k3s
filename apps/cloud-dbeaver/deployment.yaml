@@ -26,12 +26,12 @@ spec:
             - name: CLOUDBEAVER_DB_DRIVER
               value: postgres-jdbc
             - name: CLOUDBEAVER_DB_URL
-              value: jdbc:postgresql://postgres.apps.svc.cluster.local:5432/cloud_dbeaver
+              value: jdbc:postgresql://apps-pg-rw.apps.svc.cluster.local:5432/cloud_dbeaver
             - name: CLOUDBEAVER_DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: cloud-dbeaver-secrets
-                  key: DB_USERNAME
+                  name: cloud-dbeaver-pg-creds
+                  key: username
             - name: CLOUDBEAVER_DB_SCHEMA
               valueFrom:
                 secretKeyRef:
@@ -40,8 +40,8 @@ spec:
             - name: CLOUDBEAVER_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: cloud-dbeaver-secrets
-                  key: DB_PASSWORD
+                  name: cloud-dbeaver-pg-creds
+                  key: password
           ports:
             - containerPort: 8978
           volumeMounts:

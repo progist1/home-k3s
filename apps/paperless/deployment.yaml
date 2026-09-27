@@ -40,7 +40,7 @@ spec:
             - name: PAPERLESS_REDIS
               value: "redis://redis.apps.svc.cluster.local:6379"
             - name: PAPERLESS_DBHOST
-              value: "postgres.apps.svc.cluster.local"
+              value: "apps-pg-rw.apps.svc.cluster.local"
             - name: PAPERLESS_DBENGINE
               value: "postgresql"
             - name: PAPERLESS_DBPORT
@@ -48,13 +48,13 @@ spec:
             - name: PAPERLESS_DBUSER
               valueFrom:
                 secretKeyRef:
-                  name: paperless-secrets
-                  key: db-user
+                  name: paperless-pg-creds
+                  key: username
             - name: PAPERLESS_DBPASS
               valueFrom:
                 secretKeyRef:
-                  name: paperless-secrets
-                  key: db-password
+                  name: paperless-pg-creds
+                  key: password
             - name: PAPERLESS_DBNAME
               value: "paperless"
             - name: PAPERLESS_TIKA_ENABLED

@@ -24,7 +24,7 @@ data:
   COMPRESSION_LEVEL: "6"
   CREDENTIAL_ROUNDS: "12"
   DB_FLAVOR: postgresql
-  DB_HOST: postgres.apps.svc.cluster.local:5432
+  DB_HOST: apps-pg-rw.apps.svc.cluster.local:5432
   DB_NAME: mailu
   DB_USER: mailu
   DEBUG: "false"
@@ -78,7 +78,7 @@ data:
   RELAYHOST: ""
   RELAYNETS: ""
   ROUNDCUBE_DB_FLAVOR: postgresql
-  ROUNDCUBE_DB_HOST: postgres.apps.svc.cluster.local:5432
+  ROUNDCUBE_DB_HOST: apps-pg-rw.apps.svc.cluster.local:5432
   ROUNDCUBE_DB_NAME: mailu_roundcube
   ROUNDCUBE_DB_USER: roundcube
   ROUNDCUBE_PLUGINS: archive,zipdownload,markasjunk,managesieve,enigma,carddav,mailu

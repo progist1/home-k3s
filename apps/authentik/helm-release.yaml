@@ -27,7 +27,7 @@ spec:
         from: authentik@progist.ru
 
       postgresql:
-        host: postgres.apps.svc.cluster.local
+        host: apps-pg-rw.apps.svc.cluster.local
         user: file:///secrets/db-user
         password: file:///secrets/db-password
         name: authentik

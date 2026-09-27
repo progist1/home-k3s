@@ -25,22 +25,22 @@ spec:
             - containerPort: 80
           env:
             - name: POSTGRES_HOST
-              value: postgres.apps.svc.cluster.local
+              value: apps-pg-rw.apps.svc.cluster.local
             - name: POSTGRES_USER
-              valueFrom: 
-                secretKeyRef: 
-                  name: nextcloud-secrets
-                  key: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-pg-creds
+                  key: username
             - name: POSTGRES_DB
-              valueFrom: 
-                secretKeyRef: 
+              valueFrom:
+                secretKeyRef:
                   name: nextcloud-secrets
                   key: POSTGRES_DB
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: nextcloud-secrets
-                  key: POSTGRES_PASSWORD
+                  name: nextcloud-pg-creds
+                  key: password
             - name: APACHE_DISABLE_REWRITE_IP
               value: "1" 
             - name: TRUSTED_PROXIES
