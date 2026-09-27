@@ -1,0 +1,93 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: cnpg
+    interval: 30s
+    rules:
+    # Все CNPG-кластеры: локальные и внешние (remote_write, у серий есть label cluster).
+
+    - alert: CnpgReplicaLag
+      expr: |
+        cnpg_pg_replication_lag > 300
+        and on(namespace, pod) cnpg_pg_replication_in_recovery == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CNPG: реплика {{ $labels.namespace }}/{{ $labels.pod }} отстаёт"
+        description: "Лаг {{ $value | humanizeDuration }}. Проверить стриминг и доступ к S3-архиву."
+
+    - alert: CnpgReplicaNotStreaming
+      expr: |
+        cnpg_pg_replication_is_wal_receiver_up == 0
+        and on(namespace, pod) cnpg_pg_replication_in_recovery == 1
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CNPG: реплика {{ $labels.namespace }}/{{ $labels.pod }} не стримит"
+        description: "WAL receiver не работает 15 минут, реплика живёт только S3-архивом. Проверить WG и пароль dr_stream."
+
+    - alert: CnpgReplicaMetricsMissing
+      expr: absent(cnpg_pg_replication_lag{namespace="parapar-dr"})
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CNPG: нет метрик DR-реплики parapar"
+        description: "Без них CnpgReplicaLag молчит. Смотреть PodMonitor и cnpg_errors_total у пода реплики."
+
+    - alert: CnpgBackupTooOld
+      expr: time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp > 93600
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CNPG: нет свежего бэкапа {{ $labels.namespace }}/{{ $labels.pod }}"
+        description: "Последний бэкап {{ $value | humanizeDuration }} назад (порог 26ч при ежесуточном)."
+
+    - alert: CnpgBackupFailed
+      expr: |
+        barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp
+          > barman_cloud_cloudnative_pg_io_last_available_backup_timestamp
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CNPG: последний бэкап {{ $labels.namespace }}/{{ $labels.pod }} упал"
+        description: "Неудачный бэкап свежее последнего удачного. Смотреть Backup-ресурсы и логи плагина barman-cloud."
+
+    - alert: CnpgWalArchiveStale
+      expr: |
+        cnpg_pg_stat_archiver_seconds_since_last_archival > 1800
+        and on(namespace, pod) cnpg_pg_replication_in_recovery == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CNPG: WAL {{ $labels.namespace }}/{{ $labels.pod }} не уходит в S3"
+        description: "Последняя архивация {{ $value | humanizeDuration }} назад. PITR и DR-реплика без свежего WAL."
+
+    - alert: CnpgWalArchiveFailing
+      expr: increase(cnpg_pg_stat_archiver_failed_count[30m]) > 3
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CNPG: ошибки архивации WAL {{ $labels.namespace }}/{{ $labels.pod }}"
+        description: "{{ $value | humanize }} неудачных архиваций за 30 минут. Проверить S3 и креды ObjectStore."
+
+    - alert: CnpgLongTransaction
+      expr: cnpg_backends_max_tx_duration_seconds > 300
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CNPG: долгая транзакция в {{ $labels.namespace }}/{{ $labels.pod }}"
+        description: "Транзакция открыта {{ $value | humanizeDuration }}. Держит vacuum и блокировки; смотреть pg_stat_activity."
