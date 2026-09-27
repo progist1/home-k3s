@@ -18,6 +18,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: frigate-config-pvc
   namespace: apps
+  labels:
+    backup-level: frigate-hostpath
 spec:
   storageClassName: hostpath-manual
   accessModes:

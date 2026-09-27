@@ -1,6 +1,5 @@
 resources:
   - data.yaml
-  - backup.yaml
   - deployment.yaml
   - service.yaml
   - ingress-internal.yaml

@@ -6,3 +6,4 @@ resources:
   - backup-important-daily.yaml
   - backup-monitoring-daily.yaml
   - backup-gitlab-daily.yaml
+  - backup-frigate-daily.yaml

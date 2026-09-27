@@ -1,0 +1,77 @@
+apiVersion: k8up.io/v1
+kind: PodConfig
+metadata:
+  name: frigate-edge-podconfig
+  namespace: apps
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      nodeSelector:
+        node.role: edge
+        node.workload.class: cctv
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+---
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: backup-frigate-daily
+  namespace: apps
+spec:
+  backend:
+    s3:
+      endpoint: http://minio.infra.svc.cluster.local:9000
+      bucket: k8up-backups
+      accessKeyIDSecretRef:
+        name: k8up-secrets
+        key: access-key
+      secretAccessKeySecretRef:
+        name: k8up-secrets
+        key: secret-key
+    repoPasswordSecretRef:
+      name: k8up-secrets
+      key: password
+
+  backup:
+    schedule: "15 5 * * *"
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 0
+    promURL: "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091"
+    tags:
+      - "minio"
+      - "frigate"
+    labelSelectors:
+      - matchExpressions:
+        - key: backup-level
+          operator: In
+          values:
+            - frigate-hostpath
+    podConfigRef:
+      name: frigate-edge-podconfig
+
+  prune:
+    schedule: "20 6 * * *"
+    retention:
+      keepLast: 12
+      keepDaily: 7
+      keepWeekly: 4
+      keepMonthly: 1

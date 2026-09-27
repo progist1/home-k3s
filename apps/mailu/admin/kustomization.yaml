@@ -3,4 +3,3 @@ resources:
   - dkim.yaml
   - deployment.yaml
   - service.yaml
-  - backup.yaml

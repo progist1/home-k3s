@@ -5,4 +5,3 @@ resources:
   - pvc-profile.yaml
   - pvc-thumbs.yaml
   - pvc-ml.yaml
-  - backup-ml.yaml

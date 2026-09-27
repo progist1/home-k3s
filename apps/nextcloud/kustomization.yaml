@@ -5,5 +5,4 @@ resources:
   - service.yaml
   - ingress-internal.yaml
   - ingress-external.yaml
-  - backup.yaml
   - cronjob.yaml
