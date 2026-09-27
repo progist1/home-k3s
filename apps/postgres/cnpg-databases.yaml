@@ -52,3 +52,47 @@ spec:
   owner: roundcube
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: airtrail-db
+  namespace: apps
+spec:
+  name: airtrail
+  owner: airtrail
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: cloud-dbeaver-db
+  namespace: apps
+spec:
+  name: cloud_dbeaver
+  owner: cloud_dbeaver
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: outline-db
+  namespace: apps
+spec:
+  name: outline
+  owner: outline
+  cluster:
+    name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: jellycleaner-db
+  namespace: apps
+spec:
+  name: jellycleaner
+  owner: jellycleaner
+  cluster:
+    name: apps-pg

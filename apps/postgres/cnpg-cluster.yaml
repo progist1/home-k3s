@@ -51,3 +51,19 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: roundcube-pg-creds }
+      - name: airtrail
+        ensure: present
+        login: true
+        passwordSecret: { name: airtrail-pg-creds }
+      - name: cloud_dbeaver
+        ensure: present
+        login: true
+        passwordSecret: { name: cloud-dbeaver-pg-creds }
+      - name: outline
+        ensure: present
+        login: true
+        passwordSecret: { name: outline-pg-creds }
+      - name: jellycleaner
+        ensure: present
+        login: true
+        passwordSecret: { name: jellycleaner-pg-creds }
