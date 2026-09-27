@@ -35,8 +35,18 @@ spec:
     enabled: true
     source: parapar-prod
 
+  # stream from prod over WG; S3 archive stays as fallback
   externalClusters:
     - name: parapar-prod
+      connectionParameters:
+        host: 10.8.0.21
+        port: "30432"
+        user: dr_stream
+        dbname: postgres
+        sslmode: require
+      password:
+        name: dr-stream
+        key: password
       plugin:
         name: barman-cloud.cloudnative-pg.io
         parameters:

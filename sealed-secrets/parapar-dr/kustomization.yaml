@@ -1,2 +1,3 @@
 resources:
   - minio-creds-sealed.yaml
+  - dr-stream-sealed.yaml
