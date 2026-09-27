@@ -20,6 +20,7 @@ spec:
         app.kubernetes.io/name: guacamole
         app.kubernetes.io/part-of: guacamole
     spec:
+      enableServiceLinks: false
       containers:
         - name: guacamole
           image: guacamole/guacamole:1.6.0
@@ -30,25 +31,22 @@ spec:
               value: guacd.apps.svc.cluster.local
             - name: GUACD_PORT
               value: "4822"
-            - name: MYSQL_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: guacamole-secrets
-                  key: mysql-hostname
-            - name: MYSQL_PORT
-              value: "3306"
-            - name: MYSQL_DATABASE
+            - name: POSTGRESQL_HOSTNAME
+              value: apps-pg-rw.apps.svc.cluster.local
+            - name: POSTGRESQL_PORT
+              value: "5432"
+            - name: POSTGRESQL_DATABASE
               value: guacamole
-            - name: MYSQL_USERNAME
+            - name: POSTGRESQL_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: guacamole-secrets
-                  key: mysql-user
-            - name: MYSQL_PASSWORD
+                  name: guacamole-pg-creds
+                  key: username
+            - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: guacamole-secrets
-                  key: mysql-password
+                  name: guacamole-pg-creds
+                  key: password
             - name: OPENID_AUTHORIZATION_ENDPOINT
               valueFrom:
                 secretKeyRef:
@@ -79,9 +77,9 @@ spec:
             - name: OPENID_ENABLED
               value: "true"
             - name: POSTGRESQL_ENABLED
-              value: "false"
-            - name: MYSQL_ENABLED
               value: "true"
+            - name: MYSQL_ENABLED
+              value: "false"
             - name: EXTENSION_PRIORITY
               value: "openid"
           readinessProbe:

@@ -14,3 +14,4 @@ resources:
   - progist-pg-creds-sealed.yaml
   - chemistart-pg-creds-sealed.yaml
   - memos-pg-creds-sealed.yaml
+  - guacamole-pg-creds-sealed.yaml

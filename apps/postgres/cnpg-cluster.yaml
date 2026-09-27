@@ -75,6 +75,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: memos-pg-creds }
+      - name: guacamole
+        ensure: present
+        login: true
+        passwordSecret: { name: guacamole-pg-creds }
       - name: progist
         ensure: present
         login: true
