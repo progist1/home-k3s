@@ -71,6 +71,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: home-assistant-pg-creds }
+      - name: memos
+        ensure: present
+        login: true
+        passwordSecret: { name: memos-pg-creds }
       - name: progist
         ensure: present
         login: true

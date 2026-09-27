@@ -107,3 +107,14 @@ spec:
   owner: homeassistant
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: memos-db
+  namespace: apps
+spec:
+  name: memos
+  owner: memos
+  cluster:
+    name: apps-pg

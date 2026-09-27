@@ -33,7 +33,7 @@ spec:
             - name: MEMOS_DATA
               value: "/var/opt/memos"
             - name: MEMOS_DRIVER
-              value: "mysql"
+              value: "postgres"
           envFrom:
             - secretRef:
                 name: memos-secrets

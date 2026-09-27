@@ -13,3 +13,4 @@ resources:
   - home-assistant-pg-creds-sealed.yaml
   - progist-pg-creds-sealed.yaml
   - chemistart-pg-creds-sealed.yaml
+  - memos-pg-creds-sealed.yaml
