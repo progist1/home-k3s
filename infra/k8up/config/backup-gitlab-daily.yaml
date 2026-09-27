@@ -81,7 +81,6 @@ spec:
           values:
             - important
             - daily
-      - matchExpressions:
         - key: backup-offsite
           operator: In
           values:

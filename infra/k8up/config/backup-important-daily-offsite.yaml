@@ -34,7 +34,6 @@ spec:
             - important
             - daily
             - critical  # Добавлено для поддержки critical PVC с оффсайт бэкапами
-      - matchExpressions:
         - key: backup-offsite
           operator: In
           values:
@@ -51,6 +50,9 @@ spec:
       keepDaily: 7
       keepWeekly: 4
       keepMonthly: 1
+
+  check:
+    schedule: "30 2 * * 0"
 
 
 

@@ -34,7 +34,6 @@ spec:
           values:
             - important
             - daily
-      - matchExpressions:
         - key: backup-user
           operator: In
           values:
