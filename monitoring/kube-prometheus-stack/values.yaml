@@ -170,14 +170,6 @@ alertmanager:
       repeat_interval: 2h
       routes:
 
-        # --- Бэкап-алерты: слать в critical, но заглушать в окно 3–8 МСК (00:00–05:00 UTC) ---
-        - matchers:
-            - alertname=~"BackupMissing|BackupTooOld|BackupMetricsMissing|BackupSectionStale|BackupSizeAnomaly"
-          receiver: critical
-          mute_time_intervals:
-            - backup-maintenance
-          continue: false
-
         # --- Окно бэкапов 3–9 МСК: шум от нагрузки во время бэкапов ---
         - matchers:
             - alertname="NodeSystemSaturation"
