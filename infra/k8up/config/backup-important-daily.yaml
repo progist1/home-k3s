@@ -19,7 +19,7 @@ spec:
       key: password
 
   backup:
-    schedule: "0 4 * * *"
+    schedule: "25 4 * * *"  # сдвинуто с 0 4 — гонка с ночным дампом immich (пишет tmp-файл в 04:00-04:08)
     failedJobsHistoryLimit: 2
     successfulJobsHistoryLimit: 0
     promURL: "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091"
