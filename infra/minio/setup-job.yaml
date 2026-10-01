@@ -169,6 +169,31 @@ spec:
                 mc admin policy attach minio "$${APPS_PG_POLICY_NAME}" --user "$${APPS_PG_ACCESS_KEY}"
               fi
 
+              # ============================================
+              # 8. Создание бакета и пользователя для lab-pages-archive
+              # ============================================
+              if [ -n "$${LAB_PAGES_ACCESS_KEY}" ] && [ -n "$${LAB_PAGES_SECRET_KEY}" ]; then
+                LAB_PAGES_BUCKET="$${LAB_PAGES_BUCKET:-lab-pages-archive}"
+                echo "Creating bucket $${LAB_PAGES_BUCKET}..."
+                mc mb minio/$${LAB_PAGES_BUCKET} --ignore-existing
+
+                echo "Creating user $${LAB_PAGES_ACCESS_KEY}..."
+                mc admin user remove minio "$${LAB_PAGES_ACCESS_KEY}" 2>&1 || true
+                mc admin user add minio "$${LAB_PAGES_ACCESS_KEY}" "$${LAB_PAGES_SECRET_KEY}"
+
+                echo "Creating policy for bucket $${LAB_PAGES_BUCKET}..."
+                LAB_PAGES_POLICY_NAME="lab-pages-$${LAB_PAGES_BUCKET}-policy"
+                LAB_PAGES_POLICY_JSON='{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:PutObject","s3:DeleteObject","s3:ListBucket","s3:GetBucketLocation"],"Resource":["arn:aws:s3:::'"$${LAB_PAGES_BUCKET}"'/*","arn:aws:s3:::'"$${LAB_PAGES_BUCKET}"'"]}]}'
+                echo "$LAB_PAGES_POLICY_JSON" > /tmp/lab-pages-policy.json
+
+                mc admin policy remove minio "$${LAB_PAGES_POLICY_NAME}" 2>&1 || true
+                mc admin policy create minio "$${LAB_PAGES_POLICY_NAME}" /tmp/lab-pages-policy.json
+
+                echo "Attaching policy to user..."
+                mc admin policy detach minio "$${LAB_PAGES_POLICY_NAME}" --user "$${LAB_PAGES_ACCESS_KEY}" 2>&1 || true
+                mc admin policy attach minio "$${LAB_PAGES_POLICY_NAME}" --user "$${LAB_PAGES_ACCESS_KEY}"
+              fi
+
               # Проверка что бакеты созданы
               echo "Listing buckets:"
               mc ls minio/
@@ -256,6 +281,20 @@ spec:
                   optional: true
             - name: APPS_PG_BUCKET
               value: cnpg-apps-pg
+            - name: LAB_PAGES_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lab-pages-archive-minio-secrets
+                  key: access-key
+                  optional: true
+            - name: LAB_PAGES_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lab-pages-archive-minio-secrets
+                  key: secret-key
+                  optional: true
+            - name: LAB_PAGES_BUCKET
+              value: lab-pages-archive
           resources:
             requests:
               cpu: "50m"
