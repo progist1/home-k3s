@@ -21,7 +21,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: vikunja
-          image: vikunja/vikunja:2.6.0
+          image: vikunja/vikunja:2.7.0
           ports:
             - containerPort: 3456
           env:
