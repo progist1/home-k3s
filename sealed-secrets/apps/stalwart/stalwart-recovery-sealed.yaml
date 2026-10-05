@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: stalwart-recovery
+  namespace: apps
+spec:
+  encryptedData:
+    STALWART_RECOVERY_ADMIN: AgALM7OU/QPi3PjnYtq0VX2E6dy2PhjngUGaWl7cRaYD/o6owBo8o/XPhsSBAFkO2Mm58MjfhXG5icOj6JQTHJLE95ee2YV3nDmT6EKTNajpsxnMUW5n6wSQahINvd8xG/tmWJt+/E6bNznw6xXiCPhIosp9VKep58swGIogTvBBGCzoyTw92eX1Ilnhz+IXGq/sHJoUbVuBmg15FTVZhH5EyXtBrEF+B8em5GxFqHwMt3HtWM89WTxFQCbNWC0Nyc8Bbp9HtfwENOlSWd4e/TzBxeGtbakdLjrOCysMMTwLMgtnribqKNLBs3OpqaaMdYSjEoa21dz+5vBCmRyV4ZCYX9fBsDqSi7+Uy4qah2Byiuh80+XMuYN0PsDEnnvLRiwWrZDSmo8DxOzrPjSmx/Kt5PArMcQyVRj00KfMRyPb/jIr3hVXmItgKLny96hbQxAupS2W3vxcxg7+mFbB8UlzWpA1qqYwIlxLBkB+PE8CnnrMlIBxmgyK1d1vqaJz1zebFtJ1aYefZgxjmufcq+Lp1UkLV4JBxcfNmAnlEU8gcHpKIfrnvyMV8uco0wY4obcuqR0DArsJ6/PP0febGEOLHgouIDx3dKp6tnoOumOC3O3Wkkvxn2ETnvL2pou7a/JgbnmP73Zmdg+h4oFk1CfUEaFmBRGl8vb3dI8Dfu80K8SdnqOuxC7f5frmjA2QUq62m4K8L5yhezQYIG2Qt19oJAIOCQOgguGzpp/ir7M7yYbjN2t5gQ==
+  template:
+    metadata:
+      name: stalwart-recovery
+      namespace: apps

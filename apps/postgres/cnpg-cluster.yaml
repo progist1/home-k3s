@@ -47,6 +47,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: mailu-pg-creds }
+      - name: stalwart
+        ensure: present
+        login: true
+        passwordSecret: { name: stalwart-pg-creds }
       - name: roundcube
         ensure: present
         login: true

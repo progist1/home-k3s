@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stalwart
+  namespace: apps
+  labels:
+    app: stalwart
+    app.kubernetes.io/name: stalwart
+    app.kubernetes.io/part-of: home-cluster
+    managed-by: flux
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: stalwart
+  template:
+    metadata:
+      labels:
+        app: stalwart
+        app.kubernetes.io/name: stalwart
+        app.kubernetes.io/part-of: home-cluster
+    spec:
+      containers:
+        - name: stalwart
+          image: stalwartlabs/stalwart:v0.16.24
+          args: ["--config", "/etc/stalwart/config.json"]
+          env:
+            - name: STALWART_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: stalwart-pg-creds
+                  key: password
+            # Первичная настройка (listeners, домены, OIDC): включить, port-forward :8080, настроить
+            # через UI/stalwart-cli, затем убрать обе переменные и закоммитить.
+            - name: STALWART_RECOVERY_MODE
+              value: "true"
+            - name: STALWART_RECOVERY_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: stalwart-recovery
+                  key: STALWART_RECOVERY_ADMIN
+          ports:
+            - { name: smtp, containerPort: 25 }
+            - { name: smtps, containerPort: 465 }
+            - { name: submission, containerPort: 587 }
+            - { name: imaps, containerPort: 993 }
+            - { name: mgmt, containerPort: 8080 }
+          livenessProbe:
+            httpGet: { path: /healthz/live, port: mgmt }
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: { path: /healthz/ready, port: mgmt }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/stalwart/config.json
+              subPath: config.json
+              readOnly: true
+            - name: tls
+              mountPath: /etc/stalwart/tls
+              readOnly: true
+            - name: data
+              mountPath: /var/lib/stalwart
+      volumes:
+        - name: config
+          configMap:
+            name: stalwart-config
+        - name: tls
+          secret:
+            secretName: stalwart-tls
+        - name: data
+          emptyDir: {}

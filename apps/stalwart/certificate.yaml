@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: stalwart-tls
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: stalwart
+    managed-by: flux
+spec:
+  secretName: stalwart-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - mail.progist.ru
+    - mail.novozhenin.ru

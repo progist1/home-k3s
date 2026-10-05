@@ -8,6 +8,8 @@ resources:
   - vaultwarden
   - guacamole
   - mailu
+  - stalwart
+  - bulwark
   - immich
   - mysql
   - outline

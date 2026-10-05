@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bulwark-internal
+  namespace: apps
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  rules:
+    - host: webmail.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bulwark
+                port:
+                  number: 3000
+  tls:
+    - hosts: [webmail.home]
+      secretName: bulwark-internal-tls

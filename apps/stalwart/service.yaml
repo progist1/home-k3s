@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: stalwart
+    managed-by: flux
+spec:
+  selector:
+    app: stalwart
+  ports:
+    - { name: smtp, port: 25, targetPort: smtp }
+    - { name: smtps, port: 465, targetPort: smtps }
+    - { name: submission, port: 587, targetPort: submission }
+    - { name: imaps, port: 993, targetPort: imaps }
+    - { name: http, port: 8080, targetPort: mgmt }

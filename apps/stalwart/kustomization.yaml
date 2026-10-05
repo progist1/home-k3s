@@ -1,0 +1,7 @@
+resources:
+  - config.yaml
+  - certificate.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress-internal.yaml
+  - ingress-mail-tcp.yaml

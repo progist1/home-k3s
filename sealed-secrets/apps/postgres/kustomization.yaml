@@ -5,6 +5,7 @@ resources:
   - authentik-pg-creds-sealed.yaml
   - paperless-pg-creds-sealed.yaml
   - mailu-pg-creds-sealed.yaml
+  - stalwart-pg-creds-sealed.yaml
   - roundcube-pg-creds-sealed.yaml
   - airtrail-pg-creds-sealed.yaml
   - cloud-dbeaver-pg-creds-sealed.yaml

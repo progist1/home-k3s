@@ -23,7 +23,8 @@ resources:
   - immich
   - portainer
   - guacamole
-  - mailu
+  - stalwart
+  - bulwark
   - home-assistant
   - tdarr
   - wg-easy
