@@ -11,17 +11,13 @@ metadata:
 data:
   config.json: |
     {
-      "storage": {
-        "data": {
-          "@type": "PostgreSql",
-          "host": "apps-pg-rw.apps.svc.cluster.local",
-          "port": 5432,
-          "database": "stalwart",
-          "authUsername": "stalwart",
-          "authSecret": {
-            "@type": "EnvironmentVariable",
-            "variableName": "STALWART_DB_PASSWORD"
-          }
-        }
+      "@type": "PostgreSql",
+      "host": "apps-pg-rw.apps.svc.cluster.local",
+      "port": 5432,
+      "database": "stalwart",
+      "authUsername": "stalwart",
+      "authSecret": {
+        "@type": "EnvironmentVariable",
+        "variableName": "STALWART_DB_PASSWORD"
       }
     }
