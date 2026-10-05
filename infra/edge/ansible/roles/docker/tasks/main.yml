@@ -1,0 +1,51 @@
+---
+# Официальный репозиторий Docker (поддерживает Ubuntu 26.04 "resolute")
+- name: Docker apt key
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+
+- name: Docker apt repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: https://download.docker.com/linux/ubuntu
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: stable
+    architectures: "{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}"
+    signed_by: /etc/apt/keyrings/docker.asc
+    state: present
+
+- name: Docker packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+
+- name: Docker daemon config
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+    content: "{{ docker_daemon_config | to_nice_json }}\n"
+  notify: Restart docker
+
+- name: Docker group membership
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_users }}"
+
+- name: Docker enabled
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

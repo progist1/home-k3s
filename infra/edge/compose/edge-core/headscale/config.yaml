@@ -1,0 +1,78 @@
+---
+# Headscale на аварийном IP (5.35.91.29). Эталон: config-example.yaml v0.29.4.
+server_url: https://hs.progist.ru
+listen_addr: 5.35.91.29:443
+metrics_listen_addr: 127.0.0.1:9090
+grpc_listen_addr: 127.0.0.1:50443
+grpc_allow_insecure: false
+
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+  allocation: sequential
+
+# Только свой DERP, без зависимости от инфраструктуры Tailscale.
+derp:
+  server:
+    enabled: true
+    region_id: 999
+    region_code: "edge"
+    region_name: "Edge SPb"
+    verify_clients: true
+    stun_listen_addr: "5.35.91.29:3478"
+    private_key_path: /var/lib/headscale/derp_server_private.key
+    automatically_add_embedded_derp_region: true
+    ipv4: 5.35.91.29
+  urls: []
+  paths: []
+  auto_update_enabled: false
+
+disable_check_updates: true
+
+node:
+  expiry: 0
+
+database:
+  type: sqlite
+  sqlite:
+    path: /var/lib/headscale/db.sqlite
+    write_ahead_log: true
+
+# TLS-ALPN-01: валидация идёт на :443 того же IP (hs.progist.ru должен указывать на 5.35.91.29).
+acme_url: https://acme-v02.api.letsencrypt.org/directory
+acme_email: progist11@gmail.com
+tls_letsencrypt_hostname: hs.progist.ru
+tls_letsencrypt_cache_dir: /var/lib/headscale/cache
+tls_letsencrypt_challenge_type: TLS-ALPN-01
+
+log:
+  level: info
+  format: text
+
+policy:
+  mode: file
+  path: /etc/headscale/acl.hujson
+
+dns:
+  magic_dns: true
+  base_domain: ts.progist.ru
+  override_local_dns: false     # глобальный DNS клиентам не навязываем; split-DNS для *.home добавим позже
+  nameservers:
+    global: []
+    split:
+      # *.home резолвит Blocky (hostPort :53 на нодах k3s-prod/pi/gpu); достижимо через subnet router
+      home:
+        - 10.0.0.2
+        - 10.0.0.5
+        - 10.0.0.3
+
+unix_socket: /var/run/headscale/headscale.sock
+unix_socket_permission: "0770"
+
+logtail:
+  enabled: false
+taildrop:
+  enabled: false

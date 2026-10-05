@@ -6,6 +6,7 @@ default:
 
 stages:
   - validate
+  - deploy
 
 validate-manifests:
   stage: validate
@@ -41,3 +42,39 @@ validate-manifests:
       validate "monitoring" "./monitoring"
       validate "sealed-secrets" "./sealed-secrets"
       validate "gitlab" "./gitlab"
+
+# --- Edge VPS (infra/edge): не Flux, а ansible + compose по SSH ---------------------------------
+
+validate-edge:
+  stage: validate
+  rules:
+    - changes:
+        - infra/edge/**/*
+  script:
+    - set -eu
+    - apk add --no-cache ansible-core docker-cli docker-cli-compose
+    - cd infra/edge/ansible
+    - ansible-galaxy collection install -r requirements.yml
+    - ansible-playbook site.yml --syntax-check
+    # compose требует существования env_file; в CI подставляем пустышку (настоящий токен живёт только на VPS)
+    - mkdir -p /opt/edge/secrets && echo "FRP_TOKEN=ci" > /opt/edge/secrets/frps.env
+    - docker compose -f ../compose/edge-core/compose.yaml config -q
+
+# Инертен, пока не задана защищённая переменная EDGE_DEPLOY_SSH_KEY (type: File, protected, masked недоступен для File).
+# EDGE_SSH_KNOWN_HOSTS: вывод `ssh-keyscan -t ed25519 edge.progist.ru` (пин ключа хоста).
+deploy-edge:
+  stage: deploy
+  resource_group: edge-deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $EDGE_DEPLOY_SSH_KEY'
+      changes:
+        - infra/edge/**/*
+  script:
+    - set -eu
+    - apk add --no-cache ansible-core openssh-client
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - cp "$EDGE_DEPLOY_SSH_KEY" ~/.ssh/edge && chmod 600 ~/.ssh/edge
+    - printf '%s\n' "$EDGE_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - cd infra/edge/ansible
+    - ansible-galaxy collection install -r requirements.yml
+    - ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/edge ansible-playbook site.yml --tags edge_core -e ansible_user=deploy --diff

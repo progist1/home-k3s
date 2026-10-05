@@ -6,3 +6,5 @@ resources:
   - databasus
   - parapar
   - crowdsec
+  - tailscale
+  - frpc

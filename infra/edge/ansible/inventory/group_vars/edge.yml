@@ -1,0 +1,61 @@
+---
+# Роли IP (см. docs/home-move-cgnat-plan.md)
+ssh_emergency_ip: 5.35.91.29     # SSH + Headscale/DERP, default src исходящего трафика
+mail_ip: 159.194.251.11          # frps + почта (PTR/SPF), relay привязать к нему
+
+edge_hostname: edge
+
+# Администратор (root по SSH отключён)
+admin_user: progist
+admin_sudo_nopasswd: true
+# Публичный ключ админа (не секрет). Если пусто, роль ssh только проверит, что authorized_keys не пуст.
+admin_pubkey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHT4pSWEr3KZ1Re0zZNljtyWh4z/OkDjmAWg+f75QNVk progist-mac-mini"
+
+# Пользователь для GitLab CI (деплой по SSH). Приватный ключ только в GitLab (EDGE_DEPLOY_SSH_KEY).
+# Практически root-эквивалент (нужен sudo для ansible), поэтому: отдельный ключ, protected-переменная, только main.
+deploy_user: deploy
+deploy_pubkey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMZYbQEEj599/ZS0hSiMxY8/Vi79R+K8v2fBcDIQZldD gitlab-ci-edge-deploy"
+
+# База
+swap_size: 2G
+base_full_upgrade: false         # обновления делает unattended-upgrades; true для разового full-upgrade
+masked_services:
+  - ModemManager.service
+  - udisks2.service
+  - packagekit.service
+  - fwupd.service
+
+# Файрвол (ufw). Остальные порты добавляются по мере появления сервисов.
+ufw_rules:
+  - { port: "22", proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "emergency ssh" }
+  # SSH по тайлнету (интерфейс tailscale0)
+  - { interface: tailscale0, port: "22", proto: tcp, comment: "ssh over tailnet" }
+  # Headscale + DERP (аварийный IP)
+  - { port: "443", proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "headscale" }
+  - { port: "3478", proto: udp, to_ip: "{{ ssh_emergency_ip }}", comment: "derp stun" }
+  # frps control-канал (почтовый IP); frpc дома подключается сюда
+  - { port: "7000", proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps control" }
+  # Порты приложений и почты откроем вместе с frpc в кластере:
+  # - { port: "80",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps http" }
+  # - { port: "443", proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps https" }
+  # - { port: "25",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "smtp" }
+  # - { port: "465", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submissions" }
+  # - { port: "587", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submission" }
+  # - { port: "993", proto: tcp, to_ip: "{{ mail_ip }}", comment: "imaps" }
+
+# Headscale: id пользователя, от имени которого создаются preauth-ключи (headscale users list)
+headscale_user_id: 1
+
+# Docker
+docker_users:
+  - "{{ admin_user }}"
+docker_daemon_config:
+  log-driver: json-file
+  log-opts:
+    max-size: 10m
+    max-file: "3"
+  live-restore: true
+  userland-proxy: false
+  # Опубликованные порты по умолчанию только на localhost: Docker обходит ufw,
+  # поэтому наружу порт должен быть выставлен явно: ports: "<ip>:<port>:<port>".
+  ip: 127.0.0.1

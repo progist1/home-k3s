@@ -1,0 +1,31 @@
+---
+# Правила добавляются ДО включения ufw, чтобы не отрезать SSH.
+- name: ufw allow rules
+  community.general.ufw:
+    rule: allow
+    direction: in
+    interface: "{{ item.interface | default(omit) }}"
+    to_ip: "{{ item.to_ip | default(omit) }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ ufw_rules }}"
+
+- name: ufw default deny incoming
+  community.general.ufw:
+    default: deny
+    direction: incoming
+
+- name: ufw default allow outgoing
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+
+- name: ufw default deny routed
+  community.general.ufw:
+    default: deny
+    direction: routed
+
+- name: ufw enabled
+  community.general.ufw:
+    state: enabled

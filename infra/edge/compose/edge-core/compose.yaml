@@ -1,0 +1,54 @@
+name: edge-core
+
+# Оба сервиса на host-сети: Docker не пробрасывает порты через свои iptables-цепочки,
+# поэтому ufw реально их защищает, а слушают они на конкретных IP (см. конфиги).
+services:
+  headscale:
+    image: headscale/headscale:v0.29.4
+    command: serve
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./headscale:/etc/headscale:ro   # каталогом: файл-bind-mount устаревает после атомарной замены
+      - /opt/edge/data/headscale:/var/lib/headscale
+      - headscale-run:/var/run/headscale
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+
+  frps:
+    image: fatedier/frps:v0.71.0
+    command: ["-c", "/etc/frp/frps.toml"]
+    network_mode: host
+    restart: unless-stopped
+    env_file: /opt/edge/secrets/frps.env   # FRP_TOKEN, генерируется ansible, в git не хранится
+    volumes:
+      - ./frps/frps.toml:/etc/frp/frps.toml:ro
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+
+  # Узел тайлнета на самом VPS: exit node (выход с IP VPS) и точка SSH по тайлнету. Тег tag:server.
+  tailscale:
+    image: ghcr.io/tailscale/tailscale:v1.102.5
+    network_mode: host
+    restart: unless-stopped
+    depends_on: [headscale]
+    env_file: /opt/edge/secrets/tailscale.env   # TS_AUTHKEY (preauth-ключ, создаётся ansible на сервере, в git нет)
+    environment:
+      TS_HOSTNAME: edge
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "false"
+      TS_ACCEPT_DNS: "false"
+      TS_DEBUG_FIREWALL_MODE: nftables   # хост Ubuntu 26.04 на nftables, а iptables в образе legacy и не работает
+      TS_EXTRA_ARGS: --login-server=https://hs.progist.ru --advertise-exit-node
+    cap_add: [NET_ADMIN]
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - /opt/edge/data/tailscale:/var/lib/tailscale
+
+volumes:
+  headscale-run:

@@ -6,6 +6,8 @@ resources:
   - xray-edge
   - yolki-proxy
   - proxy
+  - tailscale
+  - frpc
   - reloader
   - intel-device-plugin
   - minio

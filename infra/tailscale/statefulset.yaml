@@ -1,0 +1,97 @@
+# Subnet router домашней сети в тайлнете Headscale (https://hs.progist.ru).
+# Две реплики на разных нодах (pi + prod): оба анонсируют один маршрут, Headscale сам переключает (HA, probe 10s).
+# hostNetwork: tailscale0 живёт в сети ноды, ip_forward там уже включён k3s; не зависит от pod-сети.
+# Состояние на hostPath ноды (не NFS): узел не регистрируется заново при рестарте и не зависит от TrueNAS.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tailscale-router
+  namespace: infra
+  labels:
+    app: tailscale-router
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+spec:
+  serviceName: tailscale-router
+  replicas: 2
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: tailscale-router
+  template:
+    metadata:
+      labels:
+        app: tailscale-router
+    spec:
+      automountServiceAccountToken: false   # API кластера этому поду не нужен
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [k3s-pi, k3s-prod]
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: tailscale-router
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: node.hardware.arch
+          operator: Equal
+          value: arm64
+          effect: NoSchedule
+      containers:
+        - name: tailscale
+          image: ghcr.io/tailscale/tailscale:v1.102.5
+          env:
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-router-auth
+                  key: TS_AUTHKEY
+            - name: TS_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: TS_KUBE_SECRET
+              value: ""   # по умолчанию в k8s состояние пишется в Secret через API; нам нужен hostPath
+            - name: TS_STATE_DIR
+              value: /var/lib/tailscale
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_ACCEPT_DNS
+              value: "false"
+            - name: TS_ROUTES
+              value: 10.0.0.0/24   # после переезда: сегменты 10.77.x.0/24
+            - name: TS_EXTRA_ARGS
+              value: --login-server=https://hs.progist.ru --advertise-exit-node   # тег tag:home-router приходит из preauth-ключа; exit node одобряется autoApprovers
+          securityContext:
+            capabilities:
+              add: [NET_ADMIN]
+          volumeMounts:
+            - name: state
+              mountPath: /var/lib/tailscale
+            - name: tun
+              mountPath: /dev/net/tun
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+      volumes:
+        - name: state
+          hostPath:
+            path: /var/lib/tailscale-router
+            type: DirectoryOrCreate
+        - name: tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice

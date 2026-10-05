@@ -52,3 +52,12 @@ spec:
       - "--entrypoints.pop3.address=:110/tcp"
       - "--entrypoints.pop3s.address=:995/tcp"
       - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd"
+      # PROXY protocol от frpc (edge-VPS): доверяем только адресам НОД, с которых frpc ходит в Traefik
+      # (10.42.0.1 - шлюз cni0 на k3s-prod, 10.42.3.0 - flannel.1 на k3s-pi), не всему pod CIDR.
+      # Заголовок на entrypoint необязателен: прямые LAN-подключения работают как раньше.
+      - "--entrypoints.web.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.smtp.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.smtps.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.submission.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.imaps.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"

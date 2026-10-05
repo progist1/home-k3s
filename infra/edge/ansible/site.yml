@@ -1,0 +1,10 @@
+---
+- name: Edge VPS
+  hosts: edge
+  become: true
+  roles:
+    - { role: ssh, tags: [ssh] }
+    - { role: base, tags: [base] }
+    - { role: firewall, tags: [firewall] }
+    - { role: docker, tags: [docker] }
+    - { role: edge_core, tags: [edge_core] }

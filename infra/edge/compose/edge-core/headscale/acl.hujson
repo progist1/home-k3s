@@ -1,0 +1,26 @@
+// Стартовая политика Headscale (v0.29). Пользователь headscale `progist` создаётся командой:
+//   docker exec edge-core-headscale-1 headscale users create progist
+{
+  "groups": {
+    "group:admin": ["progist@"]
+  },
+  "tagOwners": {
+    "tag:server":      ["group:admin"],
+    "tag:home-router": ["group:admin"]
+  },
+  // subnet router'ы дома автоматически получают одобрение своих маршрутов.
+  // Сейчас текущая LAN; после переезда заменить на сегменты 10.77.x.0/24.
+  "autoApprovers": {
+    "routes": {
+      "10.0.0.0/24": ["tag:home-router"]
+    },
+    // exit node'ы: VPS и домашние роутеры одобряются автоматически
+    "exitNode": ["tag:home-router", "tag:server"]
+  },
+  "acls": [
+    // админ видит всё, включая подсети за subnet router'ами (подсети и интернет (exit node) нужно указывать явно: `*` их не покрывает)
+    { "action": "accept", "src": ["group:admin"], "dst": ["*:*", "10.0.0.0/24:*", "autogroup:internet:*"] },
+    // серверы друг с другом
+    { "action": "accept", "src": ["tag:server"], "dst": ["tag:server:*"] }
+  ]
+}

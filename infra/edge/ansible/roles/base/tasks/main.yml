@@ -1,0 +1,116 @@
+---
+- name: Base packages
+  ansible.builtin.apt:
+    name:
+      - unattended-upgrades
+      - ufw
+      - fail2ban
+      - curl
+      - ca-certificates
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Full upgrade (опционально)
+  ansible.builtin.apt:
+    upgrade: dist
+  when: base_full_upgrade | bool
+
+- name: Hostname
+  ansible.builtin.hostname:
+    name: "{{ edge_hostname }}"
+
+- name: Hostname in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "127.0.1.1 {{ edge_hostname }}"
+    regexp: '^127\.0\.1\.1\s'
+
+- name: Automatic security updates
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+
+- name: Swapfile status
+  ansible.builtin.stat:
+    path: /swapfile
+  register: swapfile
+
+- name: Create swapfile
+  when: not swapfile.stat.exists
+  block:
+    - name: Allocate
+      ansible.builtin.command: "fallocate -l {{ swap_size }} /swapfile"
+    - name: Permissions
+      ansible.builtin.file:
+        path: /swapfile
+        mode: "0600"
+    - name: mkswap
+      ansible.builtin.command: mkswap /swapfile
+
+- name: Swap in fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "/swapfile none swap sw 0 0"
+    regexp: '^/swapfile\s'
+
+- name: Enable swap
+  ansible.builtin.shell: swapon --show --noheadings | grep -q /swapfile || swapon /swapfile
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Sysctl hardening
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/90-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      vm.swappiness=10
+      net.ipv4.tcp_syncookies=1
+      net.ipv4.conf.all.rp_filter=2
+      net.ipv4.conf.default.rp_filter=2
+      net.ipv4.conf.all.accept_redirects=0
+      net.ipv4.conf.default.accept_redirects=0
+      net.ipv4.conf.all.send_redirects=0
+      net.ipv4.conf.all.accept_source_route=0
+      net.ipv6.conf.all.accept_redirects=0
+      net.ipv4.icmp_echo_ignore_broadcasts=1
+      kernel.kptr_restrict=2
+      kernel.dmesg_restrict=1
+      # exit node (tailscale) пересылает трафик клиентов в интернет
+      net.ipv4.ip_forward=1
+      net.ipv6.conf.all.forwarding=1
+  notify: Apply sysctl
+
+- name: journald size limit
+  ansible.builtin.copy:
+    dest: /etc/systemd/journald.conf.d/size.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Journal]
+      SystemMaxUse=200M
+  notify: Restart journald
+
+- name: Mask unneeded services
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    masked: true
+    state: stopped
+  loop: "{{ masked_services }}"
+  register: mask_result
+  failed_when: mask_result.failed and 'Could not find' not in (mask_result.msg | default(''))
+
+- name: fail2ban enabled
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true

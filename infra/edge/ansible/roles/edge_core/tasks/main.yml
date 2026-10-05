@@ -1,0 +1,83 @@
+---
+- name: edge directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: /opt/edge, mode: "0755" }
+    - { path: /opt/edge/edge-core, mode: "0755" }
+    - { path: /opt/edge/data, mode: "0755" }
+    - { path: /opt/edge/data/headscale, mode: "0700" }
+    - { path: /opt/edge/data/tailscale, mode: "0700" }
+    - { path: /opt/edge/secrets, mode: "0700" }
+
+# Токен frp создаётся на самом сервере и нигде не выводится. Его нужно будет передать в кластер (SealedSecret)
+# напрямую, без печати в терминал.
+- name: Generate frps token (once)
+  ansible.builtin.shell: |
+    umask 077
+    printf 'FRP_TOKEN=%s\n' "$(openssl rand -hex 32)" > /opt/edge/secrets/frps.env
+  args:
+    creates: /opt/edge/secrets/frps.env
+  no_log: true
+
+- name: Sync edge-core compose and configs
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../compose/edge-core/"
+    dest: /opt/edge/edge-core/
+    owner: root
+    group: root
+    mode: preserve
+  register: edge_core_files
+
+# Сначала Headscale и frps: tailscale-контейнеру нужен рабочий control-plane и preauth-ключ.
+- name: Bring headscale and frps up
+  community.docker.docker_compose_v2:
+    project_src: /opt/edge/edge-core
+    services: [headscale, frps]
+    state: present
+    pull: missing
+    recreate: auto
+  when: not ansible_check_mode
+
+- name: Wait for headscale API
+  ansible.builtin.command: docker exec edge-core-headscale-1 headscale users list
+  register: hs_ready
+  until: hs_ready.rc == 0
+  retries: 15
+  delay: 2
+  changed_when: false
+  when: not ansible_check_mode
+
+# Preauth-ключ для узла VPS создаётся на сервере и пишется прямо в файл, нигде не печатается.
+# Ротация: удалить /opt/edge/secrets/tailscale.env (и /opt/edge/data/tailscale при потере состояния) и запустить плейбук.
+- name: Generate tailscale preauth key (once)
+  ansible.builtin.shell: |
+    set -e
+    umask 077
+    key=$(docker exec edge-core-headscale-1 headscale preauthkeys create --user {{ headscale_user_id }} --reusable --expiration 720h --tags tag:server -o json | python3 -c 'import sys,json; sys.stdout.write(json.load(sys.stdin)["key"])')
+    printf 'TS_AUTHKEY=%s\n' "$key" > /opt/edge/secrets/tailscale.env
+  args:
+    executable: /bin/bash
+    creates: /opt/edge/secrets/tailscale.env
+  no_log: true
+  when: not ansible_check_mode
+
+- name: Bring edge-core up
+  community.docker.docker_compose_v2:
+    project_src: /opt/edge/edge-core
+    state: present
+    pull: missing
+    recreate: auto
+  when: not ansible_check_mode
+
+# Конфиг/ACL Headscale лежат bind-mount'ом и читаются при старте: после изменения файлов перезапускаем контейнеры.
+- name: Restart edge-core when configs changed
+  community.docker.docker_compose_v2:
+    project_src: /opt/edge/edge-core
+    services: [headscale]
+    state: restarted
+  when: edge_core_files is changed and not ansible_check_mode

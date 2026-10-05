@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: tailscale-router-auth
+  namespace: infra
+spec:
+  encryptedData:
+    TS_AUTHKEY: AgCa6k2twPvXLTiIIKR1QG9jVGh24z9QZMZ9nl5W21VxQ9ltBWnVpCahpIIB1noSM+DuMZLZ14ZndqQbWFNFtH/zfaV9R5020+72YVKy2IZXs0j/3FvmGbqiciZ8sskNrezjWrkmdH3lEbh9lhUJz+LpcTcbK8jdsc4vxKRtJUCZGQbiTb4JI91551uIets6H5GjMkRfUB13AlpGIOuTz8eWCol5Ucf+Vpo3YOys5dRJm0ZTLmhNNdxhVtFKhHWtHAYZasIyOyEfaHOW2vOwOEVU3mLoZLqDGLabRQUSUuLi+9+8dDGMnmcGf7ACSsv1eLoKMgxl+ei5jAH3pW3EITBab3+6CFZE31bND3ELsbHYctbNAf3DUbwPBzsVm5Ubkux6jzVjf0YUZitFuEpW9Lpp8645d+RUe0+c1Wyw+8rbizNJhlx9mQ5n65ltq/I9WDubMlYSJK7hUJYSnINy3edxFTSlpN82XYrfPcCHqLtB2aogOqiAASUQPT2VeSnPYDk6sbOcQHqle0Df2maBdnwFHtlX46zYE+Xis3A4MXnxoLAUmKy87fHuzG52nm345PC4jmalUtwialhVilmNXGwZrUoNU9FQxZx/U0K7y4wziYTElLt2xvyTRLH1GH7yqYmWEAWEo6BXv1AUuDJKmJ2giPPTpUA40bwcy0CtL4VWtlaHXZiHXQwxVgOJbaVNdJgVDESe8GEKzKDrXGmz9903ZgwISIjvKPa6/UwxsoqGSDuS/Lv2yWcoYWY51PAQvw8NHm0JcjPiaNM0VffCfxghnU1wyXWNrQ2rlRf1MVlbKveHLvkUICHM
+  template:
+    metadata:
+      name: tailscale-router-auth
+      namespace: infra

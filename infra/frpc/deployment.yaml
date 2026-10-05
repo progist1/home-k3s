@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frpc
+  namespace: infra
+  labels:
+    app: frpc
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frpc
+  template:
+    metadata:
+      labels:
+        app: frpc
+    spec:
+      automountServiceAccountToken: false
+      # hostNetwork: Traefik видит стабильный адрес источника (адрес ноды), а не произвольный pod IP;
+      # только его мы доверяем как отправителя PROXY protocol.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [k3s-pi, k3s-prod]
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: frpc
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: node.hardware.arch
+          operator: Equal
+          value: arm64
+          effect: NoSchedule
+      containers:
+        - name: frpc
+          image: fatedier/frpc:v0.71.0
+          args: ["-c", "/etc/frp/frpc.toml"]
+          env:
+            - name: FRP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: frpc-auth
+                  key: FRP_TOKEN
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: config
+              mountPath: /etc/frp
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+      volumes:
+        - name: config
+          configMap:
+            name: frpc-config

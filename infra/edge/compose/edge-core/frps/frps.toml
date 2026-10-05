@@ -1,0 +1,21 @@
+# frps на почтовом IP (159.194.251.11). frpc живёт дома в k3s и сам подключается сюда.
+bindAddr = "159.194.251.11"
+bindPort = 7000                      # control-канал frpc -> frps (TLS обязателен, токен)
+proxyBindAddr = "159.194.251.11"     # опубликованные порты только на почтовом IP
+
+auth.method = "token"
+auth.token = "{{ .Envs.FRP_TOKEN }}"
+transport.tls.force = true
+
+# Какие порты вообще разрешено занимать клиенту. Остальное frps отклонит.
+allowPorts = [
+  { single = 80 },
+  { single = 443 },
+  { single = 25 },
+  { single = 465 },
+  { single = 587 },
+  { single = 993 },
+]
+
+log.to = "console"
+log.level = "info"

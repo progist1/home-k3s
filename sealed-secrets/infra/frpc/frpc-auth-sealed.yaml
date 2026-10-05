@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: frpc-auth
+  namespace: infra
+spec:
+  encryptedData:
+    FRP_TOKEN: AgAp2gLLxls1996GtBsLR+xx7Rg8acFM3LNhwpyea2hiVt0tjl6dWHNQ1DZ4fYtR4k8C3Yn/3NEK1cqBEd8vVPA4n2BY38bYXI81sLqo9D8rNrTDuIkuRopsKa8BY7HDdUcKXU9mZmdphf4WQA0JU9ykdVmqHCty5BscGyaZxdy95BP3iOx0IL496pHQtb8lFWzq473OX4AB57xP5dCr40/yWPvxziXYfyjKLKD8M/eRhJEwc7B9FQm+EKSeAiCmPruhEaco7dlmLTB75SMZRccV7GFjNItkucybLisgJRtl4KCa+a7MS0JYVK9jONqetIG2jH6/Ucq9XZv22TVfofIw6cRGZyfiXzcx/2oufuU6DeX92VyWG8AhV3cvcTQ8LpRNYvSJoHEKwf/v9ehaq2p3gVUL16Le99P6lw2F1E66pSo0qwWL+ehet7rgqws3qNCYP35P75HYHq9+wRjSCsOWj8t6hB06bxMA87KdstOxTgihbK7+5WXy2Fbc/3aDj+1HY6VmK4hH23S12fhHIzzUPhKuT3ODsPrHEhbrJbPJYf6H371FD3ZUpbacgHLw0hAT3jJSH+fohlaOmtAYyuhzB/S0k3AnnqfhbSFrVFx/ZfETTjauDiYU+L3Gw7+nOFba9FaYMODigYeYfGqmbLGPwI/+rLWthp1EJsXOZ7ZnFF3pEfJ4AcopL4gOTNgo+rQrM/ukL0w0/idlxDcerSlcT7/jmnOUuJN9DcAuVJWiO1/EvXFhmwixl+lC9XUYtPf8Aao3oFS8Lp6CcaqLsytF
+  template:
+    metadata:
+      name: frpc-auth
+      namespace: infra

@@ -1,0 +1,82 @@
+# frpc: приносит трафик с edge-VPS (frps на 159.194.251.11) в Traefik. Соединение исходящее, CGNAT не мешает.
+# Две реплики (prod + pi) делят один remotePort через loadBalancer.group.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frpc-config
+  namespace: infra
+  labels:
+    app: frpc
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+data:
+  frpc.toml: |
+    serverAddr = "159.194.251.11"
+    serverPort = 7000
+    # имя клиента = имя ноды: у реплик не должны совпадать имена прокси
+    user = "{{ .Envs.NODE_NAME }}"
+    auth.method = "token"
+    auth.token = "{{ .Envs.FRP_TOKEN }}"
+    transport.tls.enable = true
+    loginFailExit = false
+
+    [[proxies]]
+    name = "http"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 80
+    remotePort = 80
+    loadBalancer.group = "http"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)
+
+    [[proxies]]
+    name = "https"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 443
+    remotePort = 443
+    loadBalancer.group = "https"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)
+
+    [[proxies]]
+    name = "smtp"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 25
+    remotePort = 25
+    loadBalancer.group = "smtp"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)
+
+    [[proxies]]
+    name = "smtps"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 465
+    remotePort = 465
+    loadBalancer.group = "smtps"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)
+
+    [[proxies]]
+    name = "submission"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 587
+    remotePort = 587
+    loadBalancer.group = "submission"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)
+
+    [[proxies]]
+    name = "imaps"
+    type = "tcp"
+    localIP = "traefik.kube-system.svc.cluster.local"
+    localPort = 993
+    remotePort = 993
+    loadBalancer.group = "imaps"
+    loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
+    transport.proxyProtocolVersion = "v2"   # Traefik принимает его только от адресов нод (см. infra/traefik-args.yaml)

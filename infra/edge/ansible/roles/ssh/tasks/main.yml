@@ -1,0 +1,94 @@
+---
+# Порядок важен: сначала админ и его ключ, потом отключение root/паролей.
+- name: Admin user exists
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    shell: /bin/bash
+    groups: sudo
+    append: true
+
+- name: Admin authorized key
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ admin_pubkey }}"
+  when: admin_pubkey | length > 0
+
+- name: Admin has at least one authorized key (иначе не отключаем пароли)
+  ansible.builtin.stat:
+    path: "/home/{{ admin_user }}/.ssh/authorized_keys"
+  register: admin_keys
+
+- name: Assert admin key present
+  ansible.builtin.assert:
+    that:
+      - admin_keys.stat.exists
+      - admin_keys.stat.size > 0
+    fail_msg: "У {{ admin_user }} нет authorized_keys: отключение паролей заблокировало бы доступ"
+
+- name: Passwordless sudo for admin
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/90-{{ admin_user }}"
+    content: "{{ admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+  when: admin_sudo_nopasswd | bool
+
+# Пользователь для CI: создаётся ДО того, как AllowUsers его впустит.
+- name: Docker group exists (роль docker выполняется позже)
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Deploy user
+  ansible.builtin.user:
+    name: "{{ deploy_user }}"
+    shell: /bin/bash
+    groups: docker
+    append: true
+  when: deploy_user | length > 0
+
+- name: Deploy user authorized key
+  ansible.posix.authorized_key:
+    user: "{{ deploy_user }}"
+    key: "{{ deploy_pubkey }}"
+  when: deploy_user | length > 0 and deploy_pubkey | length > 0
+
+- name: Passwordless sudo for deploy user (нужен ansible become)
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/91-{{ deploy_user }}"
+    content: "{{ deploy_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+  when: deploy_user | length > 0
+
+# 00- читается раньше 50-cloud-init.conf (у sshd побеждает первое значение)
+- name: sshd hardening drop-in
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/00-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PubkeyAuthentication yes
+      AuthenticationMethods publickey
+      AllowUsers {{ admin_user }}{{ (' ' + deploy_user) if deploy_user | length > 0 else '' }}
+      MaxAuthTries 3
+      LoginGraceTime 20
+      MaxStartups 10:30:30
+      X11Forwarding no
+      AllowAgentForwarding no
+      ClientAliveInterval 300
+      ClientAliveCountMax 2
+  notify: Reload ssh
+
+- name: Validate sshd config
+  ansible.builtin.command: /usr/sbin/sshd -t
+  changed_when: false
+  check_mode: false
