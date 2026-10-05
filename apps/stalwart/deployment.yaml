@@ -37,8 +37,6 @@ spec:
                   key: password
             # Первичная настройка (listeners, домены, OIDC): включить, port-forward :8080, настроить
             # через UI/stalwart-cli, затем убрать обе переменные и закоммитить.
-            - name: STALWART_RECOVERY_MODE
-              value: "true"
             - name: STALWART_RECOVERY_ADMIN
               valueFrom:
                 secretKeyRef:
