@@ -32,7 +32,7 @@ spec:
             - name: APP_NAME
               value: Почта
             - name: JMAP_SERVER_URL
-              value: http://stalwart.apps.svc.cluster.local:8080
+              value: https://mail.progist.ru
           envFrom:
             - secretRef:
                 name: bulwark-secrets
