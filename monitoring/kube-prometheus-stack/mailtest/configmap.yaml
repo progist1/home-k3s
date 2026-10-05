@@ -82,12 +82,18 @@ data:
                 m = imaplib.IMAP4_SSL(IMAP_HOST, IMAP_PORT, ssl_context=ctx, timeout=30)
                 m.login(MAIL_USER, MAIL_PASSWORD)
                 m.select('INBOX')
-                _, ids = m.search(None, f'SUBJECT "{subject}"')
-                if ids[0]:
+                # SEARCH SUBJECT у Stalwart опирается на асинхронный FTS-индекс, поэтому сверяем заголовки сами
+                _, ids = m.search(None, 'ALL')
+                found = []
+                for num in ids[0].split():
+                    _, h = m.fetch(num, '(BODY.PEEK[HEADER.FIELDS (SUBJECT)])')
+                    if h and h[0] and subject.encode() in h[0][1]:
+                        found.append(num)
+                if found:
                     elapsed = time.time() - start
                     print(f'Delivered in {elapsed:.1f}s')
-                    for uid in ids[0].split():
-                        m.store(uid, '+FLAGS', '\\Deleted')
+                    for num in found:
+                        m.store(num, '+FLAGS', '\\Deleted')
                     m.expunge()
                     m.logout()
                     push(True, elapsed)
