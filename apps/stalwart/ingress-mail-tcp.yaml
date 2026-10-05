@@ -6,6 +6,7 @@ metadata:
 spec:
   entryPoints:
     - smtp
+    - smtp-fp
   routes:
     - match: HostSNI(`*`)
       services:
@@ -38,6 +39,7 @@ metadata:
 spec:
   entryPoints:
     - submission
+    - submission-fp
   routes:
     - match: HostSNI(`*`)
       services:

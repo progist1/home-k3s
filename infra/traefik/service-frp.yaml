@@ -1,0 +1,26 @@
+# Внутренний Service только для frpc: порты entrypoint'ов с proxyProtocol (SMTP 25 и submission 587).
+# Не LoadBalancer: наружу на VIP 10.0.0.10 эти порты не выставляются.
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-frp
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: traefik-frp
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+    - name: smtp-fp
+      port: 2525
+      protocol: TCP
+      targetPort: 2525
+    - name: submission-fp
+      port: 5587
+      protocol: TCP
+      targetPort: 5587
+  selector:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-kube-system

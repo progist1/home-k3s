@@ -44,8 +44,8 @@ data:
     [[proxies]]
     name = "smtp"
     type = "tcp"
-    localIP = "traefik.kube-system.svc.cluster.local"
-    localPort = 25
+    localIP = "traefik-frp.kube-system.svc.cluster.local"
+    localPort = 2525
     remotePort = 25
     loadBalancer.group = "smtp"
     loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
@@ -64,8 +64,8 @@ data:
     [[proxies]]
     name = "submission"
     type = "tcp"
-    localIP = "traefik.kube-system.svc.cluster.local"
-    localPort = 587
+    localIP = "traefik-frp.kube-system.svc.cluster.local"
+    localPort = 5587
     remotePort = 587
     loadBalancer.group = "submission"
     loadBalancer.groupKey = "{{ .Envs.FRP_TOKEN }}"
