@@ -113,37 +113,18 @@ spec:
       parsers:
         s00-raw: {}
         s01-parse:
-          mailu-postfix-program.yaml: |
-            name: custom/mailu-postfix-program
-            description: "Fix postfix program+message for Mailu container logs (syslog header in CRI)"
-            filter: 'evt.Parsed.program == "postfix"'
-            nodes:
-              - grok:
-                  apply_on: message
-                  pattern: '%{SYSLOGTIMESTAMP} %{NOTSPACE} postfix/%{WORD:postfix_daemon}\[%{INT}\]: %{GREEDYDATA:message}'
-                statics:
-                  - parsed: program
-                    expression: '"postfix/" + evt.Parsed.postfix_daemon'
-          mailu-front-auth.yaml: |
-            name: custom/mailu-front-auth
-            description: "Parse Mailu nginx SMTP stream and dovecot IMAP auth failures from mailu-front pod"
-            filter: 'evt.Parsed.program == "mailu-front"'
+          stalwart-auth.yaml: |
+            name: custom/stalwart-auth
+            description: "Stalwart auth.failed (SMTP submission / IMAP / HTTP): real client IP comes via PROXY protocol"
+            filter: 'evt.Parsed.program == "stalwart"'
             onsuccess: next_stage
             nodes:
               - grok:
                   apply_on: message
-                  pattern: '.+client login failed: .+client: %{IP:source_ip},.+:%{NUMBER:smtp_port},'
+                  pattern: '.*\(auth\.failed\) listenerId = "%{WORD:stalwart_listener}".*?remoteIp = %{IP:source_ip},'
                 statics:
                   - meta: log_type
-                    value: smtp_auth_fail
-                  - meta: source_ip
-                    expression: evt.Parsed.source_ip
-              - grok:
-                  apply_on: message
-                  pattern: '.+login: .+auth failed.+rip=%{IP:source_ip},'
-                statics:
-                  - meta: log_type
-                    value: imap_auth_fail
+                    value: stalwart_auth_fail
                   - meta: source_ip
                     expression: evt.Parsed.source_ip
         s02-enrich:
@@ -155,29 +136,16 @@ spec:
               ip:
                 - "188.134.87.62"
       scenarios:
-        mailu-smtp-bf.yaml: |
+        stalwart-auth-bf.yaml: |
           type: leaky
-          name: custom/mailu-smtp-bf
-          description: "Brute force on Mailu SMTP (port 25/587 auth probing) — 3 failures in leaky window"
-          filter: "evt.Meta.log_type == 'smtp_auth_fail'"
+          name: custom/stalwart-auth-bf
+          description: "Brute force on Stalwart (submission / IMAP / HTTP): 5 auth failures in the leaky window"
+          filter: "evt.Meta.log_type == 'stalwart_auth_fail'"
           leakspeed: "5m"
-          capacity: 3
+          capacity: 5
           groupby: "evt.Meta.source_ip"
           labels:
-            service: smtp
-            type: brute_force
-            remediation: true
-          blackhole: 4h
-        mailu-imap-bf.yaml: |
-          type: leaky
-          name: custom/mailu-imap-bf
-          description: "Brute force on Mailu IMAP/submission (dovecot auth failed)"
-          filter: "evt.Meta.log_type == 'imap_auth_fail'"
-          leakspeed: "5m"
-          capacity: 3
-          groupby: "evt.Meta.source_ip"
-          labels:
-            service: imap
+            service: stalwart
             type: brute_force
             remediation: true
           blackhole: 4h
@@ -206,15 +174,10 @@ spec:
           podName: traefik-*
           program: traefik
         # ── Mail (k3s-prod) ─────────────────────────────────────────────
+        # auth.failed пишется на уровне DEBUG: без него (трейсер Stalwart на info) парсер stalwart-auth ничего не увидит
         - namespace: apps
-          podName: mailu-postfix-*
-          program: postfix
-        - namespace: apps
-          podName: mailu-dovecot-*
-          program: dovecot
-        - namespace: apps
-          podName: mailu-front-*
-          program: mailu-front
+          podName: stalwart-*
+          program: stalwart
         # ── Auth & access (k3s-prod) ─────────────────────────────────────
         - namespace: apps
           podName: authentik-server-*

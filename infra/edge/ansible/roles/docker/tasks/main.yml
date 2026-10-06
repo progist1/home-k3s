@@ -44,6 +44,15 @@
     append: true
   loop: "{{ docker_users }}"
 
+# Образы из приватного реестра дома. Токен-эндпоинт реестра живёт на gitlab.home, поэтому нужны оба имени.
+# CA дома (публичный сертификат) кладётся вручную в /usr/local/share/ca-certificates/home-root-ca.crt + update-ca-certificates
+- name: Home registry in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '\sregistry\.gitlab\.home'
+    line: "{{ home_traefik_ip }} registry.gitlab.home gitlab.home"
+  when: home_traefik_ip | default('') | length > 0
+
 - name: Docker enabled
   ansible.builtin.service:
     name: docker

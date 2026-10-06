@@ -10,6 +10,34 @@ spec:
       spec:
         externalTrafficPolicy: Local
 
+    # Два пода (prod + pi): при externalTrafficPolicy: Local VIP отвечает только с ноды, где есть под. Subnet router дома
+    # (шлюз tailnet -> LAN) стоит на pi, и без пода Traefik на pi пакеты в VIP для узлов tailnet сбрасываются.
+    deployment:
+      replicas: 2
+    # required anti-affinity + surge 1 даёт зависший Pending третий под: сначала освобождаем ноду
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 0
+    tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node.hardware.arch   # taint на k3s-pi (arm64)
+        operator: Exists
+        effect: NoSchedule
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: traefik
+                app.kubernetes.io/instance: traefik-kube-system
+            topologyKey: kubernetes.io/hostname
+
     experimental:
       plugins:
         crowdsec-bouncer-traefik-plugin:
@@ -55,14 +83,15 @@ spec:
       - "--entrypoints.pop3s.address=:995/tcp"
       - "--entrypoints.websecure.http.middlewares=crowdsec-crowdsec-bouncer@kubernetescrd"
       # PROXY protocol от frpc (edge-VPS): доверяем только адресам НОД, с которых frpc ходит в Traefik
-      # (10.42.0.1 - шлюз cni0 на k3s-prod, 10.42.3.0 - flannel.1 на k3s-pi), не всему pod CIDR.
+      # (шлюз cni0 .1 и flannel.1 .0 на k3s-prod 10.42.0.x и k3s-pi 10.42.3.x: источник зависит от того, на какой ноде
+      # frpc и под Traefik), не всему pod CIDR.
       # Entrypoint с proxyProtocol сначала читает байты клиента, чтобы понять, есть ли заголовок. Для протоколов,
       # где сервер говорит первым (SMTP 25, submission 587 со STARTTLS), это взаимное ожидание: клиент ждёт баннер.
       # Поэтому smtp/submission остаются БЕЗ proxyProtocol (прямой путь с роутера), а frpc ходит на отдельные
       # entrypoint'ы smtp-fp/submission-fp (порты 2525/5587, Service traefik-frp) с proxyProtocol.
-      - "--entrypoints.web.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
-      - "--entrypoints.websecure.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
-      - "--entrypoints.smtps.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
-      - "--entrypoints.imaps.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
-      - "--entrypoints.smtp-fp.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
-      - "--entrypoints.submission-fp.proxyProtocol.trustedIPs=10.42.0.1/32,10.42.3.0/32"
+      - "--entrypoints.web.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"
+      - "--entrypoints.websecure.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"
+      - "--entrypoints.smtps.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"
+      - "--entrypoints.imaps.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"
+      - "--entrypoints.smtp-fp.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"
+      - "--entrypoints.submission-fp.proxyProtocol.trustedIPs=10.42.0.0/32,10.42.0.1/32,10.42.3.0/32,10.42.3.1/32"

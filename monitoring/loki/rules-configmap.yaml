@@ -146,34 +146,48 @@ data:
               description: "bigb.home smartd reported disk error"
 
       # ============================================
-      # Mailu Postfix — Compromised Account / Spam Flood
+      # Stalwart — Compromised Account / Spam Flood
       # ============================================
-      - name: mailu_smtp
+      # Событие queue.authenticated-message-queued пишется на уровне INFO при каждой принятой от клиента отправке.
+      - name: stalwart_smtp
         interval: 1m
         rules:
-          - alert: MailuOutgoingFlood
+          - alert: StalwartOutgoingFlood
             expr: |
-              count_over_time({namespace="apps", app="mailu-postfix"} |= "postfix/smtp[" |= "status=sent" != "mailtest@progist.ru" [5m]) > 5
+              count_over_time({namespace="apps", app="stalwart"} |= "queue.authenticated-message-queued" != "from = \"mailtest@progist.ru\"" [5m]) > 5
             for: 2m
             labels:
               severity: warning
-              service: mailu
+              service: stalwart
               alert_type: spam_flood
             annotations:
-              summary: "Mailu: unusually high outgoing mail volume"
-              description: "Mailu postfix sent {{ $value }} external messages in last 5 minutes (threshold: 5, excl. mailtest) — possible compromised account"
+              summary: "Stalwart: unusually high outgoing mail volume"
+              description: "Stalwart accepted {{ $value }} authenticated submissions in last 5 minutes (threshold: 5, excl. mailtest) — possible compromised account"
 
-          - alert: MailuOutgoingFloodCritical
+          - alert: StalwartOutgoingFloodCritical
             expr: |
-              count_over_time({namespace="apps", app="mailu-postfix"} |= "postfix/smtp[" |= "status=sent" != "mailtest@progist.ru" [5m]) > 30
+              count_over_time({namespace="apps", app="stalwart"} |= "queue.authenticated-message-queued" != "from = \"mailtest@progist.ru\"" [5m]) > 30
             for: 0s
             labels:
               severity: critical
-              service: mailu
+              service: stalwart
               alert_type: spam_flood
             annotations:
-              summary: "Mailu: CRITICAL spam flood detected"
-              description: "Mailu postfix sent {{ $value }} external messages in last 5 minutes (threshold: 30, excl. mailtest) — account likely compromised, investigate immediately"
+              summary: "Stalwart: CRITICAL spam flood detected"
+              description: "Stalwart accepted {{ $value }} authenticated submissions in last 5 minutes (threshold: 30, excl. mailtest) — account likely compromised, investigate immediately"
+
+          # встроенный fail2ban Stalwart (security.authentication-ban, security.scan-ban и т.п.)
+          - alert: StalwartAutoBan
+            expr: |
+              count_over_time({namespace="apps", app="stalwart"} |~ "security\\.[a-z-]*ban" [10m]) > 0
+            for: 0s
+            labels:
+              severity: info
+              service: stalwart
+              alert_type: auto_ban
+            annotations:
+              summary: "Stalwart: IP banned by built-in protection"
+              description: "Stalwart's built-in fail2ban banned {{ $value }} IP(s) in last 10 minutes. Check logs: kubectl -n apps logs deploy/stalwart | grep security."
 
       # ============================================
       # Jellyfin Authentication

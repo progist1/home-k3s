@@ -30,18 +30,25 @@ ufw_rules:
   - { port: "22", proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "emergency ssh" }
   # SSH по тайлнету (интерфейс tailscale0)
   - { interface: tailscale0, port: "22", proto: tcp, comment: "ssh over tailnet" }
+  - { interface: tailscale0, port: "9100", proto: tcp, comment: "node-exporter over tailnet" }
+  # исходящий SMTP-relay для Stalwart (доступ ограничен ещё и ACL Headscale и mynetworks postfix)
+  - { interface: tailscale0, port: "25", proto: tcp, comment: "smtp relay over tailnet" }
   # Headscale + DERP (аварийный IP)
   - { port: "443", proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "headscale" }
   - { port: "3478", proto: udp, to_ip: "{{ ssh_emergency_ip }}", comment: "derp stun" }
+  # alerter (fire.progist.ru): HTTPS на 8443 через Caddy, :80 нужен для выпуска сертификата (HTTP-01)
+  - { port: "80",   proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "caddy acme http-01" }
+  - { port: "8443", proto: tcp, to_ip: "{{ ssh_emergency_ip }}", comment: "alerter https" }
   # frps control-канал (почтовый IP); frpc дома подключается сюда
   - { port: "7000", proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps control" }
-  # Порты приложений и почты откроем вместе с frpc в кластере:
-  # - { port: "80",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps http" }
-  # - { port: "443", proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps https" }
-  # - { port: "25",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "smtp" }
-  # - { port: "465", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submissions" }
-  # - { port: "587", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submission" }
-  # - { port: "993", proto: tcp, to_ip: "{{ mail_ip }}", comment: "imaps" }
+  # HTTP(S) приложений: frps -> frpc -> Traefik (PROXY v2)
+  - { port: "80",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps http" }
+  - { port: "443", proto: tcp, to_ip: "{{ mail_ip }}", comment: "frps https" }
+  # Почта: frps -> frpc -> Traefik (PROXY v2) -> Stalwart
+  - { port: "25",  proto: tcp, to_ip: "{{ mail_ip }}", comment: "smtp" }
+  - { port: "465", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submissions" }
+  - { port: "587", proto: tcp, to_ip: "{{ mail_ip }}", comment: "submission" }
+  - { port: "993", proto: tcp, to_ip: "{{ mail_ip }}", comment: "imaps" }
 
 # Headscale: id пользователя, от имени которого создаются preauth-ключи (headscale users list)
 headscale_user_id: 1
@@ -49,6 +56,7 @@ headscale_user_id: 1
 # Docker
 docker_users:
   - "{{ admin_user }}"
+  - "{{ deploy_user }}"   # CI alerter деплоит `docker run` под этим пользователем (уже root-эквивалент через sudo)
 docker_daemon_config:
   log-driver: json-file
   log-opts:
@@ -59,3 +67,11 @@ docker_daemon_config:
   # Опубликованные порты по умолчанию только на localhost: Docker обходит ufw,
   # поэтому наружу порт должен быть выставлен явно: ports: "<ip>:<port>:<port>".
   ip: 127.0.0.1
+
+# CrowdSec firewall bouncer: LAPI живёт дома (NodePort на k3s-prod), доступ по тайлнету через subnet router.
+# Ключ: cscli bouncers add edge-vps -o raw, кладётся в /opt/edge/secrets/crowdsec-bouncer.key (в git нет).
+crowdsec_lapi_url: "http://10.0.0.2:32080/"
+
+# Приватный реестр образов дома (alerter и пр. тянутся с registry.gitlab.home): адрес Traefik VIP дома.
+# После переезда сменить на новый VIP. CA (публичный сертификат root-ca) кладётся в /etc/docker/certs.d вручную.
+home_traefik_ip: "10.0.0.10"

@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: tailnet-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: tailnet
+    interval: 30s
+    rules:
+    # телефоны и ноутбуки (peer="iphone" и т.п.) намеренно не учитываются: они бывают оффлайн
+    # метрики tailnet пишет scripts/vps-monitoring.sh (textfile collector) на каждом VPS
+    - alert: TailnetDown
+      expr: tailnet_up{job="external-nodes"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "tailscaled не в состоянии Running: {{ $labels.host }}"
+        description: "Узел {{ $labels.host }} не подключён к tailnet (BackendState != Running) более 5 минут."
+
+    # TailnetRelayedOnly (пир идёт через DERP) убран: флапал при каждой смене NAT-пути и просто шумел;
+    # direct/relayed виден на дашборде «Tailnet и серверы».
+    - alert: TailnetPeerOffline
+      expr: max by (peer) (tailnet_peer_online{job="external-nodes",peer=~"edge|spb-.*|msk-.*|dk-.*|fi-.*|k3s-.*"}) == 0
+      for: 30m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Узел tailnet оффлайн: {{ $labels.peer }}"
+        description: "Ни один сервер не видит узел {{ $labels.peer }} онлайн более 10 минут."

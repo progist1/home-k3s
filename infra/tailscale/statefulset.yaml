@@ -74,6 +74,16 @@ spec:
           securityContext:
             capabilities:
               add: [NET_ADMIN]
+          lifecycle:
+            postStart:
+              exec:
+                # LAN -> tailnet (Mac/устройства за Keenetic, маршрут 100.64.0.0/24 через pi) маскарадим под адрес роутера:
+                # без этого серверы отвечают на 10.0.0.x через ДРУГОГО primary-роутера (HA), ответ идёт не тем путём
+                # и Keenetic его отбрасывает. Правило в netns ноды (hostNetwork), дубли исключает -C.
+                command:
+                  - sh
+                  - -c
+                  - iptables -t nat -C POSTROUTING -s 10.0.0.0/24 -o tailscale0 -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o tailscale0 -j MASQUERADE
           volumeMounts:
             - name: state
               mountPath: /var/lib/tailscale

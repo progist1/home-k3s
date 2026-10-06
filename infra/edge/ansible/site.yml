@@ -8,3 +8,5 @@
     - { role: firewall, tags: [firewall] }
     - { role: docker, tags: [docker] }
     - { role: edge_core, tags: [edge_core] }
+    - { role: crowdsec_bouncer, tags: [crowdsec] }
+    - { role: monitoring, tags: [monitoring] }

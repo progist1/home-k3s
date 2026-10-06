@@ -12,6 +12,7 @@
     - { path: /opt/edge/data, mode: "0755" }
     - { path: /opt/edge/data/headscale, mode: "0700" }
     - { path: /opt/edge/data/tailscale, mode: "0700" }
+    - { path: /opt/edge/data/caddy, mode: "0700" }
     - { path: /opt/edge/secrets, mode: "0700" }
 
 # Токен frp создаётся на самом сервере и нигде не выводится. Его нужно будет передать в кластер (SealedSecret)
@@ -22,6 +23,16 @@
     printf 'FRP_TOKEN=%s\n' "$(openssl rand -hex 32)" > /opt/edge/secrets/frps.env
   args:
     creates: /opt/edge/secrets/frps.env
+  no_log: true
+
+# Пароль SMTP-relay: создаётся на сервере и нигде не выводится. В Stalwart (маршрут edge-relay) и SealedSecret
+# его нужно передать напрямую: `ssh edge 'sudo sed -n s/^SMTPD_SASL_USERS=relay://p /opt/edge/secrets/smtp-relay.env' | pbcopy`.
+- name: Generate smtp-relay password (once)
+  ansible.builtin.shell: |
+    umask 077
+    printf 'SMTPD_SASL_USERS=relay@progist.ru:%s\n' "$(openssl rand -hex 24)" > /opt/edge/secrets/smtp-relay.env
+  args:
+    creates: /opt/edge/secrets/smtp-relay.env
   no_log: true
 
 - name: Sync edge-core compose and configs

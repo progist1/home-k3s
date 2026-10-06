@@ -43,12 +43,54 @@ services:
       TS_USERSPACE: "false"
       TS_ACCEPT_DNS: "false"
       TS_DEBUG_FIREWALL_MODE: nftables   # хост Ubuntu 26.04 на nftables, а iptables в образе legacy и не работает
-      TS_EXTRA_ARGS: --login-server=https://hs.progist.ru --advertise-exit-node
+      TS_EXTRA_ARGS: --login-server=https://hs.progist.ru --advertise-exit-node --accept-routes
     cap_add: [NET_ADMIN]
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
       - /opt/edge/data/tailscale:/var/lib/tailscale
 
+  # HTTPS для alerter (контейнер alerter деплоится из его репозитория и слушает 127.0.0.1:8080).
+  caddy:
+    image: caddy:2.11.7
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./caddy:/etc/caddy:ro
+      - /opt/edge/data/caddy:/data
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+
+  # Исходящий SMTP-relay: Stalwart (дом) отдаёт сюда письма по тайлнету, а на внешний мир они уходят с mail_ip
+  # (у него PTR и SPF). Слушает только тайлнет-адрес VPS и пускает ТОЛЬКО по SMTP AUTH (доверия по адресу нет:
+  # любой под дома выходит в тайлнет с адреса роутера). Отправители ограничены своими доменами, лимит скорости на клиента.
+  smtp-relay:
+    image: boky/postfix:v5.1.0-alpine
+    network_mode: host
+    restart: unless-stopped
+    env_file: /opt/edge/secrets/smtp-relay.env   # SMTPD_SASL_USERS=relay:<пароль>, генерируется ansible, в git нет
+    environment:
+      ALLOWED_SENDER_DOMAINS: progist.ru bonchbot.ru novozhenin.ru belov.fun xn--z1aac.xn--p1ai
+      POSTFIX_myhostname: mail.progist.ru
+      POSTFIX_inet_interfaces: 100.64.0.4
+      POSTFIX_inet_protocols: ipv4
+      POSTFIX_mynetworks: 127.0.0.1/32
+      POSTFIX_smtpd_tls_auth_only: "no"   # пароль идёт внутри тайлнета (WireGuard); STARTTLS с самоподписанным сертификатом ничего не добавит
+      # по умолчанию тут permit_mynetworks,reject: отшивает и аутентифицированных; пускаем только свои домены отправителя
+      POSTFIX_smtpd_sender_restrictions: check_sender_access lmdb:/etc/postfix/allowed_senders, reject
+      POSTFIX_smtp_bind_address: 159.194.251.11
+      POSTFIX_smtp_helo_name: mail.progist.ru
+      POSTFIX_smtpd_client_message_rate_limit: "60"      # писем в минуту с одного клиента (дальше 450)
+      POSTFIX_smtpd_client_recipient_rate_limit: "300"
+      POSTFIX_anvil_rate_time_unit: 60s
+      POSTFIX_smtpd_client_connection_count_limit: "10"
+    volumes:
+      - postfix-spool:/var/spool/postfix
+    security_opt:
+      - no-new-privileges:true
+
 volumes:
   headscale-run:
+  postfix-spool:

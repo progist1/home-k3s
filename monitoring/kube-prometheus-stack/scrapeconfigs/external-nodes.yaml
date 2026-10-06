@@ -38,9 +38,29 @@ spec:
       host: 'vpn-vps'
       location: 'amsterdam'
       unstable: 'true'
+  # VPS в tailnet: node-exporter слушает только tailnet-адрес (scripts/vps-monitoring.sh), в kube-prometheus ходим с k3s-prod
   - targets:
-    - 'vps.spb:9100'
+    - 'edge.home:9100'
     labels:
       group: 'external-nodes'
-      host: 'beget-vps'
+      host: 'edge'
       location: 'spb-beget'
+  - targets:
+    - 'msk-nuxt-1.home:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'msk-nuxt-1'
+      location: 'msk-nuxt'
+  - targets:
+    - 'dk-inferno-1.home:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'dk-inferno-1'
+      location: 'dk-inferno'
+      unstable: 'true'
+  - targets:
+    - 'fi-inferno-1.home:9100'
+    labels:
+      group: 'external-nodes'
+      host: 'fi-inferno-1'
+      location: 'fi-inferno'

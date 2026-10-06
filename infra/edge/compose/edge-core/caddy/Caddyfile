@@ -1,0 +1,20 @@
+# TLS-терминатор для alerter (fire.progist.ru:8443). Порт 443 на этом IP занят Headscale,
+# поэтому HTTPS на 8443, а сертификат выпускается по HTTP-01 через :80 (TLS-ALPN-01 нужен 443, его отключаем).
+{
+	default_bind 5.35.91.29
+	admin off
+	email progist11@gmail.com
+}
+
+fire.progist.ru:8443 {
+	tls {
+		issuer acme {
+			disable_tlsalpn_challenge
+		}
+	}
+	# access-лог нужен, чтобы видеть вход zvonok (/ack-call) и Alertmanager (/webhook); пробы Kuma не логируем
+	log
+	@healthz path /healthz
+	log_skip @healthz
+	reverse_proxy 127.0.0.1:8080
+}

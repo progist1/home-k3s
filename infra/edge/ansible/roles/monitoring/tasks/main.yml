@@ -1,0 +1,9 @@
+---
+# node-exporter + метрики tailnet: тот же скрипт, что и на остальных VPS (scripts/vps-monitoring.sh).
+# tailscale на edge живёт в контейнере, поэтому команда передаётся через TS_CMD.
+- name: node-exporter and tailnet metrics
+  ansible.builtin.script: "{{ playbook_dir }}/../../../scripts/vps-monitoring.sh"
+  environment:
+    TS_CMD: docker exec edge-core-tailscale-1 tailscale
+  register: monitoring_script
+  changed_when: "'node_uname_info' in monitoring_script.stdout"

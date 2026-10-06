@@ -21,6 +21,15 @@
     // админ видит всё, включая подсети за subnet router'ами (подсети и интернет (exit node) нужно указывать явно: `*` их не покрывает)
     { "action": "accept", "src": ["group:admin"], "dst": ["*:*", "10.0.0.0/24:*", "autogroup:internet:*"] },
     // серверы друг с другом
-    { "action": "accept", "src": ["tag:server"], "dst": ["tag:server:*"] }
+    { "action": "accept", "src": ["tag:server"], "dst": ["tag:server:*"] },
+    // серверы -> домашние сервисы: git (ssh) и всё за Traefik (registry, s3, loki, prometheus) на VIP, DNS Blocky
+    { "action": "accept", "src": ["tag:server"], "dst": ["10.0.0.10:22,80,443", "10.0.0.5:53"] },
+    // домашние subnet router'ы (prod, pi) -> серверы: под в кластере на этих нодах выходит в tailnet с адреса роутера
+    // (flannel маскарадит исходящий трафик пода на tailscale0), так ходит Prometheus (pinned на k3s-prod) за node-exporter
+    { "action": "accept", "src": ["tag:home-router"], "dst": ["tag:server:*"] },
+    // LAN -> tailnet: на Keenetic маршрут 100.64.0.0/24 через 10.0.0.5 (шлюз pi, hostNetwork); пакеты идут с исходным адресом 10.0.0.x
+    { "action": "accept", "src": ["10.0.0.0/24"], "dst": ["tag:server:*"] },
+    // firewall bouncer на VPS ходит в CrowdSec LAPI (NodePort 32080) через домашний subnet router; NodePort открыт на всех нодах
+    { "action": "accept", "src": ["tag:server"], "dst": ["10.0.0.2:32080", "10.0.0.5:32080"] }
   ]
 }

@@ -1,0 +1,56 @@
+---
+- name: Key file present
+  ansible.builtin.stat:
+    path: /opt/edge/secrets/crowdsec-bouncer.key
+  register: bouncer_key
+
+- name: Stop if the bouncer key is missing
+  ansible.builtin.fail:
+    msg: >-
+      Нет /opt/edge/secrets/crowdsec-bouncer.key. Получить: cscli bouncers add edge-vps -o raw (в поде LAPI)
+      и положить на VPS с правами 0600, не печатая.
+  when: not bouncer_key.stat.exists
+
+- name: CrowdSec apt key
+  ansible.builtin.get_url:
+    url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+    dest: /etc/apt/keyrings/crowdsec.asc
+    mode: "0644"
+
+- name: CrowdSec apt repo
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/crowdsec.asc] https://packagecloud.io/crowdsec/crowdsec/any/ any main"
+    filename: crowdsec
+    state: present
+
+- name: Firewall bouncer (nftables)
+  ansible.builtin.apt:
+    name: crowdsec-firewall-bouncer-nftables
+    state: present
+    update_cache: true
+
+- name: Slurp bouncer key
+  ansible.builtin.slurp:
+    src: /opt/edge/secrets/crowdsec-bouncer.key
+  register: bouncer_key_raw
+  no_log: true
+
+# Локальный оверрайд (как на нодах дома): пакетный yaml не трогаем.
+- name: Bouncer local config
+  ansible.builtin.copy:
+    dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+    owner: root
+    group: root
+    mode: "0600"
+    content: |
+      mode: nftables
+      api_url: {{ crowdsec_lapi_url }}
+      api_key: {{ bouncer_key_raw.content | b64decode | trim }}
+  no_log: true
+  notify: Restart crowdsec firewall bouncer
+
+- name: Bouncer enabled
+  ansible.builtin.service:
+    name: crowdsec-firewall-bouncer
+    state: started
+    enabled: true
