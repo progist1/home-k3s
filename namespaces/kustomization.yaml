@@ -9,6 +9,7 @@ resources:
   - gitlab.yaml
   - gitlab-runner.yaml
   - homelab-bots.yaml
+  - shortener.yaml
   - jellycleaner.yaml
   - lab-staging.yaml
   - lab-load.yaml

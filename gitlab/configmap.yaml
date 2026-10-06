@@ -9,7 +9,7 @@ data:
   gitlab.rb: |
     external_url 'https://gitlab.home'
     gitlab_rails['smtp_enable'] = true
-    gitlab_rails['smtp_address'] = "10.0.0.10"
+    gitlab_rails['smtp_address'] = "mail.home"
     gitlab_rails['smtp_port'] = 587
     gitlab_rails['smtp_user_name'] = ENV['SMTP_USERNAME']
     gitlab_rails['smtp_password'] = ENV['SMTP_PASSWORD']

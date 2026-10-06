@@ -15,3 +15,4 @@ resources:
   - backups-rbac.yaml
   - ci-rbac.yaml
   - lab-staging-ci-rbac.yaml
+  - shortener-ci-rbac.yaml

@@ -1,0 +1,29 @@
+# CI репозитория shortener выкатывает приложение в свой namespace; прав вне namespace нет
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shortener-ci
+  namespace: shortener
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: shortener-ci-token
+  namespace: shortener
+  annotations:
+    kubernetes.io/service-account.name: shortener-ci
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: shortener-ci-admin
+  namespace: shortener
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+  - kind: ServiceAccount
+    name: shortener-ci
+    namespace: shortener
