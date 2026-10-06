@@ -67,6 +67,8 @@ spec:
               value: "false"
             - name: TS_ACCEPT_DNS
               value: "false"
+            - name: GOMEMLIMIT
+              value: 400MiB   # мягкий потолок Go-рантайма ниже лимита пода: GC чаще вместо OOMKill
             - name: TS_ROUTES
               value: 10.0.0.0/24   # после переезда: сегменты 10.77.x.0/24
             - name: TS_EXTRA_ARGS
@@ -92,10 +94,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 64Mi
+              memory: 128Mi
             limits:
               cpu: 500m
-              memory: 256Mi
+              memory: 512Mi   # 256Mi убивался OOM (прод-роутер держит весь трафик LAN/подов -> tailnet, ~140Mi в норме)
       volumes:
         - name: state
           hostPath:

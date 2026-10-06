@@ -12,7 +12,7 @@ spec:
   scheme: HTTP
   staticConfigs:
     - targets:
-        - '10.8.0.21:9100'
+        - '100.64.0.6:9100'   # узел prod в tailnet (раньше 10.8.0.21 по WG)
       labels:
         group: parapar-production
         environment: production

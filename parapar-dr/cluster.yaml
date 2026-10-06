@@ -38,11 +38,11 @@ spec:
     enabled: true
     source: parapar-prod
 
-  # stream from prod over WG; S3 archive stays as fallback
+  # stream from prod over the tailnet (NodePort 30432, ACL + nft ограничивают источник); S3 archive stays as fallback
   externalClusters:
     - name: parapar-prod
       connectionParameters:
-        host: 10.8.0.21
+        host: 100.64.0.6   # узел prod в tailnet (spb-beget-2); раньше 10.8.0.21 по WG
         port: "30432"
         user: dr_stream
         dbname: postgres

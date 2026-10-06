@@ -76,7 +76,6 @@ data:
         dk-inferno-1.home: 100.64.0.8
         fi-inferno-1.home: 100.64.0.9
         # VPN networks (WG, уйдут после переезда)
-        vps.amsterdam: 10.8.0.3
         vps.yolki: 10.3.0.2
 
     # Drop AAAA (IPv6) queries so clients fall back to IPv4 (A records).

@@ -31,13 +31,6 @@ spec:
       group: 'external-nodes'
       host: 'k3s-yolki'
       location: 'yolki'
-  - targets:
-    - 'vps.amsterdam:9100'
-    labels:
-      group: 'external-nodes'
-      host: 'vpn-vps'
-      location: 'amsterdam'
-      unstable: 'true'
   # VPS в tailnet: node-exporter слушает только tailnet-адрес (scripts/vps-monitoring.sh), в kube-prometheus ходим с k3s-prod
   - targets:
     - 'edge.home:9100'
