@@ -1,0 +1,8 @@
+# /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+# cp example → yaml.local, set api_key from: cscli bouncers add fw-bouncer-k3s-pi -o raw
+
+mode: nftables
+api_url: http://10.0.0.2:32080/
+api_key: REPLACE_ME
+scenarios_containing:
+  - stalwart

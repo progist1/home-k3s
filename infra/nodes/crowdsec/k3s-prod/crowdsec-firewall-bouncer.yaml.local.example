@@ -1,0 +1,11 @@
+# /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+# cp example → yaml.local, set api_key from: cscli bouncers add fw-bouncer-k3s-prod -o raw
+
+mode: ipset
+blacklists_ipv4: crowdsec-blacklists
+blacklists_ipv6: crowdsec6-blacklists
+iptables_chains: []
+api_url: http://127.0.0.1:32080/
+api_key: REPLACE_ME
+scenarios_containing:
+  - stalwart

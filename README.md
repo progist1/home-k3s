@@ -152,7 +152,7 @@ flowchart LR
     end
     subgraph sources["Источники логов"]
         traefik2["Traefik"]
-        apps2["Authentik · HA · Nextcloud\nVaultwarden · Immich · Jellyfin\nMailu · Mealie · Guacamole\n+ ещё 6 сервисов"]
+        apps2["Authentik · HA · Nextcloud\nVaultwarden · Immich · Jellyfin\nStalwart · Mealie · Guacamole\n+ ещё 6 сервисов"]
     end
     subgraph blocklists["Блок-листы"]
         bl["TOR · Free Proxies\nOTX Scanners\nCommunity · ~13.3k IP"]
@@ -211,7 +211,7 @@ spec:
 |---|---|---|
 | `nfs-nvme-manual` / `nfs-nvme-db-manual` | БД, критичные конфиги | Retain |
 | `nfs-hdd-manual` / `nfs-hdd-manual-media` | Медиа, большие файлы | Retain |
-| `mailu` | Почтовый сервер | Retain |
+| _(удалён)_ | Mailu заменён Stalwart, `nfs-mailu` убран | — |
 | `nfs-nvme-dynamic` | Кэш/ephemeral на NVMe (provisioner) | Retain |
 | `nfs-hdd-dynamic` | Кэш/ephemeral на HDD (provisioner) | Retain |
 | `hostpath-manual` | GPU/hardware temp | Retain |
@@ -336,7 +336,7 @@ grafana.progist.ru"]
         tg["Telegram
 × 3 receivers"]
         mail["Email
-via Mailu"]
+via Stalwart"]
         cronitor["Cronitor
 dead man's switch 💀"]
     end
@@ -361,7 +361,7 @@ dead man's switch 💀"]
 - **Loki ingress** (`loki.home`) — внешние Promtail-агенты пишут через HTTP; работают на bigb.home (TrueNAS, full journal warning+) и beget VPS (Docker container logs)
 - **Loki alert rules** — kernel soft lockup, OOM, hung task, ZFS errors, SMART errors, auth events (Immich, Authentik, Jellyfin)
 - **Dead man's switch** — Alertmanager Watchdog → Cronitor heartbeat (алерт если Prometheus/AM падает)
-- **Alertmanager** — 3 Telegram-ресивера + Email через Mailu
+- **Alertmanager** — 3 Telegram-ресивера + Email через Stalwart
 - **Exporters** — mysql, postgres, redis, snmp, ssl
 - **17 внешних scrape targets** — frigate, home-assistant, jellyfin, postgres, mysql, redis, authentik, traefik, blocky, k8up, ssl, snmp, gitlab, external-nodes, minio, uptime-kuma, crowdsec
 

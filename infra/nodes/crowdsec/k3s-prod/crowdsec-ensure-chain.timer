@@ -1,0 +1,9 @@
+[Unit]
+Description=Re-ensure CrowdSec raw rule (kube-router may reorder iptables)
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=3min
+
+[Install]
+WantedBy=timers.target

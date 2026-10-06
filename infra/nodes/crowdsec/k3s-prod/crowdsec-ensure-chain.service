@@ -1,0 +1,12 @@
+[Unit]
+Description=Ensure CrowdSec ipset DROP in raw/PREROUTING
+After=crowdsec-firewall-bouncer.service network-online.target
+Wants=crowdsec-firewall-bouncer.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/crowdsec-ensure-chain-order.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

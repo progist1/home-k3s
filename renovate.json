@@ -90,11 +90,6 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^ghcr\\.io\\/mailu\\//"],
-      "groupName": "mailu docker images"
-    },
-    {
-      "matchDatasources": ["docker"],
       "matchPackageNames": [
         "ghcr.io/haveagitgat/tdarr",
         "ghcr.io/haveagitgat/tdarr_node"
