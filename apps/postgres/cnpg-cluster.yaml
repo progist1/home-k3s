@@ -95,6 +95,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: vikunja-pg-creds }
+      - name: fider
+        ensure: present
+        login: true
+        passwordSecret: { name: fider-pg-creds }
       - name: progist
         ensure: present
         login: true

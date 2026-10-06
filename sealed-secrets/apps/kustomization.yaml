@@ -7,7 +7,6 @@ resources:
   - authentik
   - vaultwarden
   - guacamole
-  - mailu
   - stalwart
   - bulwark
   - immich
@@ -21,3 +20,4 @@ resources:
   - open-webui
   - trek
   - airtrail
+  - fider

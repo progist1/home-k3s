@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fider
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: fider
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fider
+  template:
+    metadata:
+      labels:
+        app: fider
+        app.kubernetes.io/name: fider
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: fider
+          # образ закреплён по digest (тот же, что работал на beget-1): Fider при старте сам мигрирует схему БД,
+          # поэтому обновлять версию отдельным шагом, после проверки бэкапа
+          image: getfider/fider@sha256:76247ab3d8d2716ba0522b7eb2091e9fc6b715eb19d8ac52f61fd0cb9e9cfbe5
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: BASE_URL
+              value: "https://features.bonchbot.ru"
+            - name: EMAIL_NOREPLY
+              value: "features@bonchbot.ru"
+            - name: EMAIL_SMTP_HOST
+              value: "mail.progist.ru"
+            - name: EMAIL_SMTP_PORT
+              value: "587"
+            - name: EMAIL_SMTP_ENABLE_STARTTLS
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: fider-secrets   # DATABASE_URL, JWT_SECRET, EMAIL_SMTP_USERNAME, EMAIL_SMTP_PASSWORD
+          readinessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 384Mi

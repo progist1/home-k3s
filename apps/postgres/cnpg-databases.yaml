@@ -173,3 +173,14 @@ spec:
   owner: stalwart
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: fider-db
+  namespace: apps
+spec:
+  name: fider
+  owner: fider
+  cluster:
+    name: apps-pg

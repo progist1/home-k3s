@@ -3,6 +3,7 @@ resources:
   - renovate
   - filebrowser
   - vikunja
+  - fider
   - memos
   - mealie
   - actual-budget
