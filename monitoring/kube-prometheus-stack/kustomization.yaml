@@ -17,5 +17,6 @@ resources:
   - data.yaml
   - pushgateway
   - mailtest
+  - dashboards
   - rbac-aggregate.yaml
   - rbac-external-rules.yaml

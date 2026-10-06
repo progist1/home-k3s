@@ -36,24 +36,3 @@ spec:
             limits:
               cpu: "500m"
               memory: "128Mi"
-        - name: mysql-exporter-spb
-          image: prom/mysqld-exporter:v0.20.0
-          args:
-            - --mysqld.address=vps.spb:3306
-            - --mysqld.username=exporter
-            - --web.listen-address=0.0.0.0:9105
-          ports:
-            - containerPort: 9105
-          env:
-            - name: MYSQLD_EXPORTER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-exporter-secrets
-                  key: vps-spb-password
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "500m"
-              memory: "128Mi"

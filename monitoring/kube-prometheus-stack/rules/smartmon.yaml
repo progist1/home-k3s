@@ -16,7 +16,7 @@ spec:
         (
           smartmon_device_smart_healthy == 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 0m
       labels:
@@ -31,7 +31,7 @@ spec:
         (
           smartmon_reallocated_sector_ct_raw_value > 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -52,7 +52,7 @@ spec:
         (
           smartmon_current_pending_sector_raw_value > 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -73,7 +73,7 @@ spec:
         (
           smartmon_offline_uncorrectable_raw_value > 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -96,7 +96,7 @@ spec:
         (
           smartmon_device_smart_available == 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -122,7 +122,7 @@ spec:
         (
           smartmon_temperature_celsius_raw_value > 55
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info{disk!~".*nvme.*"}
       for: 10m
       labels:
@@ -144,7 +144,7 @@ spec:
         (
           increase(smartmon_udma_crc_error_count_raw_value[1h]) > 0
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 0m
       labels:
@@ -168,7 +168,7 @@ spec:
         (
           smartmon_wear_leveling_count_raw_value > 90
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 1h
       labels:
@@ -192,7 +192,7 @@ spec:
         (
           smartmon_percentage_used > 80
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 1h
       labels:
@@ -213,7 +213,7 @@ spec:
         (
           smartmon_available_spare_percentage < 20
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -234,7 +234,7 @@ spec:
         (
           smartmon_available_spare_percentage < 50
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 15m
       labels:
@@ -255,7 +255,7 @@ spec:
         (
           increase(smartmon_unsafe_shutdown_count_raw_value[1d]) > 5
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 0m
       labels:
@@ -276,7 +276,7 @@ spec:
         (
           smartmon_temperature_celsius_raw_value > 70
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 5m
       labels:
@@ -297,7 +297,7 @@ spec:
         (
           smartmon_temperature_celsius_raw_value > 65
         )
-        * on(disk) group_left
+        * on(instance, disk) group_left
           smartmon_device_info
       for: 10m
       labels:

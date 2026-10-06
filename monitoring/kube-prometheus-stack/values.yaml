@@ -323,7 +323,7 @@ alertmanager:
       # fatal = alerter (ACK + zvonok.com)
       - name: alerter
         webhook_configs:
-          - url: 'https://fire.progist.ru/webhook'
+          - url: 'https://fire.progist.ru:8443/webhook'
             send_resolved: true
             http_config:
               bearer_token: 'redacted'

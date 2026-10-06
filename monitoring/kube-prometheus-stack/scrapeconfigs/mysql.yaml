@@ -19,13 +19,6 @@ spec:
       environment: 'staging'
       host: 'home-vps'
       location: 'home'
-  - targets:
-    - 'mysql-exporter.monitoring.svc.cluster.local:9105'
-    labels:
-      group: 'mysql-exporter'
-      environment: 'production'
-      host: 'beget-vps'
-      location: 'spb-beget'
   relabelings:
     - sourceLabels: [host]
       targetLabel: instance

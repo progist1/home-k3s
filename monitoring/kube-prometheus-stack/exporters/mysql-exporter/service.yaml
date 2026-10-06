@@ -11,8 +11,4 @@ spec:
       port: 9104
       targetPort: 9104
       name: mysql-exporter-home
-    - protocol: TCP
-      port: 9105
-      targetPort: 9105
-      name: mysql-exporter-spb
   type: ClusterIP
