@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: mailu-rules
+  name: mail-rules
   namespace: monitoring
   labels:
     release: kube-prometheus-stack
 spec:
   groups:
-  - name: mailu
+  - name: mail
     rules:
     - alert: MailRoundtripFailed
       expr: mail_roundtrip_success{job="mailtest"} == 0
@@ -26,3 +26,12 @@ spec:
       annotations:
         summary: "Mail round-trip test not reporting"
         description: "No mail_roundtrip_success metric for 15m — mailtest CronJob may be failing."
+
+    - alert: StalwartDown
+      expr: kube_deployment_status_replicas_available{namespace="apps",deployment="stalwart"} == 0
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Stalwart mail server is down"
+        description: "No available replicas of the stalwart deployment for 3 minutes: mail is neither received nor sent."

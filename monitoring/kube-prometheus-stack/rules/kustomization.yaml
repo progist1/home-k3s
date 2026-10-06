@@ -2,6 +2,7 @@ resources:
   - db.yaml
   - cnpg.yaml
   - node.yaml
+  - tailnet.yaml
   - smartmon.yaml
   - zfs.yaml
   - temperatures.yaml
@@ -12,7 +13,7 @@ resources:
   - kubernetes-storage.yaml
   - kubernetes-resources.yaml
   - k8up.yaml
-  - mailu.yaml
+  - mail.yaml
   - snmp.yaml
   - pods.yaml
   - minio.yaml

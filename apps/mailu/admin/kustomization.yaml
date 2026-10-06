@@ -1,5 +1,0 @@
-resources:
-  - data.yaml
-  - dkim.yaml
-  - deployment.yaml
-  - service.yaml
