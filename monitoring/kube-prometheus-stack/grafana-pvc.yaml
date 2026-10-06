@@ -12,7 +12,7 @@ spec:
     - ReadWriteOnce
   nfs:
     path: /mnt/Fast/k3s-data/monitoring/grafana/data
-    server: 10.0.0.4
+    server: bigb.home
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1

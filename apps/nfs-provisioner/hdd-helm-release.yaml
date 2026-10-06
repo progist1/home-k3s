@@ -15,7 +15,7 @@ spec:
         namespace: flux-system
   values:
     nfs:
-      server: 10.0.0.4
+      server: bigb.home
       path: /mnt/Main/k3s-data/k3s-dynamic
     storageClass:
       name: nfs-hdd-dynamic

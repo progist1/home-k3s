@@ -9,7 +9,7 @@ spec:
     - ReadWriteMany
   nfs:
     path: /mnt/Fast/k3s-data/gitlab/config
-    server: 10.0.0.4
+    server: bigb.home
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-nvme-manual
 ---
