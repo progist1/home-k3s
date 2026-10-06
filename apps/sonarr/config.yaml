@@ -10,7 +10,7 @@ spec:
     - ReadWriteMany
   nfs:
     path: /mnt/Fast/k3s-data/sonarr/config
-    server: 10.0.0.4
+    server: bigb.home
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1

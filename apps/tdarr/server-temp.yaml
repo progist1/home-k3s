@@ -11,7 +11,7 @@ spec:
     - ReadWriteMany
   nfs:
     path: /mnt/Main/k3s-data/tdarr-server-temp
-    server: 10.0.0.4
+    server: bigb.home
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1

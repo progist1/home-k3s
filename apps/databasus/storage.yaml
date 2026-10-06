@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   nfs:
     path: /mnt/Fast/k3s-data/databasus/data
-    server: 10.0.0.4
+    server: bigb.home
   mountOptions:
     - nfsvers=4.1
     - hard
