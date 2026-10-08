@@ -1,3 +1,4 @@
 resources:
   - service.yaml
   - service-frp.yaml
+  - deny-internal-from-internet.yaml
