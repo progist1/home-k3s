@@ -49,7 +49,7 @@ kubectl apply -f infra/minio/setup-job.yaml
 kubectl exec -it deployment/minio -n infra -- sh
 
 # Или использовать отдельный под с mc
-kubectl run -it --rm mc --image=minio/mc:latest --restart=Never -- sh
+kubectl run -it --rm mc --image=pgsty/mc:RELEASE.2026-09-16T00-00-00Z --restart=Never -- sh
 
 # Настроить alias
 mc alias set minio http://minio.infra.svc.cluster.local:9000 \

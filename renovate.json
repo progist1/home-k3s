@@ -146,7 +146,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["minio/minio", "minio/mc"],
+      "matchPackageNames": ["minio/minio", "minio/mc", "pgsty/silo", "pgsty/mc"],
       "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T"
     },
     {

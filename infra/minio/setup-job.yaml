@@ -25,7 +25,7 @@ spec:
               echo "MinIO is ready!"
       containers:
         - name: mc
-          image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+          image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
           command:
             - /bin/sh
             - -c
