@@ -5,14 +5,12 @@ metadata:
   namespace: apps
   labels:
     app.kubernetes.io/name: home-assistant
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
-
+    type: Recreate
   selector:
     matchLabels:
       app: home-assistant
@@ -24,21 +22,116 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      securityContext:
+        fsGroup: 65533
+      nodeSelector:
+        kubernetes.io/hostname: k3s-yolki
+      initContainers:
+        - name: git-sync-init
+          image: registry.k8s.io/git-sync/git-sync:v4.7.1
+          args:
+            - --repo=git@gitlab.home:local/home-assistant-config.git
+            - --ref=main
+            - --root=/git
+            - --link=repo
+            - --ssh=true
+            - --ssh-key-file=/etc/git-secret/ssh
+            - --ssh-known-hosts=true
+            - --ssh-known-hosts-file=/etc/git-ssh/known_hosts
+            - --one-time=true
+          volumeMounts:
+            - name: git
+              mountPath: /git
+            - name: git-secret
+              mountPath: /etc/git-secret
+              readOnly: true
+            - name: git-known-hosts
+              mountPath: /etc/git-ssh
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+        - name: seed-config
+          image: homeassistant/home-assistant:2026.10.1
+          command:
+            - sh
+            - -c
+            - |
+              [ -f /config/configuration.yaml ] || cp /seed/configuration.yaml /config/configuration.yaml
+              for f in automations scripts scenes; do [ -f /config/$f.yaml ] || echo "[]" > /config/$f.yaml; done
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: seed
+              mountPath: /seed
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
       containers:
+        - name: git-syncs
+          image: registry.k8s.io/git-sync/git-sync:v4.7.1
+          args:
+            - --repo=git@gitlab.home:local/home-assistant-config.git
+            - --ref=main
+            - --root=/git
+            - --link=repo
+            - --ssh=true
+            - --ssh-key-file=/etc/git-secret/ssh
+            - --ssh-known-hosts=true
+            - --ssh-known-hosts-file=/etc/git-ssh/known_hosts
+            - --period=60s
+          volumeMounts:
+            - name: git
+              mountPath: /git
+            - name: git-secret
+              mountPath: /etc/git-secret
+              readOnly: true
+            - name: git-known-hosts
+              mountPath: /etc/git-ssh
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
         - name: home-assistant
           image: homeassistant/home-assistant:2026.10.1
           env:
+          - name: HA_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: home-assistant-pg-creds
+                key: password
+          - name: HA_DB_URL
+            value: postgresql://homeassistant:$(HA_DB_PASSWORD)@apps-pg-rw.apps.svc.cluster.local:5432/homeassistant
           - name: HTTP_PROXY
             value: http://xray.infra.svc.cluster.local:10809
           - name: HTTPS_PROXY
             value: http://xray.infra.svc.cluster.local:10809
           - name: NO_PROXY
             value: 10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.1
+          envFrom:
+            - secretRef:
+                name: home-assistant-secrets
+                optional: true
           ports:
             - containerPort: 8123
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: git
+              mountPath: /git
+              readOnly: true
           resources:
             requests:
               cpu: "100m"
@@ -66,3 +159,15 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: home-assistant-config-pvc
+        - name: seed
+          configMap:
+            name: home-assistant-seed
+        - name: git
+          emptyDir: {}
+        - name: git-secret
+          secret:
+            secretName: home-assistant-git
+            defaultMode: 0400
+        - name: git-known-hosts
+          configMap:
+            name: home-assistant-git-known-hosts

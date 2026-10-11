@@ -1,0 +1,35 @@
+# Стартовый configuration.yaml для чистой установки.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-seed
+  namespace: apps
+data:
+  configuration.yaml: |
+    default_config:
+
+    # пользовательская часть конфига в local/home-assistant-config, его клонирует git-sync в /git/repo
+    homeassistant:
+      packages: !include_dir_named /git/repo/packages
+
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies:
+        - 127.0.0.1
+        - 10.42.0.0/16     # pod-сеть кластера (Traefik)
+        - 10.0.0.0/16      # LAN сейчас
+        - 10.77.0.0/16     # LAN после переезда (10.77.VLAN.x)
+        - 100.64.0.0/24    # tailnet (трафик с узлов через туннель)
+
+    recorder:
+      db_url: !env_var HA_DB_URL
+      purge_keep_days: 30
+      commit_interval: 30
+
+    prometheus:
+
+    automation manual: !include_dir_merge_list /git/repo/automations
+    automation ui: !include automations.yaml
+    template: !include_dir_merge_list /git/repo/templates
+    script: !include scripts.yaml
+    scene: !include scenes.yaml

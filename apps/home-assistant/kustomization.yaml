@@ -1,5 +1,7 @@
 resources:
   - config.yaml
+  - seed-config.yaml
+  - git-sync.yaml
   - service.yaml
   - deployment.yaml
   - ingress-internal.yaml
