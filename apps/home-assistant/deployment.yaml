@@ -26,6 +26,23 @@ spec:
         fsGroup: 65533
       nodeSelector:
         kubernetes.io/hostname: k3s-yolki
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
       initContainers:
         - name: git-sync-init
           image: registry.k8s.io/git-sync/git-sync:v4.7.1
