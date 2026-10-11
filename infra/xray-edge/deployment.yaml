@@ -36,7 +36,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: xray
-          image: teddysun/xray:26.9.30
+          image: teddysun/xray:26.10.10
           volumeMounts:
             - name: config
               mountPath: /etc/xray
