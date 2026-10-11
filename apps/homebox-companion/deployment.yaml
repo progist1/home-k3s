@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homebox-companion
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: homebox-companion
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homebox-companion
+  template:
+    metadata:
+      labels:
+        app: homebox-companion
+        app.kubernetes.io/name: homebox-companion
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: homebox-companion
+          image: ghcr.io/duelion/homebox-companion:3.1.1
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: HBC_HOMEBOX_URL
+              value: "http://homebox.apps.svc.cluster.local"
+            # ссылки на предметы в интерфейсе ведут на публичный адрес Homebox
+            - name: HBC_LINK_BASE_URL
+              value: "https://homebox.home"
+            - name: HBC_CORS_ORIGINS
+              value: "https://companion.home"
+            - name: HBC_LLM_API_KEY
+              valueFrom:
+                secretKeyRef: { name: homebox-companion-secrets, key: llm_api_key }
+            # токен пользователя Homebox (Профиль -> API токены): без него Companion просит логин/пароль, а их при SSO нет
+            - name: HBC_HOMEBOX_API_KEY
+              valueFrom:
+                secretKeyRef: { name: homebox-companion-secrets, key: homebox_api_key }
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

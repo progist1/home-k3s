@@ -4,6 +4,7 @@ resources:
   - filebrowser
   - vikunja
   - fider
+  - homebox
   - memos
   - mealie
   - actual-budget

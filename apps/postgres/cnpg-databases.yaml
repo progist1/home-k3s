@@ -184,3 +184,14 @@ spec:
   owner: fider
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: homebox-db
+  namespace: apps
+spec:
+  name: homebox
+  owner: homebox
+  cluster:
+    name: apps-pg

@@ -20,3 +20,4 @@ resources:
   - lab-staging-pg-creds-sealed.yaml
   - vikunja-pg-creds-sealed.yaml
   - fider-pg-creds-sealed.yaml
+  - homebox-pg-creds-sealed.yaml

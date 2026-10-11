@@ -99,6 +99,10 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: fider-pg-creds }
+      - name: homebox
+        ensure: present
+        login: true
+        passwordSecret: { name: homebox-pg-creds }
       - name: progist
         ensure: present
         login: true
