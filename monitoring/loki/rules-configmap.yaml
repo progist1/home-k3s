@@ -176,18 +176,19 @@ data:
               summary: "Stalwart: CRITICAL spam flood detected"
               description: "Stalwart accepted {{ $value }} authenticated submissions in last 5 minutes (threshold: 30, excl. mailtest) — account likely compromised, investigate immediately"
 
-          # встроенный fail2ban Stalwart (security.authentication-ban, security.scan-ban и т.п.)
-          - alert: StalwartAutoBan
+          # волна банов встроенного fail2ban Stalwart (security.authentication-ban, security.scan-ban и т.п.);
+          # единичные баны — фоновый шум интернета, на них не алертим
+          - alert: StalwartBanWave
             expr: |
-              count_over_time({namespace="apps", app="stalwart"} |~ "security\\.[a-z-]*ban" [10m]) > 0
+              count_over_time({namespace="apps", app="stalwart"} |~ "security\\.[a-z-]*ban" [10m]) > 20
             for: 0s
             labels:
               severity: info
               service: stalwart
-              alert_type: auto_ban
+              alert_type: auto_ban_wave
             annotations:
-              summary: "Stalwart: IP banned by built-in protection"
-              description: "Stalwart's built-in fail2ban banned {{ $value }} IP(s) in last 10 minutes. Check logs: kubectl -n apps logs deploy/stalwart | grep security."
+              summary: "Stalwart: wave of IP bans"
+              description: "Stalwart's built-in fail2ban banned {{ $value }} IPs in last 10 minutes (threshold: 20) — targeted scan/brute-force. Check logs: kubectl -n apps logs deploy/stalwart | grep security."
 
       # ============================================
       # Jellyfin Authentication
