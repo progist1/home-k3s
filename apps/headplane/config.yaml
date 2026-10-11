@@ -25,5 +25,5 @@ data:
       # client_id приходит из секрета через env HEADPLANE_OIDC__CLIENT_ID
       client_secret_path: "/secrets/client_secret"
       use_pkce: true
-      disable_api_key_login: false   # запасной вход по ключу, отключить после проверки OIDC
+      disable_api_key_login: true   # запасной вход по ключу, отключить после проверки OIDC
       default_role: "member"
