@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headplane
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: headplane
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headplane
+  template:
+    metadata:
+      labels:
+        app: headplane
+        app.kubernetes.io/name: headplane
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: headplane
+          image: ghcr.io/tale/headplane:0.7.1
+          env:
+            - name: HEADPLANE_CONFIG_PATH
+              value: /etc/headplane/config.yaml
+            - name: HEADPLANE_OIDC__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: headplane-secrets
+                  key: client_id
+          ports:
+            - name: http
+              containerPort: 3000
+          volumeMounts:
+            - name: config
+              mountPath: /etc/headplane
+              readOnly: true
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+            - name: data
+              mountPath: /var/lib/headplane
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: config
+          configMap:
+            name: headplane-config
+        - name: secrets
+          secret:
+            secretName: headplane-secrets
+        - name: data
+          emptyDir: {}   # внутренняя БД сессий и ролей; при рестарте нужно залогиниться заново

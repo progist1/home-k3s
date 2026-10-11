@@ -29,6 +29,7 @@ resources:
   - home-assistant
   - tdarr
   - wg-easy
+  - headplane
   - blocky
   - mosquitto
   - backups-pvc.yaml

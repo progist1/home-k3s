@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:
-  - host: vpn.home
+  - host: old.vpn.home
     http:
       paths:
       - path: /
@@ -22,5 +22,5 @@ spec:
               number: 51821
   tls:
   - hosts:
-    - vpn.home
-    secretName: wg-easy-internal-tls
+    - old.vpn.home
+    secretName: wg-easy-old-internal-tls

@@ -1,0 +1,29 @@
+# Headplane (веб-интерфейс Headscale). Headscale живёт на edge VPS: hs.progist.ru, управление по HTTP API.
+# Вход по API-ключу (headscale apikeys create). config_path не задан (файл Headscale на другом хосте):
+# ACL и DNS остаются в git (infra/edge/compose/edge-core/headscale), через интерфейс редактируются только узлы, ключи, маршруты, пользователи.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headplane-config
+  namespace: apps
+data:
+  config.yaml: |
+    server:
+      host: "0.0.0.0"
+      port: 3000
+      base_url: "https://vpn.home"
+      cookie_secret_path: "/secrets/cookie_secret"
+      cookie_secure: true
+      cookie_max_age: 86400
+      data_path: "/var/lib/headplane"
+    headscale:
+      url: "https://hs.progist.ru"
+      api_key_path: "/secrets/api_key"   # ключ на 365 дней, ротация: scripts/reseal-secret.py apps/headplane-secrets api_key
+    oidc:
+      enabled: true
+      issuer: "https://auth.progist.ru/application/o/headplane/"
+      # client_id приходит из секрета через env HEADPLANE_OIDC__CLIENT_ID
+      client_secret_path: "/secrets/client_secret"
+      use_pkce: true
+      disable_api_key_login: false   # запасной вход по ключу, отключить после проверки OIDC
+      default_role: "member"
