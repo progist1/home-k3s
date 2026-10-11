@@ -58,6 +58,9 @@ spec:
             - name: HBOX_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef: { name: homebox-pg-creds, key: password }
+            - name: HBOX_AUTH_API_KEY_PEPPER
+              valueFrom:
+                secretKeyRef: { name: homebox-secrets, key: api_key_pepper }
             - name: HBOX_OIDC_ENABLED
               value: "true"
             - name: HBOX_OIDC_ISSUER_URL
