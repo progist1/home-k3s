@@ -5,6 +5,7 @@ resources:
   - vikunja
   - fider
   - homebox
+  - zigbee2mqtt
   - memos
   - mealie
   - actual-budget

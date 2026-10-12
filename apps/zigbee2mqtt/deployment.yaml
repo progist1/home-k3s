@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: zigbee2mqtt
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+        app.kubernetes.io/name: zigbee2mqtt
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-yolki
+      tolerations:
+        - key: node.location.type
+          operator: Equal
+          value: remote
+          effect: NoSchedule
+        - key: node.role
+          operator: Equal
+          value: edge
+          effect: NoSchedule
+        - key: node.reliability
+          operator: Equal
+          value: low
+          effect: NoSchedule
+        - key: node.workload.class
+          operator: Equal
+          value: cctv
+          effect: NoSchedule
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:2.14.2
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+              value: zigbee2mqtt
+            - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials
+                  key: zigbee2mqtt
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-data-pvc
