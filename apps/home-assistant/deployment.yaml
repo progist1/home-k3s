@@ -175,7 +175,7 @@ spec:
       volumes:
         - name: config
           persistentVolumeClaim:
-            claimName: home-assistant-config-pvc
+            claimName: home-assistant-config-local-pvc
         - name: seed
           configMap:
             name: home-assistant-seed

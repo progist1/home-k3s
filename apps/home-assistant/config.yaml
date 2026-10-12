@@ -1,33 +1,39 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: home-assistant-config-pv
+  name: home-assistant-config-local-pv
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: hostpath-manual
   capacity:
-    storage: 1Gi
+    storage: 2Gi
   accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/home-assistant/config
-    server: bigb.home
+    - ReadWriteOnce
+  hostPath:
+    path: /var/lib/home-assistant
+    type: DirectoryOrCreate
   persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k3s-yolki
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-config-pvc
+  name: home-assistant-config-local-pvc
   namespace: apps
-  annotations:
-    k8up.io/backup: "true"
   labels:
-    backup-level: important
-    backup-offsite: "true"
+    backup-level: edge-hostpath
 spec:
-  storageClassName: nfs-nvme-manual
+  storageClassName: hostpath-manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-  volumeName: home-assistant-config-pv
+      storage: 2Gi
+  volumeName: home-assistant-config-local-pv
