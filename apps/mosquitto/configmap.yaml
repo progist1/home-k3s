@@ -9,5 +9,7 @@ data:
   mosquitto.conf: |
     persistence true
     persistence_location /mosquitto/data/
-    allow_anonymous true
+    allow_anonymous false
+    password_file /mosquitto/auth/passwd
+    acl_file /mosquitto/auth/acl
     listener 1883

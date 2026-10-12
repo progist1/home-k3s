@@ -49,6 +49,13 @@ spec:
           env:
             - name: TZ
               value: Europe/Moscow
+            - name: FRIGATE_MQTT_USER
+              value: frigate
+            - name: FRIGATE_MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials
+                  key: frigate
             - name: FRIGATE_TERASSA_USER
               valueFrom:
                 secretKeyRef:

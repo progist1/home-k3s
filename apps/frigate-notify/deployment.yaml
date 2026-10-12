@@ -50,6 +50,11 @@ spec:
           env:
             - name: TZ
               value: Europe/Moscow
+            - name: FN_FRIGATE__MQTT__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-credentials
+                  key: frigate-notify
             - name: GODEBUG
               value: http2client=0
             - name: HTTPS_PROXY

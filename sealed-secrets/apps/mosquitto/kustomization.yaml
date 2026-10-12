@@ -1,0 +1,3 @@
+resources:
+  - mosquitto-auth-sealed.yaml
+  - mqtt-credentials-sealed.yaml

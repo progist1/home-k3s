@@ -18,6 +18,8 @@ spec:
         app: mosquitto
         app.kubernetes.io/name: mosquitto
     spec:
+      securityContext:
+        fsGroup: 1883
       nodeSelector:
         node.role: edge
         node.workload.class: cctv
@@ -52,6 +54,9 @@ spec:
               mountPath: /mosquitto/config
             - name: data
               mountPath: /mosquitto/data
+            - name: auth
+              mountPath: /mosquitto/auth
+              readOnly: true
           resources:
             requests:
               cpu: "50m"
@@ -78,3 +83,7 @@ spec:
           hostPath:
             path: /opt/mosquitto/data
             type: Directory
+        - name: auth
+          secret:
+            secretName: mosquitto-auth
+            defaultMode: 0440

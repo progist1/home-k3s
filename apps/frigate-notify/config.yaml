@@ -27,6 +27,7 @@ data:
         server: mosquitto
         port: 1883
         clientid: frigate-notify
+        username: frigate-notify
         topic_prefix: frigate
 
     alerts:
