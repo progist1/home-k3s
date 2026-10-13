@@ -4,7 +4,7 @@ name: edge-core
 # поэтому ufw реально их защищает, а слушают они на конкретных IP (см. конфиги).
 services:
   headscale:
-    image: headscale/headscale:v0.29.4
+    image: headscale/headscale:v0.29.5
     command: serve
     network_mode: host
     restart: unless-stopped
