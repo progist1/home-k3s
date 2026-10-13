@@ -30,7 +30,6 @@ resources:
   - bulwark
   - home-assistant
   - tdarr
-  - wg-easy
   - headplane
   - blocky
   - mosquitto
