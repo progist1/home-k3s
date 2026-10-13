@@ -47,23 +47,35 @@ validate-manifests:
 
 validate-edge:
   stage: validate
+  # ansible-core из alpine:3.20 (2.17.0) не умеет в текущий API Galaxy ('results' KeyError), поэтому pip и свежий core
+  image: python:3.13-alpine
   rules:
     - changes:
-        - infra/edge/**/*
+        paths:
+          - infra/edge/**/*
+        compare_to: refs/heads/main
   script:
     - set -eu
-    - apk add --no-cache ansible-core docker-cli docker-cli-compose
+    - apk add --no-cache docker-cli docker-cli-compose
+    - pip install --no-cache-dir 'ansible-core>=2.18,<2.22'
     - cd infra/edge/ansible
-    - ansible-galaxy collection install -r requirements.yml
+    - |
+      for i in 1 2 3; do
+        ansible-galaxy collection install -r requirements.yml && break
+        [ "$i" = 3 ] && exit 1
+        sleep 15
+      done
     - ansible-playbook site.yml --syntax-check
     # compose требует существования env_file; в CI подставляем пустышку (настоящий токен живёт только на VPS)
     - mkdir -p /opt/edge/secrets && echo "FRP_TOKEN=ci" > /opt/edge/secrets/frps.env && echo "TS_AUTHKEY=ci" > /opt/edge/secrets/tailscale.env && echo "SMTPD_SASL_USERS=relay@progist.ru:ci" > /opt/edge/secrets/smtp-relay.env
     - docker compose -f ../compose/edge-core/compose.yaml config -q
 
-# Инертен, пока не задана защищённая переменная EDGE_DEPLOY_SSH_KEY (type: File, protected, masked недоступен для File).
+# Деплой на VPS после мёрджа в main, если менялся infra/edge. Активен, пока заданы protected-переменные EDGE_DEPLOY_SSH_KEY (type: File)
+# и EDGE_SSH_KNOWN_HOSTS. Применяет только роль edge_core (compose и конфиги), пользователь deploy.
 # EDGE_SSH_KNOWN_HOSTS: вывод `ssh-keyscan -t ed25519 edge.progist.ru` (пин ключа хоста).
 deploy-edge:
   stage: deploy
+  image: python:3.13-alpine
   resource_group: edge-deploy
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $EDGE_DEPLOY_SSH_KEY'
@@ -71,7 +83,8 @@ deploy-edge:
         - infra/edge/**/*
   script:
     - set -eu
-    - apk add --no-cache ansible-core openssh-client
+    - apk add --no-cache openssh-client
+    - pip install --no-cache-dir 'ansible-core>=2.18,<2.22'
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - cp "$EDGE_DEPLOY_SSH_KEY" ~/.ssh/edge && chmod 600 ~/.ssh/edge
     - printf '%s\n' "$EDGE_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
