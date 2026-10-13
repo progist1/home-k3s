@@ -21,7 +21,7 @@ data:
     gitlab_rails['gitlab_email_from'] = ENV['SMTP_USERNAME']
     gitlab_rails['gitlab_email_display_name'] = 'Gitlab Home'
     gitlab_rails['gitlab_email_reply_to'] = ENV['SMTP_REPLY_TO']
-    gitlab_rails['trusted_proxies'] = ['10.0.0.0/24', '10.42.0.0/16', '10.43.0.0/16']
+    gitlab_rails['trusted_proxies'] = ['10.77.20.0/24', '10.42.0.0/16', '10.43.0.0/16']
     gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '::1/128', '10.0.0.0/8']
     gitlab_rails['backup_archive_permissions'] = 0666
     gitlab_rails['backup_keep_time'] = 604800
@@ -42,7 +42,7 @@ data:
       "X-Forwarded-Proto" => "https",
       "X-Forwarded-Ssl" => "on",
     }
-    nginx['real_ip_trusted_addresses'] = ['10.0.0.0/24', '10.42.0.0/16', '10.43.0.0/16']
+    nginx['real_ip_trusted_addresses'] = ['10.77.20.0/24', '10.42.0.0/16', '10.43.0.0/16']
     nginx['real_ip_header'] = 'X-Real-IP'
     nginx['real_ip_recursive'] = 'on'
     registry_nginx['enable'] = true

@@ -5,6 +5,6 @@ metadata:
   namespace: infra
 subsets:
   - addresses:
-      - ip: 10.0.0.105
+      - ip: 10.77.20.7
     ports:
       - port: 11434

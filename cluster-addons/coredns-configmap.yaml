@@ -20,7 +20,7 @@ data:
             ttl 30
         }
         prometheus :9153
-        forward . 10.0.0.2 10.0.0.3 10.0.0.5
+        forward . 10.77.20.2 10.77.20.3 10.77.20.5
         cache 30
         loop
         reload
@@ -28,10 +28,10 @@ data:
     }
     import /etc/coredns/custom/*.server
   NodeHosts: |
-    10.0.0.3 k3s-gpu
-    10.0.0.5 k3s-pi
-    10.0.0.2 k3s-prod
-    10.3.0.2 k3s-yolki
+    10.77.20.3 k3s-gpu
+    10.77.20.5 k3s-pi
+    10.77.20.2 k3s-prod
+    10.77.20.6 k3s-yolki
   CustomHosts: |
-    10.0.0.4 bigb.home
-    10.3.0.2 vps.yolki
+    10.77.20.4 bigb.home
+    10.77.20.6 vps.yolki

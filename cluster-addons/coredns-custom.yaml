@@ -10,10 +10,10 @@ data:
     home:53 {
         errors
         cache 30
-        forward . 10.0.0.2
+        forward . 10.77.20.2
     }
     spb:53 {
         errors
         cache 30
-        forward . 10.0.0.2
+        forward . 10.77.20.2
     }

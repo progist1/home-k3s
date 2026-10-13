@@ -148,15 +148,15 @@ data:
 
       - name: k3s-gpu
         group: VMs & Hosts
-        url: tcp://10.0.0.3:22
+        url: tcp://10.77.20.3:22
         <<: *tcp
 
       - name: k3s-pi
         group: VMs & Hosts
-        url: tcp://10.0.0.5:22
+        url: tcp://10.77.20.5:22
         <<: *tcp
 
       - name: k3s-yolki
         group: VMs & Hosts
-        url: tcp://10.3.0.2:22
+        url: tcp://10.77.20.6:22
         <<: *tcp

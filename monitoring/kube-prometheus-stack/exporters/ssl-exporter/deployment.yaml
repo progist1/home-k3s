@@ -18,7 +18,7 @@ spec:
       dnsPolicy: None
       dnsConfig:
         nameservers:
-          - 10.0.0.2
+          - 10.77.20.2
       containers:
         - name: ssl-exporter
           image: ribbybibby/ssl-exporter:2.4.3

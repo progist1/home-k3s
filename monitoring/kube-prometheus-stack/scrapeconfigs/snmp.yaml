@@ -15,7 +15,7 @@ spec:
     module: [if_mib]
   staticConfigs:
     - targets:
-        - '10.0.0.1'
+        - '10.77.20.1'
       labels:
         device: keenetic
         location: home

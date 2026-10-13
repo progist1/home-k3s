@@ -65,9 +65,9 @@ dns:
     split:
       # *.home резолвит Blocky (hostPort :53 на нодах k3s-prod/pi/gpu); достижимо через subnet router
       home:
-        - 10.0.0.2
-        - 10.0.0.5
-        - 10.0.0.3
+        - 10.77.20.2
+        - 10.77.20.5
+        - 10.77.20.3
 
 unix_socket: /var/run/headscale/headscale.sock
 unix_socket_permission: "0770"

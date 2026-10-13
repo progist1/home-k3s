@@ -70,7 +70,7 @@ spec:
             - name: GOMEMLIMIT
               value: 400MiB   # мягкий потолок Go-рантайма ниже лимита пода: GC чаще вместо OOMKill
             - name: TS_ROUTES
-              value: 10.0.0.0/24   # после переезда: сегменты 10.77.x.0/24
+              value: 10.77.20.0/24   # после переезда: сегменты 10.77.x.0/24
             - name: TS_EXTRA_ARGS
               value: --login-server=https://hs.progist.ru --advertise-exit-node   # тег tag:home-router приходит из preauth-ключа; exit node одобряется autoApprovers
           securityContext:
@@ -85,7 +85,7 @@ spec:
                 command:
                   - sh
                   - -c
-                  - iptables -t nat -C POSTROUTING -s 10.0.0.0/24 -o tailscale0 -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o tailscale0 -j MASQUERADE
+                  - iptables -t nat -C POSTROUTING -s 10.77.20.0/24 -o tailscale0 -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -s 10.77.20.0/24 -o tailscale0 -j MASQUERADE
           volumeMounts:
             - name: state
               mountPath: /var/lib/tailscale
