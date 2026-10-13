@@ -19,6 +19,7 @@ data:
     auth.method = "token"
     auth.token = "{{ .Envs.FRP_TOKEN }}"
     transport.tls.enable = true
+    transport.poolCount = 5
     loginFailExit = false
 
     [[proxies]]
