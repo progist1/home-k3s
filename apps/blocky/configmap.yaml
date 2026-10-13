@@ -53,7 +53,7 @@ data:
       mapping:
         # Specific hosts (highest priority)
         bigb.home: 10.77.20.4
-        direct.router.home: 10.77.20.1
+        direct.router.home: 10.77.10.1
         # K3s nodes
         k3s.home: 10.77.20.2
         k3s-prod.home: 10.77.20.2
