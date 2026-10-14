@@ -47,7 +47,8 @@ validate-manifests:
 
 validate-edge:
   stage: validate
-  # ansible-core из alpine:3.20 (2.17.0) не умеет в текущий API Galaxy ('results' KeyError), поэтому pip и свежий core
+  # Пакет `ansible` из PyPI содержит community.general/docker и ansible.posix, поэтому galaxy не нужен:
+  # скачивание тарболлов с galaxy.ansible.com из кластера периодически рвётся (TLS handshake timeout)
   image: python:3.13-alpine
   rules:
     - changes:
@@ -57,14 +58,8 @@ validate-edge:
   script:
     - set -eu
     - apk add --no-cache docker-cli docker-cli-compose
-    - pip install --no-cache-dir 'ansible-core>=2.18,<2.22'
+    - pip install --no-cache-dir --retries 10 ansible
     - cd infra/edge/ansible
-    - |
-      for i in 1 2 3; do
-        ansible-galaxy collection install -r requirements.yml && break
-        [ "$i" = 3 ] && exit 1
-        sleep 15
-      done
     - ansible-playbook site.yml --syntax-check
     # compose требует существования env_file; в CI подставляем пустышку (настоящий токен живёт только на VPS)
     - mkdir -p /opt/edge/secrets && echo "FRP_TOKEN=ci" > /opt/edge/secrets/frps.env && echo "TS_AUTHKEY=ci" > /opt/edge/secrets/tailscale.env && echo "SMTPD_SASL_USERS=relay@progist.ru:ci" > /opt/edge/secrets/smtp-relay.env
@@ -84,10 +79,9 @@ deploy-edge:
   script:
     - set -eu
     - apk add --no-cache openssh-client
-    - pip install --no-cache-dir 'ansible-core>=2.18,<2.22'
+    - pip install --no-cache-dir --retries 10 ansible
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - cp "$EDGE_DEPLOY_SSH_KEY" ~/.ssh/edge && chmod 600 ~/.ssh/edge
     - printf '%s\n' "$EDGE_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - cd infra/edge/ansible
-    - ansible-galaxy collection install -r requirements.yml
     - ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/edge ansible-playbook site.yml --tags edge_core -e ansible_user=deploy --diff

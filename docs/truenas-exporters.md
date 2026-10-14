@@ -126,7 +126,7 @@ WantedBy=multi-user.target
 EOF
 
 # DNS для loki.home (Traefik LoadBalancer)
-grep -q "loki.home" /etc/hosts || echo "10.0.0.2 loki.home" >> /etc/hosts
+grep -q "loki.home" /etc/hosts || echo "10.77.20.10 loki.home" >> /etc/hosts
 
 systemctl daemon-reload
 systemctl enable --now promtail
@@ -221,7 +221,7 @@ systemctl enable --now prometheus-node-exporter-smartmon.timer
 - **Версия:** должна совпадать с Promtail в k3s-кластере (`kubectl get pod -n monitoring -l app.kubernetes.io/name=promtail -o jsonpath='{.items[0].spec.containers[0].image}'`)
 
 **Предпосылки:**
-- В `/etc/hosts` должна быть запись `10.0.0.2 loki.home` (Traefik LoadBalancer)
+- В `/etc/hosts` должна быть запись `10.77.20.10 loki.home` (Traefik LoadBalancer)
 - В кластере должен быть Ingress `loki-internal` в namespace `monitoring` (файл `monitoring/loki/ingress-internal.yaml` в gitops)
 
 **Установка:** см. шаг 6 в разделе "Быстрое восстановление".

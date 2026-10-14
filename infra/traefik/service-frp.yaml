@@ -1,5 +1,5 @@
 # Внутренний Service только для frpc: порты entrypoint'ов с proxyProtocol (SMTP 25 и submission 587).
-# Не LoadBalancer: наружу на VIP 10.0.0.10 эти порты не выставляются.
+# Не LoadBalancer: наружу на VIP 10.77.20.10 эти порты не выставляются.
 apiVersion: v1
 kind: Service
 metadata:
