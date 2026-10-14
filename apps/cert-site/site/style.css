@@ -45,6 +45,11 @@ pre { background: var(--code); padding: 12px 44px 12px 12px; border-radius: 8px;
 .status[data-state="fail"] { background: var(--bad-bg); border-color: var(--bad); }
 .status[data-state="fail"] .status-icon { background: var(--bad); color: var(--accent-fg); }
 .status[data-state="fail"] .status-icon::after { content: "!"; }
+.status[data-state="unknown"] { background: var(--bad-bg); border-color: var(--bad); }
+.status[data-state="unknown"] .status-icon { background: var(--bad); color: var(--accent-fg); }
+.status[data-state="unknown"] .status-icon::after { content: "?"; }
+.status[data-state="away"] .status-icon { background: var(--muted); color: var(--accent-fg); }
+.status[data-state="away"] .status-icon::after { content: "i"; }
 .status[data-state="checking"] .status-icon::after { content: "…"; }
 .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .tabs button { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line);
