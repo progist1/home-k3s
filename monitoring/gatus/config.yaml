@@ -64,9 +64,9 @@ data:
         url: tcp://mysql.apps.svc.cluster.local:3306
         <<: *tcp
 
-      - name: PostgreSQL
+      - name: PostgreSQL (apps-pg)
         group: Databases
-        url: tcp://postgres.apps.svc.cluster.local:5432
+        url: tcp://apps-pg-rw.apps.svc.cluster.local:5432
         <<: *tcp
 
       - name: PostgreSQL (pgvecto)

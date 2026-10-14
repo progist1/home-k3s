@@ -11,84 +11,15 @@ spec:
     interval: 30s
     rules:
     - alert: PostgreSQLDown
-      expr: up{job="postgres-exporter"} == 0
+      expr: |
+        cnpg_collector_up{cluster="apps-pg"} == 0
+        or absent(cnpg_collector_up{cluster="apps-pg"})
       for: 3m
       labels:
         severity: fatal
       annotations:
-        summary: "База данных PostgreSQL недоступна"
-        description: "Метрики PostgreSQL не поступают уже 3 минуты. Хост: {{ $labels.host }}"
-
-    - alert: PostgreSQLReplicationLag
-      expr: |
-        (
-          pg_replication_lag_seconds > 10
-        )
-        * on(instance) group_left
-          pg_static
-      for: 5m
-      labels:
-        severity: critical
-      annotations:
-        summary: "PostgreSQL replication lag high on {{ $labels.host }}"
-        description: |
-          **Lag:** {{ $value }} seconds
-          **Host:** {{ $labels.host }}
-          **Instance:** {{ $labels.instance }}
-          **Action:** ⚠️ Check replica status
-
-    - alert: PostgreSQLHighConnections
-      expr: |
-        (
-          sum without(datname) (pg_stat_database_numbackends{datname!~"template.*|postgres"})
-        )
-        * on(instance) group_left
-          pg_static
-        > 50
-      for: 10m
-      labels:
-        severity: warning
-      annotations:
-        summary: "PostgreSQL high connection count on {{ $labels.host }}"
-        description: |
-          **Total connections (user DBs):** {{ $value }}
-          **Host:** {{ $labels.host }}
-          **Action:** 🚦 Check connection pool
-
-    - alert: PostgreSQLDeadlocks
-      expr: |
-        (
-          increase(pg_stat_database_deadlocks[5m]) > 0
-        )
-        * on(instance, datname) group_left
-          pg_stat_database_size_bytes
-      for: 0m
-      labels:
-        severity: warning
-      annotations:
-        summary: "PostgreSQL deadlocks detected on {{ $labels.datname }}"
-        description: |
-          **Database:** {{ $labels.datname }}
-          **Deadlocks:** {{ $value }}
-          **Instance:** {{ $labels.instance }}
-          **Action:** 🔒 Review transaction isolation
-
-    - alert: PostgreSQLDatabaseSize
-      expr: |
-        (
-          pg_database_size_bytes / (1024^3) > 10
-        )
-        * on(instance, datname) group_left
-          pg_database_size_bytes
-      for: 1h
-      labels:
-        severity: info
-      annotations:
-        summary: "PostgreSQL database {{ $labels.datname }} > 10GB"
-        description: |
-          **Database:** {{ $labels.datname }}
-          **Size:** {{ $value | humanize }}GB
-          **Instance:** {{ $labels.instance }}
+        summary: "База данных PostgreSQL (apps-pg) недоступна"
+        description: "Метрики CNPG-кластера apps-pg не поступают или postgres не отвечает уже 3 минуты."
 
   - name: mysql
     interval: 30s

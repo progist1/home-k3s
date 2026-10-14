@@ -1,8 +1,4 @@
 resources:
-  - data.yaml
-  - deployment.yaml
-  - service.yaml
-  - backup.yaml
   - cnpg-storage.yaml
   - cnpg-objectstore.yaml
   - cnpg-cluster.yaml

@@ -91,3 +91,23 @@ spec:
       annotations:
         summary: "CNPG: долгая транзакция в {{ $labels.namespace }}/{{ $labels.pod }}"
         description: "Транзакция открыта {{ $value | humanizeDuration }}. Держит vacuum и блокировки; смотреть pg_stat_activity."
+
+    - alert: CnpgHighConnections
+      expr: |
+        sum by (namespace, pod) (cnpg_backends_total)
+          / on(namespace, pod) cnpg_pg_settings_setting{name="max_connections"} > 0.8
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CNPG: {{ $labels.namespace }}/{{ $labels.pod }} занято {{ $value | humanizePercentage }} соединений"
+        description: "Больше 80% max_connections уже 10 минут. Смотреть, какое приложение держит пул (cnpg_backends_total по datname)."
+
+    - alert: CnpgDatabaseSize
+      expr: cnpg_pg_database_size_bytes{datname!~"template.*|postgres"} > 10 * 1024^3
+      for: 1h
+      labels:
+        severity: info
+      annotations:
+        summary: "CNPG: база {{ $labels.datname }} > 10 ГБ"
+        description: "{{ $labels.namespace }}/{{ $labels.pod }}: {{ $value | humanize1024 }}B."

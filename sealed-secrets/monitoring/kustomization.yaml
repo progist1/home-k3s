@@ -1,7 +1,6 @@
 resources:
   - alertmanager-secrets-sealed.yaml
   - kps-secrets-sealed.yaml
-  - postgres-exporter-secrets-sealed.yaml
   - home-assistant-exporter-token-secret-sealed.yaml
   - grafana-secrets-sealed.yaml
   - mysql-exporter-secrets-sealed.yaml
