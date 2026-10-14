@@ -67,7 +67,23 @@ data:
         # Wildcard for all other .home domains → MetalLB Traefik VIP
         home: 10.77.20.10
         # External domain override
+        # (customDNS матчит и поддомены: r.films.progist.ru покрыт). Только хосты с Ingress в кластере;
+        # НЕ маппить hs/ts/fire (VPS), mail.* (SMTP/IMAP через frps + PROXY v2) и apex progist.ru
         films.progist.ru: 10.77.20.10
+        immich.progist.ru: 10.77.20.10
+        photos.progist.ru: 10.77.20.10
+        cloud.progist.ru: 10.77.20.10
+        share.progist.ru: 10.77.20.10
+        docs.progist.ru: 10.77.20.10
+        eda.progist.ru: 10.77.20.10
+        m.progist.ru: 10.77.20.10
+        v.progist.ru: 10.77.20.10
+        money.progist.ru: 10.77.20.10
+        vw.progist.ru: 10.77.20.10
+        ha.progist.ru: 10.77.20.10
+        grafana.progist.ru: 10.77.20.10
+        auth.progist.ru: 10.77.20.10
+        gua.progist.ru: 10.77.20.10
         # VPS в tailnet (Headscale): <город>-<провайдер>-<n>.home, имя = имя узла в tailnet
         edge.home: 100.64.0.4
         spb-beget-1.home: 100.64.0.5
