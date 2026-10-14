@@ -1,0 +1,36 @@
+# Сертификат веб-интерфейса TrueNAS (bigb.home). Импортируется в TrueNAS вручную:
+#   kubectl -n infra get secret bigb-home-tls -o jsonpath='{.data.tls\.crt}' | base64 -d > bigb.crt
+#   kubectl -n infra get secret bigb-home-tls -o jsonpath='{.data.tls\.key}' | base64 -d > bigb.key
+# TrueNAS: Credentials → Certificates → Import, затем System → General → GUI SSL Certificate.
+# Автообновления на стороне NAS нет: cert-manager перевыпустит секрет за renewBefore (~каждые 2 года) — это сигнал переимпортировать.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bigb-home
+  namespace: infra
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+spec:
+  secretName: bigb-home-tls
+  issuerRef:
+    name: root-ca-issuer
+    kind: ClusterIssuer
+  commonName: bigb.home
+  dnsNames:
+    - bigb.home
+  ipAddresses:
+    - 10.77.20.4
+  # Apple (iOS 13 / macOS 10.15+): TLS-сертификат не дольше 825 дней, иначе Safari не доверяет
+  # https://support.apple.com/103769 — исключения для user-added корней нет
+  duration: 19200h   # 800 дней
+  renewBefore: 720h
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth

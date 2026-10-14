@@ -13,6 +13,7 @@ resources:
   - minio
   - reflector
   - home-root-ca.yaml
+  - bigb-cert.yaml
 
   - traefik
   - metallb

@@ -5,6 +5,12 @@ metadata:
   namespace: infra
 spec:
   secretName: wildcard-progist-ru-tls
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "apps"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "apps"
   issuerRef:
     name: letsencrypt-prod-dns
     kind: ClusterIssuer
