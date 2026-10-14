@@ -1,0 +1,27 @@
+# probe.home — endpoint для проверки доверия к root-CA со страницы cert.progist.ru
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cert-site-probe-internal
+  namespace: apps
+  annotations:
+    cert-manager.io/cluster-issuer: root-ca-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+spec:
+  rules:
+    - host: probe.home
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cert-site
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - probe.home
+      secretName: cert-site-probe-internal-tls

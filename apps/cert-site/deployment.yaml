@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-site
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: cert-site
+    app.kubernetes.io/part-of: home-cluster
+    managed-by: flux
+    environment: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cert-site
+  template:
+    metadata:
+      labels:
+        app: cert-site
+        app.kubernetes.io/name: cert-site
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: nginx
+          image: nginxinc/nginx-unprivileged:1.29-alpine
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "16Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+          volumeMounts:
+            - name: site
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: site
+          projected:
+            sources:
+              - configMap:
+                  name: cert-site-files
+              - configMap:
+                  name: home-root-ca
+                  items:
+                    - key: ca.crt
+                      path: root-ca.crt
+        - name: nginx-conf
+          configMap:
+            name: cert-site-nginx
+            items:
+              - key: nginx.conf
+                path: default.conf
+        - name: tmp
+          emptyDir: {}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <title>Корневой сертификат домашней сети</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Корневой сертификат</h1>
+    <p class="lead">Установите его, чтобы браузеры и приложения доверяли внутренним сервисам <code>*.home</code> без предупреждений.</p>
+  </header>
+
+  <section id="status" class="card status" data-state="checking" aria-live="polite">
+    <div class="status-icon" aria-hidden="true"></div>
+    <div>
+      <h2 id="status-title">Проверяю…</h2>
+      <p id="status-text">Проверяю, доверяет ли это устройство сертификатам <code>*.home</code>.</p>
+    </div>
+    <button id="recheck" type="button" class="btn ghost">Проверить ещё раз</button>
+  </section>
+
+  <section class="card">
+    <h2>1. Скачайте</h2>
+    <div class="actions">
+      <a class="btn primary" href="root-ca.mobileconfig" id="dl-profile" data-os="ios mac">Профиль для iPhone / iPad / Mac</a>
+      <a class="btn" href="root-ca.crt" download="progist-home-ca.crt" id="dl-crt">Сертификат (.crt, PEM)</a>
+    </div>
+    <dl class="meta">
+      <dt>Имя</dt><dd id="meta-subject">…</dd>
+      <dt>Действует до</dt><dd id="meta-expiry">…</dd>
+      <dt>SHA-256</dt><dd><code id="meta-fp" class="fp">…</code></dd>
+    </dl>
+    <aside class="note optional">
+      <p>Сверка отпечатка: убедитесь, что скачанный файл не подменён.</p>
+      <pre data-copy>openssl x509 -in progist-home-ca.crt -noout -fingerprint -sha256</pre>
+      <p>Результат должен совпасть с SHA-256 выше.</p>
+    </aside>
+  </section>
+
+  <section class="card">
+    <h2>2. Установите</h2>
+    <div class="tabs" role="tablist" aria-label="Операционная система">
+      <button role="tab" data-tab="ios"><i class="ico ico-ios" aria-hidden="true"></i><span>iPhone / iPad</span></button>
+      <button role="tab" data-tab="mac"><i class="ico ico-mac" aria-hidden="true"></i><span>macOS</span></button>
+      <button role="tab" data-tab="win"><i class="ico ico-win" aria-hidden="true"></i><span>Windows</span></button>
+      <button role="tab" data-tab="android"><i class="ico ico-android" aria-hidden="true"></i><span>Android</span></button>
+      <button role="tab" data-tab="linux"><i class="ico ico-linux" aria-hidden="true"></i><span>Linux</span></button>
+      <button role="tab" data-tab="firefox"><i class="ico ico-firefox" aria-hidden="true"></i><span>Firefox</span></button>
+    </div>
+
+    <div class="panel" data-panel="ios">
+      <ol>
+        <li>Откройте эту страницу в <b>Safari</b> и нажмите «Профиль для iPhone / iPad / Mac».</li>
+        <li>Разрешите загрузку профиля конфигурации.</li>
+        <li><b>Настройки → Профиль загружен</b> (вверху) → <b>Установить</b>, введите код-пароль.</li>
+        <li><b>Настройки → Основные → Об этом устройстве → Доверие сертификатов</b> — включите переключатель для «Progist Home Private Network».</li>
+      </ol>
+      <aside class="note warning"><p>Без последнего шага сертификат установлен, но не считается доверенным.</p></aside>
+    </div>
+
+    <div class="panel" data-panel="mac">
+      <ol>
+        <li>Скачайте профиль и дважды щёлкните по нему.</li>
+        <li><b>Системные настройки → Конфиденциальность и безопасность → Профили</b> → установить.</li>
+      </ol>
+      <p>Или из терминала:</p>
+      <pre data-copy>sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/Downloads/progist-home-ca.crt</pre>
+    </div>
+
+    <div class="panel" data-panel="win">
+      <p>PowerShell (от имени пользователя, появится окно подтверждения):</p>
+      <pre data-copy>Import-Certificate -FilePath "$env:USERPROFILE\Downloads\progist-home-ca.crt" -CertStoreLocation Cert:\CurrentUser\Root</pre>
+      <p>Вручную: дважды щёлкните <code>.crt</code> → <b>Установить сертификат</b> → «Поместить все сертификаты в следующее хранилище» → <b>Доверенные корневые центры сертификации</b>.</p>
+      <aside class="note optional"><p>Для всех пользователей компьютера используйте <code>Cert:\LocalMachine\Root</code> в PowerShell от администратора.</p></aside>
+    </div>
+
+    <div class="panel" data-panel="android">
+      <ol>
+        <li>Скачайте <code>.crt</code>.</li>
+        <li><b>Настройки → Безопасность (или «Биометрия и безопасность») → Шифрование и учётные данные → Установить сертификат → Сертификат ЦС</b>.</li>
+        <li>Подтвердите предупреждение и выберите файл.</li>
+      </ol>
+      <aside class="note info"><p>Chrome доверяет пользовательским сертификатам. Многие сторонние приложения (Android 7+) их игнорируют: это ограничение системы.</p></aside>
+    </div>
+
+    <div class="panel" data-panel="linux">
+      <p>Debian / Ubuntu:</p>
+      <pre data-copy>sudo cp progist-home-ca.crt /usr/local/share/ca-certificates/progist-home-ca.crt
+sudo update-ca-certificates</pre>
+      <p>Fedora / RHEL:</p>
+      <pre data-copy>sudo cp progist-home-ca.crt /etc/pki/ca-trust/source/anchors/
+sudo update-ca-trust</pre>
+      <p>Arch:</p>
+      <pre data-copy>sudo trust anchor --store progist-home-ca.crt</pre>
+      <p>Chrome / Chromium используют собственную базу NSS:</p>
+      <pre data-copy>certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n progist-home -i progist-home-ca.crt</pre>
+    </div>
+
+    <div class="panel" data-panel="firefox">
+      <ol>
+        <li><b>Настройки → Приватность и защита → Сертификаты → Просмотр сертификатов</b>.</li>
+        <li>Вкладка <b>Центры сертификации → Импортировать…</b>, выберите <code>.crt</code>.</li>
+        <li>Отметьте «Доверять при идентификации веб-сайтов».</li>
+      </ol>
+      <aside class="note optional"><p>Вместо импорта можно включить <code>security.enterprise_roots.enabled</code> в <code>about:config</code>: Firefox начнёт использовать системное хранилище.</p></aside>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

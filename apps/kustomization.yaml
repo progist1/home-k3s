@@ -44,6 +44,7 @@ resources:
   - bazarr
   - flaresolverr
   - it-tools
+  - cert-site
   - n8n
   - open-webui
   - databasus

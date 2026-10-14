@@ -1,0 +1,26 @@
+# lan.progist.ru — A-запись в публичном DNS на VIP Traefik (10.77.20.10).
+# Публичный wildcard-сертификат *.progist.ru (Reflector копирует секрет из infra), достижим только из LAN/VPN:
+# проба «я дома?» для cert.progist.ru
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cert-site-lan
+  namespace: apps
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  rules:
+    - host: lan.progist.ru
+      http:
+        paths:
+          - path: /ok
+            pathType: Exact
+            backend:
+              service:
+                name: cert-site
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - lan.progist.ru
+      secretName: wildcard-progist-ru-tls

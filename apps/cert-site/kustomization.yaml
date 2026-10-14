@@ -1,0 +1,30 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress-external.yaml
+  - ingress-internal.yaml
+  - ingress-lan.yaml
+
+# Файлы сайта генерируются scripts/build-cert-site.sh (crt, mobileconfig, fingerprint)
+configMapGenerator:
+  - name: cert-site-files
+    namespace: apps
+    files:
+      - site/index.html
+      - site/style.css
+      - site/app.js
+      - site/mobile.svg
+      - site/laptop.svg
+      - site/windows.svg
+      - site/android.svg
+      - site/terminal.svg
+      - site/firefox.svg
+      - site/favicon.svg
+      - site/root-ca.mobileconfig
+      - site/fingerprint.txt
+      - site/subject.txt
+      - site/not-after.txt
+  - name: cert-site-nginx
+    namespace: apps
+    files:
+      - nginx.conf
