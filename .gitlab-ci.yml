@@ -12,7 +12,7 @@ validate-manifests:
   stage: validate
   script:
     - set -eu
-    - apk add --no-cache bash curl
+    - apk add --no-cache bash curl openssl
     # kubeconform
     - curl -fsSL -o /tmp/kubeconform.tar.gz https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
     - tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
@@ -42,6 +42,8 @@ validate-manifests:
       validate "monitoring" "./monitoring"
       validate "sealed-secrets" "./sealed-secrets"
       validate "gitlab" "./gitlab"
+    # производные файлы cert-site (mobileconfig, fingerprint) должны соответствовать infra/home-root-ca.yaml
+    - scripts/build-cert-site.sh --check
 
 # --- Edge VPS (infra/edge): не Flux, а ansible + compose по SSH ---------------------------------
 
