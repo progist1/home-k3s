@@ -116,3 +116,8 @@ spec:
         passwordSecret: { name: chemistart-pg-creds }
         inRoles:
           - jellycleaner
+      - name: monitor
+        ensure: present
+        login: true
+        connectionLimit: 5
+        passwordSecret: { name: monitor-pg-creds }
