@@ -1,7 +1,0 @@
-resources:
-  - led.wled.home
-  - kitchen.wled.home
-  - vitrina.wled.home
-  - lamp.wled.home
-  - torcher.wled.home
-  - tumba.wled.home

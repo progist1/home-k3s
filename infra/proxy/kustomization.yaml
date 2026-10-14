@@ -1,5 +1,4 @@
 resources:
-  - wled
   - router.home
   - printer.home
   - ollama.home
