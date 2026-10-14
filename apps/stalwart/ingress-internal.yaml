@@ -4,7 +4,7 @@ metadata:
   name: stalwart-internal
   namespace: apps
   annotations:
-    cert-manager.io/cluster-issuer: root-ca-issuer
+    cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:
   rules:

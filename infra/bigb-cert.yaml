@@ -15,7 +15,7 @@ metadata:
 spec:
   secretName: bigb-home-tls
   issuerRef:
-    name: root-ca-issuer
+    name: home-ca-issuer
     kind: ClusterIssuer
   commonName: bigb.home
   dnsNames:
