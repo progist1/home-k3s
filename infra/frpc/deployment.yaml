@@ -51,7 +51,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: frpc
-          image: fatedier/frpc:v0.71.0
+          image: fatedier/frpc:v0.71.1
           args: ["-c", "/etc/frp/frpc.toml"]
           env:
             - name: FRP_TOKEN
