@@ -32,7 +32,7 @@ services:
 
   # Узел тайлнета на самом VPS: exit node (выход с IP VPS) и точка SSH по тайлнету. Тег tag:server.
   tailscale:
-    image: ghcr.io/tailscale/tailscale:v1.102.5
+    image: ghcr.io/tailscale/tailscale:v1.104.1
     network_mode: host
     restart: unless-stopped
     depends_on: [headscale]
