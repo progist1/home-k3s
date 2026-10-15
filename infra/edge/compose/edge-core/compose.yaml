@@ -18,7 +18,7 @@ services:
       - no-new-privileges:true
 
   frps:
-    image: fatedier/frps:v0.71.0
+    image: fatedier/frps:v0.71.1
     command: ["-c", "/etc/frp/frps.toml"]
     network_mode: host
     restart: unless-stopped
