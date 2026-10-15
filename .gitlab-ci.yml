@@ -86,4 +86,5 @@ deploy-edge:
     - cp "$EDGE_DEPLOY_SSH_KEY" ~/.ssh/edge && chmod 600 ~/.ssh/edge
     - printf '%s\n' "$EDGE_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - cd infra/edge/ansible
-    - ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/edge ansible-playbook site.yml --tags edge_core -e ansible_user=deploy --diff
+    - export ANSIBLE_CONFIG="$PWD/ansible.cfg"
+    - ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/edge ansible-playbook -i inventory/hosts.yml site.yml --limit edge --tags edge_core -e ansible_user=deploy --diff
