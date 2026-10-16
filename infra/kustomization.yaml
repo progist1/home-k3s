@@ -9,6 +9,7 @@ resources:
   - tailscale
   - frpc
   - reloader
+  - descheduler
   - intel-device-plugin
   - minio
   - reflector
