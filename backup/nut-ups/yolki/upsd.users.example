@@ -1,0 +1,12 @@
+# /etc/nut/upsd.users (root:nut, 0640). Пароли подставить вручную, в git не коммитить реальные.
+[upsmon]
+    password = CHANGE_ME_1
+    upsmon primary
+
+[truenas]
+    password = CHANGE_ME_2
+    upsmon secondary
+
+[pi]
+    password = CHANGE_ME_3
+    upsmon secondary

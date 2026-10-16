@@ -1,0 +1,17 @@
+[Unit]
+Description=Prometheus NUT exporter (apc@localhost)
+After=nut-server.service
+Wants=nut-server.service
+
+[Service]
+ExecStart=/usr/local/bin/nut_exporter --nut.server=127.0.0.1 --web.listen-address=:9199 \
+  --nut.vars_enable=battery.charge,battery.runtime,battery.voltage,battery.temperature,input.voltage,input.transfer.low,input.transfer.high,output.voltage,output.current,output.frequency,ups.load,ups.realpower,ups.power,ups.status,ups.delay.shutdown
+DynamicUser=yes
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target

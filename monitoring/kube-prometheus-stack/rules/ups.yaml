@@ -1,0 +1,75 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ups-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: ups
+    interval: 30s
+    rules:
+    # Питание пропало, работаем от АКБ
+    - alert: UPSOnBattery
+      expr: network_ups_tools_ups_status{flag="OB"} == 1
+      for: 30s
+      labels:
+        severity: critical
+      annotations:
+        summary: "UPS {{ $labels.ups }} работает от батареи"
+        description: |
+          Пропало входное питание, UPS на батарее.
+          **Action:** 🔌 Проверь питание; при длительном отключении сработает штатное выключение (docs/nut-ups.md)
+
+    # Батарея разряжена, UPS ждёт выключения серверов
+    - alert: UPSLowBattery
+      expr: network_ups_tools_ups_status{flag="LB"} == 1
+      for: 0m
+      labels:
+        severity: fatal
+      annotations:
+        summary: "UPS {{ $labels.ups }}: низкий заряд, идёт выключение"
+        description: "UPS сообщил Low Battery. Серверы получают команду на выключение."
+
+    # Батарею пора менять
+    - alert: UPSReplaceBattery
+      expr: network_ups_tools_ups_status{flag="RB"} == 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "UPS {{ $labels.ups }}: нужно заменить батарею"
+        description: "UPS выставил флаг Replace Battery."
+
+    # Перегруз
+    - alert: UPSOverload
+      expr: network_ups_tools_ups_load > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "UPS {{ $labels.ups }}: нагрузка {{ $value | humanize }}%"
+        description: "Нагрузка выше 80% номинала, автономия сильно сокращается."
+
+    # Запас автономии мал при питании от сети (деградация батареи)
+    - alert: UPSRuntimeShort
+      expr: network_ups_tools_battery_runtime < 480 and on(ups) network_ups_tools_ups_status{flag="OL"} == 1
+      for: 30m
+      labels:
+        severity: warning
+      annotations:
+        summary: "UPS {{ $labels.ups }}: автономия {{ $value | humanizeDuration }}"
+        description: "Автономия при сетевом питании меньше 8 минут. Батарея деградировала или перегружен UPS."
+
+    # Нет метрик UPS (экспортёр/драйвер/NUT)
+    - alert: UPSMetricsMissing
+      expr: absent(network_ups_tools_ups_status)
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Нет метрик UPS"
+        description: |
+          nut_exporter на k3s-yolki не отдаёт ups_status.
+          **Action:** `systemctl status nut-driver@apc nut-server nut-exporter` на k3s-yolki

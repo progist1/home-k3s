@@ -95,7 +95,7 @@ spec:
     - alert: CnpgHighConnections
       expr: |
         sum by (namespace, pod) (cnpg_backends_total)
-          / on(namespace, pod) cnpg_pg_settings_setting{name="max_connections"} > 0.8
+          / on(namespace, pod) max by (namespace, pod) (cnpg_pg_settings_setting{name="max_connections"}) > 0.8
       for: 10m
       labels:
         severity: warning

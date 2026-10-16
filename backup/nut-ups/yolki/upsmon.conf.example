@@ -1,0 +1,25 @@
+# /etc/nut/upsmon.conf на yolki (master). Оставить из пакетного файла только нужное, пароль подставить.
+MONITOR apc@localhost 1 upsmon CHANGE_ME_1 primary
+MINSUPPLIES 1
+
+# Последним гасим себя; скрипт ждёт, пока bigb и pi перестанут отвечать, и только потом shutdown
+SHUTDOWNCMD "/usr/local/sbin/nut-shutdown-last.sh"
+POWERDOWNFLAG /etc/killpower
+
+NOTIFYCMD /usr/sbin/upssched
+NOTIFYFLAG ONLINE   SYSLOG+EXEC
+NOTIFYFLAG ONBATT   SYSLOG+EXEC
+NOTIFYFLAG LOWBATT  SYSLOG+EXEC
+NOTIFYFLAG FSD      SYSLOG+WALL+EXEC
+NOTIFYFLAG COMMBAD  SYSLOG
+NOTIFYFLAG COMMOK   SYSLOG
+NOTIFYFLAG SHUTDOWN SYSLOG+WALL
+NOTIFYFLAG REPLBATT SYSLOG
+
+POLLFREQ 5
+POLLFREQALERT 5
+HOSTSYNC 15
+DEADTIME 60
+NOCOMMWARNTIME 300
+FINALDELAY 5
+RBWARNTIME 43200

@@ -1,0 +1,16 @@
+#!/bin/sh
+# /usr/local/sbin/upssched-cmd (0755, root). Вызывается upssched.
+# Режим сухого теста: touch /etc/nut/dry-run — только пишем в syslog, FSD не объявляем.
+case "$1" in
+  fsd-timer|fsd-now)
+    if [ -e /etc/nut/dry-run ]; then
+      logger -t nut "DRY-RUN: $1 -> здесь был бы upsmon -c fsd"
+    else
+      logger -t nut "$1 -> объявляю FSD"
+      /usr/sbin/upsmon -c fsd
+    fi
+    ;;
+  *)
+    logger -t nut "upssched-cmd: неизвестное событие: $1"
+    ;;
+esac

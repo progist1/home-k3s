@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: ups
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: ups
+  scrapeInterval: 15s
+  metricsPath: /ups_metrics
+  params:
+    ups: ['apc']
+  # nut_exporter на k3s-yolki (host, systemd), см. docs/nut-ups.md
+  staticConfigs:
+  - targets:
+    - 'vps.yolki:9199'
+    labels:
+      group: 'external-nodes'
+      host: 'k3s-yolki'
+      location: 'home'
+      ups: 'apc'

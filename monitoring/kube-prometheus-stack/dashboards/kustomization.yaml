@@ -1,2 +1,3 @@
 resources:
   - tailnet.yaml
+  - ups.yaml

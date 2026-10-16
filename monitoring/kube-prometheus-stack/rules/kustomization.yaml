@@ -19,3 +19,4 @@ resources:
   - minio.yaml
   - uptime-kuma.yaml
   - crowdsec.yaml
+  - ups.yaml
