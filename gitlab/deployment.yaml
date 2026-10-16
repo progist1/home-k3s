@@ -31,6 +31,7 @@ spec:
                     operator: In
                     values:
                       - "true"
+      # TODO: InitContainer для secrets.json и trusted-certs
       containers:
         - name: gitlab
           image: gitlab/gitlab-ce:19.5.0-ce.0
@@ -88,10 +89,6 @@ spec:
               mountPath: /var/log/gitlab
             - name: dshm
               mountPath: /dev/shm
-            - name: home-root-ca
-              mountPath: /etc/gitlab/trusted-certs/home-root-ca.crt
-              subPath: ca.crt
-              readOnly: true
           resources:
             requests:
               cpu: 1
@@ -138,6 +135,3 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 256Mi
-        - name: home-root-ca
-          configMap:
-            name: home-root-ca

@@ -9,9 +9,9 @@ metadata:
     environment: production
   annotations:
     reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-    reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "gitlab,gitlab-runner,renovate,monitoring,apps"
+    reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "gitlab-runner,renovate,monitoring,apps"
     reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-    reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "gitlab,gitlab-runner,renovate,monitoring,apps"
+    reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "gitlab-runner,renovate,monitoring,apps"
 data:
   ca.crt: |
     -----BEGIN CERTIFICATE-----
