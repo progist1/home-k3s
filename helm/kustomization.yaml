@@ -15,4 +15,3 @@ resources:
   - loki.yaml
   - error-pages.yaml
   - cnpg.yaml
-  - descheduler.yaml

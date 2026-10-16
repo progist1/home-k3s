@@ -1,0 +1,4 @@
+resources:
+  - rbac.yaml
+  - cronjob.yaml
+  - traefik-watchdog.yaml

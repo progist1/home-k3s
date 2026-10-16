@@ -1,0 +1,52 @@
+# Убирает «трупы» после выключения/перезагрузки нод: pod'ы в фазе Succeeded/Failed, принадлежащие ReplicaSet/StatefulSet/DaemonSet
+# (контроллеры давно создали замену). При graceful shutdown контейнеры выходят с кодом 0, и pod'ы остаются Succeeded («Completed»),
+# а descheduler RemoveFailedPods такие не трогает. Pod'ы Job'ов не удаляем: нужны для разбора упавших запусков.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pod-janitor
+  namespace: infra
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 120
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 3600
+      template:
+        spec:
+          serviceAccountName: pod-janitor
+          restartPolicy: Never
+          containers:
+            - name: janitor
+              image: alpine/k8s:1.34.11
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  kubectl get pods -A -o json | jq -r '
+                    .items[]
+                    | select(.status.phase == "Succeeded" or .status.phase == "Failed")
+                    | select(((.metadata.ownerReferences // [])[0].kind) as $k | ["ReplicaSet","StatefulSet","DaemonSet"] | index($k))
+                    | select((now - (.metadata.creationTimestamp | fromdateiso8601)) > 300)
+                    | "\(.metadata.namespace) \(.metadata.name)"' \
+                  | while read -r ns name; do
+                      kubectl -n "$ns" delete pod "$name" --wait=false
+                    done
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 65534
+                capabilities:
+                  drop: ["ALL"]
