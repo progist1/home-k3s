@@ -85,7 +85,7 @@ spec:
                 command:
                   - sh
                   - -c
-                  - iptables -t nat -C POSTROUTING -s 10.77.20.0/24 -o tailscale0 -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -s 10.77.20.0/24 -o tailscale0 -j MASQUERADE
+                  - iptables -t nat -C POSTROUTING -s 10.77.0.0/16 -o tailscale0 -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -s 10.77.0.0/16 -o tailscale0 -j MASQUERADE
           volumeMounts:
             - name: state
               mountPath: /var/lib/tailscale

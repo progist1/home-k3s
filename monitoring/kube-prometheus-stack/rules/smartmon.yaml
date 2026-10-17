@@ -253,7 +253,7 @@ spec:
     - alert: NVMeHighUnsafeShutdowns
       expr: |
         (
-          increase(smartmon_unsafe_shutdown_count_raw_value[1d]) > 5
+          delta(smartmon_unsafe_shutdown_count_raw_value[1d]) > 5
         )
         * on(instance, disk) group_left
           smartmon_device_info
@@ -362,7 +362,7 @@ spec:
     # Пишем много на nvme
     - alert: NVMeHighTBWIncrease
       expr: |
-        increase(nvme_data_units_written_total[24h]) * 512000 / 10^12 > 1.0
+        delta(nvme_data_units_written_total[24h]) * 512000 / 10^12 > 1.0
       for: 1h
       labels:
         severity: critical
