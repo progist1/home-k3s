@@ -44,8 +44,35 @@ spec:
           value: cctv
           effect: NoSchedule
       initContainers:
+        - name: seed-config
+          image: homeassistant/home-assistant:2026.10.1
+          command:
+            - sh
+            - -c
+            - |
+              [ -f /config/configuration.yaml ] || cp /seed/configuration.yaml /config/configuration.yaml
+              for f in automations scripts scenes; do [ -f /config/$f.yaml ] || echo "[]" > /config/$f.yaml; done
+              mkdir -p /config/.git-sync && chown -R 65533:65533 /config/.git-sync
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: seed
+              mountPath: /seed
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
         - name: git-sync-init
           image: registry.k8s.io/git-sync/git-sync:v4.7.1
+          # GitLab недоступен — не блокируем старт, берём кэш из PVC (/config/.git-sync)
+          command:
+            - sh
+            - -c
+            - /git-sync "$@" || echo "git-sync-init failed, using cached /git"
+            - --
           args:
             - --repo=git@gitlab.home:local/home-assistant-config.git
             - --ref=main
@@ -56,9 +83,11 @@ spec:
             - --ssh-known-hosts=true
             - --ssh-known-hosts-file=/etc/git-ssh/known_hosts
             - --one-time=true
+            - --sync-timeout=30s
           volumeMounts:
-            - name: git
+            - name: config
               mountPath: /git
+              subPath: .git-sync
             - name: git-secret
               mountPath: /etc/git-secret
               readOnly: true
@@ -72,26 +101,6 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
-        - name: seed-config
-          image: homeassistant/home-assistant:2026.10.1
-          command:
-            - sh
-            - -c
-            - |
-              [ -f /config/configuration.yaml ] || cp /seed/configuration.yaml /config/configuration.yaml
-              for f in automations scripts scenes; do [ -f /config/$f.yaml ] || echo "[]" > /config/$f.yaml; done
-          volumeMounts:
-            - name: config
-              mountPath: /config
-            - name: seed
-              mountPath: /seed
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
-            limits:
-              cpu: 100m
-              memory: 64Mi
       containers:
         - name: git-syncs
           image: registry.k8s.io/git-sync/git-sync:v4.7.1
@@ -105,9 +114,11 @@ spec:
             - --ssh-known-hosts=true
             - --ssh-known-hosts-file=/etc/git-ssh/known_hosts
             - --period=60s
+            - --max-failures=-1
           volumeMounts:
-            - name: git
+            - name: config
               mountPath: /git
+              subPath: .git-sync
             - name: git-secret
               mountPath: /etc/git-secret
               readOnly: true
@@ -131,12 +142,12 @@ spec:
                 key: password
           - name: HA_DB_URL
             value: postgresql://homeassistant:$(HA_DB_PASSWORD)@apps-pg-rw.apps.svc.cluster.local:5432/homeassistant
-          - name: HTTP_PROXY
-            value: http://xray.infra.svc.cluster.local:10809
-          - name: HTTPS_PROXY
-            value: http://xray.infra.svc.cluster.local:10809
-          - name: NO_PROXY
-            value: 10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.1
+          # - name: HTTP_PROXY
+          #   value: http://xray.infra.svc.cluster.local:10809
+          # - name: HTTPS_PROXY
+          #   value: http://xray.infra.svc.cluster.local:10809
+          # - name: NO_PROXY
+          #   value: 10.0.0.0/8,192.168.0.0/16,localhost,127.0.0.1
           envFrom:
             - secretRef:
                 name: home-assistant-secrets
@@ -146,8 +157,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-            - name: git
+            - name: config
               mountPath: /git
+              subPath: .git-sync
               readOnly: true
           resources:
             requests:
@@ -179,8 +191,6 @@ spec:
         - name: seed
           configMap:
             name: home-assistant-seed
-        - name: git
-          emptyDir: {}
         - name: git-secret
           secret:
             secretName: home-assistant-git

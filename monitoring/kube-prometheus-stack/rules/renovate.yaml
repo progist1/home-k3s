@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: renovate-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: renovate
+    rules:
+    - alert: RenovateNoSuccess
+      expr: time() - kube_cronjob_status_last_successful_time{namespace="renovate", cronjob="renovate"} > 86400
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Renovate не отрабатывал успешно больше суток"
+        description: "Последний успешный запуск CronJob renovate был {{ $value | humanizeDuration }} назад."
