@@ -94,7 +94,9 @@ spec:
 
     - alert: CnpgHighConnections
       expr: |
-        sum by (namespace, pod) (cnpg_backends_total)
+        # Фильтр по свежести сэмпла: при query.lookback-delta=2h серия пода со старым IP после рестарта
+        # живёт в запросах два часа и удваивала сумму (ложные 102% при реальных 51%).
+        sum by (namespace, pod) (cnpg_backends_total and (time() - timestamp(cnpg_backends_total) < 180))
           / on(namespace, pod) max by (namespace, pod) (cnpg_pg_settings_setting{name="max_connections"}) > 0.8
       for: 10m
       labels:
