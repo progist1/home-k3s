@@ -54,6 +54,7 @@ data:
         # Specific hosts (highest priority)
         bigb.home: 10.77.20.4
         direct.router.home: 10.77.10.1
+        printer.home: 10.77.30.50
         # K3s nodes
         k3s.home: 10.77.20.2
         k3s-prod.home: 10.77.20.2
@@ -72,18 +73,13 @@ data:
         films.progist.ru: 10.77.20.10
         immich.progist.ru: 10.77.20.10
         photos.progist.ru: 10.77.20.10
-        cloud.progist.ru: 10.77.20.10
         share.progist.ru: 10.77.20.10
-        docs.progist.ru: 10.77.20.10
         eda.progist.ru: 10.77.20.10
         m.progist.ru: 10.77.20.10
         v.progist.ru: 10.77.20.10
-        money.progist.ru: 10.77.20.10
         vw.progist.ru: 10.77.20.10
         ha.progist.ru: 10.77.20.10
-        grafana.progist.ru: 10.77.20.10
         auth.progist.ru: 10.77.20.10
-        gua.progist.ru: 10.77.20.10
         # VPS в tailnet (Headscale): <город>-<провайдер>-<n>.home, имя = имя узла в tailnet
         edge.home: 100.64.0.4
         spb-beget-1.home: 100.64.0.5

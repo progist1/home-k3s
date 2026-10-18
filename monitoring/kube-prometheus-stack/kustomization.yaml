@@ -7,7 +7,6 @@ generatorOptions:
   disableNameSuffixHash: true
 resources:
   - scrapeconfigs
-  - ingress-external-grafana.yaml
   - helmrelease.yaml
   - alert-manager-pv.yaml
   - grafana-pvc.yaml

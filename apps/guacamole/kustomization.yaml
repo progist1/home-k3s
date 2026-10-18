@@ -4,4 +4,4 @@ resources:
   - service-guacd.yaml
   - service-guacamole.yaml
   - middleware.yaml
-  - ingress-external.yaml
+  - ingress-internal.yaml

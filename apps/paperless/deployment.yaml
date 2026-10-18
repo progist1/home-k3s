@@ -66,11 +66,11 @@ spec:
             - name: PAPERLESS_TRASH_DIR
               value: "/usr/src/paperless/media/trash"
             - name: PAPERLESS_ALLOWED_HOSTS
-              value: "docs.home,docs.progist.ru"
+              value: "docs.home"
             - name: PAPERLESS_CORS_ALLOWED_HOSTS
-              value: "https://docs.home,https://docs.progist.ru"
+              value: "https://docs.home"
             - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
-              value: "https://docs.home,https://docs.progist.ru"
+              value: "https://docs.home"
             - name: PAPERLESS_DISABLE_REGULAR_LOGIN
               value: "true"
             - name: PAPERLESS_EMAIL_HOST

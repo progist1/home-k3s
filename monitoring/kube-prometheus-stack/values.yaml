@@ -406,7 +406,7 @@ grafana:
 
   grafana.ini:
     server:
-      root_url: https://grafana.progist.ru/
+      root_url: https://grafana.home/
     smtp:
       enabled: true
       host: mail.progist.ru:587

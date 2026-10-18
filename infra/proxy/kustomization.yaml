@@ -1,4 +1,3 @@
 resources:
   - router.home
-  - printer.home
   - ollama.home

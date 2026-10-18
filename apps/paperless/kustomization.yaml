@@ -4,5 +4,4 @@ resources:
   - tika
   - deployment.yaml
   - service.yaml
-  - ingress-external.yaml
   - ingress-internal.yaml
