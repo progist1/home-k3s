@@ -25,3 +25,4 @@ resources:
   - headplane
   - home-assistant
   - mosquitto
+  - net-backup

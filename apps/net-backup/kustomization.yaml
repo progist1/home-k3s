@@ -1,0 +1,10 @@
+resources:
+  - storage.yaml
+  - cronjob.yaml
+configMapGenerator:
+  - name: net-backup-script
+    namespace: apps
+    files:
+      - backup.sh
+generatorOptions:
+  disableNameSuffixHash: true

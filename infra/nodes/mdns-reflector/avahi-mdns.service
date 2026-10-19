@@ -1,0 +1,14 @@
+[Unit]
+Description=Avahi mDNS reflector Home<->Media (netns mdns)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStartPre=/usr/local/sbin/mdns-netns.sh
+ExecStart=/usr/bin/nsenter --net=/run/netns/mdns /usr/sbin/avahi-daemon -f /etc/avahi/avahi-mdns.conf --no-rlimits --no-chroot
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

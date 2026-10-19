@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: net-backup-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: net-backup
+    rules:
+    - alert: NetBackupNoSuccess
+      expr: time() - kube_cronjob_status_last_successful_time{namespace="apps", cronjob="net-backup"} > 2 * 86400
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Бэкап конфигов Keenetic/HP не отрабатывал успешно больше 2 суток"
+        description: "Последний успешный запуск CronJob net-backup (namespace apps) был {{ $value | humanizeDuration }} назад. Логи: kubectl -n apps logs job/<net-backup-...>."

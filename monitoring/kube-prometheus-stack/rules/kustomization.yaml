@@ -21,3 +21,4 @@ resources:
   - crowdsec.yaml
   - ups.yaml
   - renovate.yaml
+  - net-backup.yaml

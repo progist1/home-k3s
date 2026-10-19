@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: net-backup
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: net-backup
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+spec:
+  # до ночного K8up (04:25), который уносит PVC в MinIO и Backblaze
+  schedule: "30 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 300
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: net-backup
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backup
+              image: alpine:3.20
+              command: ["sh", "-c", "apk add --no-cache -q openssh-client && exec sh /scripts/backup.sh"]
+              env:
+                - name: KEENETIC_HOST
+                  value: "10.77.10.1"
+                - name: KEENETIC_USER
+                  value: backup
+                - name: HP_HOST
+                  value: "10.77.10.2"
+                - name: HP_USER
+                  value: backup
+              envFrom:
+                - secretRef:
+                    name: net-backup-credentials
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: backup
+                  mountPath: /backup
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi
+          volumes:
+            - name: scripts
+              configMap:
+                name: net-backup-script
+            - name: backup
+              persistentVolumeClaim:
+                claimName: net-backup-pvc
