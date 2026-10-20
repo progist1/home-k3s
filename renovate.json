@@ -150,6 +150,12 @@
       "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T"
     },
     {
+      "description": "Jellyfin 12.x выходит с двухсегментными тегами (12.2), docker-версионирование требует то же число сегментов, что у 10.11.11, и молча пропускает обновления.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["jellyfin/jellyfin"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(\\.(?<patch>\\d+))?$"
+    },
+    {
       "description": "Edge VPS (headscale, frps, tailscale) и subnet router'ы дома: аварийный путь в сеть, 0.x-релизы headscale/frp, minor бывают ломающими. Только ручной мердж; правило стоит последним, чтобы перекрыть глобальный automerge.",
       "matchFileNames": ["infra/edge/**", "infra/tailscale/**"],
       "automerge": false,
