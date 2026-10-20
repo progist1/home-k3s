@@ -35,10 +35,6 @@ spec:
           operator: Equal
           value: "arm64"
           effect: NoSchedule
-        - key: node.hardware.gpu
-          operator: Equal
-          value: "intel-igpu"
-          effect: NoSchedule
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

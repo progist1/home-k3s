@@ -20,11 +20,6 @@ spec:
     spec:
       nodeSelector:
         node.hardware.gpu: intel-igpu
-      tolerations:
-        - key: node.hardware.gpu
-          operator: Equal
-          value: intel-igpu
-          effect: NoSchedule
 
       securityContext:
         runAsUser: 1000
@@ -54,7 +49,7 @@ spec:
           resources:
             requests:
               cpu: "250m"
-              memory: "512Mi"
+              memory: "1280Mi"
               gpu.intel.com/i915: "1"
             limits:
               memory: "6Gi"

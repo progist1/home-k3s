@@ -20,11 +20,6 @@ spec:
     spec:
       nodeSelector:
         node.hardware.gpu: intel-igpu
-      tolerations:
-        - key: node.hardware.gpu
-          operator: Equal
-          value: intel-igpu
-          effect: NoSchedule
       containers:
         - name: lidarr
           image: linuxserver/lidarr:8.1.2135

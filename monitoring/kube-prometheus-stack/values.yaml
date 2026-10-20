@@ -63,7 +63,7 @@ prometheus:
     resources:
       requests:
         cpu: "200m"
-        memory: "512Mi"
+        memory: "2560Mi"
       limits:
         cpu: "2"
         memory: "4Gi"
@@ -372,6 +372,13 @@ alertmanager:
 grafana:
   enabled: true
   envFromSecret: grafana-secrets
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "768Mi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
@@ -750,25 +757,9 @@ kube-state-metrics:
         regex: '(revision|chart_version|artifact|endpoint_id)'
 
   tolerations:
-    - key: "node.hardware.gpu"
-      operator: "Equal"
-      value: "intel-igpu"
-      effect: "NoSchedule"
     - key: "node.hardware.arch"
       operator: "Equal"
       value: "arm64"
-      effect: "NoSchedule"
-    - key: "node.location.type"
-      operator: "Equal"
-      value: "remote"
-      effect: "NoSchedule"
-    - key: "node.role"
-      operator: "Equal"
-      value: "edge"
-      effect: "NoSchedule"
-    - key: "node.reliability"
-      operator: "Equal"
-      value: "low"
       effect: "NoSchedule"
     - key: "node.workload.class"
       operator: "Equal"
@@ -778,25 +769,9 @@ kube-state-metrics:
 nodeExporter:
   enabled: true
   tolerations:
-    - key: "node.hardware.gpu"
-      operator: "Equal"
-      value: "intel-igpu"
-      effect: "NoSchedule"
     - key: "node.hardware.arch"
       operator: "Equal"
       value: "arm64"
-      effect: "NoSchedule"
-    - key: "node.location.type"
-      operator: "Equal"
-      value: "remote"
-      effect: "NoSchedule"
-    - key: "node.role"
-      operator: "Equal"
-      value: "edge"
-      effect: "NoSchedule"
-    - key: "node.reliability"
-      operator: "Equal"
-      value: "low"
       effect: "NoSchedule"
     - key: "node.workload.class"
       operator: "Equal"

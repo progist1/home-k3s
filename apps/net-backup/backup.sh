@@ -6,7 +6,7 @@ set -eu
 DIR=${BACKUP_DIR:-/backup}
 TS=$(date +%Y%m%d-%H%M%S)
 KEEP_DAYS=30
-mkdir -p "$DIR/keenetic" "$DIR/hp5130" "$DIR/monthly"
+mkdir -p "$DIR/keenetic" "$DIR/hp5130" "$DIR/tenda" "$DIR/monthly"
 
 # ssh спрашивает пароль через SSH_ASKPASS, значение берётся из env ASKPASS_PW
 printf '#!/bin/sh\nprintf "%%s" "$ASKPASS_PW"\n' > /tmp/askpass.sh
@@ -41,11 +41,36 @@ else
   echo "hp5130: FAILED"; cat /tmp/hp.err; rm -f "$DIR/hp5130/.new"; fail=1
 fi
 
+# Точки доступа Tenda i27: вход JSON-запросом (пароль в base64, как делает веб-интерфейс), конфиг отдаёт /cgi-bin/DownloadCfg/APCfm.cfg
+ap_backup() {
+  name=$1; host=$2; jar=/tmp/jar-$name; out="$DIR/tenda/$name"
+  mkdir -p "$out"
+  pw64=$(printf %s "$AP_PASSWORD" | base64 | tr -d '\n')
+  now=$(date +"%Y;%m;%d;%H;%M;%S" | sed 's/;0/;/g')
+  login=$(curl -s -m15 -c "$jar" -H 'Content-Type: application/json' \
+    -d "{\"sysLogin\":{\"password\":\"$pw64\",\"logoff\":false,\"timeZone\":15,\"time\":\"$now\"}}" \
+    "http://$host/goform/modules?$$") || login=
+  if echo "$login" | grep -Eq '"Login" *: *true' \
+     && curl -s -m30 -b "$jar" "http://$host/cgi-bin/DownloadCfg/APCfm.cfg" -o "$out/.new" \
+     && [ "$(wc -l < "$out/.new")" -gt 500 ] && grep -q '^Default' "$out/.new"; then
+    mv "$out/.new" "$out/APCfm-$TS.cfg"
+    echo "tenda $name: ok ($(wc -l < "$out/APCfm-$TS.cfg") строк)"
+  else
+    echo "tenda $name: FAILED (ответ входа: $(echo "$login" | cut -c1-120))"; rm -f "$out/.new"; fail=1
+  fi
+  curl -s -m10 -b "$jar" -H 'Content-Type: application/json' -d '{"sysLogin":{"username":"","password":"","logoff":true}}' \
+    "http://$host/goform/modules?$$" >/dev/null 2>&1 || true
+}
+if [ -n "${AP_PASSWORD:-}" ]; then
+  ap_backup ap-11 "$AP1_HOST"
+  ap_backup ap-12 "$AP2_HOST"
+fi
+
 # 1-го числа кладём копию в monthly (хранится 13 месяцев), остальные файлы старше KEEP_DAYS чистим
 if [ "$(date +%d)" = "01" ]; then
-  cp "$DIR"/keenetic/running-config-"$TS".txt "$DIR"/hp5130/current-config-"$TS".txt "$DIR/monthly/" 2>/dev/null || true
+  cp "$DIR"/keenetic/running-config-"$TS".txt "$DIR"/hp5130/current-config-"$TS".txt "$DIR"/tenda/*/APCfm-"$TS".cfg "$DIR/monthly/" 2>/dev/null || true
 fi
-find "$DIR/keenetic" "$DIR/hp5130" -type f -name '*-20*.txt' -mtime +"$KEEP_DAYS" -delete
+find "$DIR/keenetic" "$DIR/hp5130" "$DIR/tenda" -type f \( -name '*-20*.txt' -o -name '*-20*.cfg' \) -mtime +"$KEEP_DAYS" -delete
 find "$DIR/monthly" -type f -mtime +400 -delete
 
 exit $fail

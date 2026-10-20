@@ -30,16 +30,9 @@ metadata:
     # GitLab CI job pods (node_selector ci-runner=true)
     ci-runner: "true"
 spec:
+  # Оставлен один тейнт: обычным подам на критической инфре (Frigate, HA, Z2M, Mosquitto) делать нечего.
+  # Остальные (remote, edge, reliability=low) сняты: yolki больше не удалённая нода.
   taints:
-    - key: node.location.type
-      value: remote
-      effect: NoSchedule
-    - key: node.role
-      value: edge
-      effect: NoSchedule
-    - key: node.reliability
-      value: low
-      effect: NoSchedule
     - key: node.workload.class
       value: cctv
       effect: NoSchedule

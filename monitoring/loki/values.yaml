@@ -47,6 +47,13 @@ deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+    limits:
+      cpu: "2"
+      memory: "2Gi"
   extraArgs:
     - -config.expand-env=true
 

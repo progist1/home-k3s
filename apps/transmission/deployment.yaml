@@ -18,11 +18,6 @@ spec:
     spec:
       nodeSelector:
         node.hardware.gpu: intel-igpu
-      tolerations:
-        - key: node.hardware.gpu
-          operator: Equal
-          value: intel-igpu
-          effect: NoSchedule
       securityContext:
         fsGroup: 568
       containers:
