@@ -26,7 +26,7 @@ spec:
           containers:
             - name: backup
               image: alpine:3.20
-              command: ["sh", "-c", "apk add --no-cache -q openssh-client && exec sh /scripts/backup.sh"]
+              command: ["sh", "-c", "apk add --no-cache -q openssh-client curl && exec sh /scripts/backup.sh"]
               env:
                 - name: KEENETIC_HOST
                   value: "10.77.10.1"
@@ -36,6 +36,10 @@ spec:
                   value: "10.77.10.2"
                 - name: HP_USER
                   value: backup
+                - name: AP1_HOST
+                  value: "10.77.10.11"
+                - name: AP2_HOST
+                  value: "10.77.10.12"
               envFrom:
                 - secretRef:
                     name: net-backup-credentials
