@@ -797,6 +797,7 @@ prometheusOperator:
 defaultRules:
   disabled:
     InfoInhibitor: true
+    KubeMemoryOvercommit: true
     KubeControllerManagerDown: true
     KubeSchedulerDown: true
     KubeProxyDown: true
