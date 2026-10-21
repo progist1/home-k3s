@@ -36,7 +36,7 @@ spec:
             - name: DATA_DIR
               value: /data
             - name: NEXTAUTH_URL
-              value: https://karakeep.home
+              value: https://keep.home
             - name: MEILI_ADDR
               value: http://karakeep-meilisearch:7700
             - name: BROWSER_WEB_URL
@@ -57,12 +57,16 @@ spec:
             - name: MEILI_MASTER_KEY
               valueFrom:
                 secretKeyRef: { name: karakeep-secrets, key: MEILI_MASTER_KEY }
-            # Authentik OIDC: включить после создания provider'а (redirect URI https://karakeep.home/api/auth/callback/custom),
-            # добавив OAUTH_CLIENT_ID / OAUTH_CLIENT_SECRET в karakeep-secrets, и поставить DISABLE_SIGNUPS=true
-            # - name: OAUTH_WELLKNOWN_URL
-            #   value: https://auth.progist.ru/application/o/karakeep/.well-known/openid-configuration
-            # - name: OAUTH_PROVIDER_NAME
-            #   value: Authentik
+            - name: OAUTH_WELLKNOWN_URL
+              value: https://auth.progist.ru/application/o/karakeep/.well-known/openid-configuration
+            - name: OAUTH_PROVIDER_NAME
+              value: Authentik
+            - name: OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef: { name: karakeep-secrets, key: OAUTH_CLIENT_ID }
+            - name: OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef: { name: karakeep-secrets, key: OAUTH_CLIENT_SECRET }
           volumeMounts:
             - name: data
               mountPath: /data

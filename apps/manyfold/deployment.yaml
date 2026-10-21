@@ -40,7 +40,7 @@ spec:
             - name: TZ
               value: Europe/Moscow
             - name: PUBLIC_HOSTNAME
-              value: manyfold.home
+              value: stl.home
             - name: REDIS_URL
               value: redis://redis.apps.svc.cluster.local:6379/7
             - name: DATABASE_URL
@@ -49,6 +49,18 @@ spec:
             - name: SECRET_KEY_BASE
               valueFrom:
                 secretKeyRef: { name: manyfold-secrets, key: SECRET_KEY_BASE }
+            - name: MULTIUSER
+              value: enabled
+            - name: OIDC_NAME
+              value: Authentik
+            - name: OIDC_ISSUER
+              value: https://auth.progist.ru/application/o/manyfold/
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef: { name: manyfold-secrets, key: OIDC_CLIENT_ID }
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef: { name: manyfold-secrets, key: OIDC_CLIENT_SECRET }
           volumeMounts:
             - name: config
               mountPath: /config

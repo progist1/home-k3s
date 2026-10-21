@@ -36,7 +36,7 @@ spec:
             - name: SQLITE_PATH
               value: /app/data/homelab.db
             - name: CORS_ORIGINS
-              value: '["https://homelable.home"]'
+              value: '["https://map.home"]'
             - name: SCANNER_RANGES
               value: '["10.77.10.0/24","10.77.20.0/24","10.77.30.0/24","10.77.40.0/24","10.77.50.0/24","10.77.60.0/24","10.77.90.0/24"]'
             - name: STATUS_CHECKER_ENABLED
