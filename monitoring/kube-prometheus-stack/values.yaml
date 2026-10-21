@@ -111,7 +111,9 @@ alertmanager:
       {{ template "tg.escape" $a.Annotations.description }}
       {{- end }}
 
-      {{- if $a.Labels.instance }}
+      {{- if $a.Labels.host }}
+      🖥 Хост: <code>{{ template "tg.escape" $a.Labels.host }}</code>{{ if $a.Labels.instance }} ({{ template "tg.escape" $a.Labels.instance }}){{ end }}
+      {{- else if $a.Labels.instance }}
       🖥 Хост: <code>{{ template "tg.escape" $a.Labels.instance }}</code>
       {{- end }}
 
