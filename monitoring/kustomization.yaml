@@ -4,3 +4,4 @@ resources:
   - promtail
   - gatus
   - uptime-kuma
+  - smokeping

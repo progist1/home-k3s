@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokeping-prober
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: smokeping-prober
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smokeping-prober
+  template:
+    metadata:
+      labels:
+        app: smokeping-prober
+        app.kubernetes.io/name: smokeping-prober
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-pi
+      tolerations:
+        - key: node.hardware.arch
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: smokeping-prober
+          image: quay.io/superq/smokeping-prober:v0.12.0
+          args:
+            - --config.file=/etc/smokeping/config.yml
+            - --privileged
+            - --web.listen-address=:9374
+          env:
+            - name: GOMAXPROCS
+              value: "1"
+          ports:
+            - name: metrics
+              containerPort: 9374
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+              add: ["NET_RAW"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/smokeping
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9374
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9374
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "32Mi"
+            limits:
+              cpu: "250m"
+              memory: "96Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: smokeping-prober-config

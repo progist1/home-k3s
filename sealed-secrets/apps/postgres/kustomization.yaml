@@ -21,3 +21,5 @@ resources:
   - fider-pg-creds-sealed.yaml
   - homebox-pg-creds-sealed.yaml
   - monitor-pg-creds-sealed.yaml
+  - manyfold-pg-creds-sealed.yaml
+  - spoolman-pg-creds-sealed.yaml

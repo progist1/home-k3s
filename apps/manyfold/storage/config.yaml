@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: manyfold-config-pvc
+  namespace: apps
+spec:
+  storageClassName: nfs-nvme-dynamic
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi

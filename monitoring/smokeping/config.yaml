@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smokeping-prober-config
+  namespace: monitoring
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+data:
+  config.yml: |
+    targets:
+      # Интернет: публичные резолверы. Группы различаются только набором хостов, правила алертов матчат по host.
+      - hosts:
+          - 1.1.1.1
+          - 8.8.8.8
+          - 77.88.8.8
+        interval: 1s
+      # Edge VPS: почтовый и аварийный IP
+      - hosts:
+          - 159.194.251.11
+          - 5.35.91.29
+        interval: 1s
+      # Дом: роутер, NAS, ноды, Mac mini (k3s-pi не пингуем, пробер сам на нём)
+      - hosts:
+          - 10.77.10.1
+          - 10.77.20.4
+          - 10.77.20.2
+          - 10.77.20.3
+          - 10.77.20.6
+          - 10.77.20.7
+        interval: 5s

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-kiosk
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: immich-kiosk
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich-kiosk
+  template:
+    metadata:
+      labels:
+        app: immich-kiosk
+        app.kubernetes.io/name: immich-kiosk
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: immich-kiosk
+          image: ghcr.io/damongolding/immich-kiosk:0.45.0
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: LANG
+              value: ru_RU
+            - name: KIOSK_IMMICH_URL
+              value: http://immich-server.apps.svc.cluster.local:2283
+            - name: KIOSK_IMMICH_API_KEY
+              valueFrom:
+                secretKeyRef: { name: immich-kiosk-secrets, key: KIOSK_IMMICH_API_KEY }
+            - name: KIOSK_CACHE
+              value: "true"
+            - name: KIOSK_PREFETCH
+              value: "true"
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

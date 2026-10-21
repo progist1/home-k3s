@@ -17,3 +17,4 @@ resources:
   - uptime-kuma.yaml
   - crowdsec.yaml
   - ups.yaml
+  - smokeping.yaml

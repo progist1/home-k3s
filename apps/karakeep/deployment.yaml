@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karakeep
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: karakeep
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: karakeep
+  template:
+    metadata:
+      labels:
+        app: karakeep
+        app.kubernetes.io/name: karakeep
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: karakeep
+          image: ghcr.io/karakeep-app/karakeep:0.34.0
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: DATA_DIR
+              value: /data
+            - name: NEXTAUTH_URL
+              value: https://karakeep.home
+            - name: MEILI_ADDR
+              value: http://karakeep-meilisearch:7700
+            - name: BROWSER_WEB_URL
+              value: http://karakeep-chrome:9222
+            - name: OLLAMA_BASE_URL
+              value: http://ollama-home-proxy.infra.svc.cluster.local:11434
+            - name: OLLAMA_KEEP_ALIVE
+              value: 10m
+            - name: INFERENCE_TEXT_MODEL
+              value: gemma3:12b
+            - name: INFERENCE_IMAGE_MODEL
+              value: gemma3:12b
+            - name: INFERENCE_CONTEXT_LENGTH
+              value: "4096"
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef: { name: karakeep-secrets, key: NEXTAUTH_SECRET }
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef: { name: karakeep-secrets, key: MEILI_MASTER_KEY }
+            # Authentik OIDC: включить после создания provider'а (redirect URI https://karakeep.home/api/auth/callback/custom),
+            # добавив OAUTH_CLIENT_ID / OAUTH_CLIENT_SECRET в karakeep-secrets, и поставить DISABLE_SIGNUPS=true
+            # - name: OAUTH_WELLKNOWN_URL
+            #   value: https://auth.progist.ru/application/o/karakeep/.well-known/openid-configuration
+            # - name: OAUTH_PROVIDER_NAME
+            #   value: Authentik
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "384Mi"
+            limits:
+              cpu: "1500m"
+              memory: "1Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: karakeep-data-pvc

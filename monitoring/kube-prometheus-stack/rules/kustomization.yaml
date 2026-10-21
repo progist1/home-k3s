@@ -22,3 +22,4 @@ resources:
   - ups.yaml
   - renovate.yaml
   - net-backup.yaml
+  - smokeping.yaml

@@ -103,6 +103,14 @@ spec:
         ensure: present
         login: true
         passwordSecret: { name: homebox-pg-creds }
+      - name: manyfold
+        ensure: present
+        login: true
+        passwordSecret: { name: manyfold-pg-creds }
+      - name: spoolman
+        ensure: present
+        login: true
+        passwordSecret: { name: spoolman-pg-creds }
       - name: progist
         ensure: present
         login: true

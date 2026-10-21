@@ -26,3 +26,7 @@ resources:
   - home-assistant
   - mosquitto
   - net-backup
+  - homelable
+  - immich-kiosk
+  - karakeep
+  - manyfold

@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-backend
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: homelable-backend
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: homelable-backend
+  template:
+    metadata:
+      labels:
+        app: homelable-backend
+        app.kubernetes.io/name: homelable-backend
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: backend
+          image: ghcr.io/pouzor/homelable-backend:3.6.0
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: SQLITE_PATH
+              value: /app/data/homelab.db
+            - name: CORS_ORIGINS
+              value: '["https://homelable.home"]'
+            - name: SCANNER_RANGES
+              value: '["10.77.10.0/24","10.77.20.0/24","10.77.30.0/24","10.77.40.0/24","10.77.50.0/24","10.77.60.0/24","10.77.90.0/24"]'
+            - name: STATUS_CHECKER_ENABLED
+              value: "true"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: SECRET_KEY }
+            - name: AUTH_USERNAME
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: AUTH_USERNAME }
+            - name: AUTH_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: AUTH_PASSWORD_HASH }
+          securityContext:
+            capabilities:
+              add: ["NET_RAW"]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "1000m"
+              memory: "512Mi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: homelable-data-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-frontend
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: homelable-frontend
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homelable-frontend
+  template:
+    metadata:
+      labels:
+        app: homelable-frontend
+        app.kubernetes.io/name: homelable-frontend
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: frontend
+          image: ghcr.io/pouzor/homelable-frontend:3.6.0
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: BACKEND_UPSTREAM
+              value: homelable-backend:8000
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "200m"
+              memory: "64Mi"

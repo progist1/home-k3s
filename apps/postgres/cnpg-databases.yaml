@@ -195,3 +195,26 @@ spec:
   owner: homebox
   cluster:
     name: apps-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: manyfold-db
+  namespace: apps
+spec:
+  name: manyfold
+  owner: manyfold
+  cluster:
+    name: apps-pg
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: spoolman-db
+  namespace: apps
+spec:
+  name: spoolman
+  owner: spoolman
+  cluster:
+    name: apps-pg

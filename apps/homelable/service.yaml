@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: homelable-backend
+  namespace: apps
+spec:
+  selector:
+    app: homelable-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homelable
+  namespace: apps
+spec:
+  selector:
+    app: homelable-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

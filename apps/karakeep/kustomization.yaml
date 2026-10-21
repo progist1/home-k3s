@@ -1,0 +1,7 @@
+resources:
+  - storage
+  - deployment.yaml
+  - deployment-chrome.yaml
+  - deployment-meilisearch.yaml
+  - service.yaml
+  - ingress-internal.yaml

@@ -1,0 +1,106 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: smokeping-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: smokeping-recording
+    interval: 30s
+    rules:
+    # потери за 5м: доля пакетов без ответа
+    - record: smokeping:packet_loss:ratio_5m
+      expr: |
+        clamp_min(
+          1 - (
+            sum by (host) (rate(smokeping_response_duration_seconds_count[5m]))
+            /
+            sum by (host) (rate(smokeping_requests_total[5m]))
+          ), 0)
+    - record: smokeping:rtt_seconds:p95_5m
+      expr: |
+        histogram_quantile(0.95,
+          sum by (host, le) (rate(smokeping_response_duration_seconds_bucket[5m])))
+
+  - name: smokeping
+    interval: 60s
+    rules:
+    - alert: SmokepingProberDown
+      expr: up{job="smokeping-prober"} == 0 or absent(smokeping_requests_total)
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "SmokePing prober недоступен"
+        description: "Метрики задержек и потерь не собираются (prober на k3s-pi)."
+
+    - alert: SmokepingInternetPacketLoss
+      expr: smokeping:packet_loss:ratio_5m{host=~"1\\.1\\.1\\.1|8\\.8\\.8\\.8|77\\.88\\.8\\.8"} > 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Потери до {{ $labels.host }}: {{ $value | humanizePercentage }}"
+        description: |
+          Потери пакетов до публичного адреса {{ $labels.host }} выше 5% за 5 минут.
+          Если одновременно плохо до всех трёх, виноват провайдер или WAN; если до одного, проблема маршрута.
+
+    - alert: SmokepingEdgeVpsPacketLoss
+      expr: smokeping:packet_loss:ratio_5m{host=~"159\\.194\\.251\\.11|5\\.35\\.91\\.29"} > 0.2
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Потери до edge VPS {{ $labels.host }}: {{ $value | humanizePercentage }}"
+        description: |
+          Через VPS идёт весь публичный трафик (frps/Headscale/почта). Потери выше 20% за 5 минут.
+          159.194.251.11 — почтовый IP (frps), 5.35.91.29 — аварийный (SSH, Headscale).
+
+    - alert: SmokepingInternetLatencyHigh
+      expr: smokeping:rtt_seconds:p95_5m{host=~"1\\.1\\.1\\.1|8\\.8\\.8\\.8|77\\.88\\.8\\.8"} > 0.1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "p95 RTT до {{ $labels.host }}: {{ $value | humanizeDuration }}"
+        description: "Задержка до публичного адреса выше 100 мс (p95) в течение 10 минут."
+
+    - alert: SmokepingEdgeVpsLatencyHigh
+      expr: smokeping:rtt_seconds:p95_5m{host=~"159\\.194\\.251\\.11|5\\.35\\.91\\.29"} > 0.15
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "p95 RTT до edge VPS {{ $labels.host }}: {{ $value | humanizeDuration }}"
+        description: "Задержка до VPS выше 150 мс (p95) в течение 10 минут, деградация пользовательского трафика."
+
+    - alert: SmokepingLanPacketLoss
+      expr: smokeping:packet_loss:ratio_5m{host=~"10\\.77\\..*"} > 0.02
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Потери в LAN до {{ $labels.host }}: {{ $value | humanizePercentage }}"
+        description: "Потери выше 2% за 5 минут внутри дома (кабель, порт коммутатора или перегруженный хост)."
+
+    - alert: SmokepingLanHostUnreachable
+      expr: smokeping:packet_loss:ratio_5m{host=~"10\\.77\\..*"} > 0.95
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Хост {{ $labels.host }} не отвечает на ping"
+        description: |
+          100% потерь до {{ $labels.host }} три минуты подряд. Недоступность нод уже ловит NodeDown,
+          этот алерт покрывает роутер (10.77.10.1), NAS (10.77.20.4) и Mac mini (10.77.20.7).
+
+    - alert: SmokepingSendErrors
+      expr: rate(smokeping_send_errors_total[5m]) > 0
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "SmokePing не может отправлять пакеты до {{ $labels.host }}"
+        description: "Ошибки отправки ICMP из пода (нет маршрута, нет прав или лимит ядра)."

@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: smokeping-prober
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: smokeping-prober
+  scrapeInterval: 15s
+  metricsPath: '/metrics'
+  scheme: HTTP
+  staticConfigs:
+  - targets:
+    - 'smokeping-prober.monitoring.svc.cluster.local:9374'
+    labels:
+      group: 'smokeping'
+      host_node: 'k3s-pi'
+      location: 'home'
+  metricRelabelings:
+    # гистограммы (_bucket) нужны для p95/джиттера, поэтому режем только лишнее
+    - sourceLabels: ["__name__"]
+      regex: 'smokeping_response_ttl'
+      action: drop
+    - sourceLabels: ["__name__"]
+      regex: '.*_created$'
+      action: drop

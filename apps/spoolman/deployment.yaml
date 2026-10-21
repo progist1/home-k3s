@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spoolman
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: spoolman
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spoolman
+  template:
+    metadata:
+      labels:
+        app: spoolman
+        app.kubernetes.io/name: spoolman
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: spoolman
+          image: ghcr.io/donkie/spoolman:0.27.0
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: TZ
+              value: Europe/Moscow
+            - name: SPOOLMAN_DB_TYPE
+              value: postgres
+            - name: SPOOLMAN_DB_HOST
+              value: apps-pg-rw.apps.svc.cluster.local
+            - name: SPOOLMAN_DB_PORT
+              value: "5432"
+            - name: SPOOLMAN_DB_NAME
+              value: spoolman
+            - name: SPOOLMAN_DB_USERNAME
+              valueFrom:
+                secretKeyRef: { name: spoolman-pg-creds, key: username }
+            - name: SPOOLMAN_DB_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: spoolman-pg-creds, key: password }
+            # Prometheus: /metrics, метрика spoolman_spool_weight_used
+            - name: SPOOLMAN_METRICS_ENABLED
+              value: "TRUE"
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "96Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

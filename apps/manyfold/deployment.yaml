@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manyfold
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: manyfold
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: manyfold
+  template:
+    metadata:
+      labels:
+        app: manyfold
+        app.kubernetes.io/name: manyfold
+    spec:
+      enableServiceLinks: false
+      nodeSelector:
+        kubernetes.io/hostname: k3s-prod
+      containers:
+        - name: manyfold
+          image: lscr.io/linuxserver/manyfold:0.150.0
+          ports:
+            - name: http
+              containerPort: 3214
+          env:
+            - name: PUID
+              value: "568"
+            - name: PGID
+              value: "568"
+            - name: TZ
+              value: Europe/Moscow
+            - name: PUBLIC_HOSTNAME
+              value: manyfold.home
+            - name: REDIS_URL
+              value: redis://redis.apps.svc.cluster.local:6379/7
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: { name: manyfold-secrets, key: DATABASE_URL }
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef: { name: manyfold-secrets, key: SECRET_KEY_BASE }
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: libraries
+              mountPath: /libraries
+          readinessProbe:
+            tcpSocket:
+              port: 3214
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          livenessProbe:
+            tcpSocket:
+              port: 3214
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: "150m"
+              memory: "768Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2Gi"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: manyfold-config-pvc
+        - name: libraries
+          persistentVolumeClaim:
+            claimName: manyfold-libraries-pvc
