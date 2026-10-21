@@ -778,6 +778,9 @@ nodeExporter:
       value: "cctv"
       effect: "NoSchedule"
   serviceMonitor:
+    relabelings:
+      - sourceLabels: ["__meta_kubernetes_pod_node_name"]
+        targetLabel: host
     metricRelabelings:
       - sourceLabels: ["__name__"]
         regex: 'node_(cpu|memory|load|disk|network|filesystem).*'
