@@ -22,20 +22,12 @@ spec:
       securityContext:
         fsGroup: 1000
       automountServiceAccountToken: true
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - k3s-pi
+      nodeSelector:
+        kubernetes.io/hostname: k3s-yolki
       tolerations:
-        - key: node.hardware.arch
+        - key: node.workload.class
           operator: Equal
-          value: "arm64"
+          value: cctv
           effect: NoSchedule
       containers:
         - name: homepage
@@ -68,19 +60,22 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           livenessProbe:
             httpGet:
               path: /api/healthcheck
               port: http
             initialDelaySeconds: 20
             periodSeconds: 30
-            failureThreshold: 5
+            timeoutSeconds: 10
+            failureThreshold: 6
           resources:
             requests:
-              cpu: "50m"
+              cpu: "100m"
               memory: "192Mi"
             limits:
-              cpu: "500m"
+              cpu: "2"
               memory: "512Mi"
           volumeMounts:
             - { name: configdir, mountPath: /app/config }
