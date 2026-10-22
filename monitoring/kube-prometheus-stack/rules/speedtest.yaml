@@ -1,0 +1,57 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: speedtest-rules
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: speedtest
+    interval: 60s
+    rules:
+    - alert: SpeedtestDownloadDegraded
+      expr: |
+        speedtest_download_mbps
+          < 0.6 * quantile_over_time(0.5, speedtest_download_mbps[7d])
+      for: 45m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Download до {{ $labels.instance }}: {{ $value | printf \"%.0f\" }} Мбит/с (меньше 60% от медианы за 7 дней)"
+        description: |
+          Входящая скорость упала ниже 60% обычной (медиана за 7 дней) два замера подряд.
+          **Action:** 🌐 Сравни с пингом/потерями на дашборде «Internet / Ping»; если плохо только скорость, проверь загрузку канала (torrent, бэкапы B2) и звони провайдеру.
+
+    - alert: SpeedtestUploadDegraded
+      expr: |
+        speedtest_upload_mbps
+          < 0.6 * quantile_over_time(0.5, speedtest_upload_mbps[7d])
+      for: 45m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Upload до {{ $labels.instance }}: {{ $value | printf \"%.0f\" }} Мбит/с (меньше 60% от медианы за 7 дней)"
+        description: |
+          Исходящая скорость упала ниже 60% обычной два замера подряд. Через upload идёт весь публичный трафик (frp → VPS), офсайт-бэкапы в B2 и почта.
+          **Action:** 🌐 Проверь, не идёт ли офсайт-бэкап (K8up → B2, 04:00); иначе проблема на стороне провайдера.
+
+    - alert: SpeedtestPingHigh
+      expr: speedtest_ping_ms > 40
+      for: 45m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Пинг до {{ $labels.instance }}: {{ $value | printf \"%.0f\" }} мс"
+        description: "Задержка до сервера замера выше 40 мс два замера подряд (обычно ~14 мс до Москвы)."
+
+    - alert: SpeedtestStale
+      expr: time() - speedtest_last_success_timestamp_seconds > 7200
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Замер скорости {{ $labels.instance }} не обновлялся более 2 часов"
+        description: |
+          CronJob `speedtest` (monitoring, k3s-pi) не пушит метрики: Job падает, сервер замера недоступен или Pushgateway не отвечает.
+          **Action:** 🔍 `kubectl -n monitoring get jobs -l app=speedtest`, `kubectl -n monitoring logs job/<имя>`

@@ -23,3 +23,4 @@ resources:
   - renovate.yaml
   - net-backup.yaml
   - smokeping.yaml
+  - speedtest.yaml

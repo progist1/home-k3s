@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: speedtest-script
+  namespace: monitoring
+  labels:
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+data:
+  run.sh: |
+    #!/bin/sh
+    # Замер скорости librespeed-cli и push в Pushgateway. Сервера: TARGETS="имя|servers.json|id" через пробел.
+    set -eu
+    fail=0
+    for t in $TARGETS; do
+      name=${t%%|*}; rest=${t#*|}; json=${rest%%|*}; id=${rest#*|}
+      # CSV: timestamp, server (с запятой, в кавычках), url, ping, jitter, download, upload, share, ip: считаем с конца
+      line=$(librespeed-cli --server-json "$json" --server "$id" --duration 10 --csv | tail -n1) || line=""
+      echo "$name: $line"
+      echo "$line" | awk -F, -v n="$name" '
+        NF >= 8 && $(NF-5) + 0 > 0 && $(NF-3) + 0 > 0 {
+          printf "# TYPE speedtest_ping_ms gauge\nspeedtest_ping_ms %s\n", $(NF-5)
+          printf "# TYPE speedtest_jitter_ms gauge\nspeedtest_jitter_ms %s\n", $(NF-4)
+          printf "# TYPE speedtest_download_mbps gauge\nspeedtest_download_mbps %s\n", $(NF-3)
+          printf "# TYPE speedtest_upload_mbps gauge\nspeedtest_upload_mbps %s\n", $(NF-2)
+          ok = 1
+        }
+        END { exit !ok }' > /tmp/m.txt || { echo "$name: замер не удался"; fail=1; continue; }
+      echo "# TYPE speedtest_last_success_timestamp_seconds gauge" >> /tmp/m.txt
+      echo "speedtest_last_success_timestamp_seconds $(date +%s)" >> /tmp/m.txt
+      wget -q -T 20 -O /dev/null --header 'Content-Type: text/plain' --post-file=/tmp/m.txt \
+        "http://prometheus-pushgateway.monitoring.svc.cluster.local:9091/metrics/job/speedtest/instance/${name}"
+    done
+    exit $fail
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: speedtest
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: speedtest
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 240
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app: speedtest
+        spec:
+          restartPolicy: Never
+          enableServiceLinks: false
+          nodeSelector:
+            kubernetes.io/hostname: k3s-pi
+          tolerations:
+            - key: node.hardware.arch
+              operator: Exists
+              effect: NoSchedule
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: speedtest
+              image: ghcr.io/danieletorelli/librespeed-cli:1.0.14_2
+              command: ["/bin/sh", "/scripts/run.sh"]
+              env:
+                # имя|servers.json|id
+                - name: TARGETS
+                  value: "hostkey-msk|https://speedtest.hostkey.ru/servers.json|5"
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 64Mi
+                limits:
+                  cpu: "1"
+                  memory: 256Mi
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: script
+              configMap:
+                name: speedtest-script
+            - name: tmp
+              emptyDir: {}

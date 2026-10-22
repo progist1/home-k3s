@@ -1,0 +1,1137 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-internet
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Infrastructure"
+data:
+  internet-ping.json: |
+    {
+      "title": "Internet / Ping",
+      "uid": "internet-ping",
+      "tags": [
+        "network",
+        "smokeping"
+      ],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "editable": true,
+      "refresh": "30s",
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "templating": {
+        "list": [
+          {
+            "name": "ds",
+            "label": "Prometheus",
+            "type": "datasource",
+            "query": "prometheus",
+            "current": {}
+          }
+        ]
+      },
+      "annotations": {
+        "list": []
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "stat",
+          "title": "Пинг до интернета: потери (макс по 3 резолверам)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "max(smokeping:packet_loss:ratio_5m{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"})",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.02
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.05
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "Пинг до интернета: RTT p95 (худший)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 0,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "max(smokeping:rtt_seconds:p95_5m{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"})",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.05
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.1
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Пинг до VPS: потери (макс)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "max(smokeping:packet_loss:ratio_5m{host=~\"159\\\\.194\\\\.251\\\\.11|5\\\\.35\\\\.91\\\\.29\"})",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.05
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.2
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Пинг до VPS: RTT p95 (худший)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 0,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "max(smokeping:rtt_seconds:p95_5m{host=~\"159\\\\.194\\\\.251\\\\.11|5\\\\.35\\\\.91\\\\.29\"})",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.15
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 16,
+          "type": "row",
+          "title": "Скорость (librespeed, сервер hostkey Москва, раз в 30 мин, с k3s-pi)",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 4,
+            "w": 24,
+            "h": 1
+          }
+        },
+        {
+          "id": 17,
+          "type": "stat",
+          "title": "Download",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 5,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "speedtest_download_mbps{job=\"speedtest\"}",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Mbits",
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 50
+                  },
+                  {
+                    "color": "green",
+                    "value": 80
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 18,
+          "type": "stat",
+          "title": "Upload",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 6,
+            "y": 5,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "speedtest_upload_mbps{job=\"speedtest\"}",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Mbits",
+              "decimals": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 50
+                  },
+                  {
+                    "color": "green",
+                    "value": 80
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 19,
+          "type": "stat",
+          "title": "Пинг до сервера замера",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 5,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "speedtest_ping_ms{job=\"speedtest\"}",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms",
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 25
+                  },
+                  {
+                    "color": "red",
+                    "value": 40
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 20,
+          "type": "stat",
+          "title": "Джиттер",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 5,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "speedtest_jitter_ms{job=\"speedtest\"}",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 5
+                  },
+                  {
+                    "color": "red",
+                    "value": 15
+                  }
+                ]
+              },
+              "color": {
+                "mode": "thresholds"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          }
+        },
+        {
+          "id": 21,
+          "type": "timeseries",
+          "title": "Скорость вниз/вверх",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 9,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "speedtest_download_mbps{job=\"speedtest\"}",
+              "refId": "A",
+              "legendFormat": "download {{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            },
+            {
+              "expr": "speedtest_upload_mbps{job=\"speedtest\"}",
+              "refId": "B",
+              "legendFormat": "upload {{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Mbits",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 22,
+          "type": "timeseries",
+          "title": "Пинг и джиттер до сервера замера",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 9,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "speedtest_ping_ms{job=\"speedtest\"}",
+              "refId": "A",
+              "legendFormat": "пинг {{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            },
+            {
+              "expr": "speedtest_jitter_ms{job=\"speedtest\"}",
+              "refId": "B",
+              "legendFormat": "джиттер {{instance}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ms",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 5,
+          "type": "row",
+          "title": "Пинг до интернета (с k3s-pi): 1.1.1.1, 8.8.8.8, 77.88.8.8",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 17,
+            "w": 24,
+            "h": 1
+          }
+        },
+        {
+          "id": 6,
+          "type": "timeseries",
+          "title": "RTT среднее",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 18,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum by (host) (rate(smokeping_response_duration_seconds_sum{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}[$__rate_interval])) / sum by (host) (rate(smokeping_response_duration_seconds_count{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}[$__rate_interval]))",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "timeseries",
+          "title": "Потери за 5м",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 18,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "smokeping:packet_loss:ratio_5m{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "type": "timeseries",
+          "title": "RTT p95 за 5м",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 26,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "smokeping:rtt_seconds:p95_5m{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "timeseries",
+          "title": "Джиттер (p95 − среднее)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 26,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "smokeping:rtt_seconds:p95_5m{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"} - on(host) sum by (host) (rate(smokeping_response_duration_seconds_sum{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}[$__rate_interval])) / sum by (host) (rate(smokeping_response_duration_seconds_count{host=~\"1\\\\.1\\\\.1\\\\.1|8\\\\.8\\\\.8\\\\.8|77\\\\.88\\\\.8\\\\.8\"}[$__rate_interval]))",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 10,
+          "type": "row",
+          "title": "Пинг до edge VPS (с k3s-pi): 159.194.251.11 почтовый, 5.35.91.29 аварийный",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 34,
+            "w": 24,
+            "h": 1
+          }
+        },
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "RTT среднее",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 35,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum by (host) (rate(smokeping_response_duration_seconds_sum{host=~\"159\\\\.194\\\\.251\\\\.11|5\\\\.35\\\\.91\\\\.29\"}[$__rate_interval])) / sum by (host) (rate(smokeping_response_duration_seconds_count{host=~\"159\\\\.194\\\\.251\\\\.11|5\\\\.35\\\\.91\\\\.29\"}[$__rate_interval]))",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Потери за 5м",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 35,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "smokeping:packet_loss:ratio_5m{host=~\"159\\\\.194\\\\.251\\\\.11|5\\\\.35\\\\.91\\\\.29\"}",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 13,
+          "type": "row",
+          "title": "Пинг до домашних хостов (с k3s-pi): роутер, NAS, ноды, Mac mini",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 43,
+            "w": 24,
+            "h": 1
+          }
+        },
+        {
+          "id": 14,
+          "type": "timeseries",
+          "title": "RTT среднее",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 44,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum by (host) (rate(smokeping_response_duration_seconds_sum{host=~\"10\\\\.77\\\\..*\"}[$__rate_interval])) / sum by (host) (rate(smokeping_response_duration_seconds_count{host=~\"10\\\\.77\\\\..*\"}[$__rate_interval]))",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 15,
+          "type": "timeseries",
+          "title": "Потери за 5м",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 44,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "smokeping:packet_loss:ratio_5m{host=~\"10\\\\.77\\\\..*\"}",
+              "refId": "A",
+              "legendFormat": "{{host}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${ds}"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 8,
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "mean",
+                "max",
+                "lastNotNull"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        }
+      ]
+    }

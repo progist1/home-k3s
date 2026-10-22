@@ -5,3 +5,4 @@ resources:
   - gatus
   - uptime-kuma
   - smokeping
+  - speedtest
