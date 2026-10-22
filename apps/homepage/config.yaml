@@ -52,8 +52,8 @@ data:
 
   widgets.yaml: |
     - greeting:
-        text_size: md
-        text: "🔐 SSO Authentik · 🔑 свой логин · 🌐 без входа"
+        text_size: xs
+        text: "🔐 SSO · 🔑 свой логин · 🌐 без входа"
     - kubernetes:
         cluster:
           show: true
@@ -66,12 +66,13 @@ data:
           cpu: true
           memory: true
           showLabel: true
-    - openmeteo:
+    - openweathermap:
         label: Погода
         latitude: 59.807
         longitude: 30.649
-        timezone: Europe/Moscow
         units: metric
+        provider: openweathermap
+        apiKey: "{{HOMEPAGE_VAR_OPENWEATHERMAP_KEY}}"
         cache: 10
     - datetime:
         text_size: md
@@ -159,10 +160,6 @@ data:
           href: https://transmission.home
           description: 🌐 торренты
           siteMonitor: http://transmission.apps.svc.cluster.local
-          widget:
-            type: transmission
-            url: http://transmission.apps.svc.cluster.local
-            rpcUrl: /transmission/
       - Tdarr:
           icon: tdarr
           href: https://tdarr.home
@@ -297,5 +294,9 @@ data:
   docker.yaml: |
     {}
 
-  custom.css: ""
+  custom.css: |
+    /* легенда значков доступа: тихая, не конкурирует с плитками */
+    .information-widget-greeting {
+      opacity: 0.45;
+    }
   custom.js: ""
