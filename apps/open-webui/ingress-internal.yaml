@@ -10,6 +10,7 @@ metadata:
     environment: production
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=open-webui"
     gethomepage.dev/name: "Open WebUI"
     gethomepage.dev/group: "ИИ"
     gethomepage.dev/icon: "open-webui"

@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=zigbee2mqtt"
     gethomepage.dev/name: "Zigbee2MQTT"
     gethomepage.dev/group: "Дом"
     gethomepage.dev/icon: "zigbee2mqtt"

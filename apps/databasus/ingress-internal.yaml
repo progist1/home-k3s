@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=databasus"
     gethomepage.dev/name: "Databasus"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "mdi-database"

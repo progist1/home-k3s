@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=airtrail"
     gethomepage.dev/name: "AirTrail"
     gethomepage.dev/group: "Дом"
     gethomepage.dev/icon: "mdi-airplane"

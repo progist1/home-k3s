@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=n8n"
     gethomepage.dev/name: "n8n"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "n8n"

@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=immich-kiosk"
     gethomepage.dev/name: "Слайдшоу"
     gethomepage.dev/group: "Фото и файлы"
     gethomepage.dev/icon: "immich"

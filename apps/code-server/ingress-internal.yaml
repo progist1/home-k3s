@@ -9,6 +9,7 @@ metadata:
     environment: production
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=code-server"
     gethomepage.dev/name: "VS Code"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "code-server"

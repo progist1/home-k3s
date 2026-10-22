@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=bulwark"
     gethomepage.dev/name: "Почта"
     gethomepage.dev/group: "Почта"
     gethomepage.dev/icon: "mdi-email-outline"

@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=actual-budget"
     gethomepage.dev/name: "Actual Budget"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "actual-budget"

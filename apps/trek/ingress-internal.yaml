@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=trek"
     gethomepage.dev/name: "Trek"
     gethomepage.dev/group: "Дом"
     gethomepage.dev/icon: "mdi-map-marker-path"

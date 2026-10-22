@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=vaultwarden"
     gethomepage.dev/name: "Vaultwarden"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "vaultwarden"

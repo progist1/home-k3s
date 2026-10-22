@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=homebox"
     gethomepage.dev/name: "Homebox"
     gethomepage.dev/group: "Дом"
     gethomepage.dev/icon: "homebox"

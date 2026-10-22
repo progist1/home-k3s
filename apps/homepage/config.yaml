@@ -89,202 +89,212 @@ data:
   # SealedSecret homepage-secrets (env HOMEPAGE_VAR_*).
   services.yaml: |
     - Медиа:
-            - Jellyfin:
-                icon: jellyfin
-                href: https://watch.home
-                description: "🔑 фильмы и сериалы"
-                siteMonitor: http://jellyfin.apps.svc.cluster.local:8096
-                widget:
-                type: jellyfin
-                url: http://jellyfin.apps.svc.cluster.local:8096
-                key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
-                enableBlocks: true
-                enableNowPlaying: true
-            - Seerr:
-                icon: jellyseerr
-                href: https://seerr.home
-                description: "🔑 заявки на фильмы"
-                siteMonitor: http://seerr.apps.svc.cluster.local
-                widget:
-                type: seerr
-                url: http://seerr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_SEERR_KEY}}"
-            - Sonarr:
-                icon: sonarr
-                href: https://sonarr.home
-                description: "🔑 сериалы"
-                siteMonitor: http://sonarr.apps.svc.cluster.local
-                widget:
-                type: sonarr
-                url: http://sonarr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
-            - Radarr:
-                icon: radarr
-                href: https://radarr.home
-                description: "🔑 фильмы"
-                siteMonitor: http://radarr.apps.svc.cluster.local
-                widget:
-                type: radarr
-                url: http://radarr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
-            - Lidarr:
-                icon: lidarr
-                href: https://lidarr.home
-                description: "🔑 музыка"
-                siteMonitor: http://lidarr.apps.svc.cluster.local
-                widget:
-                type: lidarr
-                url: http://lidarr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
-            - Prowlarr:
-                icon: prowlarr
-                href: https://prowlarr.home
-                description: "🔑 индексаторы"
-                siteMonitor: http://prowlarr.apps.svc.cluster.local
-                widget:
-                type: prowlarr
-                url: http://prowlarr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
-            - Bazarr:
-                icon: bazarr
-                href: https://bazarr.home
-                description: "🔑 субтитры"
-                siteMonitor: http://bazarr.apps.svc.cluster.local
-                widget:
-                type: bazarr
-                url: http://bazarr.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
-            - Transmission:
-            icon: transmission
-            href: https://transmission.home
-            description: "🌐 торренты"
-            siteMonitor: http://transmission.apps.svc.cluster.local
-            widget:
-              type: transmission
-              url: http://transmission.apps.svc.cluster.local
-              rpcUrl: /transmission/
-        - Tdarr:
-                icon: tdarr
-                href: https://tdarr.home
-                description: "🌐 перекодирование медиатеки"
-                siteMonitor: http://tdarr.apps.svc.cluster.local
-                widget:
-                type: tdarr
-                url: http://tdarr.apps.svc.cluster.local
+      - Jellyfin:
+          icon: jellyfin
+          href: https://watch.home
+          description: 🔑 фильмы и сериалы
+          siteMonitor: http://jellyfin.apps.svc.cluster.local:8096
+          widget:
+            type: jellyfin
+            url: http://jellyfin.apps.svc.cluster.local:8096
+            key: '{{HOMEPAGE_VAR_JELLYFIN_KEY}}'
+            enableBlocks: true
+            enableNowPlaying: true
+      - Seerr:
+          icon: jellyseerr
+          href: https://seerr.home
+          description: 🔑 заявки на фильмы
+          siteMonitor: http://seerr.apps.svc.cluster.local
+          widget:
+            type: seerr
+            url: http://seerr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_SEERR_KEY}}'
+      - Sonarr:
+          icon: sonarr
+          href: https://sonarr.home
+          description: 🔑 сериалы
+          siteMonitor: http://sonarr.apps.svc.cluster.local
+          widget:
+            type: sonarr
+            url: http://sonarr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_SONARR_KEY}}'
+      - Radarr:
+          icon: radarr
+          href: https://radarr.home
+          description: 🔑 фильмы
+          siteMonitor: http://radarr.apps.svc.cluster.local
+          widget:
+            type: radarr
+            url: http://radarr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_RADARR_KEY}}'
+      - Lidarr:
+          icon: lidarr
+          href: https://lidarr.home
+          description: 🔑 музыка
+          siteMonitor: http://lidarr.apps.svc.cluster.local
+          widget:
+            type: lidarr
+            url: http://lidarr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_LIDARR_KEY}}'
+      - Prowlarr:
+          icon: prowlarr
+          href: https://prowlarr.home
+          description: 🔑 индексаторы
+          siteMonitor: http://prowlarr.apps.svc.cluster.local
+          widget:
+            type: prowlarr
+            url: http://prowlarr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_PROWLARR_KEY}}'
+      - Bazarr:
+          icon: bazarr
+          href: https://bazarr.home
+          description: 🔑 субтитры
+          siteMonitor: http://bazarr.apps.svc.cluster.local
+          widget:
+            type: bazarr
+            url: http://bazarr.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_BAZARR_KEY}}'
+      - Transmission:
+          icon: transmission
+          href: https://transmission.home
+          description: 🌐 торренты
+          siteMonitor: http://transmission.apps.svc.cluster.local
+          widget:
+            type: transmission
+            url: http://transmission.apps.svc.cluster.local
+            rpcUrl: /transmission/
+      - Tdarr:
+          icon: tdarr
+          href: https://tdarr.home
+          description: 🌐 перекодирование медиатеки
+          siteMonitor: http://tdarr.apps.svc.cluster.local
+          widget:
+            type: tdarr
+            url: http://tdarr.apps.svc.cluster.local
     - Фото и файлы:
-            - Immich:
-                icon: immich
-                href: https://photos.home
-                description: "🔐 фото и видео"
-                siteMonitor: http://immich-server.apps.svc.cluster.local:2283
-                widget:
-                type: immich
-                url: http://immich-server.apps.svc.cluster.local:2283
-                key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-                version: 2
-            - Файлы:
-                icon: filebrowser
-                href: https://share.home
-                description: "🔑 файловый менеджер"
-                siteMonitor: http://filebrowser.apps.svc.cluster.local
-                widget:
-                type: filebrowser
-                url: http://filebrowser.apps.svc.cluster.local
-                username: "{{HOMEPAGE_VAR_FILEBROWSER_USER}}"
-                password: "{{HOMEPAGE_VAR_FILEBROWSER_PASSWORD}}"
+      - Immich:
+          icon: immich
+          href: https://photos.home
+          description: 🔐 фото и видео
+          siteMonitor: http://immich-server.apps.svc.cluster.local:2283
+          widget:
+            type: immich
+            url: http://immich-server.apps.svc.cluster.local:2283
+            key: '{{HOMEPAGE_VAR_IMMICH_KEY}}'
+            version: 2
+      - Файлы:
+          icon: filebrowser
+          href: https://share.home
+          description: 🔑 файловый менеджер
+          siteMonitor: http://filebrowser.apps.svc.cluster.local
+          widget:
+            type: filebrowser
+            url: http://filebrowser.apps.svc.cluster.local
+            username: '{{HOMEPAGE_VAR_FILEBROWSER_USER}}'
+            password: '{{HOMEPAGE_VAR_FILEBROWSER_PASSWORD}}'
     - Дом:
-            - Frigate:
-                icon: frigate
-                href: https://cctv.home
-                description: "🔑 видеонаблюдение, Coral"
-                siteMonitor: http://frigate.apps.svc.cluster.local:5000
-                widget:
-                type: frigate
-                url: http://frigate.apps.svc.cluster.local:5000
-            - Spoolman:
-                icon: spoolman
-                href: https://spool.home
-                description: "🌐 учёт филамента"
-                siteMonitor: http://spoolman.apps.svc.cluster.local
-                widget:
-                type: spoolman
-                url: http://spoolman.apps.svc.cluster.local
+      - Frigate:
+          icon: frigate
+          href: https://cctv.home
+          description: 🔑 видеонаблюдение, Coral
+          siteMonitor: http://frigate.apps.svc.cluster.local:5000
+          widget:
+            type: frigate
+            url: http://frigate.apps.svc.cluster.local:5000
+      - Spoolman:
+          icon: spoolman
+          href: https://spool.home
+          description: 🌐 учёт филамента
+          siteMonitor: http://spoolman.apps.svc.cluster.local
+          widget:
+            type: spoolman
+            url: http://spoolman.apps.svc.cluster.local
     - Продуктивность:
-            - Mealie:
-                icon: mealie
-                href: https://eda.home
-                description: "🔑 рецепты"
-                siteMonitor: http://mealie.apps.svc.cluster.local
-                widget:
-                type: mealie
-                url: http://mealie.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_MEALIE_KEY}}"
-                version: 2
-            - Karakeep:
-                icon: karakeep
-                href: https://keep.home
-                description: "🔐 закладки с ИИ-тегами"
-                siteMonitor: http://karakeep.apps.svc.cluster.local
-                widget:
-                type: karakeep
-                url: http://karakeep.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_KARAKEEP_KEY}}"
-            - Vikunja:
-                icon: vikunja
-                href: https://v.progist.ru
-                description: "🔐 задачи"
-                siteMonitor: http://vikunja.apps.svc.cluster.local
-                widget:
-                type: vikunja
-                url: http://vikunja.apps.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_VIKUNJA_KEY}}"
-                version: 2
+      - Mealie:
+          icon: mealie
+          href: https://eda.home
+          description: 🔑 рецепты
+          siteMonitor: http://mealie.apps.svc.cluster.local
+          widget:
+            type: mealie
+            url: http://mealie.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_MEALIE_KEY}}'
+            version: 2
+      - Karakeep:
+          icon: karakeep
+          href: https://keep.home
+          description: 🔐 закладки с ИИ-тегами
+          siteMonitor: http://karakeep.apps.svc.cluster.local
+          widget:
+            type: karakeep
+            url: http://karakeep.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_KARAKEEP_KEY}}'
+      - Vikunja:
+          icon: vikunja
+          href: https://v.progist.ru
+          description: 🔐 задачи
+          siteMonitor: http://vikunja.apps.svc.cluster.local
+          widget:
+            type: vikunja
+            url: http://vikunja.apps.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_VIKUNJA_KEY}}'
+            version: 2
     - Мониторинг:
-            - Uptime Kuma:
-                icon: uptime-kuma
-                href: https://kuma.home
-                description: "🔑 доступность сервисов"
-                siteMonitor: http://uptime-kuma.monitoring.svc.cluster.local
-                widget:
-                type: uptimekuma
-                url: http://uptime-kuma.monitoring.svc.cluster.local
-                slug: "{{HOMEPAGE_VAR_UPTIMEKUMA_SLUG}}"
-            - Prometheus:
-                icon: prometheus
-                href: https://prometheus.home
-                description: "🌐 метрики"
-                siteMonitor: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
-                widget:
-                type: prometheus
-                url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
-            - Gatus:
-                icon: gatus
-                href: https://status.home
-                description: "🌐 проверки доступности"
-                siteMonitor: http://gatus.monitoring.svc.cluster.local
-                widget:
-                type: gatus
-                url: http://gatus.monitoring.svc.cluster.local
+      - Uptime Kuma:
+          icon: uptime-kuma
+          href: https://kuma.home
+          description: 🔑 доступность сервисов
+          siteMonitor: http://uptime-kuma.monitoring.svc.cluster.local
+          widget:
+            type: uptimekuma
+            url: http://uptime-kuma.monitoring.svc.cluster.local
+            slug: '{{HOMEPAGE_VAR_UPTIMEKUMA_SLUG}}'
+      - Prometheus:
+          icon: prometheus
+          href: https://prometheus.home
+          description: 🌐 метрики
+          siteMonitor: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+          widget:
+            type: prometheus
+            url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+      - Gatus:
+          icon: gatus
+          href: https://status.home
+          description: 🌐 проверки доступности
+          siteMonitor: http://gatus.monitoring.svc.cluster.local
+          widget:
+            type: gatus
+            url: http://gatus.monitoring.svc.cluster.local
     - Доступ и админка:
-            - GitLab:
-                icon: gitlab
-                href: https://gitlab.home
-                description: "🔐 репозитории и CI"
-                siteMonitor: http://gitlab.gitlab.svc.cluster.local
-                widget:
-                type: gitlab
-                url: http://gitlab.gitlab.svc.cluster.local
-                key: "{{HOMEPAGE_VAR_GITLAB_KEY}}"
-                user_id: 1
-            - CrowdSec:
-                icon: crowdsec
-                description: "🌐 баны и сигналы"
-                siteMonitor: http://crowdsec-service.crowdsec.svc.cluster.local:8080/health
-                widget:
-                type: crowdsec
-                url: http://crowdsec-service.crowdsec.svc.cluster.local:8080
-                username: "{{HOMEPAGE_VAR_CROWDSEC_USER}}"
-                password: "{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}"
+      - GitLab:
+          icon: gitlab
+          href: https://gitlab.home
+          description: 🔐 репозитории и CI
+          siteMonitor: http://gitlab.gitlab.svc.cluster.local
+          widget:
+            type: gitlab
+            url: http://gitlab.gitlab.svc.cluster.local
+            key: '{{HOMEPAGE_VAR_GITLAB_KEY}}'
+            user_id: 1
+      - CrowdSec:
+          icon: crowdsec
+          description: 🌐 баны и сигналы
+          siteMonitor: http://crowdsec-service.crowdsec.svc.cluster.local:8080/health
+          widget:
+            type: crowdsec
+            url: http://crowdsec-service.crowdsec.svc.cluster.local:8080
+            username: '{{HOMEPAGE_VAR_CROWDSEC_USER}}'
+            password: '{{HOMEPAGE_VAR_CROWDSEC_PASSWORD}}'
+      - Роутер:
+          icon: mdi-router-wireless
+          href: https://router.home
+          description: 🔑 Keenetic
+          siteMonitor: http://10.77.10.1
+      - Ollama:
+          icon: ollama
+          href: https://ollama.home
+          description: 🌐 API локальных моделей
+          siteMonitor: http://10.77.20.7:11434
 
   bookmarks.yaml: |
     []

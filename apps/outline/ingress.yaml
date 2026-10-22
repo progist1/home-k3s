@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=outline"
     gethomepage.dev/name: "Outline"
     gethomepage.dev/group: "Продуктивность"
     gethomepage.dev/icon: "outline"

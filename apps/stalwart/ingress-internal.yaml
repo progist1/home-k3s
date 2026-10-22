@@ -5,6 +5,7 @@ metadata:
   namespace: apps
   annotations:
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/pod-selector: "app=stalwart"
     gethomepage.dev/name: "Stalwart"
     gethomepage.dev/group: "Почта"
     gethomepage.dev/icon: "mdi-server"
