@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: mysql-exporter-home
-          image: prom/mysqld-exporter:v0.20.0
+          image: prom/mysqld-exporter:v0.21.0
           args:
             - --mysqld.address=mysql.apps.svc.cluster.local:3306
             - --mysqld.username=exporter
