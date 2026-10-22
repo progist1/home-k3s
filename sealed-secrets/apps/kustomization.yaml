@@ -9,6 +9,7 @@ resources:
   - guacamole
   - stalwart
   - bulwark
+  - filebrowser
   - immich
   - mysql
   - outline

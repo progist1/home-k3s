@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: filebrowser-oidc
+  namespace: apps
+spec:
+  encryptedData:
+    FILEBROWSER_OIDC_CLIENT_SECRET: AgCjM+x4OKBkQD0st5nN+kFAvd0CLhi65MmgtjMC5TfZBrjrBT1g7KfX8fa8bH1LUGfjon3hb3yp0Mu7Zw3vzuiNm4JlO+1Xn8XCG9NHusFOS3p5VCHw8i2vr/0MIu8q002uAzBBQGEzi++XZr5QOKhnCL1RKHkGrmMsCNyZRTnN1akXf0mkvsgAmYFdXBIzQtkFFHuPVef/+SVsoeevo3uF3wPggtd4NANLSw5wNcNv/iQCCyUMHkLzO1ZcEBYXRHiMCfr0t7UXuTnwF5mpkut019NMHaZ/KK7Uqk5zMojQleSvAzag5IVUYzD97T94vu0s+Z1BAiBrn27U9qcH5YgUwZ0rdPSLAAw6WEes//NmftkljSNRUWT7yYm+eFiuQ3qfsdVZA7b/vsVsinnva0lkMtXgvjB4CbcH7Pxu/+pmg0K0uXCU1UejfIYU3zj3gPafk+t2hghPh/fKbOUNfFdx7Tri0Z7uGqWSfj5GTgRo7RJ7aRPsM/JCQyN6UuXxcrRd40QG0UEa+UFxAU/Dsq0Agxd6kR6vI4AU3k3r+vmZDp1bloeYxBtz/q7gkEoUs8dBL6beTXeZ0AcLmz4sW3nrWusJvM+U8YkbbSB23BbcPnvGnpLa8K6EeRCZ3tDx4ZcxVEQKnysP4g163wZAp4dzLaf+mUtaY5ViHsViydMiLkIk0f9SpcPSOrPI4GzKCFMuUBrY8Gr5Xjk38WVmCbv6DaZG924vZmjS+0VuCY+K9hB5LplrJanuRIpO0WzrYC7bPDtBOv2Mya0Xzg+26QiYSz1A6dmGz8GB+uwJK+xacbrBP6Qm4/s/g2n8h587aNXKn75ll/AD3EY0Oo28QjCSUEEBbD0up4wj3COctqeyxA==
+  template:
+    metadata:
+      name: filebrowser-oidc
+      namespace: apps

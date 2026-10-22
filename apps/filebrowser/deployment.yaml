@@ -5,6 +5,8 @@ metadata:
   namespace: apps
   labels:
     app.kubernetes.io/name: filebrowser
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -20,7 +22,17 @@ spec:
     spec:
       containers:
         - name: filebrowser
-          image: filebrowser/filebrowser:v2.63.23
+          image: ghcr.io/gtsteffaniak/filebrowser:2.0.1-stable
+          env:
+            - name: FILEBROWSER_CONFIG
+              value: /config/config.yaml
+            - name: FILEBROWSER_DATABASE_PATH
+              value: /database/filebrowser.sqlite
+            - name: FILEBROWSER_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: filebrowser-oidc
+                  key: FILEBROWSER_OIDC_CLIENT_SECRET
           ports:
             - containerPort: 80
           volumeMounts:
@@ -28,6 +40,7 @@ spec:
               mountPath: /srv
             - name: config
               mountPath: /config
+              readOnly: true
             - name: database
               mountPath: /database
           readinessProbe:
@@ -54,8 +67,8 @@ spec:
           persistentVolumeClaim:
             claimName: filebrowser-data-pvc
         - name: config
-          persistentVolumeClaim:
-            claimName: filebrowser-config-pvc
+          configMap:
+            name: filebrowser-config
         - name: database
           persistentVolumeClaim:
             claimName: filebrowser-database-pvc

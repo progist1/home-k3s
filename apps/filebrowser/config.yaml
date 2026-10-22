@@ -1,32 +1,30 @@
 apiVersion: v1
-kind: PersistentVolume
+kind: ConfigMap
 metadata:
-  name: filebrowser-config-pv
-spec:
-  storageClassName: nfs-nvme-manual
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /mnt/Fast/k3s-data/filebrowser/config
-    server: bigb.home
-  persistentVolumeReclaimPolicy: Retain
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: filebrowser-config-pvc
+  name: filebrowser-config
   namespace: apps
-  annotations:
-    k8up.io/backup: "true"
-  labels:
-    backup-level: important
-spec:
-  storageClassName: nfs-nvme-manual
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
-  volumeName: filebrowser-config-pv
+data:
+  config.yaml: |
+    http:
+      port: 80
+      baseURL: "/"
+      trustProxyHeaders: true
+    server:
+      logging:
+        - levels: "info|error|warning"
+      sources:
+        - path: "/srv"
+    auth:
+      methods:
+        password:
+          enabled: true
+          minLength: 8
+          signup: false
+        oidc:
+          enabled: true
+          clientId: bOmOYguxir5JSFouKDdIdaaQeThqvpnH8ruhgLgK
+          issuerUrl: https://auth.progist.ru/application/o/filebrowser/
+          scopes: openid email profile
+          userIdentifier: preferred_username
+          groupsClaim: groups
+          adminGroup: filebrowser-admins
