@@ -161,6 +161,34 @@ data:
           description: 🌐 торренты
           namespace: apps
           podSelector: app=transmission
+      - Jellycleaner:
+          icon: mdi-broom
+          href: https://status.jellycleaner.home
+          description: 🌐 бот чистки Jellyfin
+          siteMonitor: http://jellycleaner-bot.jellycleaner.svc.cluster.local:8080/health
+          widget:
+            type: customapi
+            url: http://jellycleaner-bot.jellycleaner.svc.cluster.local:8080/health
+            refreshInterval: 30000
+            mappings:
+              - field: status
+                label: Статус
+                format: text
+                remap:
+                  - value: ok
+                    to: ok
+                  - any: true
+                    to: сбой
+              - field: uptime_seconds
+                label: Аптайм
+                format: duration
+              - field: checks.telegram.latency_ms
+                label: Telegram
+                format: number
+                suffix: " мс"
+              - field: checks.jobs.sync_user_requests.last_success_seconds_ago
+                label: Синхр.
+                format: duration
       - Tdarr:
           icon: tdarr
           href: https://tdarr.home
