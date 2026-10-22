@@ -159,7 +159,8 @@ data:
           icon: transmission
           href: https://transmission.home
           description: 🌐 торренты
-          siteMonitor: http://transmission.apps.svc.cluster.local
+          namespace: apps
+          podSelector: app=transmission
       - Tdarr:
           icon: tdarr
           href: https://tdarr.home
@@ -262,7 +263,7 @@ data:
           icon: gitlab
           href: https://gitlab.home
           description: 🔐 репозитории и CI
-          siteMonitor: http://gitlab.gitlab.svc.cluster.local
+          siteMonitor: http://gitlab.gitlab.svc.cluster.local/-/health
           widget:
             type: gitlab
             url: http://gitlab.gitlab.svc.cluster.local
