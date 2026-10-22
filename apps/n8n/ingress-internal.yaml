@@ -4,6 +4,11 @@ metadata:
   name: n8n-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "n8n"
+    gethomepage.dev/group: "Продуктивность"
+    gethomepage.dev/icon: "n8n"
+    gethomepage.dev/description: "🔑 автоматизации"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

@@ -4,6 +4,11 @@ metadata:
   name: outline
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Outline"
+    gethomepage.dev/group: "Продуктивность"
+    gethomepage.dev/icon: "outline"
+    gethomepage.dev/description: "🔐 вики"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

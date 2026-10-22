@@ -4,6 +4,11 @@ metadata:
   name: vaultwarden-external
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Vaultwarden"
+    gethomepage.dev/group: "Продуктивность"
+    gethomepage.dev/icon: "vaultwarden"
+    gethomepage.dev/description: "🔑 пароли"
     cert-manager.io/cluster-issuer: letsencrypt-prod
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

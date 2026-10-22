@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: homepage
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+        app.kubernetes.io/name: homepage
+    spec:
+      serviceAccountName: homepage
+      automountServiceAccountToken: true
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k3s-pi
+      tolerations:
+        - key: node.hardware.arch
+          operator: Equal
+          value: "arm64"
+          effect: NoSchedule
+      containers:
+        - name: homepage
+          image: ghcr.io/gethomepage/homepage:v2.6.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: "$(MY_POD_IP):3000,start.home"
+          envFrom:
+            - secretRef:
+                name: homepage-secrets
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "192Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - { name: config, mountPath: /app/config/settings.yaml, subPath: settings.yaml }
+            - { name: config, mountPath: /app/config/services.yaml, subPath: services.yaml }
+            - { name: config, mountPath: /app/config/widgets.yaml, subPath: widgets.yaml }
+            - { name: config, mountPath: /app/config/kubernetes.yaml, subPath: kubernetes.yaml }
+            - { name: config, mountPath: /app/config/bookmarks.yaml, subPath: bookmarks.yaml }
+            - { name: config, mountPath: /app/config/docker.yaml, subPath: docker.yaml }
+            - { name: config, mountPath: /app/config/custom.css, subPath: custom.css }
+            - { name: config, mountPath: /app/config/custom.js, subPath: custom.js }
+            - { name: logs, mountPath: /app/config/logs }
+      volumes:
+        - name: config
+          configMap:
+            name: homepage
+        - name: logs
+          emptyDir: {}

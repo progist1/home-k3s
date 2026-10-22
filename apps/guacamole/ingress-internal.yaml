@@ -4,6 +4,11 @@ metadata:
   name: guacamole-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Guacamole"
+    gethomepage.dev/group: "Доступ и админка"
+    gethomepage.dev/icon: "guacamole"
+    gethomepage.dev/description: "🔐 удалённые рабочие столы"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

@@ -4,6 +4,11 @@ metadata:
   name: router-home-internal
   namespace: infra
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Роутер"
+    gethomepage.dev/group: "Доступ и админка"
+    gethomepage.dev/icon: "mdi-router-wireless"
+    gethomepage.dev/description: "🔑 Keenetic"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

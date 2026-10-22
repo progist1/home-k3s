@@ -12,7 +12,7 @@ resources:
   - prowlarr
   - wizarr
   - seerr
-  - homer
+  - homepage
   - radarr
   - sonarr
   - lidarr

@@ -4,6 +4,11 @@ metadata:
   name: home-assistant-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Home Assistant"
+    gethomepage.dev/group: "Дом"
+    gethomepage.dev/icon: "home-assistant"
+    gethomepage.dev/description: "🔐 умный дом"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

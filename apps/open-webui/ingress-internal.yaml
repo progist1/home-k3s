@@ -9,6 +9,11 @@ metadata:
     managed-by: flux
     environment: production
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Open WebUI"
+    gethomepage.dev/group: "ИИ"
+    gethomepage.dev/icon: "open-webui"
+    gethomepage.dev/description: "🔑 чат с локальными моделями"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

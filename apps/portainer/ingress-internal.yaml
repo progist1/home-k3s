@@ -4,6 +4,11 @@ metadata:
   name: portainer-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Portainer"
+    gethomepage.dev/group: "Доступ и админка"
+    gethomepage.dev/icon: "portainer"
+    gethomepage.dev/description: "🔐 контейнеры"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

@@ -4,6 +4,11 @@ metadata:
   name: trek-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Trek"
+    gethomepage.dev/group: "Дом"
+    gethomepage.dev/icon: "mdi-map-marker-path"
+    gethomepage.dev/description: "🔑 поездки"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

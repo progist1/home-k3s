@@ -4,6 +4,11 @@ metadata:
   name: bulwark-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Почта"
+    gethomepage.dev/group: "Почта"
+    gethomepage.dev/icon: "mdi-email-outline"
+    gethomepage.dev/description: "🔑 веб-клиент"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
 spec:

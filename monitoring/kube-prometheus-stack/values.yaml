@@ -360,6 +360,11 @@ alertmanager:
     enabled: true
     ingressClassName: traefik
     annotations:
+      gethomepage.dev/enabled: "true"
+      gethomepage.dev/name: "Alertmanager"
+      gethomepage.dev/group: "Мониторинг"
+      gethomepage.dev/icon: "alertmanager"
+      gethomepage.dev/description: "🌐 алерты"
       traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       cert-manager.io/cluster-issuer: home-ca-issuer
       traefik.ingress.kubernetes.io/redirect-entry-point: websecure
@@ -402,6 +407,11 @@ grafana:
     enabled: true
     ingressClassName: traefik
     annotations:
+      gethomepage.dev/enabled: "true"
+      gethomepage.dev/name: "Grafana"
+      gethomepage.dev/group: "Мониторинг"
+      gethomepage.dev/icon: "grafana"
+      gethomepage.dev/description: "🔐 дашборды"
       traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       cert-manager.io/cluster-issuer: home-ca-issuer
       traefik.ingress.kubernetes.io/redirect-entry-point: websecure

@@ -4,6 +4,11 @@ metadata:
   name: databasus-internal
   namespace: apps
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Databasus"
+    gethomepage.dev/group: "Продуктивность"
+    gethomepage.dev/icon: "mdi-database"
+    gethomepage.dev/description: "🔑 клиент БД"
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: homer
+  name: homepage
   namespace: apps
 spec:
   selector:
-    app: homer
+    app: homepage
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 3000
   type: ClusterIP

@@ -28,5 +28,6 @@ resources:
   - net-backup
   - homelable
   - immich-kiosk
+  - homepage
   - karakeep
   - manyfold
