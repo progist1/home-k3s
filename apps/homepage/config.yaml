@@ -162,7 +162,7 @@ data:
           namespace: apps
           podSelector: app=transmission
       - Jellycleaner:
-          icon: mdi-broom
+          icon: https://status.jellycleaner.home/upload/logo3.png
           href: https://status.jellycleaner.home
           description: 🌐 бот чистки Jellyfin
           siteMonitor: http://jellycleaner-bot.jellycleaner.svc.cluster.local:8080/health
