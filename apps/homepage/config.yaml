@@ -187,11 +187,6 @@ data:
           href: https://share.home
           description: 🔑 файловый менеджер
           siteMonitor: http://filebrowser.apps.svc.cluster.local
-          widget:
-            type: filebrowser
-            url: http://filebrowser.apps.svc.cluster.local
-            username: '{{HOMEPAGE_VAR_FILEBROWSER_USER}}'
-            password: '{{HOMEPAGE_VAR_FILEBROWSER_PASSWORD}}'
     - Дом:
       - Frigate:
           icon: frigate
