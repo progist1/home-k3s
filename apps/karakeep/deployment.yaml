@@ -28,7 +28,7 @@ spec:
         kubernetes.io/hostname: k3s-prod
       containers:
         - name: karakeep
-          image: ghcr.io/karakeep-app/karakeep:0.34.0
+          image: ghcr.io/karakeep-app/karakeep:0.34.1
           ports:
             - name: http
               containerPort: 3000
