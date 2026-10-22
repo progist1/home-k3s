@@ -16,7 +16,8 @@
     "helm-values",
     "flux",
     "kustomize",
-    "docker-compose"
+    "docker-compose",
+    "gitlabci"
   ],
   "docker-compose": {
     "managerFilePatterns": ["infra/edge/compose/**/compose.yaml"]
@@ -84,6 +85,13 @@
       "managerFilePatterns": ["infra/crowdsec/helmrelease.yaml"],
       "matchStrings": ["tag: \"(?<currentValue>[^\"]+)\""],
       "depNameTemplate": "crowdsecurity/crowdsec",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "description": "CNPG: версия PostgreSQL задаётся через spec.imageName, штатный kubernetes-менеджер её не видит",
+      "customType": "regex",
+      "managerFilePatterns": ["apps/postgres/cnpg-cluster.yaml", "parapar-dr/cluster.yaml"],
+      "matchStrings": ["imageName:\\s*(?<depName>ghcr\\.io/cloudnative-pg/postgresql):(?<currentValue>[0-9][^\\s@#]*)"],
       "datasourceTemplate": "docker"
     }
   ],
@@ -154,6 +162,30 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["jellyfin/jellyfin"],
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(\\.(?<patch>\\d+))?$"
+    },
+    {
+      "description": "CNPG PostgreSQL: только ручной мёрдж; major держим явно (apps-pg 17, parapar-dr 16), смена major = отдельная миграция.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "automerge": false,
+      "assignees": ["progist"]
+    },
+    {
+      "matchFileNames": ["apps/postgres/cnpg-cluster.yaml"],
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "allowedVersions": "/^17\\./"
+    },
+    {
+      "matchFileNames": ["parapar-dr/cluster.yaml"],
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "allowedVersions": "/^16\\./"
+    },
+    {
+      "description": "Stateful-приложения с миграциями данных/индекса: minor может ломать формат (Meilisearch 1.41→1.55). Только ручной мёрдж.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["getmeili/meilisearch", "ghcr.io/karakeep-app/karakeep", "n8nio/n8n"],
+      "automerge": false,
+      "assignees": ["progist"]
     },
     {
       "description": "Edge VPS (headscale, frps, tailscale) и subnet router'ы дома: аварийный путь в сеть, 0.x-релизы headscale/frp, minor бывают ломающими. Только ручной мердж; правило стоит последним, чтобы перекрыть глобальный automerge.",
