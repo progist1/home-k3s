@@ -50,6 +50,26 @@ spec:
                 secretKeyRef: { name: homelable-secrets, key: ZIGBEE_MQTT_PASSWORD }
             - name: ZIGBEE_SYNC_ENABLED
               value: "true"
+            - name: LIVEVIEW_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: LIVEVIEW_KEY }
+            - name: AUTH_MODE
+              value: oidc
+            - name: OIDC_DISCOVERY_URL
+              value: https://auth.progist.ru/application/o/homelable/.well-known/openid-configuration
+            - name: OIDC_CLIENT_ID
+              value: As2UDuoBQlg9GYQqEp0Uzfzihtu50dfkzOXRhu3N
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: OIDC_CLIENT_SECRET }
+            - name: OIDC_REDIRECT_URI
+              value: https://map.home/api/v1/auth/oidc/callback
+            - name: MCP_SERVICE_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: MCP_SERVICE_KEY }
+            - name: DOCS_VIEW_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: DOCS_VIEW_KEY }
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef: { name: homelable-secrets, key: SECRET_KEY }
