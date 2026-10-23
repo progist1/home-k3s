@@ -24,7 +24,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: homebox-companion
-          image: ghcr.io/duelion/homebox-companion:3.1.1
+          image: ghcr.io/duelion/homebox-companion:3.2.0
           ports:
             - name: http
               containerPort: 8000
