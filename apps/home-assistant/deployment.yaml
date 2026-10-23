@@ -54,7 +54,7 @@ spec:
               cpu: 100m
               memory: 64Mi
         - name: git-sync-init
-          image: registry.k8s.io/git-sync/git-sync:v4.7.1
+          image: registry.k8s.io/git-sync/git-sync:v4.8.0
           # GitLab недоступен — не блокируем старт, берём кэш из PVC (/config/.git-sync)
           command:
             - sh
@@ -91,7 +91,7 @@ spec:
               memory: 128Mi
       containers:
         - name: git-syncs
-          image: registry.k8s.io/git-sync/git-sync:v4.7.1
+          image: registry.k8s.io/git-sync/git-sync:v4.8.0
           args:
             - --repo=git@gitlab.home:local/home-assistant-config.git
             - --ref=main
