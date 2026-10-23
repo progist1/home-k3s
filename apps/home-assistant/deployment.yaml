@@ -33,7 +33,7 @@ spec:
           effect: NoSchedule
       initContainers:
         - name: seed-config
-          image: homeassistant/home-assistant:2026.10.2
+          image: homeassistant/home-assistant:2026.10.3
           command:
             - sh
             - -c
@@ -121,7 +121,7 @@ spec:
               cpu: "1"
               memory: 128Mi
         - name: home-assistant
-          image: homeassistant/home-assistant:2026.10.2
+          image: homeassistant/home-assistant:2026.10.3
           env:
           - name: HA_DB_PASSWORD
             valueFrom:
