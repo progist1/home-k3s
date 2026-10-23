@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-mcp
+  namespace: apps
+  labels:
+    app.kubernetes.io/name: homelable-mcp
+    managed-by: flux
+    app.kubernetes.io/part-of: home-cluster
+    environment: production
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homelable-mcp
+  template:
+    metadata:
+      labels:
+        app: homelable-mcp
+        app.kubernetes.io/name: homelable-mcp
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: mcp
+          image: ghcr.io/pouzor/homelable-mcp:3.6.0
+          ports:
+            - name: http
+              containerPort: 8001
+          env:
+            - name: BACKEND_URL
+              value: http://homelable-backend:8000
+            - name: MCP_API_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: MCP_API_KEY }
+            - name: MCP_SERVICE_KEY
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: MCP_SERVICE_KEY }
+          readinessProbe:
+            tcpSocket:
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8001
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "64Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"

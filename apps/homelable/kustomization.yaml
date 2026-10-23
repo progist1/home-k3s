@@ -1,5 +1,7 @@
 resources:
   - storage
   - deployment.yaml
+  - deployment-mcp.yaml
   - service.yaml
   - ingress-internal.yaml
+  - ingress-mcp.yaml
