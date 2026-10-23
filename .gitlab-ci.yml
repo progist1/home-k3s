@@ -51,7 +51,7 @@ validate-edge:
   stage: validate
   # Пакет `ansible` из PyPI содержит community.general/docker и ansible.posix, поэтому galaxy не нужен:
   # скачивание тарболлов с galaxy.ansible.com из кластера периодически рвётся (TLS handshake timeout)
-  image: python:3.13-alpine
+  image: python:3.15-alpine
   rules:
     - changes:
         paths:
@@ -72,7 +72,7 @@ validate-edge:
 # EDGE_SSH_KNOWN_HOSTS: вывод `ssh-keyscan -t ed25519 edge.progist.ru` (пин ключа хоста).
 deploy-edge:
   stage: deploy
-  image: python:3.13-alpine
+  image: python:3.15-alpine
   resource_group: edge-deploy
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $EDGE_DEPLOY_SSH_KEY'
