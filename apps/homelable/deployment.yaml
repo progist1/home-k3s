@@ -41,6 +41,15 @@ spec:
               value: '["10.77.10.0/24","10.77.20.0/24","10.77.30.0/24","10.77.40.0/24","10.77.50.0/24","10.77.60.0/24","10.77.90.0/24"]'
             - name: STATUS_CHECKER_ENABLED
               value: "true"
+            - name: ZIGBEE_MQTT_HOST
+              value: mosquitto.apps.svc.cluster.local
+            - name: ZIGBEE_MQTT_USERNAME
+              value: homelable
+            - name: ZIGBEE_MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: homelable-secrets, key: ZIGBEE_MQTT_PASSWORD }
+            - name: ZIGBEE_SYNC_ENABLED
+              value: "true"
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef: { name: homelable-secrets, key: SECRET_KEY }
