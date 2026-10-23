@@ -5,7 +5,7 @@ metadata:
   namespace: parapar-dr
 spec:
   instances: 1
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.11   # match prod exactly
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.15   # match prod exactly
 
   storage:
     size: 30Gi
