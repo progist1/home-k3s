@@ -7,7 +7,7 @@ metadata:
     cert-manager.io/cluster-issuer: home-ca-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/redirect-entry-point: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: infra-redirect-to-https@kubernetescrd,infra-router-strip-origin@kubernetescrd
 spec:
   rules:
   - host: router.home
