@@ -17,7 +17,8 @@
     "flux",
     "kustomize",
     "docker-compose",
-    "gitlabci"
+    "gitlabci",
+    "custom.regex"
   ],
   "docker-compose": {
     "managerFilePatterns": ["infra/edge/compose/**/compose.yaml"]
