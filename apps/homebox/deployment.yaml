@@ -26,7 +26,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: homebox
-          image: ghcr.io/sysadminsmedia/homebox:0.27.0
+          image: ghcr.io/sysadminsmedia/homebox:0.27.1
           ports:
             - name: http
               containerPort: 7745
