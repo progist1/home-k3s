@@ -44,7 +44,7 @@ spec:
       timokoessler/uptime-kuma
 
     image:
-      tag: "v1.7.8"
+      tag: "v1.8.1"
     container_runtime: containerd
 
     lapi:
